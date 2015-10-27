@@ -8,10 +8,13 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
 © 2012 Frederic.Glorieux@fictif.org 
 © 2013 Frederic.Glorieux@fictif.org et LABEX OBVIL
 
+Syntaxe texte de référence : Markdown
+
 Extraction du texte d'un corpus TEI pour recherche plein texte ou traitements linguistiques
 (ex : suppressions des notes, résolution de l'apparat)
 Doit pouvoir fonctionner en import.
 
+TODO: listes, tables, liens
 
 -->
 <xsl:transform version="1.1"
@@ -615,6 +618,7 @@ Doit pouvoir fonctionner en import.
   </xsl:template>
 
   <xsl:template match="tei:div[@type='letter']/tei:head" mode="txt"/>
+  
   <xsl:template match="tei:head" mode="txt">
     <xsl:variable name="level" select="count(ancestor::*[tei:head])"/>
     <xsl:variable name="text">
@@ -640,11 +644,9 @@ Doit pouvoir fonctionner en import.
         <xsl:value-of select="$lf"/>
         <xsl:value-of select="$lf"/>
         <xsl:value-of select="$lf"/>
-        <xsl:value-of select="substring('============', 1, $level)"/>
+        <xsl:value-of select="substring('######', 1, $level)"/>
         <xsl:text> </xsl:text>
         <xsl:value-of select="normalize-space($text)"/>
-        <xsl:text> </xsl:text>
-        <xsl:value-of select="substring('============', 1, $level)"/>
       </xsl:otherwise>
     </xsl:choose>
     <!-- chapter -->
@@ -786,6 +788,31 @@ Doit pouvoir fonctionner en import.
       </xsl:otherwise>
     </xsl:choose>
     
+  </xsl:template>
+  
+  <xsl:template match="tei:hi">
+    <xsl:choose>
+      <xsl:when test="@rend = 'i' or starts-with(@rend, 'it')">
+        <xsl:text>*</xsl:text>
+        <xsl:apply-templates/>
+        <xsl:text>*</xsl:text>
+      </xsl:when>
+      <xsl:when test="@rend = 'b' or @rend = 'bold' or @rend='gras'">
+        <xsl:text>**</xsl:text>
+        <xsl:apply-templates/>
+        <xsl:text>**</xsl:text>
+      </xsl:when>
+      <xsl:when test="@rend = 's' or @rend = 'strike'">
+        <xsl:text>~~</xsl:text>
+        <xsl:apply-templates/>
+        <xsl:text>~~</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>*</xsl:text>
+        <xsl:apply-templates/>
+        <xsl:text>*</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <!-- For text, give back hand to normal processing, so that it could be overrides (= translate for some device) -->
