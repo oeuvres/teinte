@@ -30,6 +30,8 @@ TOTEST
   xmlns:date="http://exslt.org/dates-and-times"
   extension-element-prefixes="exslt saxon date"
 >
+  <!-- base href for generated links -->
+  <xsl:param name="base"/>
   <!-- Fichier de messages pour étiquettes générées. -->
   <xsl:param name="messages">tei.rdfs</xsl:param>
   <!--  charger le fichier de messages, document('') permet de résoudre les chemin relativement à ce fichier  -->
@@ -802,6 +804,9 @@ résoudre les césures, ou les alternatives éditoriales.
                   <xsl:when test="@key">
                     <xsl:value-of select="@key"/>
                   </xsl:when>
+                  <xsl:when test="contains(., '(')">
+                    <xsl:value-of select="normalize-space(substring-before(., '('))"/>
+                  </xsl:when>
                   <xsl:otherwise>
                     <xsl:value-of select="normalize-space(.)"/>
                   </xsl:otherwise>
@@ -1049,6 +1054,7 @@ résoudre les césures, ou les alternatives éditoriales.
     <h3>Rewrite links</h3>
   -->
   <xsl:template name="href">
+    <xsl:param name="base" select="$base"/>
     <!-- possible override id -->
     <xsl:param name="id">
       <xsl:call-template name="id"/>
@@ -1061,6 +1067,7 @@ résoudre les césures, ou les alternatives éditoriales.
         <xsl:value-of select="$id"/>
       </xsl:when>
       <xsl:when test="$class = 'noteref' and $fnpage != ''">
+        <xsl:value-of select="$base"/>
         <xsl:value-of select="$fnpage"/>
         <xsl:value-of select="$_html"/>
         <xsl:text>#</xsl:text>
@@ -1068,6 +1075,7 @@ résoudre les césures, ou les alternatives éditoriales.
       </xsl:when>
       <!-- -->
       <xsl:when test="/*/tei:text/tei:body and count(.|/*/tei:text/tei:body)=1">
+        <xsl:value-of select="$base"/>
         <xsl:choose>
           <xsl:when test="$_html = ''">.</xsl:when>
           <xsl:otherwise>index<xsl:value-of select="$_html"/></xsl:otherwise>
@@ -1075,21 +1083,25 @@ résoudre les césures, ou les alternatives éditoriales.
       </xsl:when>
       <!-- Structure TEI, renommés par le template "id" -->
       <xsl:when test="count(../.. | /*) = 1">
+        <xsl:value-of select="$base"/>
         <xsl:value-of select="$id"/>
         <xsl:value-of select="$_html"/>
       </xsl:when>
       <!-- is a splitted section -->
       <xsl:when test="self::*[key('split', generate-id())]">
+        <xsl:value-of select="$base"/>
         <xsl:value-of select="$id"/>
         <xsl:value-of select="$_html"/>
       </xsl:when>
       <!-- parent of a split section -->
       <xsl:when test="descendant::*[key('split', generate-id())]">
+        <xsl:value-of select="$base"/>
         <xsl:value-of select="$id"/>
         <xsl:value-of select="$_html"/>
       </xsl:when>
       <!-- Enfant d'une page, id du parent splité + ancre -->
       <xsl:when test="ancestor::*[key('split', generate-id())]">
+        <xsl:value-of select="$base"/>
         <xsl:for-each select="ancestor::*[key('split', generate-id())][1]">
           <xsl:call-template name="id"/>
           <xsl:value-of select="$_html"/>

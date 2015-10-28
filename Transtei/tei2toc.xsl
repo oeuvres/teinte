@@ -318,59 +318,48 @@ mais aussi pour le liage dans l'apparat critique. Ce mode fait usage des modes 
         <xsl:otherwise>nav</xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
-    <xsl:element name="{$element}" namespace="http://www.w3.org/1999/xhtml">
-      <xsl:if test="$format = $epub3">
-        <xsl:attribute name="epub:type">toc</xsl:attribute>
-        <xsl:attribute name="id">toc</xsl:attribute>
-        <h1>
-          <xsl:call-template name="message">
-            <xsl:with-param name="id">toc</xsl:with-param>
-          </xsl:call-template>
-        </h1>
-      </xsl:if>
-      <ol class="tree">
-        <!-- front in one <li> to hide some by default  -->
-        <xsl:choose>
-          <xsl:when test="/*/tei:text/tei:front[count(tei:div|tei:div1) = 1]">
-            <xsl:apply-templates select="/*/tei:text/tei:front/*" mode="li">
-              <xsl:with-param name="depth" select="$depth"/>
-              <xsl:with-param name="less" select="$less"/>
-            </xsl:apply-templates>
-          </xsl:when>
-          <xsl:when test="/*/tei:text/tei:front[tei:div|tei:div1]">
-            <li class="more">
-              <span>
-                <xsl:apply-templates select="/*/tei:text/tei:front" mode="title"/>
-              </span>
-              <ol>
-                <xsl:apply-templates select="/*/tei:text/tei:front/*" mode="li">
-                  <xsl:with-param name="depth" select="$depth"/>
-                  <xsl:with-param name="less" select="$less"/>
-                </xsl:apply-templates>
-              </ol>
-            </li>
-          </xsl:when>
-        </xsl:choose>
-        <xsl:apply-templates select="/*/tei:text/tei:body/* | /*/tei:text/tei:group/* " mode="li">
-          <xsl:with-param name="depth" select="$depth"/>
-          <xsl:with-param name="less" select="$less"/>
-        </xsl:apply-templates>
-        <!-- back in one <li> to hide some by default  -->
-        <xsl:if test="/*/tei:text/tei:back[tei:div|tei:div1]">
+    <ol class="tree">
+      <!-- front in one <li> to hide some by default  -->
+      <xsl:choose>
+        <xsl:when test="/*/tei:text/tei:front[count(tei:div|tei:div1) = 1]">
+          <xsl:apply-templates select="/*/tei:text/tei:front/*" mode="li">
+            <xsl:with-param name="depth" select="$depth"/>
+            <xsl:with-param name="less" select="$less"/>
+          </xsl:apply-templates>
+        </xsl:when>
+        <xsl:when test="/*/tei:text/tei:front[tei:div|tei:div1]">
           <li class="more">
             <span>
-              <xsl:apply-templates select="/*/tei:text/tei:back" mode="title"/>
+              <xsl:apply-templates select="/*/tei:text/tei:front" mode="title"/>
             </span>
             <ol>
-              <xsl:apply-templates select="/*/tei:text/tei:back/*" mode="li">
+              <xsl:apply-templates select="/*/tei:text/tei:front/*" mode="li">
                 <xsl:with-param name="depth" select="$depth"/>
                 <xsl:with-param name="less" select="$less"/>
               </xsl:apply-templates>
             </ol>
           </li>
-        </xsl:if>
-      </ol>
-    </xsl:element>
+        </xsl:when>
+      </xsl:choose>
+      <xsl:apply-templates select="/*/tei:text/tei:body/* | /*/tei:text/tei:group/* " mode="li">
+        <xsl:with-param name="depth" select="$depth"/>
+        <xsl:with-param name="less" select="$less"/>
+      </xsl:apply-templates>
+      <!-- back in one <li> to hide some by default  -->
+      <xsl:if test="/*/tei:text/tei:back[tei:div|tei:div1]">
+        <li class="more">
+          <span>
+            <xsl:apply-templates select="/*/tei:text/tei:back" mode="title"/>
+          </span>
+          <ol>
+            <xsl:apply-templates select="/*/tei:text/tei:back/*" mode="li">
+              <xsl:with-param name="depth" select="$depth"/>
+              <xsl:with-param name="less" select="$less"/>
+            </xsl:apply-templates>
+          </ol>
+        </li>
+      </xsl:if>
+    </ol>
   </xsl:template>
   <!--
 <h3>mode="bibl" (ligne bibliographique)</h3>
