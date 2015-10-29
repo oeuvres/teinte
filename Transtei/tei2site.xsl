@@ -66,7 +66,7 @@ tei:*[self::tei:div or self::tei:div1 or self::tei:div2][@type][
           </xsl:call-template>
         </xsl:with-param>
         <xsl:with-param name="body">
-          <nav class="toc">
+          <nav class="toc tei">
             <header>
               <a>
                 <xsl:attribute name="href">
@@ -75,6 +75,7 @@ tei:*[self::tei:div or self::tei:div1 or self::tei:div2][@type][
                   </xsl:for-each>
                 </xsl:attribute>
                 <xsl:copy-of select="$byline"/>
+                <xsl:if test="$byline != ''">. </xsl:if>
                 <xsl:copy-of select="$doctitle"/>
                 <xsl:if test="$docdate">
                   <xsl:text> (</xsl:text>
@@ -126,6 +127,7 @@ tei:*[self::tei:div or self::tei:div1 or self::tei:div2][@type][
               <xsl:text> </xsl:text>
               <xsl:value-of select="normalize-space(@rend)"/>
             </xsl:for-each>
+            <xsl:text> tei</xsl:text>
           </xsl:attribute>
           <xsl:choose>
             <xsl:when test="tei:front/tei:titlePage">
@@ -233,6 +235,14 @@ tei:*[self::tei:div or self::tei:div1 or self::tei:div2][@type][
     tei:div | tei:div0 | tei:div1 | tei:div2 | tei:div3 | tei:div4 | tei:div5 | tei:div6 | tei:div7 
     "
    >
+    <xsl:variable name="classes">
+      <!-- add ancestor rendering -->
+      <xsl:for-each select="ancestor::*[@rend]">
+        <xsl:text> </xsl:text>
+        <xsl:value-of select="normalize-space(@rend)"/>
+      </xsl:for-each>
+      <xsl:text> tei</xsl:text>
+    </xsl:variable>
     <xsl:variable name="body">
       <xsl:choose>
         <!-- avec des enfants à spliter, entête + nav -->
@@ -240,39 +250,36 @@ tei:*[self::tei:div or self::tei:div1 or self::tei:div2][@type][
           <!-- take content before sections -->
           <xsl:variable name="before" select="generate-id(tei:group|tei:div|tei:div1|tei:div2|tei:div3|tei:div4|tei:div5|tei:div6)"/>
           <xsl:variable name="cont" select="tei:*[following-sibling::*[generate-id(.)=$before]]"/>
-          <article>
+          <div>
             <xsl:call-template name="att-lang"/>
             <xsl:call-template name="atts">
-              <xsl:with-param name="class">
-                <xsl:for-each select="ancestor::*[@rend]">
-                  <xsl:text> </xsl:text>
-                  <xsl:value-of select="normalize-space(@rend)"/>
-                </xsl:for-each>
-              </xsl:with-param>
+              <xsl:with-param name="class" select="$classes"/>
             </xsl:call-template>
             <xsl:call-template name="breadcrumb"/>
             <xsl:call-template name="prevnext"/>
-            <!-- if a page break just before, catch it -->
-            <xsl:if test="preceding-sibling::*[1][self::tei:pb]">
-              <xsl:apply-templates select="preceding-sibling::*[1]"/>
-            </xsl:if>
-            <!-- sortir les enfants qui ne sont pas des feuilles de split -->
-            <xsl:apply-templates select="$cont">
-              <xsl:with-param name="level" select="1"/>
-            </xsl:apply-templates>
-            <!-- Local toc  -->
-            <nav class="argument">
-              <xsl:for-each select="tei:div | tei:group | tei:body/tei:div">
-               <xsl:if test="position() != 1"> — </xsl:if>
-               <xsl:call-template name="a"/>
-              </xsl:for-each>
-            </nav>
-            <!-- les notes, passer les noeud sur lesquels générer -->
-            <xsl:call-template name="footnotes">
-              <xsl:with-param name="cont" select="$cont"/>
-              <xsl:with-param name="pb"/>
-            </xsl:call-template>
-          </article>
+            <article class="tei">
+              <!-- if a page break just before, catch it -->
+              <xsl:if test="preceding-sibling::*[1][self::tei:pb]">
+                <xsl:apply-templates select="preceding-sibling::*[1]"/>
+              </xsl:if>
+              <!-- sortir les enfants qui ne sont pas des feuilles de split -->
+              <xsl:apply-templates select="$cont">
+                <xsl:with-param name="level" select="1"/>
+              </xsl:apply-templates>
+              <!-- Local toc  -->
+              <nav class="argument">
+                <xsl:for-each select="tei:div | tei:group | tei:body/tei:div">
+                 <xsl:if test="position() != 1"> — </xsl:if>
+                 <xsl:call-template name="a"/>
+                </xsl:for-each>
+              </nav>
+              <!-- les notes, passer les noeud sur lesquels générer -->
+              <xsl:call-template name="footnotes">
+                <xsl:with-param name="cont" select="$cont"/>
+                <xsl:with-param name="pb"/>
+              </xsl:call-template>
+            </article>
+          </div>
 
         </xsl:when>
         <!-- split leave, no nav -->
@@ -280,15 +287,10 @@ tei:*[self::tei:div or self::tei:div1 or self::tei:div2][@type][
           <xsl:if test="self::*[not(key('split', generate-id()))]">
           <xsl:message>tei2site.xsl, split problem : <xsl:call-template name="id"/>, <xsl:call-template name="title"></xsl:call-template></xsl:message>
           </xsl:if>
-          <article>
+          <div>
             <xsl:call-template name="att-lang"/>
             <xsl:call-template name="atts">
-              <xsl:with-param name="class">
-                <xsl:for-each select="ancestor::*[@rend]">
-                  <xsl:text> </xsl:text>
-                  <xsl:value-of select="normalize-space(@rend)"/>
-                </xsl:for-each>
-              </xsl:with-param>
+              <xsl:with-param name="class" select="$classes"/>
             </xsl:call-template>
             <!-- Récupérer le saut de page qui précède pour avoir la référence de la section
 Tester si saut de page en milieu de texte pour récupérer le précédent.
@@ -322,17 +324,19 @@ Tricky, <pb> could be hidden, forget.
             </xsl:if>
               -->
             <!-- if a page break just before, catch it -->
-            <xsl:if test="preceding-sibling::*[1][self::tei:pb]">
-              <xsl:apply-templates select="preceding-sibling::*[1]"/>
-            </xsl:if>
             <xsl:call-template name="breadcrumb"/>
             <xsl:call-template name="prevnext"/>
-            <xsl:apply-templates select="*">
-              <xsl:with-param name="level" select="1"/>
-            </xsl:apply-templates>
-            <xsl:call-template name="footnotes"/>
+            <article class="tei">
+              <xsl:if test="preceding-sibling::*[1][self::tei:pb]">
+                <xsl:apply-templates select="preceding-sibling::*[1]"/>
+              </xsl:if>
+              <xsl:apply-templates select="*">
+                <xsl:with-param name="level" select="1"/>
+              </xsl:apply-templates>
+              <xsl:call-template name="footnotes"/>
+            </article>
             <xsl:call-template name="prevnext"/>
-          </article>
+          </div>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
@@ -362,6 +366,8 @@ Tricky, <pb> could be hidden, forget.
       <xsl:value-of select="$destdir"/>
       <xsl:call-template name="href">
         <xsl:with-param name="id" select="$id"/>
+        <!-- no base for such links -->
+        <xsl:with-param name="base"/>
       </xsl:call-template>
     </xsl:param>
     <document>
