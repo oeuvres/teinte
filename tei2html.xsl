@@ -206,21 +206,26 @@ et -1 pour chaque niveau ensuite, d'où le paramètre $level qui peut
   <xsl:template match="tei:back">
     <xsl:param name="notes" select="not(ancestor::tei:group)"/>
     <xsl:param name="level" select="count(ancestor::tei:group)"/>
-    <xsl:variable name="element">
-      <xsl:choose>
-        <xsl:when test="$format = $epub2">div</xsl:when>
-        <xsl:otherwise>section</xsl:otherwise>
-      </xsl:choose>
-    </xsl:variable>
-    <xsl:element name="{$element}" namespace="http://www.w3.org/1999/xhtml">
-      <xsl:if test="$format = $epub3">
-        <xsl:attribute name="epub:type">backmatter</xsl:attribute>
-      </xsl:if>
-      <xsl:call-template name="atts"/>
-      <xsl:apply-templates select="*">
-        <xsl:with-param name="level" select="$level "/>
-      </xsl:apply-templates>
-    </xsl:element>
+    <xsl:choose>
+      <xsl:when test="normalize-space(.) = ''"/>
+      <xsl:otherwise>
+        <xsl:variable name="element">
+          <xsl:choose>
+            <xsl:when test="$format = $epub2">div</xsl:when>
+            <xsl:otherwise>section</xsl:otherwise>
+          </xsl:choose>
+        </xsl:variable>
+        <xsl:element name="{$element}" namespace="http://www.w3.org/1999/xhtml">
+          <xsl:if test="$format = $epub3">
+            <xsl:attribute name="epub:type">backmatter</xsl:attribute>
+          </xsl:if>
+          <xsl:call-template name="atts"/>
+          <xsl:apply-templates select="*">
+            <xsl:with-param name="level" select="$level "/>
+          </xsl:apply-templates>
+        </xsl:element>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   <xsl:template match="tei:body">
     <xsl:param name="level" select="count(ancestor::tei:group)"/>

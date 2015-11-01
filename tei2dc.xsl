@@ -391,6 +391,11 @@
       <xsl:value-of select="@ident"/>
     </dc:language>
   </xsl:template>
+ <xsl:template match="@xml:lang">
+    <dc:language>
+      <xsl:value-of select="."/>
+    </dc:language>
+  </xsl:template>
   
   <xsl:template name="lang">
     <xsl:param name="code" select="@xml:lang|@ident"/>

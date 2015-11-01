@@ -175,7 +175,7 @@ tei:*[self::tei:div or self::tei:div1 or self::tei:div2][@type][
                     <xsl:call-template name="a"/>
                   </xsl:for-each>
                 </div>
-                <xsl:if test="tei:back/tei:div | tei:back/tei:div1">
+                <xsl:if test="tei:back/tei:div[normalize-space(.)!=''] | tei:back/tei:div1[normalize-space(.)!='']">
                   <div>
                     <xsl:if test="tei:back/tei:head">
                       <strong>
@@ -183,7 +183,7 @@ tei:*[self::tei:div or self::tei:div1 or self::tei:div2][@type][
                       </strong>
                       <xsl:text> — </xsl:text>
                     </xsl:if>
-                    <xsl:for-each select="tei:back/tei:div | tei:back/tei:div">
+                    <xsl:for-each select="tei:back/tei:div[normalize-space(.)!=''] | tei:back/tei:div1[normalize-space(.)!='']">
                       <xsl:if test="position() != 1"> — </xsl:if>
                       <xsl:call-template name="a"/>
                     </xsl:for-each>
@@ -228,6 +228,17 @@ tei:*[self::tei:div or self::tei:div1 or self::tei:div2][@type][
         <xsl:text>credits</xsl:text>
       </xsl:with-param>
     </xsl:call-template>
+  </xsl:template>
+  
+  <xsl:template match="tei:back|tei:front" mode="site">
+    <xsl:choose>
+      <xsl:when test="normalize-space(.) = ''"/>
+      <xsl:otherwise>
+        <xsl:for-each select="*[normalize-space(.) != '']">
+          <xsl:apply-templates select="." mode="site"/>
+        </xsl:for-each>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   
   <xsl:template mode="site" match="
