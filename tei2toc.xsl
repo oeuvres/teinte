@@ -327,13 +327,13 @@ mais aussi pour le liage dans l'apparat critique. Ce mode fait usage des modes 
             <xsl:with-param name="less" select="$less"/>
           </xsl:apply-templates>
         </xsl:when>
-        <xsl:when test="/*/tei:text/tei:front[tei:div|tei:div1]">
+        <xsl:when test="/*/tei:text/tei:front[tei:div[normalize-space(.) != '']|tei:div1[normalize-space(.) != '']]">
           <li class="more">
             <span>
               <xsl:apply-templates select="/*/tei:text/tei:front" mode="title"/>
             </span>
             <ol>
-              <xsl:apply-templates select="/*/tei:text/tei:front/*" mode="li">
+              <xsl:apply-templates select="/*/tei:text/tei:front/*[self::tei:div|self::tei:div1][normalize-space(.) != '']" mode="li">
                 <xsl:with-param name="depth" select="$depth"/>
                 <xsl:with-param name="less" select="$less"/>
               </xsl:apply-templates>
@@ -346,13 +346,13 @@ mais aussi pour le liage dans l'apparat critique. Ce mode fait usage des modes 
         <xsl:with-param name="less" select="$less"/>
       </xsl:apply-templates>
       <!-- back in one <li> to hide some by default  -->
-      <xsl:if test="/*/tei:text/tei:back[tei:div|tei:div1]">
+      <xsl:if test="/*/tei:text/tei:back[tei:div[normalize-space(.) != '']|tei:div1[normalize-space(.) != '']]">
         <li class="more">
           <span>
             <xsl:apply-templates select="/*/tei:text/tei:back" mode="title"/>
           </span>
           <ol>
-            <xsl:apply-templates select="/*/tei:text/tei:back/*" mode="li">
+            <xsl:apply-templates select="/*/tei:text/tei:back/*[normalize-space(.) != '']" mode="li">
               <xsl:with-param name="depth" select="$depth"/>
               <xsl:with-param name="less" select="$less"/>
             </xsl:apply-templates>

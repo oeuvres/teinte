@@ -466,7 +466,7 @@ et -1 pour chaque niveau ensuite, d'où le paramètre $level qui peut
     </fieldset>
   </xsl:template>
   <!-- Contains blocks, but are no sections -->
-  <xsl:template match="tei:argument | tei:def | tei:docTitle | tei:entry | tei:form | tei:postscript  | tei:entry/tei:xr">
+  <xsl:template match="tei:argument | tei:closer | tei:def | tei:docTitle | tei:entry | tei:form | tei:postscript  | tei:entry/tei:xr | tei:opener">
     <xsl:if test=". != ''">
       <div>
         <xsl:call-template name="atts"/>
@@ -2018,10 +2018,11 @@ Elements block or inline level
       <!-- Un identifiant, lien vers l'entrée d'index -->
       <xsl:when test="@ref and substring(@ref,1,1)='#'">
         <a>
-          <xsl:for-each select="key('id', substring(@ref, 2))[1]">
+          
             <xsl:attribute name="href">
               <xsl:call-template name="href"/>
             </xsl:attribute>
+          <xsl:for-each select="key('id', substring(@ref, 2))[1]">
             <xsl:attribute name="title">
               <xsl:apply-templates select="." mode="title"/>
             </xsl:attribute>

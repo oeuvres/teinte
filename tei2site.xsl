@@ -19,7 +19,7 @@ Appliqué à un fichier TEI, produit un site multi-page navigable
   <xsl:import href="tei2html.xsl"/>
   <xsl:output indent="yes" encoding="UTF-8" method="xml" />
   <xsl:key name="split" match="
-tei:*[self::tei:div or self::tei:div1 or self::tei:div2][@type][
+tei:*[self::tei:div or self::tei:div1 or self::tei:div2][normalize-space(.) != ''][@type][
   contains(@type, 'article') 
     or contains(@type, 'chapter') 
     or contains(@subtype, 'split') 
@@ -28,7 +28,7 @@ tei:*[self::tei:div or self::tei:div1 or self::tei:div2][@type][
     or contains(@type, 'letter')
 ] 
 | tei:group/tei:text 
-| tei:TEI/tei:text/tei:*/tei:*[self::tei:div or self::tei:div1 or self::tei:group]" use="generate-id(.)"/>
+| tei:TEI/tei:text/tei:*/tei:*[self::tei:div or self::tei:div1 or self::tei:group][normalize-space(.) != '']" use="generate-id(.)"/>
   <xsl:variable name="html">html</xsl:variable>
   <xsl:variable name="article">article</xsl:variable>
   <!-- Kind of root element to output --> 
