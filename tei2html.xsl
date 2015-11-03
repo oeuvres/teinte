@@ -1792,7 +1792,7 @@ Tables
         </xsl:call-template>
       </xsl:variable>
       <xsl:if test="$message != ''">
-        <xsl:value-of select="translate(substring($message, 1, 1), $mins, $caps)"/>
+        <xsl:value-of select="translate(substring($message, 1, 1), $abc, $ABC)"/>
         <xsl:value-of select="substring($message, 2)"/>
         <xsl:text> : </xsl:text>
       </xsl:if>

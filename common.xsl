@@ -291,12 +291,17 @@ TOTEST
   <!-- Une barre d'espaces insécables, utilisable pour de l'indentation automatique -->
   <xsl:variable name="nbsp">                                                                                         </xsl:variable>
 
-  <!-- pour conversion -->
-  <xsl:variable name="lf">&#10;</xsl:variable>
+  <xsl:variable name="lf">
+    <xsl:text>&#10;</xsl:text>
+  </xsl:variable>
+  <xsl:variable name="tab">
+    <xsl:text>&#9;</xsl:text>
+  </xsl:variable>
+
   <!-- Majuscules, pour conversions. -->
-  <xsl:variable name="caps">ABCDEFGHIJKLMNOPQRSTUVWXYZÆŒÇÀÁÂÃÄÅÈÉÊËÌÍÎÏÒÓÔÕÖÙÚÛÜÝ</xsl:variable>
+  <xsl:variable name="ABC">ABCDEFGHIJKLMNOPQRSTUVWXYZÆŒÇÀÁÂÃÄÅÈÉÊËÌÍÎÏÒÓÔÕÖÙÚÛÜÝ</xsl:variable>
   <!-- Minuscules, pour conversions -->
-  <xsl:variable name="mins">abcdefghijklmnopqrstuvwxyzæœçàáâãäåèéêëìíîïòóôõöùúûüý</xsl:variable>
+  <xsl:variable name="abc">abcdefghijklmnopqrstuvwxyzæœçàáâãäåèéêëìíîïòóôõöùúûüý</xsl:variable>
   <!-- Pour normaliser des clés. -->
   <xsl:variable name="iso">ABCDEFGHIJKLMNOPQRSTUVWXYZÀÂÄÉÈÊÏÎÔÖÛÜÇàâäéèêëïîöôüû ,.</xsl:variable>
   <xsl:variable name="min">abcdefghijklmnopqrstuvwxyzaaaeeeiioouucaaaeeeeiioouu-</xsl:variable>
