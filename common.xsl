@@ -282,11 +282,10 @@ Different templates shared among the callers
   <xsl:param name="http">http://</xsl:param>
   <xsl:param name="theme">
     <xsl:choose>
-      <xsl:when test="true()"><xsl:value-of select="$http"/>oeuvres.github.io/jysuis/</xsl:when>
       <xsl:when test="$xslbase != ''">
         <xsl:value-of select="$xslbase"/>
       </xsl:when>
-      <xsl:otherwise>http://svn.code.sf.net/p/obvil/code/dynhum/</xsl:otherwise>
+      <xsl:otherwise><xsl:value-of select="$http"/>oeuvres.github.io/Transtei/</xsl:otherwise>
     </xsl:choose>
   </xsl:param>
    <!-- A separate page for footnotes ? -->
