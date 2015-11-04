@@ -9,11 +9,11 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
 © 2013 Frederic.Glorieux@fictif.org et LABEX OBVIL
 
 
-Différentes fonctions XSLT utiles
-Noter l'usage d'un fichier d'intitulés (<a href="./tei.rdfs">tei.rdfs</a>).
-
-TOTEST
-* mode title, bien placé ?
+Different templates shared among the callers
+ * metadata
+ * internal identifiers (<template name="href">)
+ * cross linkink in same file (<template name="id">)
+ * mode for links
 
 -->
 <xsl:transform
@@ -30,9 +30,21 @@ TOTEST
   xmlns:date="http://exslt.org/dates-and-times"
   extension-element-prefixes="exslt saxon date"
 >
+  <!-- Name of this xsl  -->
+  <xsl:variable name="this">tei2html.xsl</xsl:variable> 
+  <!-- Some constants -->
+  <xsl:variable name="epub2">epub2</xsl:variable>
+  <xsl:variable name="epub3">epub3</xsl:variable>
+  <xsl:variable name="html5">html5</xsl:variable>
+  <xsl:variable name="html">html</xsl:variable>
+  <xsl:variable name="article">article</xsl:variable>
+  <!-- Allow to change the extension of generated links -->
+  <xsl:param name="_html">.html</xsl:param>
   <!-- base href for generated links -->
   <xsl:param name="base"/>
-  <!-- Fichier de messages pour étiquettes générées. -->
+  <!-- A mode set by the caller, for example to drive between monopage or multipage site -->
+  <xsl:param name="mode"/>
+  <!-- File for generated messages -->
   <xsl:param name="messages">tei.rdfs</xsl:param>
   <!--  charger le fichier de messages, document('') permet de résoudre les chemin relativement à ce fichier  -->
   <xsl:variable name="rdf:Property" select="document($messages, document(''))/*/rdf:Property"/>
@@ -267,24 +279,20 @@ TOTEST
   </xsl:param>
   <!-- epub, cover image, sent by caller -->
   <xsl:param name="cover" />
+  <xsl:param name="http">http://</xsl:param>
   <xsl:param name="theme">
     <xsl:choose>
+      <xsl:when test="true()"><xsl:value-of select="$http"/>oeuvres.github.io/jysuis/</xsl:when>
       <xsl:when test="$xslbase != ''">
         <xsl:value-of select="$xslbase"/>
       </xsl:when>
       <xsl:otherwise>http://svn.code.sf.net/p/obvil/code/dynhum/</xsl:otherwise>
     </xsl:choose>
   </xsl:param>
-  <!-- Allow to change the extension of generated links -->
-  <xsl:param name="_html">.html</xsl:param>
    <!-- A separate page for footnotes ? -->
   <xsl:param name="fnpage"/>
   <!-- A dest folder for graphics -->
   <xsl:param name="images"/>
-  <!-- Reserved constant (for test with $format) -->
-  <xsl:variable name="epub2">epub2</xsl:variable>
-  <xsl:variable name="epub3">epub3</xsl:variable>
-  <xsl:variable name="html5">html5</xsl:variable>
   <!-- key to know which element to split -->
   <!-- Éléments uniques dans un fichier, identifiés par leur nom, liste séparée d'espaces. -->
   <xsl:variable name="els-unique"> editorialDecl licence projectDesc revisionDesc samplingDecl sourceDesc TEI teiHeader </xsl:variable>
@@ -307,7 +315,6 @@ TOTEST
   <xsl:variable name="min">abcdefghijklmnopqrstuvwxyzaaaeeeiioouucaaaeeeeiioouu-</xsl:variable>
   <xsl:variable name="apos">'</xsl:variable>
   <xsl:variable name="quote">"</xsl:variable>
-  <xsl:variable name="this">teipot.xsl</xsl:variable>
   <!-- a key for identified elements -->
   <xsl:key name="id" match="*" use="@xml:id"/>
   <!-- A key to count elements by name -->
@@ -1056,17 +1063,24 @@ résoudre les césures, ou les alternatives éditoriales.
     <xsl:apply-templates select="." mode="title"/>
   </xsl:template>
   <!-- 
-    <h3>Rewrite links</h3>
+    Centralisation of internal links rewriting, to call when current() node is the target.
+    This template will choose if link should stay an anchor or will be rewritten according to the split
+    policy.
   -->
   <xsl:template name="href">
     <xsl:param name="base" select="$base"/>
+    <xsl:param name="class"/>
     <!-- possible override id -->
     <xsl:param name="id">
       <xsl:call-template name="id"/>
     </xsl:param>
-    <xsl:param name="class"/>
     <xsl:choose>
-      <!-- for one file html, just anchors -->
+      <!-- When there is a mode and it is not site, let anchors -->
+      <xsl:when test="$mode != '' and  $mode != 'site'">
+        <xsl:text>#</xsl:text>
+        <xsl:value-of select="$id"/>
+      </xsl:when>
+      <!-- When transform is called from monopage  -->
       <xsl:when test="$this = 'tei2html.xsl'">
         <xsl:text>#</xsl:text>
         <xsl:value-of select="$id"/>

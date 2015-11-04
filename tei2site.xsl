@@ -7,7 +7,7 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
 © 2013 Frederic.Glorieux@fictif.org et LABEX OBVIL
 
 
-Appliqué à un fichier TEI, produit un site multi-page navigable
+Split a single TEI book in a multi-pages site
 
 -->
 <xsl:transform version="1.1"
@@ -17,6 +17,8 @@ Appliqué à un fichier TEI, produit un site multi-page navigable
   exclude-result-prefixes="tei"
 >
   <xsl:import href="tei2html.xsl"/>
+  <!-- Name of this xsl  -->
+  <xsl:variable name="this">tei2site.xsl</xsl:variable>
   <xsl:output indent="yes" encoding="UTF-8" method="xml" />
   <xsl:key name="split" match="
 tei:*[self::tei:div or self::tei:div1 or self::tei:div2][normalize-space(.) != ''][@type][
@@ -29,12 +31,8 @@ tei:*[self::tei:div or self::tei:div1 or self::tei:div2][normalize-space(.) != '
 ] 
 | tei:group/tei:text 
 | tei:TEI/tei:text/tei:*/tei:*[self::tei:div or self::tei:div1 or self::tei:group][normalize-space(.) != '']" use="generate-id(.)"/>
-  <xsl:variable name="html">html</xsl:variable>
-  <xsl:variable name="article">article</xsl:variable>
   <!-- Kind of root element to output --> 
-  <xsl:param name="root">
-    <xsl:value-of select="$html"/>
-  </xsl:param>
+  <xsl:param name="root" select="$html"/>
   <!-- Folder where to project generated html pages -->
   <xsl:param name="destdir">
     <xsl:choose>
@@ -45,15 +43,16 @@ tei:*[self::tei:div or self::tei:div1 or self::tei:div2][normalize-space(.) != '
       <xsl:otherwise>html/</xsl:otherwise>
     </xsl:choose>
   </xsl:param>
-  <!-- Folder where to find styling resources -->
-  <xsl:param name="theme">http://svn.code.sf.net/p/obvil/code/dynhum/</xsl:param>
   <!-- Maybe used for instrospection -->
-  <xsl:param name="this">tei2site.xsl</xsl:param>
-
-
+  <xsl:template match="/*">
+    <xsl:apply-templates select="." mode="site"/>
+  </xsl:template>
+  <xsl:template match="/*">
+    <xsl:apply-templates select="." mode="site"/>
+  </xsl:template>
 
   <!-- Racine -->
-  <xsl:template match="/">
+  <xsl:template match="/*" mode="site">
     <tei2site>
       <!-- Generate a global navigation -->
       <xsl:call-template name="document">
