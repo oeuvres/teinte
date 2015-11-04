@@ -72,6 +72,7 @@ TODO: listes, tables, liens
   <xsl:template match="tei:sp" mode="iramuteq">
     <!-- iramuteq title -->
     <xsl:value-of select="$lf"/>
+    <xsl:value-of select="$lf"/>
     <xsl:text>-*who_</xsl:text>
     <xsl:variable name="who">
       <xsl:choose>
@@ -92,7 +93,6 @@ TODO: listes, tables, liens
             <xsl:value-of select="$role/@civil"/>
           </xsl:if>
           -->
-    <xsl:value-of select="$lf"/>
     <xsl:apply-templates select="*" mode="iramuteq"/>
   </xsl:template>
   <xsl:template match="tei:speaker" mode="iramuteq"/>
@@ -294,7 +294,7 @@ TODO: listes, tables, liens
       </xsl:choose>
     </xsl:for-each>
   </xsl:template>
-  <xsl:template match="tei:div[@type='letter']/tei:head" mode="iramuteq"/>
+  <xsl:template match="*[@type='letter' or @type='act' or @type='scene']/tei:head" mode="iramuteq"/>
   <xsl:template match="tei:head" mode="iramuteq">
     <xsl:variable name="level" select="count(ancestor::*[tei:head])"/>
     <xsl:variable name="text">
