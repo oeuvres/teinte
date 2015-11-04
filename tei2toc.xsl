@@ -36,18 +36,11 @@ sont officiellement ditribuées par le consortium TEI, cependant ce développeme
   extension-element-prefixes="exslt"
   >
   <xsl:import href="common.xsl"/>
-  <xsl:output encoding="UTF-8" indent="yes" method="xml" doctype-system=""/>
-  <!-- Nom de l'xslt appelante -->
-  <xsl:variable name="this">tei2html.xsl</xsl:variable>
+  <!-- Name of this xsl  -->
+  <xsl:param name="this">tei2toc.xsl</xsl:param> 
+  <xsl:output encoding="UTF-8" indent="yes" method="xml"/>
   <!-- What kind of root element to output ? html, div, article -->
-  <xsl:param name="root">html</xsl:param>
-  <!-- key for notes by page, keep the tricky @use expression in this order, when there are other parallel pages number -->
-  <xsl:key name="note-pb" match="tei:note" use="generate-id(  preceding::*[self::tei:pb[not(@ed)][@n] ][1] ) "/>
-  <!-- test if there are code examples to js prettyprint -->
-  <xsl:key name="prettify" match="eg:egXML|tei:tag" use="1"/>
-  <!-- Override for multi-file -->
-  <xsl:key name="split" match="/" use="'root'"/>
-  <xsl:key name="l-n" match="tei:l" use="@n"/>
+  <xsl:param name="root" select="$html"/>
   <!-- Racine -->
   <xsl:template match="/*">
     <xsl:choose>

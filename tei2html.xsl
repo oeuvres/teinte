@@ -22,38 +22,36 @@ sont officiellement ditribuées par le consortium TEI, cependant ce développeme
 <xsl:transform version="1.1" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" xmlns:rng="http://relaxng.org/ns/structure/1.0" xmlns:eg="http://www.tei-c.org/ns/Examples" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" exclude-result-prefixes="eg html rng tei epub" xmlns:exslt="http://exslt.org/common" extension-element-prefixes="exslt">
   <xsl:import href="common.xsl"/>
   <xsl:import href="tei2toc.xsl"/>
-  <!-- import after the default catch all match="*", or include  -->
+  <!-- included, so that priorities will not be flatten by import chain (ex: from tei2site.html) -->
   <xsl:include href="teiHeader2html.xsl"/>
+  <!-- Name of this xsl, change link resolution  -->
+  <xsl:variable name="this">tei2html.xsl</xsl:variable>
   <!--
 La méthode de sortie est xml, pour faire du html5.
 L'utilisation des attributs 
 est contraignante, difficile à surcharger par les transformations qui veulent une
 absence de déclaration de DTD.
 -->
-  <xsl:output encoding="UTF-8" indent="yes" method="xml" doctype-system=""/>
-  <!--
-  <xsl:strip-space elements="*"/>
-  -->
+  <xsl:output encoding="UTF-8" indent="yes" method="xml" omit-xml-declaration="yes"/>
   <!-- Output teiHeader ? -->
   <xsl:param name="teiHeader"/>
   <!-- notes d'apparat critique ? -->
   <xsl:param name="app" select="boolean(//tei:app)"/>
-  <!-- Nom de l'xslt appelante -->
-  <xsl:variable name="this">tei2html.xsl</xsl:variable>
   <!-- What kind of root element to output ? html, div, article -->
-  <xsl:param name="root">html</xsl:param>
+  <xsl:param name="root" select="$html"/>
+  <xsl:key name="split" match="/" use="'root'"/>
   <!-- key for notes by page, keep the tricky @use expression in this order, when there are other parallel pages number -->
   <xsl:key name="note-pb" match="tei:note" use="generate-id(  preceding::*[self::tei:pb[not(@ed)][@n] ][1] ) "/>
   <!-- test if there are code examples to js prettyprint -->
   <xsl:key name="prettify" match="eg:egXML|tei:tag" use="1"/>
-  <!-- Override for multi-file -->
-  <xsl:key name="split" match="/" use="'root'"/>
-  <xsl:key name="l-n" match="tei:l" use="@n"/>
   <!-- Racine -->
   <xsl:template match="/*">
+    <xsl:apply-templates select="." mode="html"/>
+  </xsl:template>
+  <xsl:template match="/*" mode="html">
     <xsl:choose>
       <!-- Just a div element -->
-      <xsl:when test="$root='article'">
+      <xsl:when test="$root= $article">
         <article>
           <xsl:call-template name="att-lang"/>
           <xsl:apply-templates/>
@@ -70,8 +68,8 @@ absence de déclaration de DTD.
             <!-- à travailler
             <xsl:apply-templates select="/*/tei:teiHeader/tei:encodingDesc/tei:tagsDecl"/>
             -->
-            <link rel="stylesheet" type="text/css" href="{$theme}html.css"/>
-            <script type="text/javascript" src="{$theme}Tree.js">//</script>
+            <link rel="stylesheet" charset="utf-8" type="text/css" href="{$theme}html.css"/>
+            <script type="text/javascript" charset="utf-8" src="{$theme}Tree.js">//</script>
           </head>
           <body class="{$corpusid}">
             <div id="center">
@@ -1753,7 +1751,7 @@ Tables
     </span>
   </xsl:template>
   <!-- generic div -->
-  <xsl:template match="tei:accMat | tei:additional | tei:additions | tei:addrLine | tei:adminInfo | tei:binding | tei:bindingDesc | tei:closer | tei:condition | tei:equiv | tei:history | tei:licence | tei:listRef | tei:objectDesc | tei:origin | tei:provenance | tei:physDesc | tei:publicationStmt | tei:source | tei:speaker | tei:support | tei:supportDesc | tei:surrogates | tei:biblFull/tei:titleStmt" name="div">
+  <xsl:template match="tei:accMat | tei:additional | tei:additions | tei:addrLine | tei:adminInfo | tei:binding | tei:bindingDesc | tei:closer | tei:condition | tei:equiv | tei:history | tei:licence | tei:listRef | tei:objectDesc | tei:origin | tei:provenance | tei:physDesc | tei:biblFull/tei:publicationStmt | tei:source | tei:speaker | tei:support | tei:supportDesc | tei:surrogates | tei:biblFull/tei:titleStmt" name="div">
     <xsl:param name="el">
       <xsl:choose>
         <xsl:when test="self::tei:speaker">p</xsl:when>
@@ -2010,62 +2008,29 @@ Elements block or inline level
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-  <!-- Par défaut, le contenu de <index> est supposé non-affichable -->
+  <!-- Default, content from <index> is supposed to not be displayed -->
   <xsl:template match="tei:index"/>
   <!-- Termes with possible normal form -->
   <xsl:template match="tei:addName | tei:affiliation | tei:authority | tei:country | tei:foreign | tei:forename | tei:genName | tei:geogFeat | tei:geogName | tei:name | tei:origPlace | tei:orgName | tei:persName | tei:placeName | tei:repository | tei:roleName | tei:rs | tei:settlement | tei:surname">
     <xsl:choose>
-      <!-- Un identifiant, lien vers l'entrée d'index -->
-      <xsl:when test="@ref and substring(@ref,1,1)='#'">
-        <a>
-          
-            <xsl:attribute name="href">
-              <xsl:call-template name="href"/>
-            </xsl:attribute>
-          <xsl:for-each select="key('id', substring(@ref, 2))[1]">
-            <xsl:attribute name="title">
-              <xsl:apply-templates select="." mode="title"/>
-            </xsl:attribute>
-          </xsl:for-each>
-          <xsl:choose>
-            <xsl:when test="self::tei:persName">
-              <xsl:attribute name="property">dbo:person</xsl:attribute>
-            </xsl:when>
-            <xsl:when test="self::tei:placeName">
-              <xsl:attribute name="property">dbo:place</xsl:attribute>
-            </xsl:when>
-          </xsl:choose>
-          <xsl:call-template name="atts"/>
-          <xsl:apply-templates/>
-        </a>
-      </xsl:when>
-      <!-- external URI -->
       <xsl:when test="@ref or @xml:base">
-        <a href="{concat(@xml:base, @ref)}">
+        <a>
+          <!-- linking policy will be resolved from the "linking" template, matched by @ref attribute -->
+          <xsl:call-template name="atts"/>
+          <!-- Make an exception here for @xml:base ? -->
           <xsl:choose>
             <xsl:when test="self::tei:persName">
               <xsl:attribute name="property">dbo:person</xsl:attribute>
-              <xsl:attribute name="target">_blank</xsl:attribute>
             </xsl:when>
             <xsl:when test="self::tei:placeName">
               <xsl:attribute name="property">dbo:place</xsl:attribute>
-              <xsl:attribute name="target">_blank</xsl:attribute>
             </xsl:when>
           </xsl:choose>
-          <xsl:call-template name="atts"/>
           <xsl:apply-templates/>
         </a>
       </xsl:when>
       <xsl:otherwise>
         <span>
-          <xsl:choose>
-            <xsl:when test="self::tei:persName">
-              <xsl:attribute name="property">dbo:person</xsl:attribute>
-            </xsl:when>
-            <xsl:when test="self::tei:placeName or self::tei:geogFeat or self::tei:geogName">
-              <xsl:attribute name="property">dbo:place</xsl:attribute>
-            </xsl:when>
-          </xsl:choose>
           <xsl:call-template name="atts"/>
           <xsl:apply-templates/>
         </span>
@@ -2194,7 +2159,6 @@ Call that in
         </xsl:choose>
       </xsl:variable>
       <xsl:element name="{$el}" namespace="http://www.w3.org/1999/xhtml">
-        <xsl:attribute name="class">footnotes</xsl:attribute>
         <xsl:if test="$format = $epub3">
           <xsl:attribute name="epub:type">footnotes</xsl:attribute>
         </xsl:if>
@@ -2275,6 +2239,9 @@ Call that in
     </xsl:variable>
     <xsl:element name="{$el}" namespace="http://www.w3.org/1999/xhtml">
       <xsl:attribute name="class">footnotes</xsl:attribute>
+      <xsl:attribute name="id">
+        <xsl:call-template name="id"/>
+      </xsl:attribute>
       <xsl:if test="$format = $epub3">
         <xsl:attribute name="epub:type">footnotes</xsl:attribute>
       </xsl:if>
@@ -3082,25 +3049,18 @@ qui énumère des conditions sous forme d'une chaîne d'alternatives (choose/whe
 </p>
   -->
   <!--
-<h3>Atributs</h3>
+Attributes
 
-<p>
-Un traitement centralisé des attributs TEI permet d'assurer la régularité de certains
-attributs HTML, notamment les règles de construction d'identifants, ou de classe CSS.
-</p>
-  -->
-  <!-- @*, template généralement appelé à l'ouverture de tout élément HTML
-permettant de régler différents comportements par défaut.
-PERF
+Centralize some html attribute policy, especially for id, and class
   -->
   <xsl:template name="atts">
-    <!-- permet d'ajouter une classe CSS spécifique à la suite des automatiques -->
+    <!-- Add some html classes to the automatic ones -->
     <xsl:param name="class"/>
-    <!-- comportement par défaut d'attribution d'une classe CSS -->
+    <!-- Ddelegate class attribution to another template -->
     <xsl:call-template name="class">
       <xsl:with-param name="class" select="$class"/>
     </xsl:call-template>
-    <!-- identification obligatoire pour certains éléments -->
+    <!-- Shall we identify element ? -->
     <xsl:choose>
       <xsl:when test="@id">
         <xsl:attribute name="id">
@@ -3123,15 +3083,15 @@ PERF
         </xsl:attribute>
       </xsl:when>
     </xsl:choose>
-    <!-- Procéder les autres attributs -->
+    <!-- Process other know attributes -->
     <xsl:apply-templates select="@*"/>
   </xsl:template>
-  <!-- Attribut class interprété de différents attributs TEI -->
+  <!-- Provide automatic classes from TEI names -->
   <xsl:template name="class">
     <xsl:param name="class"/>
-    <!-- si @rend est utilisé comme forme régulière, ne pas l'utiliser comme nom de classe -->
+    <!-- @rend may be used as a free text attribute, be careful -->
     <xsl:variable name="value">
-      <!-- nom de l'élément lorsqu'il n'a pas d'équivalent direct en HTML -->
+      <!-- Name of the element (except from a list where TEI info will be redundant with HTML name) -->
       <xsl:if test="not(contains( ' abbr add cell code del eg emph hi item list q ref row seg table ' , concat(' ', local-name(), ' ')))">
         <xsl:value-of select="local-name()"/>
       </xsl:if>
@@ -3145,11 +3105,11 @@ PERF
       <xsl:value-of select="@evidence"/>
       <xsl:text> </xsl:text>
       <xsl:value-of select="@place"/>
-      <!-- la langue comme classe -->
       <xsl:text> </xsl:text>
+      <!-- lang is a useful class for some rendering (ex: greek fonts) -->
       <xsl:value-of select="@xml:lang"/>
-      <!-- valeur passée en paramètre -->
       <xsl:text> </xsl:text>
+      <!-- parameter value -->
       <xsl:value-of select="$class"/>
       <xsl:text> </xsl:text>
       <xsl:value-of select="@rend"/>
@@ -3163,17 +3123,17 @@ PERF
       </xsl:attribute>
     </xsl:if>
   </xsl:template>
-  <!-- @tei:*, par défaut, intercepter les attributs -->
+  <!-- by default, do nothing on attribute -->
   <xsl:template match="tei:*/@*" priority="-2"/>
-  <!-- Attribut de liage  -->
-  <xsl:template match="@ref | @target | @lemmaRef" name="ref">
+  <!-- Genererate html attributes from  à target attribute -->
+  <xsl:template match="@ref | @target | @lemmaRef" name="linking">
     <xsl:param name="path" select="."/>
     <xsl:choose>
       <!-- Que faire avec witDetail/@target ? -->
       <xsl:when test="../@wit"/>
-      <!-- cache mail -->
+      <!-- Hide mail adress -->
       <xsl:when test="contains($path, '@')">
-        <xsl:attribute name="href"> </xsl:attribute>
+        <xsl:attribute name="href">#</xsl:attribute>
         <xsl:attribute name="onmouseover">
           <xsl:text>this.href='mailto:</xsl:text>
           <xsl:value-of select="substring-before($path, '@')"/>
@@ -3182,15 +3142,17 @@ PERF
           <xsl:text>'</xsl:text>
         </xsl:attribute>
       </xsl:when>
-      <!-- lien interne à une ancre du fichier XML, déléguer au split -->
-      <xsl:when test="starts-with($path, '#')">
-        <xsl:variable name="target" select="key('id', substring($path, 2))"/>
-        <!-- perf mode href ? -->
-        <xsl:for-each select="$target[1]">
+      <!-- internal link, should point an existing element (maybe not) -->
+      <xsl:when test="starts-with($path, '#') and key('id', substring($path, 2))">
+        <xsl:for-each select="key('id', substring($path, 2))[1]">
           <xsl:attribute name="href">
             <xsl:call-template name="href"/>
           </xsl:attribute>
+          <xsl:attribute name="title">
+            <xsl:call-template name="href"/>
+          </xsl:attribute>
         </xsl:for-each>
+        <!-- perf mode href ? -->
       </xsl:when>
       <!-- internal link with no # -->
       <xsl:when test="key('id', $path)">

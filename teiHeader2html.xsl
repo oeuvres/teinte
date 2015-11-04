@@ -8,6 +8,7 @@
 Cette transformation XSLT 1.0 (compatible navigateurs, PHP, Python, Java…) 
 transforme du TEI en HTML5.
 
+
 Alternative : les transformations de Sebastian Rahtz <a href="http://www.tei-c.org/Tools/Stylesheets/">tei-c.org/Tools/Stylesheets/</a>
 sont officiellement ditribuées par le consortium TEI, cependant ce développement est en XSLT 2.0 (java requis).
 -->
@@ -118,8 +119,19 @@ sont officiellement ditribuées par le consortium TEI, cependant ce développeme
     </xsl:choose>
   </xsl:template>
   <!-- Bloc de publication, réordonné -->
-  <xsl:template match="tei:fileDesc / tei:publicationStmt">
+  <xsl:template match="tei:fileDesc/tei:publicationStmt">
     <xsl:choose>
+      <xsl:when test="tei:distributor">
+        <div>
+          <xsl:call-template name="headatts"/>
+          <xsl:for-each select="*">
+            <div>
+              <xsl:call-template name="headatts"/>
+              <xsl:apply-templates/>
+            </div>
+          </xsl:for-each>
+        </div>
+      </xsl:when>
       <xsl:when test="normalize-space(tei:publisher) =''"/>
       <xsl:otherwise>
         <xsl:element name="div" namespace="http://www.w3.org/1999/xhtml">
@@ -274,7 +286,7 @@ sont officiellement ditribuées par le consortium TEI, cependant ce développeme
     </a>
   </xsl:template>
   <!-- Éléments avec intitulé -->
-  <xsl:template match="tei:fileDesc/tei:titleStmt/tei:funder | tei:fileDesc/tei:titleStmt/tei:edition | tei:fileDesc/tei:titleStmt/tei:extent">
+  <xsl:template match="tei:fileDesc/tei:titleStmt/tei:funder | tei:fileDesc/tei:titleStmt/tei:edition | tei:fileDesc/tei:titleStmt/tei:editor | tei:fileDesc/tei:titleStmt/tei:extent">
     <div>
       <xsl:call-template name="headatts"/>
       <xsl:variable name="message">

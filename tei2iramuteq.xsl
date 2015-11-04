@@ -20,6 +20,8 @@ TODO: listes, tables, liens
 <xsl:transform version="1.1" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.tei-c.org/ns/1.0" xmlns:tei="http://www.tei-c.org/ns/1.0" exclude-result-prefixes="tei">
   <!-- Importer des dates -->
   <xsl:import href="common.xsl"/>
+  <!-- Name of this xsl  -->
+  <xsl:variable name="this">tei2iramuteq.xsl</xsl:variable>
   <xsl:key name="split" match="/" use="'root'"/>
   <!-- Key on structural items, do not use the keyword "split", or it will override the split key for 2site  -->
   <xsl:key name="div" match="*[descendant-or-self::*[starts-with(local-name(), 'div')][@type][contains(@type, 'article') or contains(@type, 'letter') or contains(@type, 'scene') or contains(@type, 'act') or contains(@type, 'chapter') or contains(@type, 'poem') or contains(@subtype, 'split')]] | tei:group/tei:text | tei:TEI/tei:text/tei:front/* | tei:TEI/tei:text/tei:back/* | tei:TEI/tei:text/tei:body/* " use="generate-id(.)"/>
@@ -72,6 +74,7 @@ TODO: listes, tables, liens
   <xsl:template match="tei:sp" mode="iramuteq">
     <!-- iramuteq title -->
     <xsl:value-of select="$lf"/>
+    <xsl:value-of select="$lf"/>
     <xsl:text>-*who_</xsl:text>
     <xsl:variable name="who">
       <xsl:choose>
@@ -92,7 +95,6 @@ TODO: listes, tables, liens
             <xsl:value-of select="$role/@civil"/>
           </xsl:if>
           -->
-    <xsl:value-of select="$lf"/>
     <xsl:apply-templates select="*" mode="iramuteq"/>
   </xsl:template>
   <xsl:template match="tei:speaker" mode="iramuteq"/>
@@ -294,7 +296,7 @@ TODO: listes, tables, liens
       </xsl:choose>
     </xsl:for-each>
   </xsl:template>
-  <xsl:template match="tei:div[@type='letter']/tei:head" mode="iramuteq"/>
+  <xsl:template match="*[@type='letter' or @type='act' or @type='scene']/tei:head" mode="iramuteq"/>
   <xsl:template match="tei:head" mode="iramuteq">
     <xsl:variable name="level" select="count(ancestor::*[tei:head])"/>
     <xsl:variable name="text">

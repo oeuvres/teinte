@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-© 2013, 2014, 2015 Frédéric Glorieux, licence  <a href="http://www.cecill.info/licences/Licence_CeCILL-C_V1-fr.html">CeCILL-C</a>/<a href="http://www.gnu.org/licenses/lgpl.html">LGPL</a>
+© 2013, 2014, 2015 Frédéric Glorieux, licence  <a href="http://www.gnu.org/licenses/lgpl.html">LGPL</a>
+
+Extract Dublin Core properties from a TEI header with a catch logic
+to control order and redundancy of a record.
+
+
 -->
 <xsl:transform version="1.1"
   xmlns="http://www.w3.org/1999/xhtml"
@@ -14,7 +19,8 @@
   exclude-result-prefixes="tei date">
   <xsl:output encoding="UTF-8" indent="yes" method="xml"/>
   <xsl:param name="filename"/>
-  <xsl:param name="html" select="true()"/>
+  <!-- Format dc-value, by default, text, could be html -->
+  <xsl:param name="dc-value"/>
   <!-- not used for metadata but for possible generated labels -->
   <xsl:variable name="lang">
     <xsl:choose>
@@ -29,25 +35,30 @@
   <xsl:variable name="ABC">ABCDEFGHIJKLMNOPQRSTUVWXYZÀÂÄÉÈÊÏÎÔÖÛÜÇàâäéèêëïîöôüû</xsl:variable>
   <xsl:variable name="abc">abcdefghijklmnopqrstuvwxyzaaaeeeiioouucaaaeeeeiioouu</xsl:variable>
   <xsl:variable name="lf" select="'&#10;'"/>
-  
+  <xsl:template name="mydc">
+    <!-- Could be overrided by import transformation -->
+  </xsl:template>
    <!-- A mode to get the values for fields, html or text plain -->
-  <xsl:template name="value">
+  <xsl:template name="dc-value">
     <xsl:choose>
-      <xsl:when test="$html != ''">
-        <xsl:apply-templates mode="html"/>
+      <xsl:when test="$dc-value = 'html'">
+        <xsl:apply-templates mode="dc-html"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:apply-templates mode="text"/>
+        <xsl:apply-templates mode="dc-text"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
 
-  
-  <xsl:template match="tei:TEI|tei:TEI.2">
-    <xsl:apply-templates select="tei:teiHeader"/>
+  <xsl:template match="/*">
+    <xsl:apply-templates select="." mode="dc"/>
+  </xsl:template>
+
+  <xsl:template match="tei:TEI|tei:TEI.2" mode="dc">
+    <xsl:apply-templates select="tei:teiHeader" mode="dc"/>
   </xsl:template>
     
-  <xsl:template match="tei:teiHeader">
+  <xsl:template match="tei:teiHeader" mode="dc">
     <!-- It is not the right context to handle that, too much infos are server dependant, and not source dependant -->
     <!--
     <header>
@@ -69,18 +80,18 @@
       </xsl:choose>
       <!-- 1! title -->
       <!-- TODO: Aggregate subtitles ? translated titles ? -->
-      <xsl:apply-templates select="tei:fileDesc/tei:titleStmt/tei:title[1]"/>
+      <xsl:apply-templates select="tei:fileDesc/tei:titleStmt/tei:title[1]" mode="dc"/>
       <!-- n? creator -->
       <xsl:choose>
         <xsl:when test="tei:fileDesc/tei:titleStmt/tei:author">
-          <xsl:apply-templates select="tei:fileDesc/tei:titleStmt/tei:author"/>
+          <xsl:apply-templates select="tei:fileDesc/tei:titleStmt/tei:author" mode="dc"/>
         </xsl:when>
         <!-- specific BVH, msDesc before a <bibl> ? -->
         <xsl:when test="tei:fileDesc/tei:sourceDesc/tei:msDesc[1]//tei:biblStruct">
-          <xsl:apply-templates select="tei:fileDesc/tei:sourceDesc/tei:msDesc[1]//tei:biblStruct/*/tei:author"/>
+          <xsl:apply-templates select="tei:fileDesc/tei:sourceDesc/tei:msDesc[1]//tei:biblStruct/*/tei:author" mode="dc"/>
         </xsl:when>
         <xsl:when test="tei:fileDesc/tei:sourceDesc/tei:bibl[1][tei:author]">
-          <xsl:apply-templates select="tei:fileDesc/tei:sourceDesc/tei:bibl[1][tei:author]/tei:author"/>
+          <xsl:apply-templates select="tei:fileDesc/tei:sourceDesc/tei:bibl[1][tei:author]/tei:author" mode="dc"/>
         </xsl:when>
       </xsl:choose>
       <!-- 1? significant date -->
@@ -121,44 +132,46 @@
         </dcterms:issued>
       </xsl:if>
       <!-- n? contributor -->
-      <xsl:apply-templates select="tei:fileDesc/tei:titleStmt/tei:editor"/>
-      <xsl:apply-templates select="tei:fileDesc/tei:titleStmt/tei:principal"/>
+      <xsl:apply-templates select="tei:fileDesc/tei:titleStmt/tei:editor" mode="dc"/>
+      <xsl:apply-templates select="tei:fileDesc/tei:titleStmt/tei:principal" mode="dc"/>
       <!-- n? publisher -->
-      <xsl:apply-templates select="tei:fileDesc/tei:publicationStmt/tei:publisher"/>
-      <xsl:apply-templates select="tei:fileDesc/tei:publicationStmt/tei:authority"/>
+      <xsl:apply-templates select="tei:fileDesc/tei:publicationStmt/tei:publisher" mode="dc"/>
+      <xsl:apply-templates select="tei:fileDesc/tei:publicationStmt/tei:authority" mode="dc"/>
       <!-- 1! identifier -->
       <xsl:choose>
         <xsl:when test="tei:fileDesc/tei:publicationStmt/tei:idno">
-            <xsl:apply-templates select="tei:fileDesc/tei:publicationStmt/tei:idno"/>
+            <xsl:apply-templates select="tei:fileDesc/tei:publicationStmt/tei:idno" mode="dc"/>
         </xsl:when>
         <!-- specific  -->
         <xsl:when test="tei:fileDesc/tei:editionStmt/tei:edition/@xml:base">
           <dc:identifier>
-            <xsl:apply-templates select="tei:fileDesc/tei:editionStmt/tei:edition/@xml:base"/>
+            <xsl:value-of select="tei:fileDesc/tei:editionStmt/tei:edition/@xml:base"/>
           </dc:identifier>
         </xsl:when>
       </xsl:choose>
       <!-- n? language -->
       <xsl:choose>
         <xsl:when test="tei:profileDesc/tei:langUsage/tei:language">
-          <xsl:apply-templates select="tei:profileDesc/tei:langUsage/tei:language"/>
+          <xsl:apply-templates select="tei:profileDesc/tei:langUsage/tei:language" mode="dc"/>
         </xsl:when>
         <xsl:when test="/*/@xml:lang">
-          <xsl:apply-templates select="/*/@xml:lang"/>
+          <dc:language>
+            <xsl:value-of select="/*/@xml:lang"/>
+          </dc:language>
         </xsl:when>
       </xsl:choose>
       <!-- 1! rights -->
-      <xsl:apply-templates select="tei:fileDesc/tei:publicationStmt/tei:availability"/>
+      <xsl:apply-templates select="tei:fileDesc/tei:publicationStmt/tei:availability" mode="dc"/>
       <!-- n? description -->
       <xsl:choose>
         <xsl:when test="tei:fileDesc/tei:notesStmt/tei:note[@type='abstract']">
-          <xsl:apply-templates select="tei:fileDesc/tei:notesStmt/tei:note[@type='abstract']"/>
+          <xsl:apply-templates select="tei:fileDesc/tei:notesStmt/tei:note[@type='abstract']" mode="dc"/>
         </xsl:when>
         <xsl:when test="/*/tei:text/tei:front/tei:argument">
-          <xsl:apply-templates select="/*/tei:text/tei:front/tei:argument"/>
+          <xsl:apply-templates select="/*/tei:text/tei:front/tei:argument" mode="dc"/>
         </xsl:when>
         <xsl:when test="/*/tei:text/tei:body/tei:argument">
-          <xsl:apply-templates select="/*/tei:text/tei:body/tei:argument"/>
+          <xsl:apply-templates select="/*/tei:text/tei:body/tei:argument" mode="dc"/>
         </xsl:when>
         <!-- pas Acte I, Acte II… -->
         <xsl:when test="/*/tei:text/tei:body/*[@type='act' or @type='acte']"/>
@@ -171,7 +184,7 @@
               <xsl:variable name="chapter">
                 <xsl:for-each select="tei:head">
                   <xsl:variable name="headraw">
-                    <xsl:call-template name="value"/>
+                    <xsl:call-template name="dc-value"/>
                   </xsl:variable>
                   <xsl:variable name="head" select="normalize-space($headraw)"/>
                   <xsl:value-of select="$head"/>
@@ -185,7 +198,7 @@
                   <xsl:when test="tei:argument and count(tei:head) = 1 and string-length(tei:head) &lt; 10">
                     <xsl:text> </xsl:text>
                     <xsl:for-each select="tei:argument[1]">
-                      <xsl:call-template name="value"/>
+                      <xsl:call-template name="dc-value"/>
                     </xsl:for-each>
                   </xsl:when>
                 </xsl:choose>
@@ -198,10 +211,10 @@
         </xsl:when>
       </xsl:choose>
       <!-- 1? source -->
-      <xsl:apply-templates select="tei:fileDesc/tei:sourceDesc/tei:bibl[1]"/>
+      <xsl:apply-templates select="tei:fileDesc/tei:sourceDesc/tei:bibl[1]" mode="dc"/>
       <!-- n? subject -->
-      <xsl:apply-templates select="tei:profileDesc/tei:textClass//tei:term"/>
-      <dc:type scheme="dcterms:DCMIType">Text</dc:type>
+      <xsl:apply-templates select="tei:profileDesc/tei:textClass//tei:term" mode="dc"/>
+      <xsl:call-template name="mydc"/>
     </oai_dc:dc>
   </xsl:template>
   
@@ -211,11 +224,11 @@
   
   <!-- http://weboai.sourceforge.net/teiHeader.html#el_idno -->
   <!-- obligatoire, unique -->
-  <xsl:template match="tei:publicationStmt/tei:idno">
+  <xsl:template match="tei:publicationStmt/tei:idno" mode="dc">
     <xsl:choose>
       <xsl:when test=". != '' and . != '?'">
         <dc:identifier>
-          <xsl:apply-templates select="@type"/>
+          <xsl:apply-templates select="@type" mode="dc"/>
           <xsl:apply-templates/>
         </dc:identifier>
         <xsl:choose>
@@ -241,7 +254,7 @@
       </xsl:when>
     </xsl:choose>
   </xsl:template>
-  <xsl:template match="tei:idno/@type">
+  <xsl:template match="tei:idno/@type" mode="dc">
     <xsl:attribute name="scheme">
       <xsl:value-of select="translate(., '-', '/')"/>
     </xsl:attribute>
@@ -249,18 +262,18 @@
   
   <!-- http://weboai.sourceforge.net/teiHeader.html#el_title -->
   <!-- obligatoire, unique -->
-  <xsl:template match="tei:titleStmt/tei:title">
+  <xsl:template match="tei:titleStmt/tei:title" mode="dc">
     <dc:title>
       <xsl:copy-of select="@xml:lang"/>
-      <xsl:call-template name="value"/>
+      <xsl:call-template name="dc-value"/>
     </dc:title>
   </xsl:template>
-  <xsl:template match="tei:title/tei:note"/>
+  <xsl:template match="tei:title/tei:note" mode="dc"/>
   <!-- http://weboai.sourceforge.net/teiHeader.html#el_author -->
   <!-- http://weboai.sourceforge.net/teiHeader.html#el_editor -->
   <!-- http://weboai.sourceforge.net/teiHeader.html#el_publisher -->
   <!-- optionnel, répétable -->
-  <xsl:template match="tei:author | tei:principal | tei:titleStmt/tei:editor | tei:publicationStmt/tei:publisher | tei:publicationStmt/tei:authority" name="pers">
+  <xsl:template match="tei:author | tei:principal | tei:titleStmt/tei:editor | tei:publicationStmt/tei:publisher | tei:publicationStmt/tei:authority" name="pers" mode="dc">
     <xsl:variable name="text">
       <xsl:choose>
         <xsl:when test="@key">
@@ -275,15 +288,15 @@
   -->
         <xsl:when test=".//tei:surname">
           <xsl:for-each select=".//tei:surname">
-            <xsl:call-template name="value"/>
+            <xsl:call-template name="dc-value"/>
           </xsl:for-each>
           <xsl:for-each select=".//tei:forename">
             <xsl:text>, </xsl:text>
-            <xsl:call-template name="value"/>
+            <xsl:call-template name="dc-value"/>
           </xsl:for-each>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:call-template name="value"/>
+          <xsl:call-template name="dc-value"/>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
@@ -327,7 +340,7 @@
   </xsl:template>
   <!-- http://weboai.sourceforge.net/teiHeader.html#el_licence -->
   <!-- obligatoire, unique -->
-  <xsl:template match="tei:availability">
+  <xsl:template match="tei:availability" mode="dc">
       <xsl:choose>
         <xsl:when test="tei:licence/@target = '' or tei:licence/@target = '?'"/>
         <xsl:when test="tei:licence/@target">
@@ -338,7 +351,7 @@
         <xsl:when test=". ='' or . ='?'"/>
         <xsl:otherwise>
           <dc:rights>
-            <xsl:call-template name="value"/>
+            <xsl:call-template name="dc-value"/>
           </dc:rights>
         </xsl:otherwise>
       </xsl:choose>
@@ -347,7 +360,7 @@
   <!-- http://weboai.sourceforge.net/teiHeader.html#el_idno_2 -->
   <!-- optionnel, ? -->
   <!-- revoir pertinence en fonction de l’implémentation oai des moissonneurs -->
-  <xsl:template match="tei:seriesStmt/tei:idno">
+  <xsl:template match="tei:seriesStmt/tei:idno" mode="dc">
     <dcterms:isPartOf><xsl:apply-templates/></dcterms:isPartOf>
   </xsl:template>
   
@@ -356,7 +369,7 @@
   <xsl:template match="tei:notesStmt/tei:note[@type='abstract'] | tei:argument">
     <dc:description>
       <xsl:copy-of select="@xml:lang"/>
-      <xsl:call-template name="value"/>
+      <xsl:call-template name="dc-value"/>
     </dc:description>
   </xsl:template>
   
@@ -367,12 +380,12 @@
   
   <!-- http://weboai.sourceforge.net/teiHeader.html#el_bibl -->
   <!-- unique, obligatoire -->
-  <xsl:template match="tei:sourceDesc/tei:bibl">
+  <xsl:template match="tei:sourceDesc/tei:bibl" mode="dc">
     <xsl:choose>
       <xsl:when test=".='' or .='?'"/>
       <xsl:otherwise>
         <dc:source>
-          <xsl:call-template name="value"/>
+          <xsl:call-template name="dc-value"/>
         </dc:source>
       </xsl:otherwise>
     </xsl:choose>
@@ -380,7 +393,7 @@
   
   <!-- http://weboai.sourceforge.net/teiHeader.html#el_creation -->
   <!-- unique, obligatoire -->
-  <xsl:template match="tei:date">
+  <xsl:template match="tei:date" mode="dc">
     <dc:date>
       <xsl:call-template name="year"/>
     </dc:date>
@@ -391,11 +404,7 @@
       <xsl:value-of select="@ident"/>
     </dc:language>
   </xsl:template>
- <xsl:template match="@xml:lang">
-    <dc:language>
-      <xsl:value-of select="."/>
-    </dc:language>
-  </xsl:template>
+
   
   <xsl:template name="lang">
     <xsl:param name="code" select="@xml:lang|@ident"/>
@@ -437,22 +446,22 @@
   
   <!-- http://weboai.sourceforge.net/teiHeader.html#el_term -->
   <!-- optionnel, répétable -->
-  <xsl:template match="tei:textClass//tei:term">
+  <xsl:template match="tei:textClass//tei:term" mode="dc">
     <dc:subject><xsl:apply-templates/></dc:subject>
   </xsl:template>
-  <xsl:template match="*" mode="html">
-    <xsl:apply-templates mode="html"/>
+  <xsl:template match="*" mode="dc-html">
+    <xsl:apply-templates mode="dc-html"/>
   </xsl:template>
-  <xsl:template match="tei:lb" mode="html">
+  <xsl:template match="tei:lb" mode="dc-html">
     <xsl:value-of select="$lf"/>
   </xsl:template>
-  <xsl:template match="tei:note" mode="html"/>
-  <xsl:template match="tei:p" mode="html">
+  <xsl:template match="tei:note" mode="dc-html"/>
+  <xsl:template match="tei:p" mode="dc-html">
     <p>
-      <xsl:apply-templates mode="html"/>
+      <xsl:apply-templates mode="dc-html"/>
     </p>
   </xsl:template>
-  <xsl:template match="tei:hi" mode="html">
+  <xsl:template match="tei:hi" mode="dc-html">
     <xsl:variable name="rend" select="translate(@rend, $ABC, $abc)"/>
     <xsl:choose>
       <xsl:when test=". =''"/>
@@ -464,48 +473,48 @@
               <xsl:value-of select="@type"/>
             </xsl:attribute>
           </xsl:if>
-          <xsl:apply-templates mode="html"/>
+          <xsl:apply-templates mode="dc-html"/>
         </xsl:element>
       </xsl:when>
       <xsl:when test="starts-with($rend, 'it')">
         <i>
-          <xsl:apply-templates mode="html"/>
+          <xsl:apply-templates mode="dc-html"/>
         </i>
       </xsl:when>
       <xsl:when test="starts-with($rend, 'ind')">
         <sub>
-          <xsl:apply-templates mode="html"/>
+          <xsl:apply-templates mode="dc-html"/>
         </sub>
       </xsl:when>
       <xsl:when test="starts-with($rend, 'exp')">
         <sup>
-          <xsl:apply-templates mode="html"/>
+          <xsl:apply-templates mode="dc-html"/>
         </sup>
       </xsl:when>
       <xsl:when test="$rend = ''">
         <em>
-          <xsl:apply-templates mode="html"/>
+          <xsl:apply-templates mode="dc-html"/>
         </em>
       </xsl:when>
       <!-- generic conteneur ? -->
       <xsl:otherwise>
-        <xsl:apply-templates mode="html"/>
+        <xsl:apply-templates mode="dc-html"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-  <xsl:template match="tei:title" mode="html">
+  <xsl:template match="tei:title" mode="dc-html">
     <em class="title">
-      <xsl:apply-templates mode="html"/>
+      <xsl:apply-templates mode="dc-html"/>
     </em>
   </xsl:template>
-  <xsl:template match="tei:ref" mode="html">
+  <xsl:template match="tei:ref" mode="dc-html">
     <a>     
       <xsl:attribute name="href">
         <xsl:value-of select="@target"/>
       </xsl:attribute>
       <xsl:choose>
         <xsl:when test=". != ''">
-          <xsl:apply-templates mode="html"/>
+          <xsl:apply-templates mode="dc-html"/>
         </xsl:when>
         <xsl:otherwise>
           <xsl:value-of select="@target"/>
@@ -513,16 +522,16 @@
       </xsl:choose>
     </a>
   </xsl:template>
-  <xsl:template match="*" mode="text">
-    <xsl:apply-templates mode="text"/>
+  <xsl:template match="*" mode="dc-text">
+    <xsl:apply-templates mode="dc-text"/>
   </xsl:template>
-  <xsl:template match="tei:lb" mode="text">
+  <xsl:template match="tei:lb" mode="dc-text">
     <xsl:value-of select="$lf"/>
   </xsl:template>
-  <xsl:template match="tei:note" mode="text"/>
-  <xsl:template match="tei:p" mode="text">
+  <xsl:template match="tei:note" mode="dc-text"/>
+  <xsl:template match="tei:p" mode="dc-text">
     <xsl:value-of select="$lf"/>
-    <xsl:apply-templates mode="text"/>
+    <xsl:apply-templates mode="dc-text"/>
     <xsl:value-of select="$lf"/>
   </xsl:template>
 </xsl:transform>
