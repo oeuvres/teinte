@@ -282,7 +282,7 @@ Different templates shared among the callers
   <xsl:param name="http">http://</xsl:param>
   <xsl:param name="theme">
     <xsl:choose>
-      <xsl:when test="$xslbase != ''">
+       <xsl:when test="$xslbase != ''">
         <xsl:value-of select="$xslbase"/>
       </xsl:when>
       <xsl:otherwise><xsl:value-of select="$http"/>oeuvres.github.io/Transtei/</xsl:otherwise>

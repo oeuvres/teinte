@@ -1,5 +1,10 @@
+@charset "utf-8";
 /**
- * © 2002, 2015 frederic.glorieux@fictif.org
+ * © 2002, frederic.glorieux@fictif.org et AJLSM
+ * © 2006, frederic.glorieux@fictif.org
+ * © 2007, frederic.glorieux@fictif.org et École nationale des chartes
+ * © 2012, frederic.glorieux@fictif.org
+ * © 2013, frederic.glorieux@fictif.org et LABEX OBVIL
  *
  * This program is a free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License 
@@ -188,9 +193,10 @@ aside .docDate { float: right; }
 .editionStmt {  }
 .entry > * { margin-left: 2em; }
 .entry > .form { margin-left: 0; }
-.fileDesc, .fileDesc p { text-align: center; text-indent: 0; }
+.fileDesc, .fileDesc > p { text-align: center; text-indent: 0; }
 .fileDesc label { font-weight: bold; }
 .fileDesc  > .titleStmt { text-align: center; margin: 0 0 5em 0; }
+.titleStmt > p { text-align: center; }
 .titleStmt h1 { padding-top: 0; padding-bottom: 0; margin-top: 1em; margin-bottom: 1em; }
 .titleStmt div { margin-top: 0.5em; margin-bottom: 0.5em; }
 
@@ -326,8 +332,22 @@ h1.sub { font-size: 100%; padding-top:0; }
 .uc, .uppercase, .maj { text-transform: uppercase; }
 .unselectable { -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
 
-a.prev:before { content: '<' }
-a.next:after { content: '>' }
+nav.prevnext {margin-top: 1ex; margin-bottom: 1ex; }
+table.prevnext { border: 1px solid #EEEEEE; }
+table.prevnext td { border: none;  }
+td a.next, td a.prev { display: table; padding: 0 1px; width: 100%; }
+a.next > span, a.prev > span { display: table-cell; vertical-align: middle; }
+a.prev > span { text-align: left; }
+a.next > span { text-align: right; }
+td a:hover.next, td a:hover.prev { background-color: rgba(230, 230, 230, 0.5); }
+a.prev:before, a.prev:after , a.next:before, a.next:after { font-size: 3em; color: rgba(200, 200, 200, 0.5); padding-right: 0.2ex; padding-left: 0.2ex; }
+a:hover.prev:before, a:hover.prev:after, a:hover.next:before, a:hover.next:after { color: rgba(200, 200, 200, 1); }
+a.prev:before { content: '◀'; display:table-cell; width: 1em; }
+a.next:after { content: '▶'; display:table-cell; width: 1em; }
+nav.breadcrumb { padding: 2px 2px;  }
+.breadcrumb a { padding: 1px 0.5ex; }
+.breadcrumb a:hover { background-color: rgba(230, 230, 230, 0.5); color: #000000; }
+
 mark a.prev, .mark a.prev { background-color: white }
 mark a.next, .mark a.next { background-color: white }
 
@@ -348,7 +368,7 @@ ul.none, ol.none, ul.simple, ol.simple { list-style-type: none; }
 .upper-roman > li { margin-top: 1em; margin-bottom: 1em; }
 
 /* Tables */
-table.data, table.table, table.search, table.sortable { font-family: sans-serif; font-size: 12px; line-height: 105%; border: 1px solid; border-color: #CCCCCC; margin-top: 1em; margin-bottom: 2em; border-collapse: collapse; }
+table.data, table.table, table.search { font-family: sans-serif; font-size: 12px; line-height: 105%; border: 1px solid; border-color: #CCCCCC; margin-top: 1em; margin-bottom: 2em; border-collapse: collapse; }
 caption { font-size: 1.1em; color: #000000; font-weight: bold; text-align: center; padding: 4px 2px 2px 2px; }
 th { padding: 1px 1ex; }
 table.table td, table.data td  { vertical-align: top; border: #CCCCCC 1px solid; padding: 2px 1ex; }
@@ -370,57 +390,11 @@ table.data td a:hover { background-color: #CCCCCC; }
 table.table tr.head td { padding-top: 1ex; border-left: none; border-right: none; font-style: italic; }
 table.table tr.head td.data { font-style: normal; font-weight: bold; }
 thead td, table.data thead td { background-color: #FFFFFF; padding: 5px 1ex; border-bottom: #FFFFFF solid 1px; }
-table.table tr:hover  td, table.table tr:hover  th { background: #FFFFFF; color: black; border-bottom: 1px #000000 solid ; }
+table.table tr:hover  td, table.table tr:hover  th { background: #FFFFFF; color: black; }
+table.table tr:hover  { outline: 1px #FF0000 solid ; }
 table.noborder, table.noborder td, table.noborder td { border:none; }
 
-/* CSS for Javascript Sortable.js */
-table.sortable { font-family: sans-serif; font-size: 12px; line-height: 105%; border: 1px solid; border-color: #CCCCCC; margin-top: 1em; margin-bottom: 2em; border-collapse: collapse; }
-table.sortable td { vertical-align: top; border: #CCCCCC 1px solid; padding: 2px 1ex; }
-table.sortable td.string { text-align: left; }
-table.sortable tr td { border-bottom: none; border-top: none; }
-tr.even { }
-tr.odd { background-color: #F5F3EB; }
-table.sortable th, table.table th, table.data th { vertical-align: middle; text-align: left; padding: 5px 1ex 5px 1ex; background-color: #F5F3EB; border: none;  }
-table.sortable th { text-align: center; }
-tr.even th, tr.odd th { text-align: right; }
-table.sortable tr.mod5 td { border-top: solid 1px #888; }
-table.sortable tr.mod10 td {  }
-table.sortable tr:hover { background: #FFFFEE; color: black; }
-table.sortable tr:hover a { color: black; }
-table.sortable a { text-decoration: none; }
-table.sortable th a { display:block; }
-table.sortable a:hover { background: #FFFFFF; box-shadow: 0px 0px 20px #AAAAAA; }
-table.sortable th a:hover { background-color: #FFFFFF; border: none}
-
-th.num, table.sortable th.num { text-align: right; font-weight: 100; font-size: 85%; padding: 0 1px; }
 table.graph th { font-weight: normal; background-color: #E2DED0; }
-
-
-/* CSS for Javascript Tree.js */
-ol.tree, ul.tree, menu.tree { padding: 0; margin: 1em 0 1em 0; list-style: none; line-height: 105%; }
-.tree a { color: black; text-decoration: none; border-bottom: none; padding: 0 1ex 0 0; }
-.tree a:hover { color: gray; }
-.tree ol, .tree ul, .tree menu { list-style-type: none; padding: 0 0 0 0 ; margin: 2px 0 2px -9px; border-left: dotted 1px transparent; }
-.tree li { margin: 0; background-repeat: no-repeat; background-position: -1px 4px; list-style-image: none; list-style: none; padding: 1px 0 1px 18px ; border: 1px solid transparent; }
-.tree ol:hover, .tree ul:hover { border-left: dotted 1px #333; }
-.tree li.more, .tree li.less { cursor: default }
-.tree li:before { font-family: Arial, "Liberation Sans", "DejaVu Sans", "FreeSans", "Lucida Sans Unicode", sans-serif;  color: #666; margin-left: -2ex; float: left; }
-.tree li.more:before { content: '▶'; } /* ► */
-.tree li.less:before { content: '◿'; } /*  */
-.tree li:before { content: '○'; font-weight: 900; color: #999; } /* '○' */
-/* treejs is a class set by Tree.js to ensure that hidden blocks could be seen with no js, this order is important */
-@media screen {
-  .treejs li.less ol , .treejs li.less ul { display: block; }
-  .treejs li.less > ol, .treejs li.less > ul { border-left: 1px dotted #FFF; }
-  .treejs li.more ol, .treejs li.more ul { display: none; }
-}
-@media print {
-  .tree li { margin-top: none; margin-bottom: none; border: none;}
-}
-.tree mark, .tree .mark, .tree .hi { background: transparent; padding-left: 2px; border-left: 4px #888888 solid; }
-li a.here { font-weight: bold; color: #000; }
-li.here { color: #000; background-color: #FFFFFF; border-top: 1px #E2DED0 solid; border-bottom: 1px #E2DED0 solid; }
-li.here mark { background: inherit; }
 
 section.mark:before, div.mark:before, li.mark:before { content: "☞"; margin-right: 1ex; font-size: 16px; float: left; }
 li.mark, .footnotes div.mark { padding-top: 1em; border: 1px #CCCCCC solid; background-color: #EEEEEE; padding: 1px; }

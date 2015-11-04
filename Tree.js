@@ -1,13 +1,12 @@
 /**
 <h1>Tree, automatic table of contents and other tools for clickable trees</h1>
 
-© 2012, 2015 <a href="http://www.algone.net/">Algone</a>,
-<a href="http://www.cecill.info/licences/Licence_CeCILL-C_V1-fr.html">licence CeCILL-C</a>
-(LGPL compatible droit français)
 
-<ul>
-  <li>2012 [FG] <a onmouseover="this.href='mailto'+'\x3A'+'glorieux'+'\x40'+'algone.net'">Frédéric Glorieux</a></li>
-</ul>
+LGPL http://www.gnu.org/licenses/lgpl.html
+© 2005 Frederic.Glorieux@fictif.org et École nationale des chartes
+© 2012 Frederic.Glorieux@fictif.org 
+© 2013 Frederic.Glorieux@fictif.org et LABEX OBVIL
+
 
 <p>
 Manage show/hide trees. No dependancies to a javascript library.
@@ -46,95 +45,14 @@ to all li.plus and li.minus.
   <!-- all li.plus and li.minus will become clickable -->
   <script src="../teipot/js/Tree.js">//</script>
 </pre>
-Sample CSS to take advantage
-<pre>
-ul.tree {
-  padding:0 0 0 2ex;
-  margin:0;
-  list-style:none;
-  font-size:12px;
-  font-family:Arial, sans-serif;
-  line-height:105%;
-}
-ul.tree ul {
-  list-style-type:none;
-  padding:0 !important;
-  margin:2px 0 2px 0 !important;
-}
-ul.tree li {
-  margin:2px 0 2px 0;
-  background-repeat: no-repeat;
-  background-position:0px 1px;
-  list-style-image:none !important;
-}
-ul.tree li {
-  padding-left: 12px !important;
-}
-ul.tree li.plus {
-  background-image:url('img/plus.png');
-}
-ul.tree li.minus {
-  background-image:url('img/minus.png');
-}
-ul.tree li.minus ul {
-  display:block;
-}
-ul.tree li.plus ul {
-  display:none;
-}
-ul.tree a.here {
-  background-color:#FFFFFF;
-  padding:0 1ex;
-}
-</pre>
+
 
 
  */
 if (!document.createElementNS) document.createElementNS = function(uri, name) {
   return document.createElement(name);
 };
-var Notes = {
-  load: function() {
-    var nl = document.querySelectorAll("a.noteref");
-    for (var i = 0, length = nl.length; i< length; i++) {
-      nl[i].onmouseover = Notes.over;
-      nl[i].onmouseout = Notes.out;
-    }
-    Notes.div = document.createElementNS("http://www.w3.org/1999/xhtml", 'div');
-    Notes.div.id = "noterefover";
-    document.getElementsByTagName("body")[0].appendChild(Notes.div);
-  },
-  over: function() {
-    var id = this.href.substr(this.href.indexOf('#')+1);
-    if (!id) return;
-    var note = document.getElementById(id);
-    if (!note) return;
-    var pos = Notes.pos(this);
-    if (!pos) return;
-    Notes.div.className = note.className;
-    Notes.div.innerHTML = note.innerHTML;
-    Notes.div.style.top = (this.offsetHeight + 10 + pos.top) + 'px';
-    Notes.div.style.left = (pos.left - Notes.div.offsetWidth/2) + "px";
-    Notes.div.style.visibility = 'visible';
-    Notes.div.onmouseout = Notes.out;
-  },
-  pos: function(el) {
-    if (!el.offsetParent) return;
-    var left = 0; 
-    var top = 0;
-    // do not substract the body.scrollTop in Chrome, the last offsetParent
-    while (el.offsetParent) {
-        left += (el.offsetLeft - el.scrollLeft );
-        top += (el.offsetTop - el.scrollTop);
-        el = el.offsetParent;
-    };
-    return { left: left, top: top };
-  },
-  out: function() {
-    Notes.div.style.visibility = 'hidden';
-    Notes.div.innerHTML = '';
-  }
-}
+
  
  
 var Tree = {
@@ -169,13 +87,51 @@ var Tree = {
     Tree.reHereDel=new RegExp(' *'+Tree.HERE+' *', "gi");
   },
   /**
+   * Add basic css, possible to override
+   */
+  css: function() {
+    if (!document) return;
+    var css = document.createElementNS("http://www.w3.org/1999/xhtml", 'style');
+    css.type = "text/css";
+    css.innerHTML = "\
+/* CSS for Javascript Tree.js */\
+ol.tree, ul.tree, menu.tree { padding: 0; margin: 1em 0 1em 0; list-style: none; line-height: 105%; }\
+.tree a { color: black; text-decoration: none; border-bottom: none; padding: 0 1ex 0 0; }\
+.tree a:hover { color: gray; }\
+.tree ol, .tree ul, .tree menu { list-style-type: none; padding: 0 0 0 0 ; margin: 2px 0 2px -9px; border-left: dotted 1px transparent; }\
+.tree li { margin: 0; background-repeat: no-repeat; background-position: -1px 4px; list-style-image: none; list-style: none; padding: 1px 0 1px 18px ; border: 1px solid transparent; }\
+.tree ol:hover, .tree ul:hover { border-left: dotted 1px #333; }\
+.tree li.more, .tree li.less { cursor: default }\
+.tree li:before { font-family: Arial, 'Liberation Sans', 'DejaVu Sans', 'FreeSans', 'Lucida Sans Unicode', sans-serif;  color: #666; margin-left: -2ex; float: left; }\
+.tree li.more:before { content: '▶'; } /* ► */\
+.tree li.less:before { content: '◿'; } /*  */\
+.tree li:before { content: '○'; font-weight: 900; color: #999; } /* '○' */\
+/* treejs is a class set by Tree.js to ensure that hidden blocks could be seen with no js, this order is important */\
+@media screen {\
+  .treejs li.less ol , .treejs li.less ul { display: block; }\
+  .treejs li.less > ol, .treejs li.less > ul { border-left: 1px dotted #FFF; }\
+  .treejs li.more ol, .treejs li.more ul { display: none; }\
+}\
+@media print {\
+  .tree li { margin-top: none; margin-bottom: none; border: none;}\
+}\
+.tree mark, .tree .mark, .tree .hi { background: transparent; padding-left: 2px; border-left: 4px #888888 solid; }\
+li a.here { font-weight: bold; color: #000; }\
+li.here { color: #000; background-color: #FFFFFF; border-top: 1px #E2DED0 solid; border-bottom: 1px #E2DED0 solid; }\
+li.here mark { background: inherit; }\
+";
+    var head = document.getElementsByTagName('head')[0];
+    
+    head.insertBefore(css, head.firstChild);
+  },
+  /**
    * What can be done for document.onload
    */
   loaded:false,
   load: function(id, href) {
-    
-    Tree.isfirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
     if (Tree.loaded) return;
+    Tree.isfirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+    Tree.css(); // add css for Tree
     if (!id || id.stopPropagation) id = Tree.ASIDE; // id maybe an Event
     el = document.getElementById(id);
     if (!el) {
@@ -188,43 +144,7 @@ var Tree = {
       var nl = document.getElementsByTagName('main');
       if (nl.count) Tree.main = nl[0];
     }
-    // links for images
-    if (Tree.aside) {
-      var nl = document.querySelectorAll("a.facs");
-      for (var i=0, length = nl.length; i < length; i++) {
-        if (i+1 < length) nl[i].next = nl[i+1];
-        nl[i].innerHTML = '◄' + nl[i].innerHTML;
-        nl[i].onclick = Tree.facs;
-      }
-      if (nl.length) {
-        Tree.facsdiv = document.createElementNS("http://www.w3.org/1999/xhtml", 'div');
-        Tree.facsimg = document.createElementNS("http://www.w3.org/1999/xhtml", 'img');
-        Tree.facsclose = document.createElementNS("http://www.w3.org/1999/xhtml", 'a');
-        Tree.facsdiv.appendChild(Tree.facsimg);
-        Tree.facsdiv.appendChild(Tree.facsclose);
-        Tree.facsclose.className = 'close';
-        Tree.facsclose.innerHTML = '✖';
-        Tree.facsclose.style.position = 'absolute';
-        Tree.facsclose.style.display = 'none';
-        Tree.facsclose.onclick = function() { this.parentNode.style.visibility = "hidden"; Tree.facsimg.src = ''; };
-        document.getElementsByTagName("body")[0].appendChild(Tree.facsdiv);
-        Tree.facsdiv.id = 'facsdiv';
-        Tree.facsdiv.style.resize = 'both'; 
-        Tree.facsdiv.setAttribute('draggable', 'true');
-        Tree.facsdiv.style.position = 'absolute';
-        Tree.facsdiv.style.visibility = 'hidden';
-        Tree.facsdiv.style.zindex = '10';
-        Tree.facsdiv.style.top = 0 + 'px';
-        Tree.facsdiv.style.width = 300 + 'px';
-        Tree.facsdiv.style.overflow = 'auto'; // Tree.facsclose.style.visibility = "hidden";
-        Tree.facsdiv.closepos = function() {Tree.facsclose.style.top = (this.scrollTop + this.clientHeight - 25 - Tree.facsclose.offsetHeight) + "px"; Tree.facsclose.style.left = (this.scrollLeft + this.clientWidth - 25 - Tree.facsclose.offsetWidth) + "px";}
-        Tree.facsdiv.onscroll = function() { Tree.facsclose.style.display = 'none'; this.closepos(); Tree.facsclose.style.display = 'inline-block';};
-        Tree.facsdiv.onmouseover = function() { this.closepos(); Tree.facsclose.style.display = 'inline-block'; }
-        Tree.facsdiv.onmouseout = function() { Tree.facsclose.style.display = 'none';}
-        // suppress max-width ?
-        // Tree.facsimg.onload = function() {if (this.parentNode.style.width) return; this.parentNode.style.width = this.width + 'px'; this.parentNode.style.height = '100%'; }
-      }
-    }
+    Tree.facsload();
     // we have a scrolling pannel, try to record a scroll state
     if (Tree.aside && sessionStorage) {
       var asidescroll = sessionStorage.getItem("asidescroll");
@@ -245,17 +165,61 @@ var Tree = {
     Tree.scan();
   },
   /**
+   * Create events on image facs
+   */
+  facsload: function() {
+    // links for images
+    if (!Tree.aside) return;
+    var nl = document.querySelectorAll("a.facs");
+    for (var i=0, length = nl.length; i < length; i++) {
+      if (i+1 < length) nl[i].next = nl[i+1];
+      nl[i].innerHTML = '◄' + nl[i].innerHTML;
+      nl[i].onclick = Tree.facs;
+    }
+    if (nl.length) {
+      Tree.facsdiv = document.createElementNS("http://www.w3.org/1999/xhtml", 'div');
+      Tree.facsimg = document.createElementNS("http://www.w3.org/1999/xhtml", 'img');
+      Tree.facsclose = document.createElementNS("http://www.w3.org/1999/xhtml", 'a');
+      Tree.facsdiv.appendChild(Tree.facsimg);
+      Tree.facsdiv.appendChild(Tree.facsclose);
+      Tree.facsclose.className = 'close';
+      Tree.facsclose.innerHTML = '✖';
+      Tree.facsclose.style.position = 'absolute';
+      Tree.facsclose.style.display = 'none';
+      Tree.facsclose.onclick = function() { this.parentNode.style.visibility = "hidden"; Tree.facsimg.src = ''; };
+      document.getElementsByTagName("body")[0].appendChild(Tree.facsdiv);
+      Tree.facsdiv.id = 'facsdiv';
+      Tree.facsdiv.style.resize = 'both'; 
+      Tree.facsdiv.setAttribute('draggable', 'true');
+      Tree.facsdiv.style.position = 'absolute';
+      Tree.facsdiv.style.visibility = 'hidden';
+      Tree.facsdiv.style.zindex = '10';
+      Tree.facsdiv.style.top = 0 + 'px';
+      Tree.facsdiv.style.width = 300 + 'px';
+      Tree.facsdiv.style.overflow = 'auto'; // Tree.facsclose.style.visibility = "hidden";
+      Tree.facsdiv.closepos = function() {Tree.facsclose.style.top = (this.scrollTop + this.clientHeight - 25 - Tree.facsclose.offsetHeight) + "px"; Tree.facsclose.style.left = (this.scrollLeft + this.clientWidth - 25 - Tree.facsclose.offsetWidth) + "px";}
+      Tree.facsdiv.onscroll = function() { Tree.facsclose.style.display = 'none'; this.closepos(); Tree.facsclose.style.display = 'inline-block';};
+      Tree.facsdiv.onmouseover = function() { this.closepos(); Tree.facsclose.style.display = 'inline-block'; }
+      Tree.facsdiv.onmouseout = function() { Tree.facsclose.style.display = 'none';}
+      // suppress max-width ?
+      // Tree.facsimg.onload = function() {if (this.parentNode.style.width) return; this.parentNode.style.width = this.width + 'px'; this.parentNode.style.height = '100%'; }
+    }
+  },
+  /**
    * Scan for lists with a tree class (in all body ) ?
    */
   scan: function(id) {
-    if (!id || id.stopPropagation) el = document.body; // id maybe an Event
+    if (!id || id.stopPropagation) el = document.getElementsByTagName("body")[0]; // id maybe an Event
     else el = document.getElementById(id);
     if (!el) return;
     // take all possible trees, cast nodeset to array, so concat will work
     var nsa = Array.prototype.slice.call(el.getElementsByTagName('ul')).concat(Array.prototype.slice.call(el.getElementsByTagName('menu'))).concat(Array.prototype.slice.call(el.getElementsByTagName('ol')));
+    
     // loop on candidate <ul>
     // go down (increment) or you will have pb with # links
-    for(var i=0; i < nsa.length ; i++) Tree.treeprep(nsa[i]);
+    for(var i=0; i < nsa.length ; i++) {
+      Tree.treeprep(nsa[i]);
+    }
     // TODO 
     var embed = document.getElementsByTagName('figcaption');
     for (var i = 0; i < embed.length; i++) Tree.embedprep(embed.item(i));
@@ -515,21 +479,33 @@ var Tree = {
         a=null;
       }
       if(!a) continue;
+      // now, check if item should be opened
+      
       target=a.getAttribute('href'); // should return unresolved URI like written in source file
-      // wash from query string
-      if(location.pathname != a.pathname) continue;
-      // a link already found, do not hilite the last # for the pathname
-      if (!location.hash && Tree.lastHere) continue;
-      if(a.hash && location.hash && a.hash != location.hash) continue;
-      // open parents
-      Tree.open(li);
+      if(location.pathname != a.pathname) continue; // not same path, go away
+      keep = true; // at least, correct path, but check if hash or query could be better
+      if(Tree.lastHere && a.hash && !location.hash ) continue; // hash requested, no hash in URI, let first item found
+      if(Tree.lastHere && a.hash && a.hash != location.hash ) continue; // hash requested, not good hash in URI, let first item found
+      if (Tree.lastHere && a.search && !location.search) continue; // query param requested, no query parma in URI, let first item found
+      if (a.search && location.search) {
+        search = a.search.replace('?', '&')+'&';
+        lost = location.search.replace('?', '&') + '&';
+        found = lost.indexOf(search);
+        if (Tree.lastHere && found<0) continue; // query param not found, let first item found
+      }
       /*
       // class on li or a ?
       if (a.className.indexOf(Tree.HERE) != -1) a.className=a.className.replace(Tree.reHereDel, '');
       a.className += " "+Tree.HERE;
       */
-      // set it at document level ?
-      if (Tree.lastHere) Tree.lastHere.className=Tree.lastHere.className.replace(Tree.reHereDel, '')
+      // close parents of first found
+      if (Tree.lastHere) {
+        console.log(Tree.lastHere);
+        Tree.lastHere.className=Tree.lastHere.className.replace(Tree.reHereDel, '');
+        Tree.close(Tree.lastHere);
+      }
+      // open parents
+      Tree.open(li);
       li.className=li.className.replace(Tree.reHereDel, '') +" "+Tree.HERE;
       if (li.focus) li.focus();
       Tree.lastHere=li;
@@ -601,7 +577,24 @@ var Tree = {
       while (li && li.tagName.toLowerCase() == 'li') {
         // avoid icon in front of single item
         if (li.className.match(Tree.reLessmore) || li.getElementsByTagName('UL').length > 0)
-          li.className = li.className.replace(Tree.reLessmore, ' ') +" "+Tree.LESS;
+          li.className = (li.className.replace(Tree.reLessmore, ' ') +" "+Tree.LESS).trim();
+        li=li.parentNode.parentNode; // get a possible li ancestor (jump an ul container)
+      }
+    }
+  },
+  /**
+   * Recursively close li ancestors
+   */
+  close: function () {
+    var li; // don't forget or may produce some strange var collapse
+    for (i=arguments.length - 1; i>=0; i--) {
+      li=arguments[i];
+      if (li.className == null) li=document.getElementById(arguments[i]);
+      if (!li) continue;
+      console.log(li);
+      while (li && li.tagName.toLowerCase() == 'li') {
+        if (li.className.match(Tree.reLessmore) || li.getElementsByTagName('UL').length > 0)
+          li.className = (li.className.replace(Tree.reLessmore, ' ') +" "+Tree.MORE).trim();
         li=li.parentNode.parentNode; // get a possible li ancestor (jump an ul container)
       }
     }
@@ -679,11 +672,48 @@ var Tree = {
   scrollY: function() {
     if( window.pageYOffset ) return window.pageYOffset;
     return Math.max(document.documentElement.scrollTop, document.body.scrollTop);
+  }
+}
+var Notes = {
+  load: function() {
+    var nl = document.querySelectorAll("a.noteref");
+    for (var i = 0, length = nl.length; i< length; i++) {
+      nl[i].onmouseover = Notes.over;
+      nl[i].onmouseout = Notes.out;
+    }
+    Notes.div = document.createElementNS("http://www.w3.org/1999/xhtml", 'div');
+    Notes.div.id = "noterefover";
+    document.getElementsByTagName("body")[0].appendChild(Notes.div);
   },
-  props: function(o) {
-    tmp='';
-    for (x in o) tmp += x + "  " ;// ": " + o[x] + "\n";
-    alert (tmp);
+  over: function() {
+    var id = this.href.substr(this.href.indexOf('#')+1);
+    if (!id) return;
+    var note = document.getElementById(id);
+    if (!note) return;
+    var pos = Notes.pos(this);
+    if (!pos) return;
+    Notes.div.className = note.className;
+    Notes.div.innerHTML = note.innerHTML;
+    Notes.div.style.top = (this.offsetHeight + 10 + pos.top) + 'px';
+    Notes.div.style.left = (pos.left - Notes.div.offsetWidth/2) + "px";
+    Notes.div.style.visibility = 'visible';
+    Notes.div.onmouseout = Notes.out;
+  },
+  pos: function(el) {
+    if (!el.offsetParent) return;
+    var left = 0; 
+    var top = 0;
+    // do not substract the body.scrollTop in Chrome, the last offsetParent
+    while (el.offsetParent) {
+        left += (el.offsetLeft - el.scrollLeft );
+        top += (el.offsetTop - el.scrollTop);
+        el = el.offsetParent;
+    };
+    return { left: left, top: top };
+  },
+  out: function() {
+    Notes.div.style.visibility = 'hidden';
+    Notes.div.innerHTML = '';
   }
 }
 Tree.ini();

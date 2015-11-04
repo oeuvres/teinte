@@ -414,7 +414,7 @@ Tricky, <pb> could be hidden, forget.
               <xsl:call-template name="head">
                 <xsl:with-param name="title" select="$title"/>
               </xsl:call-template>
-              <link rel="stylesheet" type="text/css" href="{$theme}html.css"/>
+              <link rel="stylesheet" type="text/css" href="{$theme}tei2html.css"/>
               <script type="text/javascript" src="{$theme}Tree.js">//</script>
             </head>
             <body class="article {$corpusid}">

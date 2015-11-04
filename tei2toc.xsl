@@ -83,7 +83,7 @@ sont officiellement ditribuées par le consortium TEI, cependant ce développeme
             <!-- à travailler
             <xsl:apply-templates select="/*/tei:teiHeader/tei:encodingDesc/tei:tagsDecl"/>
             -->
-            <link rel="stylesheet" type="text/css" href="{$theme}html.css"/>
+            <link rel="stylesheet" type="text/css" href="{$theme}tei2html.css"/>
             <script type="text/javascript" src="{$theme}Tree.js">//</script>
           </head>
           <body class="{$corpusid}">

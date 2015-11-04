@@ -68,7 +68,7 @@ absence de déclaration de DTD.
             <!-- à travailler
             <xsl:apply-templates select="/*/tei:teiHeader/tei:encodingDesc/tei:tagsDecl"/>
             -->
-            <link rel="stylesheet" charset="utf-8" type="text/css" href="{$theme}html.css"/>
+            <link rel="stylesheet" charset="utf-8" type="text/css" href="{$theme}tei2html.css"/>
             <script type="text/javascript" charset="utf-8" src="{$theme}Tree.js">//</script>
           </head>
           <body class="{$corpusid}">
