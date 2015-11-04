@@ -2,19 +2,12 @@
 <!--
 
 LGPL  http://www.gnu.org/licenses/lgpl.html
-© 2005 ajlsm.com (Cybertheses) et Frederic.Glorieux@fictif.org
-© 2007 Frederic.Glorieux@fictif.org
-© 2010 Frederic.Glorieux@fictif.org et École nationale des chartes
-© 2012 Frederic.Glorieux@fictif.org 
 © 2013 Frederic.Glorieux@fictif.org et LABEX OBVIL
-
-Syntaxe texte de référence : Markdown
 
 Extraction du texte d'un corpus TEI pour recherche plein texte ou traitements linguistiques
 (ex : suppressions des notes, résolution de l'apparat)
 Doit pouvoir fonctionner en import.
 
-TODO: listes, tables, liens
 
 -->
 <xsl:transform version="1.1" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.tei-c.org/ns/1.0" xmlns:tei="http://www.tei-c.org/ns/1.0" exclude-result-prefixes="tei">
@@ -45,14 +38,6 @@ TODO: listes, tables, liens
       <xsl:apply-templates mode="iramuteq"/>
       <xsl:value-of select="$lf"/>
     </book>
-  </xsl:template>
-  <xsl:template match="tei:note" mode="txt-fn">
-    <xsl:value-of select="$lf"/>
-    <xsl:value-of select="$lf"/>
-    <xsl:text>[</xsl:text>
-    <xsl:call-template name="n"/>
-    <xsl:text>] </xsl:text>
-    <xsl:apply-templates mode="iramuteq"/>
   </xsl:template>
   <!-- éléments à arrêter -->
   <xsl:template match="tei:ref[not(node())] | tei:teiHeader" mode="iramuteq"/>
@@ -85,7 +70,7 @@ TODO: listes, tables, liens
       </xsl:choose>
     </xsl:variable>
     <xsl:value-of select="$who"/>
-    <!--
+    <!-- only one var allowed
           <xsl:variable name="role" select="key('role', $who)"/>
           <xsl:if test="$role/@civil">
             <xsl:value-of select="$lf"/>
@@ -97,16 +82,7 @@ TODO: listes, tables, liens
   </xsl:template>
   <xsl:template match="tei:speaker" mode="iramuteq"/>
   <xsl:template match="tei:stage" mode="iramuteq"/>
-  <!-- 
-<person xml:id="Valois-Madeleine">
-                        <persName>Valois, Madeleine de</persName>
-                        <birth>1520</birth>
-                        <death>1537</death>
-                        <event>
-                            <p>fille de François I<hi rend="sup">er</hi>, avait épousé en janvier 1537 Jacques V (1512-1542), roi d'Écosse (1513-1542) ; elle mourut six mois plus tard, en juillet 1537.</p>
-                        </event>
-                    </person>
--->
+
   <!-- Ligne sans indentation -->
   <xsl:template match="tei:person | tei:event | tei:place" mode="iramuteq">
     <xsl:apply-templates select="*" mode="iramuteq"/>
