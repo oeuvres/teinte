@@ -30,8 +30,6 @@ Different templates shared among the callers
   xmlns:date="http://exslt.org/dates-and-times"
   extension-element-prefixes="exslt saxon date"
 >
-  <!-- Name of this xsl  -->
-  <xsl:variable name="this">tei2html.xsl</xsl:variable> 
   <!-- Some constants -->
   <xsl:variable name="epub2">epub2</xsl:variable>
   <xsl:variable name="epub3">epub3</xsl:variable>
@@ -285,7 +283,7 @@ Different templates shared among the callers
        <xsl:when test="$xslbase != ''">
         <xsl:value-of select="$xslbase"/>
       </xsl:when>
-      <xsl:otherwise><xsl:value-of select="$http"/>oeuvres.github.io/Transtei/</xsl:otherwise>
+      <xsl:otherwise><xsl:value-of select="$http"/>oeuvres.github.io/Teinte/</xsl:otherwise>
     </xsl:choose>
   </xsl:param>
    <!-- A separate page for footnotes ? -->
@@ -1180,9 +1178,15 @@ Le mode label génère un intitulé court obtenu par une liste de valeurs locali
         </xsl:call-template>
       </xsl:when>
       <xsl:when test="contains($path, '&quot;')">
-        <xsl:call-template name="xslbase">
-          <xsl:with-param name="path" select="substring-before($path, '&quot;')"/>
-        </xsl:call-template>
+        <xsl:variable name="p" select="substring-before($path, '&quot;')"/>
+        <xsl:choose>
+          <xsl:when test="not(contains($p, '/')) and not(contains($p, '\'))">./</xsl:when>
+          <xsl:otherwise>
+            <xsl:call-template name="xslbase">
+              <xsl:with-param name="path" select="$p"/>
+            </xsl:call-template>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:when>
       <!-- Absolute, do nothing -->
       <xsl:when test="starts-with($path, 'http')"/>

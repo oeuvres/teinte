@@ -2343,7 +2343,7 @@ Call that in
         <xsl:number count="tei:note[@resp=$resp]" level="any" from="/"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:number count="tei:note[not(@resp) and not(@rend) and not(parent::tei:div) and not(parent::tei:notesStmt)]" level="any" from="/"/>
+        <xsl:number count="tei:note[not(@resp) and not(@rend) and not(@place='margin') and not(parent::tei:div) and not(parent::tei:notesStmt)]" level="any" from="/"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
