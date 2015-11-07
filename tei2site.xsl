@@ -465,9 +465,11 @@ Tricky, <pb> could be hidden, forget.
     -->
     <!-- Chapter metas when relevant, like author, date, maybe we should go uper if nothing found -->
     <xsl:apply-templates select="." mode="meta"/>
+    <!-- Maydo
     <xsl:if test="$seriestitle != ''">
       <link rel="dc:isPartOf" href="." title="{normalize-space($seriestitle)}"/>
     </xsl:if>
+    -->
     <!-- Consumer may use this ancestor string to build a breadcrumb -->
     <xsl:for-each select="ancestor::*">
       <xsl:choose>

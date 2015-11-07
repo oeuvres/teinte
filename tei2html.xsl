@@ -669,11 +669,11 @@ et -1 pour chaque niveau ensuite, d'où le paramètre $level qui peut
       <xsl:otherwise>
         <xsl:variable name="lettre" select="substring($alpha, 1, 1)"/>
         <!-- tester si la lettre existe avant de l'écrire -->
-        <xsl:if test="*[translate(substring(., 1, 1), $iso, $min) = $lettre]">
+        <xsl:if test="*[translate(substring(., 1, 1), $idfrom, $idto) = $lettre]">
           <xsl:if test="$lettre != 'a'"> </xsl:if>
           <!-- pas d'espace insécable -->
           <a href="#{$prefix}{$lettre}" target="_self">
-            <xsl:value-of select="translate ( $lettre, $min, $iso)"/>
+            <xsl:value-of select="translate ( $lettre, $lc, $uc)"/>
           </a>
         </xsl:if>
         <xsl:call-template name="alpha_href">
@@ -933,7 +933,7 @@ Tables
   -->
   <!-- <hi>, mise en forme typo générique -->
   <xsl:template match="tei:hi">
-    <xsl:variable name="rend" select="translate(@rend, $iso, $min)"/>
+    <xsl:variable name="rend" select="translate(@rend, $idfrom, $idto)"/>
     <xsl:choose>
       <xsl:when test=". =''"/>
       <!-- si @rend est un nom d'élément HTML -->
@@ -1790,7 +1790,7 @@ Tables
         </xsl:call-template>
       </xsl:variable>
       <xsl:if test="$message != ''">
-        <xsl:value-of select="translate(substring($message, 1, 1), $abc, $ABC)"/>
+        <xsl:value-of select="translate(substring($message, 1, 1), $lc, $uc)"/>
         <xsl:value-of select="substring($message, 2)"/>
         <xsl:text> : </xsl:text>
       </xsl:if>

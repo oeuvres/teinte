@@ -30,22 +30,30 @@ Different templates shared among the callers
   xmlns:date="http://exslt.org/dates-and-times"
   extension-element-prefixes="exslt saxon date"
 >
-  <!-- Some constants -->
-  <xsl:variable name="epub2">epub2</xsl:variable>
-  <xsl:variable name="epub3">epub3</xsl:variable>
-  <xsl:variable name="html5">html5</xsl:variable>
-  <xsl:variable name="html">html</xsl:variable>
-  <xsl:variable name="article">article</xsl:variable>
-  <!-- Allow to change the extension of generated links -->
-  <xsl:param name="_html">.html</xsl:param>
+  <!-- 
+Gobal TEI parameters and variables are divided in different categories
+ * parameters set exclusively by the caller, impossible to guess from TEI file
+ * parameters with prefered values from TEI file but possible to override when calling
+ * constant variables
+    -->
   <!-- base href for generated links -->
   <xsl:param name="base"/>
-  <!-- A mode set by the caller, for example to drive between monopage or multipage site -->
+  <!-- Allow to change the extension of generated links -->
+  <xsl:param name="_html">.html</xsl:param>
+  <!-- Corpus name passed by caller, used as a body class -->
+  <xsl:param name="corpusid"/>
+  <!-- Maybe set by a parent transformation, used here for link resolution -->
   <xsl:param name="mode"/>
-  <!-- File for generated messages -->
-  <xsl:param name="messages">tei.rdfs</xsl:param>
-  <!--  charger le fichier de messages, document('') permet de résoudre les chemin relativement à ce fichier  -->
-  <xsl:variable name="rdf:Property" select="document($messages, document(''))/*/rdf:Property"/>
+  <!-- -->
+  <xsl:param name="http">//</xsl:param>
+  <xsl:param name="theme">
+    <xsl:choose>
+       <xsl:when test="$xslbase != ''">
+        <xsl:value-of select="$xslbase"/>
+      </xsl:when>
+      <xsl:otherwise><xsl:value-of select="$http"/>oeuvres.github.io/Teinte/</xsl:otherwise>
+    </xsl:choose>
+  </xsl:param>
   <!-- generation date, maybe modified by caller -->
   <xsl:param name="date">
     <xsl:choose>
@@ -107,12 +115,12 @@ Different templates shared among the callers
                 </xsl:otherwise>
               </xsl:choose>
             </xsl:variable>
-            <xsl:value-of select="translate(normalize-space($author), $iso, $min)"/>
+            <xsl:value-of select="translate(normalize-space($author), $idfrom, $idto)"/>
             <xsl:text>_</xsl:text>
           </xsl:for-each>
           <xsl:for-each select="/tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[1]">
             <xsl:variable name="mot1">
-              <xsl:value-of select="translate(normalize-space(substring-before(concat(.,' '), ' ')), $iso, $min)"/>
+              <xsl:value-of select="translate(normalize-space(substring-before(concat(.,' '), ' ')), $idfrom, $idto)"/>
             </xsl:variable>
             <xsl:variable name="mot2">
               <xsl:value-of select="
@@ -122,7 +130,7 @@ Different templates shared among the callers
                     concat(substring-after(., ' '),' '), 
                   ' ')
                 ), 
-              $iso, $min)"/>
+              $idfrom, $idto)"/>
             </xsl:variable>
             <xsl:choose>
               <xsl:when test="contains(' le la les un une des de ', concat(' ',$mot1,' '))">
@@ -235,11 +243,7 @@ Different templates shared among the callers
       </xsl:when>
     </xsl:choose>
   </xsl:variable>
-  <!-- Nom de corpus ou de collection -->
-  <xsl:param name="corpusid"/>
-  <xsl:param name="seriestitle">
     
-  </xsl:param> 
   <!-- la chaîne identifiante (ISBN, URI…) -->
   <xsl:param name="identifier">
     <xsl:choose>
@@ -275,17 +279,12 @@ Different templates shared among the callers
       <xsl:otherwise>fr</xsl:otherwise>
     </xsl:choose>
   </xsl:param>
-  <!-- epub, cover image, sent by caller -->
-  <xsl:param name="cover" />
-  <xsl:param name="http">http://</xsl:param>
-  <xsl:param name="theme">
-    <xsl:choose>
-       <xsl:when test="$xslbase != ''">
-        <xsl:value-of select="$xslbase"/>
-      </xsl:when>
-      <xsl:otherwise><xsl:value-of select="$http"/>oeuvres.github.io/Teinte/</xsl:otherwise>
-    </xsl:choose>
-  </xsl:param>
+  <!-- File for generated messages -->
+  <xsl:param name="messages">tei.rdfs</xsl:param>
+  <!--  charger le fichier de messages, document('') permet de résoudre les chemin relativement à ce fichier  -->
+  <xsl:variable name="rdf:Property" select="document($messages, document(''))/*/rdf:Property"/>
+  <!-- Useful in Teinte package -->
+  <xsl:variable name="this"/>
    <!-- A separate page for footnotes ? -->
   <xsl:param name="fnpage"/>
   <!-- A dest folder for graphics -->
@@ -302,14 +301,20 @@ Different templates shared among the callers
   <xsl:variable name="tab">
     <xsl:text>&#9;</xsl:text>
   </xsl:variable>
+  <!-- Some constants -->
+  <xsl:variable name="epub2">epub2</xsl:variable>
+  <xsl:variable name="epub3">epub3</xsl:variable>
+  <xsl:variable name="html5">html5</xsl:variable>
+  <xsl:variable name="html">html</xsl:variable>
+  <xsl:variable name="article">article</xsl:variable>
 
-  <!-- Majuscules, pour conversions. -->
-  <xsl:variable name="ABC">ABCDEFGHIJKLMNOPQRSTUVWXYZÆŒÇÀÁÂÃÄÅÈÉÊËÌÍÎÏÒÓÔÕÖÙÚÛÜÝ</xsl:variable>
-  <!-- Minuscules, pour conversions -->
-  <xsl:variable name="abc">abcdefghijklmnopqrstuvwxyzæœçàáâãäåèéêëìíîïòóôõöùúûüý</xsl:variable>
-  <!-- Pour normaliser des clés. -->
-  <xsl:variable name="iso">ABCDEFGHIJKLMNOPQRSTUVWXYZÀÂÄÉÈÊÏÎÔÖÛÜÇàâäéèêëïîöôüû ,.</xsl:variable>
-  <xsl:variable name="min">abcdefghijklmnopqrstuvwxyzaaaeeeiioouucaaaeeeeiioouu-</xsl:variable>
+  <!-- Upper case letters with diactitics, for translate() -->
+  <xsl:variable name="uc">ABCDEFGHIJKLMNOPQRSTUVWXYZÆŒÇÀÁÂÃÄÅÈÉÊËÌÍÎÏÒÓÔÕÖÙÚÛÜÝ</xsl:variable>
+  <!-- Lower case letters with diacritic, for translate() -->
+  <xsl:variable name="lc">abcdefghijklmnopqrstuvwxyzæœçàáâãäåèéêëìíîïòóôõöùúûüý</xsl:variable>
+  <!-- To produce a normalised id -->
+  <xsl:variable name="idfrom">ABCDEFGHIJKLMNOPQRSTUVWXYZÀÂÄÉÈÊÏÎÔÖÛÜÇàâäéèêëïîöôüû ,.</xsl:variable>
+  <xsl:variable name="idto">abcdefghijklmnopqrstuvwxyzaaaeeeiioouucaaaeeeeiioouu-</xsl:variable>
   <xsl:variable name="apos">'</xsl:variable>
   <xsl:variable name="quote">"</xsl:variable>
   <!-- a key for identified elements -->

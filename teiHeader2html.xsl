@@ -354,7 +354,7 @@ sont officiellement ditribuées par le consortium TEI, cependant ce développeme
     </a>
   </xsl:template>
   <xsl:template match="tei:teiHeader//tei:hi">
-    <xsl:variable name="rend" select="translate(@rend, $iso, $min)"></xsl:variable>
+    <xsl:variable name="rend" select="translate(@rend, $idfrom, $idto)"></xsl:variable>
     <xsl:choose>
       <xsl:when test=". =''"/>
       <!-- si @rend est un nom d'élément HTML -->
