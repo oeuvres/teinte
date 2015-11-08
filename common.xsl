@@ -45,7 +45,7 @@ Gobal TEI parameters and variables are divided in different categories
   <!-- Maybe set by a parent transformation, used here for link resolution -->
   <xsl:param name="mode"/>
   <!-- -->
-  <xsl:param name="http">//</xsl:param>
+  <xsl:param name="http">http://</xsl:param>
   <xsl:param name="theme">
     <xsl:choose>
        <xsl:when test="$xslbase != ''">
