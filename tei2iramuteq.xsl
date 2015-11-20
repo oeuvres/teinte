@@ -269,7 +269,9 @@ Doit pouvoir fonctionner en import.
         </xsl:otherwise>
       </xsl:choose>
     </xsl:for-each>
+    <!-- index/term ? -->
   </xsl:template>
+  <xsl:template match="tei:index" mode="iramuteq"/>
   <xsl:template match="*[@type='letter' or @type='act' or @type='scene']/tei:head" mode="iramuteq"/>
   <xsl:template match="tei:head" mode="iramuteq">
     <xsl:variable name="level" select="count(ancestor::*[tei:head])"/>

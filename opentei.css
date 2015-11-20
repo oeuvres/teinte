@@ -1,0 +1,245 @@
+/*
+
+
+Styles CSS pour l'édition TEI.
+
+[FG] Frédéric Glorieux <Frederic.Glorieux@fictif.org>
+[PYB] Pierre-Yves Buard <pierre-yves.buard@unicaen.fr>
+
+Licence : domaine public.
+
+Particularités de cette feuille :
+ * testée d'abord pour XMLmind
+ * documentée en français
+ * factorisée par types de contenus
+
+Sources :
+ * http://tei.svn.sourceforge.net/viewvc/tei/trunk/TEICSS/
+
+2011-07 [FG] Création
+
+*/
+
+@namespace xml url('http://www.w3.org/XML/1998/namespace');
+@namespace tei url('http://www.tei-c.org/ns/1.0');
+@namespace oxy url('http://www.oxygenxml.com/extensions/author');
+
+/* Par défaut */
+TEI { font-family: Arial; font-size: 14px; color: black; margin-left: auto; margin-right: auto; max-width: 80ex; }
+/*
+BLOCS ET CARACTÈRES
+
+Les styles de niveau bloc sont déclarés une première fois à un seul endroit, afin d’assurer l'écoulement du texte avant de le décorer.
+
+
+*/
+* { display:inline; }
+ab, address, appInfo, argument, back, bibl, biblFull, biblStruct, body, byline, category, change, cit, classcode, classDecl, closer, dateline, div, div0, div1, div2, div3, div4, div5, div6, div7, docAuthor, editionStmt, editionStmt > edition, editorialDecl, editorialDecl > *, eg, epigraph, encodingDesc, extent, fileDesc, figDesc, figure, front, graphic, group, head, item, keywords, keywords > term, l, langUsage, language, licence, list, listBibl, listWit, lg, msDesc, namespace, notesStmt, notesStmt > note, opener, p, projectDesc, publicationStmt, publicationStmt > *, div > quote, refsDecl, salute, samplingDecl, seriesStmt, seriesStmt > *, signed, sourceDesc, sp, speaker, tagsDecl, TEI, teiHeader, text, textClass, titlePage, titleStmt, titleStmt > *, trailer, witness { display:block; }
+/* Surcharge des contextes */
+p bibl, p biblFull, p biblStruct, p cit { display:inline; }
+
+/*
+SECTIONS ET TITRES
+*/
+back, div, div0, div1, div2, div3, div4, div5, div6, div7, front, group, text { padding-left:5px; margin-left:5px; border: 1px dashed #afafaf; border-top-color:#FFFFFF; border-bottom-color:#FFFFFF; border-right-color:#FFFFFF; }
+body { counter-reset: div1; }
+body > div { counter-increment: div1; counter-reset: div2; }
+body > div > div { counter-increment: div2; counter-reset: div3; }
+body > div > div > div { counter-increment: div3; }
+div1 { counter-increment: div1; counter-reset: div2; }
+div2 { counter-increment: div2; counter-reset: div3; }
+div3 { counter-increment: div3; counter-reset: div4; }
+div4 { counter-increment: div4; counter-reset: div5; }
+div5 { counter-increment: div5; counter-reset: div6; }
+div6 { counter-increment: div6; counter-reset: div7; }
+div7 { margin-bottom: 1em; counter-increment: div7; }
+div1 > head:before { content: counter(div1) ". "; }
+div2 > head:before { content: counter(div1) "." counter(div2) ". "; }
+div3 > head:before { content: counter(div1) "." counter(div2) "." counter(div3) ". "; }
+body > div > head:before { content: counter(div1) ". "; }
+body > div > div > head:before { content: counter(div1) "." counter(div2) ". "; }
+body > div > div > div > head:before { content: counter(div1) "." counter(div2) "." counter(div3) ". "; }
+
+
+head { font-weight:bold; }
+div head, div1 head { margin-top:50px;margin-bottom:25px; text-align:center; font-size:150%;}
+div div head, div2 head {margin-top:25px;margin-bottom:15px; text-align:left; font-size:130%;}
+div div div head, div3 head {font-size:117%; margin-top:15px; margin-bottom:15px; }
+
+/*
+ LISTES
+*/
+item[n]:before { content: attr(n) ". " ; list-style: none; }
+item, listWit witness, listBibl bibl { display: list-item; margin-left:1em; }
+item list { margin-top:0em; margin-bottom:0em; }
+list, listBibl, listWit { list-style-type: disc; list-style-position: outside; margin-bottom: 1em; margin-left: 2em; margin-top: 1em; }
+list[type="bulleted"] { list-style-type: disc; list-style-position: outside; }
+list[type = "gloss"] item { display: block; margin-left:2em; }
+list[type = "gloss"] label { font-weight:bold; } 
+list[type="none"] { list-style-type: none; }
+list[type="numbered"] { list-style-type: decimal; list-style-position: outside; }
+list[type="ordered"] { list-style-type: decimal; list-style-position: outside; }
+list[rend="runon"] { display: inline; }
+list[type="unordered"] { list-style-type: disc; list-style-position: outside; }
+
+
+/*
+TABLES
+*/
+table { display:table; }
+table > head{ display:table-caption; font-style: italic; margin-bottom: 6pt; }
+row { display:table-row; }
+cell{ display:table-cell; border-width:1px; border-color:black; border-style: solid; padding:1px; text-align:center; }
+
+/*
+BLOCS
+*/
+p { margin-top: 1em; }
+p > quote { display: block; margin-left: 2em; color: #008000; }
+p > quote > quote { display: block; margin-left: 2em;  color: #00FF00; }
+
+/* BIBLIO*/
+bibl { line-height:1.5; }
+address:before { content:"Adresse : "; }
+bibl author:before { content:"Auteur : "; }
+date:before { content:"Date : "; }
+distributor:before { content:"Diffuseur : "; }
+editor:before { content:"Contributeur ("attr(role)") : "; }
+extent:before { content:"Taille approximative : "; }
+funder:before { content:"Financeur : "; }
+idno:before { content:attr(type)" : "; }
+principal:before { content:"Directeur : "; }
+publisher:before { content:"Éditeur : "; }
+pubPlace:before { content:"Lieu : "; }
+sponsor:before { content:"Partenaire : "; }
+bibl title:before { content:"Titre : "; }
+bibl title {background-color:transparent; font-style:italic;}
+
+/*
+  POINTS (notes, sauts de page, index…)
+*/
+
+lb { content:"\A"; }
+lb[n] { content:"\A(l. "attr(n)")  "; color:#666666; }
+lb:first-child { content:"(l. "attr(n)")  "; color:#666666; }
+pb[n]:after { content: " [p. " attr(n) "] "; background:#CCCCCC; }
+pb[xml|id]:after { content: " [" attr(xml|id) "] "; background:#CCCCCC; }
+note:before { counter-increment:note; content: " { Note "counter(note)" (" attr(xml|id) ") : "; color:#000000; }
+note { font-family:verdana; display:inline; font-size:12px; font-style:normal; color:#000000; padding-left:5px; padding-right:5px; background-color: #efefef; display: block; border: 1px solid blue; }
+note:after { content: " } "; color:#000000; }
+note[place="left"] { float: left; }
+note[place="right"] { float: right; }
+note[place="inline"], note[place="unspecified"] { display: inline; }
+index:before { content:oxy_attributes(); display:block; font-weight:bold; color:#afafaf; }
+
+
+/*
+CARACTÈRES
+*/
+
+*[target]:after{ text-decoration:none; content: attr(target); vertical-align:super; font-size:80%; color:#666666; }
+gap:after { content: "[…]"; font-style: italic; }
+*[rend="i"], hi[rend="i"], hi[rend="it"], hi[rend="italic"], mentioned, soCalled { font-style:italic; }
+hi[rend="i"] { color:red; }
+*[rend="b"], hi[rend="b"], hi[rend="bold"]{ font-weight:bold; }
+hi[rend="sc"], hi[rend="smallcaps"]{ color:red; }
+hi[rend="sup"]{ vertical-align:super; font-size:80%; line-height:0.1; }
+hi[rend="ul"], hi[rend="u"], ref { text-decoration: underline; }
+name {background-color:#FFFF00}
+persName {background-color:#FFFFCC;}
+persName[type="author"], author {background-color:#EEEEFF;}
+persName[type="character"] {}
+placeName {background-color:#EEEEFF; border-bottom:#0000FF}
+title {background-color:#FFFFCC; border-bottom:#00FF00; font-style:italic;}
+persName[key], placeName[key], title[key] {background-color:transparent}
+
+/*
+DIVERS
+*/
+
+include { content:attr(href)" : "attr(xpointer); display:block; }
+
+
+/* quote { display:block;}*/
+
+gloss { font-style:italic; margin-left:15px; }
+quote > list { /*counter-reset:item; */ margin-left:15px; }
+speaker { margin-top:10px; margin-bottom:5px; margin-left:30px; font-size:15px; font-weight:bold; }
+figure > head { margin-bottom:20px; padding:15px; text-align:center; color:maroon; }
+figDesc:before { counter-increment:figDesc; content: "Fig. "counter(figDesc)" : "; }
+figDesc { text-align:center; margin-top:5px; margin-bottom:20px; }
+graphic { margin-left:auto; margin-right:auto; margin-top:20px; border:1px solid black; content: "{" attr(url) "}"; }
+
+/*
+teiHeader
+ */
+
+
+teiHeader { border-bottom: 2px solid #FF0000; padding-bottom:20px; margin-bottom:20px; color:#000000; }
+teiHeader > *, teiHeader > * > *, teiHeader > * > * > * { margin-left:1em; }
+teiHeader > * { margin-top:2em; margin-bottom:1em; border: 1px dashed #afafaf; padding-left:2px; }
+teiHeader > * > * { margin-bottom:1em; border: 1px dashed #afafaf; padding-left:2px; }
+teiHeader *:before { color:#FF0000; font-size:80%; }
+sourceDesc > bibl > * { display:block; }
+fileDesc:before { content:"Description"; }
+titleStmt:before { content:"Le texte électronique"; }
+respStmt:before { content:"Autres responsabilités : "; }
+respStmt > resp:before { content:"rôle : "; font-size:10px; }
+respStmt > name:before { content:"Nom, Prénom : "; font-size:10px; }
+editionStmt:before { content:"Mentions d'éditon électronique "; }
+editionStmt > edition:before { content:"N° de l'édition : "; }
+publicationStmt:before { content:"Adresse éditoriale"; }
+publicationStmt > publisher:before { content:"Éditeur électronique : "; }
+publicationStmt > authority:before { content:"Autre responsable de publication : "; }
+availability:before { content:"Disponibilité"; }
+availability * { margin-left:1em; }
+licence:before { content:"License, "attr(target)" : "; }
+seriesStmt:before { content:"Collection"; }
+notesStmt:before { content:"Annotations"; }
+notesStmt > note:before { content:"Note "counter(note)" : "; }
+sourceDesc:before { content:"Source(s) numérisées"; }
+encodingDesc:before { content:"Description de l'encodage"; }
+encodingDesc > projectDesc:before { content:"Informations sur l'encodage"; }
+encodingDesc > samplingDecl:before { content:"Échantillonnage"; }
+encodingDesc > editorialDecl:before { content:"Spécificités éditoriales"; }
+editorialDecl > correction:before { content:"Règles de correction : "; }
+editorialDecl > normalization:before { content:"Normalisation : "; }
+editorialDecl > quotation:before { content:"Citation : "; }
+editorialDecl > hyphenation:before { content:"Césurage : "; }
+editorialDecl > segmentation:before { content:"Segmentation : "; }
+editorialDecl > stdVals:before { content:"Valeurs des mesures utilisées : "; }
+editorialDecl > interpretation :before { content:"Interprétation : "; }
+encodingDesc > tagsDecl > namespace:before { content:"Déclaration de balisage"; }
+encodingDesc > tagsDecl > rendition  { content:"Rendu : "; }
+encodingDesc > tagsDecl > namespace > tagUsage  { content:"Utilisation d'un élément spécifique : "; }
+encodingDesc > refsDecl:before { content:"Déclaration de référence"; }
+encodingDesc > refsDecl > cRefPattern  { content:"Manière de référencer : "; }
+encodingDesc > classDecl > taxonomy:before { content:"Déclaration de classification"; }
+encodingDesc > classDecl > taxonomy > category:before { content:"Catégorie : "; }
+profileDesc:before { content:"Description du fichier"; }
+profileDesc > creation  { content:"date et lieu de création du document : "; }
+profileDesc > langUsage:before  { content:"Langue(s) : "; }
+profileDesc > langUsage > language:before  { display:block; content:"langue — "attr(ident)" : "; }
+profileDesc > textClass:before  { content:"Classification du texte : "; }
+profileDesc > textClass > keywords:before  { display:block; content:"Termes : "; }
+profileDesc > textClass > classCode:before { content:"Code de classification — "attr(scheme)" : "; }
+revisionDesc:before { content:"Révisions"; }
+change:before { display:block; content:"Qui ? "attr(who)" Quand ? "attr(when)" Quoi ? "; }
+
+@media oxygen{ 
+  back, div, div0, div1, div2, div3, div4, div5, div6, div7, front, group, text { -oxy-foldable:true; -oxy-not-foldable-child: head; }
+ *[target]:after{ link:attr(target); }
+  oxy|comment { width:90%; font-family:monospace !important; display:block !important; color:green !important; font-size:11px !important; padding-left:2em  !important; border:1px solid; }
+}
+
+@media XMLmind-XML-Editor { 
+  graphic { margin-left:auto; margin-right:auto; margin-top:20px; border:1px solid black; content:image-viewport(attribute,url,data-type,anyURI,viewport-width,450,content-width,scale-to-fit,smooth,yes); }
+  back, div, div0, div1, div2, div3, div4, div5, div6, div7, front, group, text { collapsible:yes; }
+  back:before, div:before, div0:before, div1:before, div2:before, div3:before, div4:before, div5:before, div6:before, div7:before, front:before, group:before, text:before { display:block; content: " " element-name() " " collapser() " " ; font-size:11px; background-color:#efefef; text-align:right; }
+  listWit { collapsible:yes; collapsed:yes; }
+  listWit:before { content:"Témoins" collapser(); }
+  change:before { display:block; content:"— Date : \A"text-area(attribute,when,columns,15,rows,1,wrap,word)"\AResponsable : \A"text-area(attribute,who,columns,15,rows,1,wrap,word)"\AAction"; } 
+}
+
+
+

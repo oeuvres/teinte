@@ -34,7 +34,7 @@ absence de déclaration de DTD.
 -->
   <xsl:output encoding="UTF-8" indent="yes" method="xml" omit-xml-declaration="yes"/>
   <!-- Output teiHeader ? -->
-  <xsl:param name="teiHeader"/>
+  <xsl:param name="teiheader" select="true()"/>
   <!-- notes d'apparat critique ? -->
   <xsl:param name="app" select="boolean(//tei:app)"/>
   <!-- What kind of root element to output ? html, div, article -->
@@ -122,6 +122,7 @@ absence de déclaration de DTD.
   <xsl:template match="tei:teiHeader">
     <!-- Parametrize ? -->
     <xsl:choose>
+      <xsl:when test="not($teiheader)"/>
       <xsl:when test="../tei:text/tei:front/tei:titlePage"/>
       <xsl:otherwise>
         <xsl:apply-templates select="tei:fileDesc"/>
@@ -1462,7 +1463,7 @@ Tables
 </figure>
       
   -->
-  <xsl:template match="tei:figure">
+  <xsl:template match="tei:figure | tei:facsimile">
     <xsl:param name="el">
       <xsl:choose>
         <xsl:when test="$format = 'html5'">figure</xsl:when>
@@ -1506,15 +1507,13 @@ Tables
     <xsl:variable name="id">
       <xsl:call-template name="id"/>
     </xsl:variable>
-    <a id="{$id}" href="#{$id}">
-      <img src="{$images}{@url}" alt="{normalize-space(.)}">
-        <xsl:if test="@rend">
-          <xsl:attribute name="align">
-            <xsl:copy-of select="@rend"/>
-          </xsl:attribute>
-        </xsl:if>
-      </img>
-    </a>
+    <img src="{$images}{@url}" alt="{normalize-space(.)}" id="{$id}">
+      <xsl:if test="@rend">
+        <xsl:attribute name="align">
+          <xsl:copy-of select="@rend"/>
+        </xsl:attribute>
+      </xsl:if>
+    </img>
   </xsl:template>
   <!-- Sentence -->
   <xsl:template match="tei:s">
