@@ -488,7 +488,7 @@ et -1 pour chaque niveau ensuite, d'où le paramètre $level qui peut
         <xsl:when test="contains(concat(' ', @rend, ' '), 'indent')">
           <xsl:call-template name="atts"/>
         </xsl:when>
-        <xsl:when test="contains('-–—', substring(normalize-space($prev), 1, 1))">
+        <xsl:when test="$prev and contains('-–—', substring(normalize-space($prev), 1, 1))">
           <xsl:call-template name="atts"/>
         </xsl:when>
         <xsl:when test="local-name($prev) ='p' and translate($prev, '*∾  ','')!=''">
