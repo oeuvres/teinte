@@ -24,6 +24,7 @@ sont officiellement ditribuées par le consortium TEI, cependant ce développeme
   <xsl:import href="tei2toc.xsl"/>
   <!-- included, so that priorities will not be flatten by import chain (ex: from tei2site.html) -->
   <xsl:include href="teiHeader2html.xsl"/>
+  
   <!-- Name of this xsl, change link resolution  -->
   <xsl:variable name="this">tei2html.xsl</xsl:variable>
   <!--
@@ -892,6 +893,7 @@ Tables
     <xsl:variable name="n">
       <xsl:call-template name="l-n"/>
     </xsl:variable>
+    <xsl:variable name="prev" select="preceding::tei:l[1]"/>
     <xsl:choose>
       <!-- probablement vers vide pour espacement -->
       <xsl:when test="normalize-space(.) =''">
@@ -910,6 +912,8 @@ Tables
           <xsl:choose>
             <xsl:when test="not(number($n))"/>
             <xsl:when test="$n &lt; 1"/>
+            <!-- previous verse has same number, usually a rupted verse -->
+            <xsl:when test="@part='M' or @part='F' or $prev/@n = $n"/>
             <!-- line number could be multiple in a file, do not check repeated number in broken verses  -->
             <xsl:when test="ancestor::tei:quote"/>
             <xsl:when test="($n mod 5) = 0">
