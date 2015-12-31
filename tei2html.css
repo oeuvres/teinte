@@ -147,7 +147,7 @@ input:-ms-input-placeholder { color: #AAA !important; font-style: italic !import
 
 /** TEI elements, in TEI element name order, before type modifier in next block */
 
-section.act, section.chapter, section.dedication, section.footnotes, section.preface { page-break-after: always; }
+section.act, section.chapter, section.dedication, section.footnotes, section.preface { page-break-before: always; }
 .actor { font-variant: small-caps; }
 .argument { margin: 2em 0 3em 0; line-height: 140%; text-indent: 0; font-size: 85%; font-style: italic; text-align: justify }
 p.argument { font-style: normal; line-height: 140%; text-indent: 2em; }
@@ -514,8 +514,8 @@ details.minus > * { display: block; }
 
 @media print {
   body , #article { margin: 0; padding: 0; }
-  body , #article{ font-family: Georgia, "Bitstream Vera Serif", Times, serif ; color: #000000; font-size: 11pt; }
-  #aside, section.act, section.chapter, section.preface {  -webkit-column-count: 2; -moz-column-count: 2; column-count: 2; -webkit-column-gap: 2rem; -moz-column-gap: 2rem; column-gap: 2rem; -webkit-column-rule: 1pt #CCC solid; -moz-column-rule: 1pt #CCC solid; column-rule: 1pt #CCC solid;}
+  body , #article{ font-family: Georgia, "Bitstream Vera Serif", Times, serif ; color: #000000; font-size: 16pt; }
+  #aside, section.act, section.chapter, section.preface {  -webkit-column-count: 2; -moz-column-count: 2; column-count: 2; -webkit-column-gap: 2rem; -moz-column-gap: 2rem; column-gap: 2rem; -webkit-column-rule: 1pt #CCC solid; -moz-column-rule: 1pt #CCC solid; column-rule: 1pt #CCC solid; font-size: 14pt; }
   #aside { width: 100% !important; }
   body, .dialogue li { line-height: 130%; }
   .speaker, .stage { font-family: sans-serif; text-align: center; }

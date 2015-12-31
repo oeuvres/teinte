@@ -30,7 +30,8 @@ tei:*[self::tei:div or self::tei:div1 or self::tei:div2][normalize-space(.) != '
     or contains(@type, 'letter')
 ] 
 | tei:group/tei:text 
-| tei:TEI/tei:text/tei:*/tei:*[self::tei:div or self::tei:div1 or self::tei:group][normalize-space(.) != '']" use="generate-id(.)"/>
+| tei:TEI/tei:text/tei:*/tei:*[self::tei:div or self::tei:div1 or self::tei:group or self::tei:titlePage  or self::tei:castList][normalize-space(.) != '']" 
+use="generate-id(.)"/>
   <!-- Kind of root element to output --> 
   <xsl:param name="root" select="$html"/>
   <!-- Folder where to project generated html pages -->

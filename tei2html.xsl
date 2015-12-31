@@ -1303,6 +1303,7 @@ Tables
     <xsl:variable name="el">
       <xsl:choose>
         <xsl:when test="parent::tei:div">div</xsl:when>
+        <xsl:when test="parent::tei:titlePage">div</xsl:when>
         <!-- bug in LibreOffice
         <xsl:when test="$format=$html5">time</xsl:when>
         -->
@@ -2165,6 +2166,7 @@ Call that in
         <xsl:if test="$format = $epub3">
           <xsl:attribute name="epub:type">footnotes</xsl:attribute>
         </xsl:if>
+        <xsl:attribute name="class">footnotes</xsl:attribute>
         <!--
         <hr class="footnotes" width="30%"/>
         -->
