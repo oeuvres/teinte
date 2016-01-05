@@ -1,0 +1,2711 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../xrem/rng2html.xsl"?>
+<grammar xmlns="http://relaxng.org/ns/structure/1.0" 
+  xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" 
+  xmlns:h="http://www.w3.org/1999/xhtml" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes" 
+  ns="http://www.tei-c.org/ns/1.0" 
+  xml:lang="fr">
+  <a:documentation>Teibook</a:documentation>
+  <div xmlns="http://www.w3.org/1999/xhtml">
+    <ul class="auteurs">
+      <li>[FG] <a href="#" onmouseover="this.href='mailto'+'\x3A'+'glorieux'+'\x40'+'algone.net'">Frédéric Glorieux</a></li>
+      <li>[VJ] <a href="#" onmouseover="this.href='mailto'+'\x3A'+'jolivet'+'\x40'+'algone.net'">Vincent Jolivet</a></li>
+    </ul>
+    <p>Ce schéma est une restriction de la recommandation <a href="http://www.tei-c.org/release/doc/tei-p5-doc/en/html/REF-ELEMENTS.html">TEI P5</a> adaptée à la structuration de livres imprimés.
+      Cette simplification est un socle qui n'interdit pas les extensions mais au contraire précise le générique pour mieux repérer le spécifique.
+      Ce profil TEI peut être comparé aux recommandations <a href="http://www.tei-c.org/Vault/P5//2.3.0/doc/tei-p5-exemplars/html/tei_tite.doc.html">TEI Tite</a> et <a href="http://www.tei-c.org/SIG/Libraries/teiinlibraries/main-driver.html">Best Practices for TEI in Libraries</a>, conçues pour faire référence dans les projets de numérisation de masse. 
+      Ce profil profite de l'expérience acquise et la perfectionne en insistant sur quelques autres aspects : explications en français, exemples tirés de la tradition éditoriale francophone, numérisation avec un logiciel d’OCR par du personnel non entraîné, utilisation du traitement de textes.
+      Ce profil a été conçu en référence continuelle à <a href="http://www.w3.org/TR/html5/">HTML 5</a>, afin d'au moins garantir la conservation de la sémantique html en TEI.
+      Il permet d'encoder tout ce que peut produire un traitement de textes, notamment issu de la transformation <a href="http://algone.net/odt2tei/">odt2tei</a>.
+      Il vise à produire au moins une édition électronique de qualité (ePub avec table des matières, site en ligne), tout en permettant des enrichissements sémantiques ultérieurs.
+    </p>
+    <ul>
+      <li><a href="teibook.rng">Le schéma</a></li>
+      <li><a href="teibook.xml">Document de test (dont sont tirés les exemples)</a></li>
+    </ul>
+    <p>Plan de ce document</p>
+    <ul>
+      <li><a href="#text">Texte, commentaires, instruction de traitement</a></li>
+      <li><a href="#structure">Structure et sections</a></li>
+      <li><a href="#block">Paragraphes et autres blocs</a></li>
+      <li><a href="#zone">Zones sémantiques en entrée ou en sortie de section</a></li>
+      <li><a href="#typo">Typographie d’apparence</a></li>
+      <li><a href="#function">Segments fonctionnels</a></li>
+      <li><a href="#point">Notes, sauts et autres points</a></li>
+    </ul>
+    <h2 id="text">Texte</h2>
+    <p>Idéalement, tous les caractères du texte imprimé, de toutes les pages, doivent être inscrits comme des nœuds de texte. Le filtrage de certains composants s’effectuera a posteriori, par le balisage (exemple : ne pas afficher la table des matières originale au profit d’un sommaire automatique). Cette attitude conservatoire évite de présumer des intérêts futurs de la recherche.</p>
+    <p><b>Entités</b> — Flux de caractères UTF-8. Toujours préférer un caractère unicode UTF-8 lorsque possible. Pas d'entités, car soit elles sont en chiffres, et elles correspondent à un caractère unicode, soit elles sont en lettres, et elles ne sont pas supportées par xml sans déclaration DTD <s><code>&amp;nbsp;, &amp;thinsp;, &amp;eacute;…</code></s> Exemple : pour une espace insécable inscrire le caractère ' ' (U+00A0, &amp;#160;), visible ici comme une espace mais distinguable dans certains éditeurs, de même pour les espaces fines ' ' ( U+2009, &amp;#8201;). Si des caractères rencontrés ne correspondent pas de façon exacte à un code unicode standard, alors utiliser <a:el>g n="{code local pour le caractère}">{approximation unicode}&lt;/g</a:el></p>
+    <!-- p><b>Grec ancien</b> — lettres à pb</p -->
+    <p><b>Guillemets</b> — Autant que possible, on évitera les <s>"guillemets droits"</s>, afin de favoriser les guillemets orientés, qui s'ouvrent et se ferment pour délimiter un segment, en distinguant les « guillemets français » et les  “guillemets anglais”. Les guillemets français encadrent généralement du texte cité ou rapporté, d'un autre auteur que le texte environnant, et sont susceptibles (sous contrôle humain) d'être encadrés pas la balise <a:el>quote</a:el>. Les guillemets anglais encadrent généralement des segments plus courts, qui pourraient aussi paraître en italique : terme technique <a:el>term</a:el>, langue étrangère <a:el>foreign</a:el>, mot en mention <a:el>mentionned</a:el>…</p>
+    <p><b>Apostrophes</b> — Autant que possible, éviter les <s>'apostrophes droites'</s>, pour privilégier l’apostrophe courbe et orientée.</p>
+<!-- 
+Zero width space: x​x​x​x​x​x​x​x​x​x
+
+Word joiner (Zero width no-break space): x⁠x⁠x⁠x⁠x⁠x⁠x⁠x⁠x⁠x
+
+Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
+-->
+    <p>Caractères mal supportés par certaines polices ou clients, que l'on peut cependant conserver tel quel dans la source XML, sans entité ni transcodage.</p>
+    <ul>
+      <li>espace normale &amp;#32; :  x x x</li>
+      <li>espace insécable &amp;#160; (html:nbsp) : x x x</li>
+      <li>espace fine &amp;#8201; (html:thinsp) : x x x</li>
+      <li>espace large &amp;#8195; (html:emsp) : x x x</li>
+      <li>espace fine insécable &amp;#x202f;, &amp;#8239; : x x x</li>
+      <li>trait d’union, signe moins : x-x-x</li>
+      <li>trait d’union conditionnel &amp;#xad; (html:shy) : x-x-x</li>
+      <li>trait d’union &amp;#x2010; : x‐x‐x</li>
+      <li>trait d’union insécable &amp;#x2011; : x‑x‑x</li>
+      <li>tiret demi-quadratin &amp;#x2013; (html:ndash) : x–x–x</li>
+      <li>tiret quadratin &amp;#x2014; (html:mdash) : x—x—x</li>
+    </ul>
+  </div>
+  <div xml:id="structure">
+    <a:documentation>Structure générale</a:documentation>
+
+    <start>
+      <a:documentation>Elément racine</a:documentation>
+      <ref name="TEI"/>
+    </start>
+
+    <define name="TEI">
+      <element name="TEI">
+        <a:documentation>Structure générale d’un document TEI</a:documentation>
+        <div xmlns="http://www.w3.org/1999/xhtml">
+          <ul>
+            <li>L’entête TEI <a:el>teiHeader</a:el> : non destiné à être affiché, il contient les métadonnées.</li>
+            <li>Le texte préliminaire <a:el>front</a:el> : préface, introduction… Si l’édition source comprend plusieurs types de numérotation, alors on trouvera ici le romain tandis que le body contiendra le décimal.</li>
+            <li>Le texte principal <a:el>body</a:el> : chapitre du livre, source éditée, articles de colloque, etc.</li>
+            <li>Le texte postliminaire <a:el>back</a:el> : annexes, bibliographie, index, etc.</li>
+          </ul>
+          <p>Le paratexte éditorial – préliminaire (<a:el>front</a:el>) et postliminaire (<a:el>back</a:el>) – ainsi que les métadonnées (<a:el>teiHeader</a:el>) constituent la valeur ajoutée par l’éditeur. Ce paratexte éditorial peut aussi figurer parfois dans le <a:el>body</a:el> : dans le cas d’une édition de source par exemple, le texte édité est contenu dans le <a:el>body</a:el> ainsi que les notes (<a:el>note</a:el>, <a:el>app</a:el>) ajoutées par l’éditeur).</p>
+          <p>Le fichier final comporte un <a:el>teiHeader</a:el> renseigné par l’éditeur, non requis au moment de la numérisation.</p>
+          <p>Dès la numérisation, le fichier doit obligatoirement porter en racine un identifiant correspondant au nom du fichier xml sans l’extension. Lorsque l'identifiant est un code isbn, uniquement en chiffres, il n'est pas compatible avec les valeurs autorisées dans l'attribut <a href="http://www.tei-c.org/release/doc/tei-p5-doc/fr/html/CO.html#CORS1" target="_blank">xml:id</a>, aussi ce nom de fichier est inscrit dans un attribut <a:att>n</a:att>.</p>
+          <p>Le document comportera aussi un <a href="http://www.loc.gov/standards/iso639-2/php/French_list.php" target="_blank">code de langue iso</a> dans l’attribut <a:att>xml:lang</a:att> en racine.</p>
+          <a:example>
+<TEI xml:lang="fr">
+  <teiHeader>…</teiHeader>
+  <text>
+    <front>
+      <titlePage>page de titre</titlePage>
+      <argument>quatrième de couverture</argument>
+      <div type="preface">tout paratexte autre que le corps du texte, souvent numéroté en chiffres romain</div>
+    </front>
+    <body>
+      <head>Corps du livre</head>
+      <div><head>Chapitre 1</head></div>
+      <div><head>Chapitre 2</head></div>
+      <!-- … -->
+    </body>
+    <back>
+      <div type="index">…</div>     
+      <div type="toc">…</div>
+    </back>
+  </text>
+</TEI>            
+          </a:example>
+        </div>
+        <ref name="lang-att"/>
+        <optional>
+          <choice>
+            <ref name="n-att"/>
+            <ref name="id-att"/>
+          </choice>
+        </optional>
+        <!-- attributs d'autres espaces de noms -->
+        <zeroOrMore>
+          <attribute>
+            <anyName>
+              <except>
+                <name>xml:lang</name>
+                <name>xml:id</name>
+                <name ns="">n</name>
+              </except>
+            </anyName>
+          </attribute>
+        </zeroOrMore>
+        <!--
+        <optional>
+          <element name="teiHeader">
+            <oneOrMore>
+              <ref name="anyTEI"/>
+            </oneOrMore>
+          </element>
+        </optional>
+        -->
+        <!-- teiHeader -->
+        <ref name="teiHeader"/>
+        <element name="text">
+          <optional>
+            <!-- TEINUM obligatoire -->
+            <ref name="front"/>
+          </optional>
+          <choice>
+            <ref name="body"/>
+            <ref name="group"/>
+          </choice>
+          <optional>
+            <ref name="back"/>
+          </optional>
+        </element>
+      </element>
+    </define>
+
+    <define name="group">
+      <element name="group">
+        <choice>
+          <oneOrMore>
+            <ref name="text"/>
+          </oneOrMore>
+          <oneOrMore>
+            <ref name="group"/>
+          </oneOrMore>
+        </choice>
+      </element>
+    </define>
+
+    <define name="text">
+      <element name="text">
+        <a:documentation>Un texte dans un groupe <a:el>group</a:el></a:documentation>
+        <ref name="div.atts"/>
+        <optional>
+          <ref name="front"/>
+        </optional>
+        <ref name="body"/>
+        <optional>
+          <ref name="back"/>
+        </optional>
+      </element>
+    </define>
+
+    <define name="front">
+      <element name="front">
+        <a:documentation>Le texte préliminaire tel qu’imprimé</a:documentation>
+        <div xmlns="http://www.w3.org/1999/xhtml">
+          <p>Chaque section (introduction, préface, etc.) est contenue dans un <a:el>div</a:el>.
+            <br/>Si l’édition contient plusieurs types de numérotations des pages (romain, arabe), alors le <a:el>front</a:el> doit contenir une numérotation homogène (usuellement en chiffres romains).
+            <br/>Le <a:el>front</a:el> ne doit pas contenir de métadonnées structurées qui doivent être inscrites dans le <a:el>teiHeader</a:el>.
+          </p>
+          <a:example>
+            <front>
+              <titlePage>Obligatoire</titlePage>
+              <a:example href="teibook.xml#blurb"/>
+            </front>
+          </a:example>
+        </div>
+        <ref name="xml-atts"/>
+        <zeroOrMore>
+          <ref name="pb"/>
+        </zeroOrMore>
+        <oneOrMore>
+          <choice>
+            <ref name="titlePage"/>
+            <ref name="argument"/>
+            <ref name="castList"/>
+            <ref name="prologue"/>
+            <ref name="div"/>
+            <ref name="div1"/>
+          </choice>
+        </oneOrMore>
+        <zeroOrMore>
+          <ref name="pb"/>
+        </zeroOrMore>
+      </element>
+    </define>
+    <define name="titlePage">
+      <element name="titlePage">
+        <a:documentation>Page de titre</a:documentation>
+        <div xmlns="http://www.w3.org/1999/xhtml">
+          <p>Doit avant tout contenir un lien vers l’image de la page de titre, dans <a:el>pb facs="??"</a:el>.
+            <br/>Le texte de la page doit être transcrit.
+            <br/>La disposition est imitée par des éléments de type bloc. Leur positionnement exact n'est pas requis.
+            <br/>L'interprétation sémantique (auteur, titre, date, imprimeur…) n’est pas requise.</p>
+            <a:example href="teibook.xml#titlePage"/>
+        </div>
+        <optional>
+          <ref name="facs-att"/>
+        </optional>
+        <ref name="xml-atts"/>
+        <ref name="rendering.figure"/>
+        <oneOrMore>
+          <choice>
+            <ref name="pb"/>
+            <ref name="byline"/>
+            <ref name="docAuthor"/>
+            <ref name="titlePart"/>
+            <ref name="docDate"/>
+            <element name="docTitle">
+              <oneOrMore>
+                <ref name="titlePart"/>
+              </oneOrMore>
+            </element>
+            <element name="docEdition">
+              <a:documentation>Mention d’édition telle qu’elle figure sur la page de titre</a:documentation>
+              <ref name="rendering.block"/>
+              <ref name="flow"/>
+            </element>
+            <element name="docImprint">
+              <a:documentation>Mention d'impression de l'éditeur (lieu et date de publication, nom de l’éditeur) telle qu’elle figure sur la page de titre</a:documentation>
+              <ref name="rendering.block"/>
+              <ref name="flow"/>
+            </element>
+            <ref name="epigraph"/>
+            <ref name="argument"/>
+            <ref name="milestone"/>
+          </choice>
+        </oneOrMore>
+      </element>
+    </define>
+    <define name="titlePart">
+      <element name="titlePart">
+        <optional>
+          <attribute name="type">
+            <choice>
+              <value>alt</value>
+              <a:documentation>titre alternatif</a:documentation>
+              <value>desc</value>
+              <a:documentation>titre "paraphrase"</a:documentation>
+              <value>main</value>
+              <a:documentation>titre principal</a:documentation>
+              <value>short</value>
+              <a:documentation>titre abrégé</a:documentation>
+              <value>sub</value>
+              <a:documentation>sous-titre</a:documentation>
+              <data type="NCName"/>
+              <a:documentation>Autre valeur</a:documentation>
+            </choice>
+          </attribute>
+        </optional>
+        <ref name="rendering.block"/>
+        <ref name="flow"/>
+      </element>
+    </define>
+    <define name="back">
+      <element name="back">
+        <a:documentation>Éléments en fin de livre : index, sommaires, glossaires, etc.</a:documentation>
+        <div xmlns="http://www.w3.org/1999/xhtml">
+          <p>Les tables des matières imprimées sont encodées comme des listes (structure hiérarchique récursive), conformément aux conseils de la TEI.
+            <br/>Pour une version électronique (ex : epub), on souhaite pouvoir générer automatiquement la table des matières. 
+            <br/>Le n° de page est indiqué comme un lien renvoyant à un identifiant de <a:el>pb</a:el>.</p>
+          <a:example href="teibook.xml#toc"/>
+        </div>
+        <ref name="xml-atts"/>
+        <zeroOrMore>
+          <choice>
+            <ref name="pb"/>
+            <ref name="head"/>
+          </choice>
+        </zeroOrMore>
+          <!-- Au moins une div si on veut éviter un conflit de <pb/> -->
+        <choice>
+          <oneOrMore>
+            <ref name="div"/>
+          </oneOrMore>
+          <oneOrMore>
+            <ref name="div1"/>
+          </oneOrMore>
+        </choice>
+        <zeroOrMore>
+          <choice>
+            <ref name="pb"/>
+            <ref name="cb"/>
+          </choice>
+        </zeroOrMore>
+      </element>
+    </define>
+    
+
+    <define name="body">
+      <element name="body">
+        <a:documentation>Texte principal</a:documentation>
+        <optional>
+          <ref name="head"/>
+        </optional>
+        <choice>
+          <oneOrMore>
+            <ref name="div"/>
+          </oneOrMore>
+          <oneOrMore>
+            <ref name="div1"/>
+          </oneOrMore>
+        </choice>
+      </element>
+    </define>
+
+    <define name="div.atts">
+      <optional>
+        <attribute name="type">
+          <choice>
+            <value>act</value>
+            <a:documentation>Théâtre, acte.</a:documentation>
+            <value>appendix</value>
+            <a:documentation>Appendice, paratexte, généralement dans &lt;back></a:documentation>
+            <value>article</value>
+            <a:documentation>Article, niveau de référence du découpage du texte. Peut être contenu dans une structuration supérieure (partie, livre…), ou contenir d'autres divisions (sections…). Ce terme ne doit pas être utilisé pour un niveau inférieur ou supérieur à la division de référence d'un texte.</a:documentation>
+            <value>book</value>
+            <a:documentation>Division de haut niveau dans un gros texte</a:documentation>
+            <value>bibliography</value>
+            <a:documentation>Bibliographie, paratexte, généralement dans &lt;back></a:documentation>
+            <value>chapter</value>
+            <a:documentation>Chapitre, niveau de référence équivalent à “article”, souvent la seule dans un roman.</a:documentation>
+            <value>colophon</value>
+            <a:documentation>Colophon, paratexte, généralement dans &lt;back></a:documentation>
+            <value>contents</value>
+            <a:documentation>Table des matières, paratexte dans &lt;front> ou &lt;back></a:documentation>
+            <value>dedication</value>
+            <a:documentation>Dédicace, paratexte généralement dans &lt;front></a:documentation>
+            <value>epigraph</value>
+            <a:documentation>Épigraphe, paratexte généralement dans &lt;front></a:documentation>
+            <value>glossary</value>
+            <a:documentation>Glossaire, paratexte, généralement dans &lt;back></a:documentation>
+            <value>index</value>
+            <a:documentation>Index, paratexte, généralement dans &lt;back></a:documentation>
+            <value>introduction</value>
+            <a:documentation>Introduction, paratexte, généralement dans &lt;front></a:documentation>
+            <value>letter</value>
+            <a:documentation>Lettre.</a:documentation>
+            <value>notes</value>
+            <a:documentation>Notes de fin de volume, paratexte, généralement dans &lt;back></a:documentation>
+            <value>poem</value>
+            <a:documentation>Un poème</a:documentation>
+            <value>preface</value>
+            <a:documentation>Préface, paratexte, généralement dans &lt;front></a:documentation>
+            <value>scene</value>
+            <a:documentation>Théâtre, scène.</a:documentation>
+            <value>set</value>
+            <a:documentation>Théâtre, pages liminaires.</a:documentation>
+            <value>toc</value>
+            <a:documentation>Table des matières, synonyme de “contents”, paratexte dans &lt;front> ou &lt;back></a:documentation>
+            <data type="Name"/>
+            <a:documentation>Mot clé libre lorsqu’aucune des valeurs définies semble adaptée</a:documentation>
+          </choice>
+        </attribute>
+      </optional>
+      <optional>
+        <ref name="n-att"/>
+      </optional>
+      <ref name="xml-atts"/>
+    </define>
+    
+    <define name="div">
+      <element name="div">
+        <a:documentation>Sections du texte, &lt;html5:section>, &lt;html5:article> </a:documentation>
+        <div xmlns="http://www.w3.org/1999/xhtml">
+          <p>Le texte est un arbre de sections (<a:el>div</a:el>) hiérarchiques. La hiérarchie est récursive. Il y a cependant un niveau privilégié, le chapitre ou l’article, qui correspond à l’unité documentaire référencée par la table des matières, ou au juste découpage pour l’écran. Cette unité peut être contenue dans d’autres hiérarchies (livres, tomes, volumes…), ou contenir elle-même de la hiérarchie (parties, sections, sous-sections…). L’unité documentaire sera marqué par un attribut <a:att>type</a:att> avec la valeur “article” (qui correspond à la terminologie html5:article <a href="http://www.w3.org/TR/html5/the-article-element.html#the-article-element">[spec]</a>). Cette marque est indispensable pour générer automatiquement une table des matières et découper un livre en différentes pages ou fichiers.</p>
+          <p>Une section doit principalement contenir soit des <a href="#block">blocs</a>, soit des sections (<a:el>div</a:el>).</p>
+          <a:example>
+            <!-- Une interprétation éditoriale de la Bible où un livre est considéré comme l’unité documentaire référencée par la table des matières -->
+<TEI xmlns="http://www.tei-c.org/ns/1.0">
+  <!-- … -->
+  <text>
+    <body>
+      <head>la Bible</head>
+      <a:example href="teibook.xml#AT"/>
+      <a:example href="teibook.xml#NT"/>
+    </body>
+  </text>
+</TEI>
+          </a:example>
+        </div>
+        <ref name="div.atts"/>
+        <ref name="div.cont"/>
+      </element>
+    </define>
+    
+    <define name="div1">
+      <element name="div1">
+        <ref name="div.atts"/>
+        <ref name="div.cont"/>
+      </element>
+    </define>
+    <define name="div2">
+      <element name="div2">
+        <ref name="div.atts"/>
+        <ref name="div.cont"/>
+      </element>
+    </define>
+    <define name="div3">
+      <element name="div3">
+        <ref name="div.atts"/>
+        <ref name="div.cont"/>
+      </element>
+    </define>
+    
+    <define name="div.cont">
+      <oneOrMore>
+        <choice>
+          <ref name="argument"/>
+          <ref name="byline"/>
+          <ref name="cb"/>
+          <ref name="dateline"/>
+          <ref name="docDate"/>
+          <ref name="epigraph"/>
+          <ref name="fw"/>
+          <ref name="head"/>
+          <ref name="index"/>
+          <ref name="milestone"/>
+          <ref name="pb"/>
+          <ref name="salute"/>
+        </choice>
+      </oneOrMore>
+      <zeroOrMore>
+        <group>
+          <choice>
+            <ref name="block"/>
+            <ref name="gap"/>
+            <ref name="note"/>
+          </choice>
+          <zeroOrMore>
+            <choice>
+              <ref name="fw"/>
+              <ref name="pb"/>
+              <ref name="cb"/>
+              <ref name="milestone"/>
+            </choice>
+          </zeroOrMore>
+        </group>
+      </zeroOrMore>
+
+        <choice>
+          <!-- closer -->
+
+          <zeroOrMore>
+            <group>
+              <choice>
+                <ref name="byline"/>
+                <ref name="dateline"/>
+                <ref name="note"/>
+                <ref name="postscript"/>
+                <ref name="salute"/>
+                <ref name="signed"/>
+                <ref name="trailer"/>
+              </choice>
+              <zeroOrMore>
+                <choice>
+                  <ref name="fw"/>
+                  <ref name="pb"/>
+                  <ref name="cb"/>
+                  <ref name="milestone"/>
+                </choice>
+              </zeroOrMore>
+            </group>
+          </zeroOrMore>
+          <!-- div -->
+            <zeroOrMore>
+              <group>
+                <choice>
+                  <ref name="div"/>
+                  <ref name="div2"/>
+                  <ref name="div3"/>
+                </choice>
+                 <zeroOrMore>
+                  <choice>
+                    <ref name="fw"/>
+                    <ref name="pb"/>
+                    <ref name="cb"/>
+                    <ref name="milestone"/>
+                  </choice>
+                </zeroOrMore>
+              </group>
+            </zeroOrMore>
+        </choice>
+    </define>
+  </div>
+  
+  <div xml:id="block">
+    <a:documentation>Blocs</a:documentation>
+    <define name="block">
+      <choice>
+        <ref name="ab"/>
+        <ref name="bibl"/>
+        <ref name="castList"/>
+        <ref name="cit"/>
+        <ref name="desc"/>
+        <ref name="eg"/>
+        <ref name="entryFree"/>
+        <ref name="figure"/>
+        <ref name="l"/>
+        <ref name="label"/>
+        <ref name="list"/>
+        <ref name="listBibl"/>
+        <ref name="lg"/>
+        <ref name="p"/>
+        <ref name="quote-p"/>
+        <ref name="stage"/>
+        <ref name="sp"/>
+        <ref name="table"/>
+        <!-- points, crée parfois des problèmes d'ambiguïté xsd -->
+        <!-- 
+        <ref name="pb"/>
+        <ref name="cb"/>
+        -->
+      </choice>
+    </define>
+    <define name="flow">
+      <a:documentation>Contenu de type paragraphe : tous les éléments de niveau caractère.</a:documentation>
+      <oneOrMore>
+        <choice>
+          <text/>
+          <ref name="typo"/>
+          <ref name="point"/>
+          <ref name="function"/>
+          <ref name="indexable"/>
+          <ref name="figure"/>
+          <ref name="quote-c"/>
+          <ref name="label"/>
+          <ref name="bibl"/>
+          <ref name="stage"/>
+          <ref name="address"/>
+        </choice>
+      </oneOrMore>
+    </define>
+
+    <define name="p">
+      <element name="p">
+        <a:documentation>Paragraphe de texte, html5:p</a:documentation>
+        <div xmlns="http://www.w3.org/1999/xhtml">  
+<p><a href="http://www.w3.org/TR/html5/the-p-element.html#the-p-element">[html]</a> Pour les paragraphes numérotés, le numéro de l’édition imprimée est à inscrire dans l’attribut <a:att>n</a:att>.</p>
+        </div>
+        <ref name="xml-atts"/>
+        <optional>
+          <ref name="n-att"/>
+        </optional>
+        <ref name="rendering.block"/>
+        <choice>
+          <oneOrMore>
+            <ref name="s"/>
+          </oneOrMore>
+          <ref name="flow"/>
+        </choice>
+      </element>
+    </define>
+    <define name="eg">
+      <element name="eg">
+        <a:documentation>Exemple de code, apparaissant souvent en texte préformaté, html5:pre</a:documentation>        
+        <ref name="xml-atts"/>
+        <optional>
+          <ref name="n-att"/>
+        </optional>
+        <ref name="flow"/>
+      </element>
+    </define>
+    <define name="lg">
+      <element name="lg">
+        <a:documentation>Strophe de vers</a:documentation>
+        <optional>
+          <ref name="type-att"/>
+        </optional>
+        <ref name="rendering.block"/>
+        <ref name="xml-atts"/>
+        <oneOrMore>
+          <choice>
+            <ref name="l"/>
+            <ref name="pb"/>
+            <ref name="cb"/>
+          </choice>
+        </oneOrMore>
+      </element>
+    </define>
+    <define name="l">
+      <element name="l">
+        <a:documentation>Un vers, généralement contenu dans une strophe &lt;lg></a:documentation>
+        <div xmlns="http://www.w3.org/1999/xhtml">Les indentations spécifiques sont à inscrire sous forme d’espaces insécables (caractère unicode équivalent à l’entité XML <![CDATA[&#160;]]>). Pour les vers numérotés, le numéro est inscrit dans l’attribut <a:att>n</a:att>.</div>
+        <ref name="xml-atts"/>
+        <optional>
+          <ref name="n-att"/>
+        </optional>
+        <optional>
+          <attribute name="part">
+            <choice>
+              <value>Y</value>
+              <a:documentation>“Yes” (oui), fragment de vers</a:documentation>
+              <value>N</value>
+              <a:documentation>“No” (non), vers entier</a:documentation>
+              <value>I</value>
+              <a:documentation>“Initial”, début de vers</a:documentation>
+              <value>M</value>
+              <a:documentation>“Medial”, milieu de vers</a:documentation>
+              <value>F</value>
+              <a:documentation>“Final”, fin de vers</a:documentation>
+            </choice>
+          </attribute>
+        </optional>
+        <optional>
+          <attribute name="rend">
+            <choice>
+              <ref name="rend.font"/>
+              <value>refrain</value>
+            </choice>
+          </attribute>
+        </optional>
+        <ref name="flow"/>
+      </element>
+    </define>
+    <define name="desc">
+      <element name="desc">
+        <a:documentation>Description , notamment dans les figures, &lt;html5:figcaption></a:documentation>
+        <!-- identifiant et n° dans le conteneur, lang pour description multiple -->
+        <optional>
+          <ref name="lang-att"/>
+        </optional>
+        <ref name="flow"/>
+      </element>
+    </define>
+    <define name="label">
+      <element name="label">
+        <a:documentation>Étiquette, pour un intitulé court, de niveau paragraphe ou de niveau caractère. Utilisé par exemple pour les intertitres, pour des listes de définitions, ou dans le théâtre.</a:documentation>
+          <ref name="rendering.block"/>
+          <zeroOrMore>
+            <choice>
+              <ref name="textual"/>
+              <ref name="name"/>
+              <ref name="foreign"/>
+              <ref name="term"/>
+            </choice>
+          </zeroOrMore>
+          <optional>
+            <ref name="place-att"/>
+          </optional>
+          <optional>
+            <attribute name="type">
+              <choice>
+                <value>head</value>
+                <a:documentation>Intertitre indépendant de la hiérarchie du document (pas un titre de partie ou de section)</a:documentation>
+                <value>speaker</value>
+                <a:documentation>Théâtre, intertitre avant une tirade contenant généralement au moins un nom de personnage &lt;name>, et parfois des didascalies &lt;stage></a:documentation>
+              </choice>
+            </attribute>
+          </optional>
+      </element>
+    </define>
+    <define name="bibl">
+      <element name="bibl">
+        <a:documentation>Référence bibliographique. Peut apparaître comme un bloc, comme un item de liste &lt;listBibl>, ou comme un élément “inline” contenu dans un bloc.</a:documentation>
+        <optional>
+          <ref name="n-att"/>
+        </optional>
+        <optional>
+          <a:documentation>Lier une référence bibliographique à une citation par exemple.</a:documentation>
+          <ref name="corresp-att"/>
+        </optional>
+        <optional>
+          <attribute name="type">
+            <value>embed</value>
+          </attribute>
+        </optional>
+        <oneOrMore>
+          <choice>
+            <text/>
+            <ref name="author"/>
+            <ref name="title"/>
+            <ref name="date"/>
+            <ref name="hi"/>
+            <ref name="num"/>
+            <ref name="point"/>
+            <ref name="ref"/>
+            <!-- publisher avec les entités nommées ? pas nécessaire, dans la mesure où on ne souhaite pas les indexer pour l’instant -->
+            <element name="publisher">
+              <zeroOrMore>
+                <choice>
+                  <text/>
+                  <ref name="hi"/>
+                </choice>
+              </zeroOrMore>
+            </element>
+            <element name="pubPlace">
+              <text/>
+            </element>
+          </choice>
+        </oneOrMore>
+      </element>
+    </define>
+    <define name="address">
+      <element name="address">
+        <a:documentation>Adresse postale de l'éditeur du texte</a:documentation>
+        <oneOrMore>
+          <element name="addrLine">
+            <ref name="textual"/>
+          </element>
+        </oneOrMore>
+      </element>
+    </define>
+    <define name="ab">
+      <element name="ab">
+        <a:documentation>Un bloc “anonyme”. html5: &lt;hr></a:documentation>
+        <div xmlns="http://www.w3.org/1999/xhtml">
+          <p>Usage très restrictif de <a:el>ab</a:el> dans Teibook où cet élement est utilisé en dernier recours pour représenter un ornement ou un séparateur typographique (couillard ou cul de lampe).</p>
+        </div>
+        <a:example href="teibook.xml#ab"/>
+        <attribute name="type">
+          <choice>
+            <value>hr</value>
+            <a:documentation>Ligne horizontale</a:documentation>
+            <value>ornament</value>
+            <a:documentation>Ornements, avec parfois le sens d'un séparateur entre deux sections, couillards et autres culs de lampe</a:documentation>
+          </choice>
+        </attribute>
+        <optional>
+          <attribute name="n"/>
+        </optional>
+        <optional>
+          <ref name="rendering.block"/>
+        </optional>
+        <oneOrMore>
+          <choice>
+            <text/>
+            <ref name="lb"/>
+          </choice>
+        </oneOrMore>
+      </element>
+     </define>
+    <!-- blocs conteneurs de blocs -->
+    <define name="quote-p">
+      <element name="quote">
+        <a:documentation>Citation, notamment les paragraphes en retrait ou/et en italique, &lt;html5:blockquote></a:documentation>
+        <ref name="xml-atts"/>
+        <optional>
+          <ref name="type-att"/>
+        </optional>
+        <!-- Maybe in italic and not in quotes -->
+        <ref name="rendering.block"/>
+        <choice>
+          <!-- Attention au déterminisme xsd pour <figure>, ne pas autoriser note dans note, ainsi que saut de page (ex: note de fin, ou note sur plus d'une page) -->
+          <oneOrMore>
+            <choice>
+              <!-- COS <ref name="bibl"/> -->
+              <text/>
+              <ref name="typo"/>
+              
+              <ref name="function"/>
+              <ref name="indexable"/>
+              <ref name="point"/>
+            </choice>
+          </oneOrMore>
+          <oneOrMore>
+            <choice>
+              <ref name="bibl"/>
+              <ref name="cb"/>
+              <ref name="l"/>
+              <ref name="label"/>
+              <ref name="list"/>
+              <ref name="lg"/>
+              <ref name="lb"/>
+              <ref name="milestone"/>
+              <ref name="note"/>
+              <ref name="p"/>
+              <ref name="pb"/>
+              <ref name="sp"/>
+              <ref name="stage"/>
+              <ref name="table"/>
+            </choice>
+          </oneOrMore>
+        </choice>
+        <optional>
+          <ref name="bibl"/>
+        </optional>
+      </element>
+    </define>
+    <define name="quote-c">
+      <element name="quote">
+        <a:documentation>Citation dans un paragraphe</a:documentation>
+        <ref name="xml-atts"/>
+        <optional>
+          <ref name="type-att"/>
+        </optional>
+        <!-- Maybe in italic and not in quotes -->
+        <ref name="rendering.char"/>
+        <ref name="flow"/>
+      </element>
+    </define>
+
+
+    <define name="cit">
+      <element name="cit">
+        <a:documentation>Permet de regrouper un texte cité avec sa référence bibliographique.</a:documentation>
+        <oneOrMore>
+          <ref name="quote-p"/>
+          <ref name="bibl"/>
+        </oneOrMore>
+      </element>
+    </define>
+
+    <define name="sp">
+      <element name="sp">
+        <a:documentation>Théâtre : tirade, tour de parole</a:documentation>
+        <attribute name="who">
+          <data type="IDREFS"/>
+        </attribute>       
+        <ref name="xml-atts"/>
+        <optional>
+          <element name="speaker">
+            <zeroOrMore>
+              <choice>
+                <ref name="flow"/>
+              </choice>
+            </zeroOrMore>
+          </element>
+          <oneOrMore>
+            <choice>
+              <ref name="pb"/>
+              <ref name="p"/>
+              <ref name="lg"/>
+              <ref name="l"/>
+              <ref name="stage"/>
+              <ref name="quote-p"/>
+              <ref name="label"/>
+              <ref name="figure"/>
+            </choice>
+          </oneOrMore>
+        </optional>
+      </element>
+    </define>
+
+    <define name="entryFree">
+      <a:documentation>Une entrée pour un glossaire</a:documentation>
+      <element name="entryFree">
+        <ref name="xml-atts"/>
+        <element name="form">
+          <zeroOrMore>
+            <choice>
+              <text/>
+              <element name="orth">
+                <text/>
+              </element>
+            </choice>
+          </zeroOrMore>
+        </element>
+        <oneOrMore>
+          <choice>
+            <ref name="quote-p"/>
+            <element name="def">
+              <ref name="xml-atts"/>
+              <ref name="textual"/>
+            </element>
+            <element name="xr">
+              <zeroOrMore>
+                <choice>
+                  <text/>
+                  <ref name="ref"/>
+                </choice>
+              </zeroOrMore>
+            </element>
+          </choice>
+        </oneOrMore>      
+      </element>
+    </define>
+
+    <define name="list">
+      <element name="list">
+        <a:documentation>Listes, &lt;html5:ul> &lt;html5:ol> &lt;html5:dl></a:documentation>
+        <div xmlns="http://www.w3.org/1999/xhtml">   
+          <p>Les listes récursives permettent de représenter de nombreux composants textuels, il sont notamment utilisés, selon les conseils de la documentation TEI, pour les index ou les tables des matières.</p>
+          <a:example href="teibook.xml#list"/>
+          <p>Liste de définitions, <a href="http://www.w3.org/TR/html5/the-dl-element.html#the-dl-element">[html]</a>,  adapté à l’encodage de tables à deux colonnes de type légende ou dictionnaire. L’attribut <a:att>rend</a:att> permet à un programme d’interpréter différemment l’information.</p>        
+          <a:example href="teibook.xml#dl"/>
+        </div>
+        <optional>
+          <ref name="rend.list"/>
+        </optional>
+        <optional>
+          <attribute name="type">
+            <choice>
+              <value>dialogue</value>
+              <a:documentation>Dialogue, dans un roman, pour grouper les tours de parole</a:documentation>
+              <value>gloss</value>
+              <a:documentation>Glossaire, avec une alternance &lt;label> &lt;item></a:documentation>
+              <value>index</value>
+              <a:documentation>Index, pour reprise de l’imprimé</a:documentation>
+              <value>toc</value>
+              <a:documentation>“Table of Contents”, table des matières, pour reprise de l’imprimé</a:documentation>
+              <data type="token"/>
+            </choice>
+          </attribute>
+        </optional>
+        <zeroOrMore>
+          <ref name="index"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="head"/>
+        </zeroOrMore>
+        <oneOrMore>
+          <choice>
+            <ref name="label"/>
+            <ref name="item"/>
+            <ref name="note"/>
+            <ref name="figure"/>
+            <ref name="pb"/>
+            <ref name="cb"/>
+            <ref name="lb"/>
+          </choice>
+        </oneOrMore>
+      </element>
+    </define>
+
+    <define name="rend.list">
+      <attribute name="rend">
+        <a:documentation>Type de liste, indiqué par un caractère, ou une valeur CSS standard</a:documentation>
+        <div xmlns="http://www.w3.org/1999/xhtml"><a href="http://www.w3.org/TR/CSS21/generate.html#propdef-list-style-type">[CSS]</a>. Le nombre de valeurs est susceptible de s’étendre. En cas d’encodage de texte existant, si la numérotation est difficile à générer automatiquement, il peut être plus commode de la reporter en valeur d’attribut de l’item <a:att>n</a:att>.</div>
+        <choice>
+          <value>disc</value>
+          <a:documentation>disque</a:documentation>
+          <value>circle</value>
+          <a:documentation>cercle</a:documentation>
+          <value>square</value>
+          <a:documentation>carré</a:documentation>
+          <value>1</value>
+          <a:documentation>décimal : 1 2</a:documentation>
+          <value>decimal</value>
+          <a:documentation>décimal : 1. 2.</a:documentation>
+          <value>decimal-leading-zero</value>
+          <a:documentation>décimal formlaté : 01, 02…</a:documentation>
+          <value>upper-roman</value>
+          <a:documentation>I II III</a:documentation>
+          <value>I.</value>
+          <a:documentation>I. II. III.</a:documentation>
+          <value>lower-latin</value>
+          <a:documentation>alphabet latin minuscule : a, b, c…</a:documentation>
+          <value>lower-alpha</value>
+          <a:documentation>alphabétique minuscule : a, b, c…</a:documentation>
+          <value>upper-latin</value>
+          <a:documentation>alphabet latin majuscule : A, B, C…</a:documentation>
+          <value>upper-alpha</value>
+          <a:documentation>alphabétique majuscule : A, B, C…</a:documentation>
+          <value>row</value>
+          <value>-</value>
+          <value>–</value>
+          <value>—</value>
+        </choice>
+      </attribute>
+    </define>
+    
+    <define name="item">
+      <element name="item">
+        <optional>
+          <ref name="n-att"/>
+        </optional>
+        <ref name="xml-atts"/>
+        <choice>
+          <oneOrMore>
+            <choice>
+              <text/>
+              <ref name="typo"/>
+              <ref name="function"/>
+              <ref name="indexable"/>
+            </choice>
+            <optional>
+              <ref name="point"/>
+            </optional>
+          </oneOrMore>
+          <oneOrMore>
+            <!-- list is already in block, good idea ? -->
+            <ref name="block"/>
+          </oneOrMore>
+        </choice>
+      </element>
+    </define>
+    <define name="listBibl">
+      <element name="listBibl">
+        <a:documentation>Liste de références bibliographiques</a:documentation>
+        <div xmlns="http://www.w3.org/1999/xhtml">
+          <a:example href="teibook.xml#listBibl"/>
+        </div>
+        <optional>
+          <ref name="rend.list"/>
+        </optional>
+        <optional>
+          <ref name="head"/>
+        </optional>
+        <oneOrMore>
+          <choice>
+            <ref name="pb"/>
+            <ref name="cb"/>
+            <ref name="bibl"/>
+            <ref name="listBibl"/>
+          </choice>
+        </oneOrMore>
+      </element>
+    </define>
+    <define name="castList">
+      <element name="castList">
+        <a:documentation>Théâtre, distribution</a:documentation>
+        <optional>
+          <ref name="head"/>
+        </optional>
+        <oneOrMore>
+          <element name="castItem">
+            <ref name="xml-atts"/>
+            <zeroOrMore>
+              <choice>
+                <text/>
+                <element name="role">
+                  <ref name="id-att"/>
+                  <ref name="textual"/>
+                </element>
+                <element name="actor">
+                  <optional>
+                    <ref name="id-att"/>
+                  </optional>
+                  <ref name="textual"/>
+                </element>
+                <element name="roleDesc">
+                  <ref name="flow"/>
+                </element>
+              </choice>
+            </zeroOrMore>
+          </element>
+        </oneOrMore>
+      </element>
+    </define>
+
+    
+    <define name="table">
+      <element name="table">
+        <a:documentation>Table, &lt;html5:table>. Avant essaiera de limiter l'usage des tables aux structures de contenu qui ne peuvent pas être ramenées à une liste &lt;list> (penser notamment aux listes de définitions qui correspondent à des tableaux à deux colonnes)</a:documentation>
+        <ref name="rendering.figure"/>
+        <zeroOrMore>
+          <choice>
+            <ref name="head"/>
+            <ref name="index"/>
+          </choice>
+        </zeroOrMore>
+         <oneOrMore>
+          <choice>
+            <element name="row">
+              <optional>
+                <attribute name="role">
+                  <choice>
+                    <value>data</value>
+                    <a:documentation>(défaut) &lt;html5:tbody></a:documentation>
+                    <value>label</value>
+                    <a:documentation>&lt;html5:thead> ou &lt;html5:tfoot></a:documentation>
+                  </choice>
+                </attribute>
+              </optional>
+              <ref name="rendering-atts"/>
+              <optional>
+                <ref name="n-att"/>
+              </optional>
+              <oneOrMore>
+                <element name="cell">
+                  <optional>
+                    <attribute name="role">
+                      <choice>
+                        <value>data</value>
+                        <a:documentation>(défaut) &lt;html5:td&gt;</a:documentation>
+                        <value>label</value>
+                        <a:documentation>&lt;html5:th&gt;</a:documentation>
+                        <text/>
+                      </choice>
+                    </attribute>
+                  </optional>
+                  <optional>
+                    <!-- TODO border ? -->
+                    <attribute name="rend">
+                      <choice>
+                        <value>center</value>
+                        <value>center bottom</value>
+                        <value>center middle</value>
+                        <value>center top</value>
+                        <value>left</value>
+                        <value>left bottom</value>
+                        <value>left middle</value>
+                        <value>left top</value>
+                        <value>right</value>
+                        <value>right bottom</value>
+                        <value>right middle</value>
+                        <value>right top</value>
+                      </choice>
+                    </attribute>
+                  </optional>
+                  <optional>
+                    <attribute name="rows"/>
+                  </optional>
+                  <optional>
+                    <attribute name="cols"/>
+                  </optional>
+                  <choice>
+                    <ref name="flow"/>
+                    <oneOrMore>
+                      <ref name="block"/>
+                    </oneOrMore>
+                  </choice>
+                </element>
+              </oneOrMore>
+            </element>
+            <ref name="pb"/>
+            <ref name="cb"/>
+          </choice>
+        </oneOrMore>
+      </element>
+    </define>
+    
+    <define name="figure">
+      <element name="figure">
+        <a:documentation>Boîte hors du flux, parfois encadrée, pouvant contenir une image, une table, une formule, ou autre objet susceptible d’être référencé dans une table dédiée. Permet notamment d’envelopper une image avec sa légende. &lt;html5:figure></a:documentation>
+        <optional>
+          <ref name="n-att"/>
+        </optional>
+        <ref name="xml-atts"/>
+        <ref name="rendering.figure"/>
+        <optional>
+          <ref name="type-att"/>
+        </optional>
+        <oneOrMore>
+          <choice>
+            <ref name="bibl"/>
+            <ref name="cb"/>
+            <ref name="dateline"/>
+            <ref name="desc"/>
+            <ref name="eg"/>
+            <ref name="formula"/>
+            <ref name="graphic"/>
+            <ref name="head"/>
+            <ref name="index"/>
+            <ref name="label"/>
+            <ref name="p"/>
+            <ref name="pb"/>
+            <ref name="quote-p"/>
+            <ref name="salute"/>
+            <ref name="signed"/>
+            <ref name="table"/>
+          </choice>
+        </oneOrMore>
+      </element>
+    </define>
+
+  </div>
+  <div xml:id="zone">
+    <a:documentation>Entrées et sorties de section</a:documentation>
+    <define name="head">
+      <element name="head">
+        <a:documentation>Titre, niveau déterminé par le contexte hiérarchique, html5 : h1, h2, h3, h4, h5, h6</a:documentation>
+        <div xmlns="http://www.w3.org/1999/xhtml">
+          <p>Pour la génération automatique d’interfaces de navigation telle qu’une table des matières, il est nécessaire de disposer des titres expurgés de leur numérotation (afin d’éviter la redondance entre la numérotation inscrite en dur et la numérotation générée). À cette fin, il convient d’encoder cette numérotation avec la balise <a:el>num</a:el>. Ex. : <a:example><head><num>III. — </num>La transmission des témoignages</head></a:example></p>
+          <p>L'attribut @xml:id est volontairement non autorisé à ce niveau pour encourager l'identification de la section enveloppante.</p>
+        </div>
+        <optional>
+          <ref name="lang-att"/>
+        </optional>
+        <ref name="rendering.block"/>
+        <optional>
+          <attribute name="type">
+            <choice>
+              <value>alt</value>
+              <a:documentation>Titre alternatif</a:documentation>
+              <value>desc</value>
+              <a:documentation>Description fonctionnant comme un titre</a:documentation>
+              <value>main</value>
+              <a:documentation>Titre principal</a:documentation>
+              <value>short</value>
+              <a:documentation>Titre abrégé</a:documentation>
+              <value>sub</value>
+              <a:documentation>Sous-titre</a:documentation>
+              <data type="token"/>
+            </choice>
+          </attribute>
+        </optional>
+        <ref name="flow"/>
+      </element>
+    </define>
+    <define name="argument">
+      <element name="argument">
+        <a:documentation>Résumé d'une section, contient des blocs</a:documentation>
+        <optional>
+          <attribute name="ana"/>
+        </optional>
+        <ref name="xml-atts"/>
+        <ref name="rendering.figure"/>
+        <optional>
+          <ref name="head"/>
+        </optional>
+        <zeroOrMore>
+          <ref name="block"/>
+        </zeroOrMore>
+      </element>
+    </define>
+    <define name="prologue">
+      <element name="prologue">
+        <a:documentation>Début d’une pièce de théâtre, contient des blocs</a:documentation>
+        <ref name="xml-atts"/>
+        <ref name="rendering.figure"/>
+        <optional>
+          <ref name="head"/>
+        </optional>
+        <zeroOrMore>
+          <ref name="block"/>
+        </zeroOrMore>
+      </element>
+    </define>
+    <define name="postscript">
+      <element name="postscript">
+        <a:documentation>Post-scriptum, dans une lettre, ou plus généralement, en fin de section</a:documentation>
+        <ref name="xml-atts"/>
+        <ref name="rendering.figure"/>
+        <oneOrMore>
+          <choice>
+            <ref name="block"/>
+            <ref name="pb"/>
+            <ref name="cb"/>
+          </choice>
+        </oneOrMore>
+      </element>
+    </define>
+    <define name="trailer">
+      <element name="trailer">
+        <a:documentation>Un titre de fin (livre, chapitre, page…)</a:documentation>
+        <ref name="xml-atts"/>
+        <ref name="rendering.block"/>
+        <ref name="flow"/>
+      </element>
+    </define>
+    <define name="epigraph">
+      <element name="epigraph">
+        <a:documentation>Épigraphe, citation en exergue de section</a:documentation>
+        <a:example>
+<epigraph>
+  <l>Quand tu diras à Tabaqui<note n="9" place="bottom">Le Chacal.</note> : Frère, à l’Hyène :
+  <lb/>Voici mon gibier,</l>
+  <l>Tu feras ta trêve avec Jacala<note n="10" place="bottom">Crocodile de rivière,  habituellement charognard.</note>, le Ventre qui court
+  <lb/>sur quatre pieds.</l>
+  <bibl>Loi de Jungle.</bibl>
+</epigraph>
+        </a:example>
+        <ref name="xml-atts"/>
+        <ref name="rendering.block"/>
+        <oneOrMore>
+          <choice>
+            <ref name="p"/>
+            <ref name="l"/>
+            <ref name="lb"/>
+            <ref name="bibl"/>
+          </choice>
+        </oneOrMore>
+      </element>
+    </define>
+    <define name="docDate">
+      <element name="docDate">
+        <a:documentation>Date de création d'un document</a:documentation>
+        <ref name="xml-atts"/>
+        <optional>
+          <attribute name="when"/>
+        </optional>
+        <ref name="rendering.block"/>
+        <ref name="flow"/>
+      </element>
+    </define>
+    <define name="salute">
+      <element name="salute">
+        <a:documentation>Salutation</a:documentation>
+        <ref name="rendering.block"/>
+        <ref name="flow"/>
+      </element>
+    </define>
+    <define name="signed">
+      <element name="signed">
+        <a:documentation>Signature</a:documentation>
+        <ref name="rendering.block"/>
+        <ref name="flow"/>
+      </element>
+    </define>
+    <define name="byline">
+      <element name="byline">
+        <a:documentation>Mention de responsabilité (dans un article de presse, une lettre…). On souhaitera y voir </a:documentation>
+        <zeroOrMore>
+          <choice>
+            <text/>
+            <ref name="docAuthor"/>
+            <ref name="hi"/>
+            <ref name="title"/>
+            <ref name="date"/>
+            <ref name="placeName"/>
+            <ref name="point"/>
+          </choice>
+        </zeroOrMore>
+      </element>
+    </define>
+    <define name="dateline">
+      <element name="dateline">
+        <a:documentation>Mention de date, de temps ou de lieu, ex : donné le … à … ("datum", dans une lettre, une charte…)</a:documentation>
+        <ref name="rendering.block"/>
+        <interleave>
+          <text/>
+          <zeroOrMore>
+            <choice>
+              <ref name="del"/>
+              <ref name="docDate"/>
+              <ref name="indexable"/>
+              <ref name="hi"/>
+              <ref name="point"/>
+            </choice>
+          </zeroOrMore>
+        </interleave>
+      </element>
+    </define>
+  </div>
+  <div xml:id="typo">
+    <a:documentation>Typographie de niveau caractère</a:documentation>
+    <define name="typo">
+      <zeroOrMore>
+        <choice>
+          <ref name="c"/>
+          <ref name="emph"/>
+          <ref name="hi"/>
+          <ref name="g"/>
+          <ref name="space"/>
+          <ref name="gap"/>
+        </choice>
+      </zeroOrMore>
+    </define>
+
+    
+    <define name="emph">
+      <element name="emph">
+        <a:documentation>Mise en valeur, &lt;html5:em></a:documentation>
+        <ref name="textual"/>
+      </element>
+    </define>
+
+    <define name="hi">
+      <element name="hi">
+        <a:documentation>Mise en forme de niveau caractère, sans interprétation sémantique (ex : italique, gras, couleurs…)</a:documentation>
+        <div xmlns="http://www.w3.org/1999/xhtml">
+          <p>La liste des possibilités de mise en forme est volontairement close, afin de favoriser un balisage plus sémantique, ou alors de reporter les styles de caractères plus spécifiques vers l'élément <a:el>seg</a:el>.</p>
+          <p>L'attribut @n peut être utilisé pour conserver un code couleur, par exemple après conversion depuis un traitement de texte (surlignage, coloration), en attendant que la fonction sémantique voulue par l'auteur soit attribuée par une transformation ultérieure.</p>
+          <p>Il est parfois nécessaire de préciser qu'à l'intérieur d'un segment mis en forme (ex : citation en italique), une expression apparaît en romain (ex : mot en mention dans une citation : <i>« J’appelle</i> typographie <i>la mise à plat d’une pensée »</i> ; titre d’ouvrage dans un titre en italique : <i>le</i> Quichotte <i>au XX<sup>e</sup> s.</i>). On recommande pour ces cas de redoubler la mise en forme (ex : italique dans l'italique), l'apparence peut ainsi être restaurée par stylage. Un balisage typographique doit pouvoir généralement résoudre tous ces cas.</p>
+          <a:example>
+            <!-- Balisage TEI respectant la continuité typographique -->
+            <hi rend="i">« J’appelle <hi rend="i">typographie</hi> la mise à plat d’une pensée »</hi>
+            <!-- Balisage TEI plus sémantique -->
+            <q>J'appelle <term rend="i">typographie</term> la mise à plat d’une pensée</q>
+          </a:example>          
+        </div>
+        <attribute name="rend">
+          <choice>
+            <ref name="rend.font"/>
+            <value>strong</value>
+            <a:documentation>Renforcé (souvent en gras) &lt;html5:strong></a:documentation>
+            <value>mark</value>
+            <a:documentation>Surligné &lt;html5:mark></a:documentation>
+            <!-- généré par odt_tei
+            <value>color</value>
+            <a:documentation>En couleur, css{color:@n}</a:documentation>
+            -->
+          </choice>
+        </attribute>
+        <!--
+        <optional>
+          <attribute name="n"/>
+        </optional>
+        -->
+        <optional>
+          <ref name="rendition-att"/>
+        </optional>
+        <!-- Pas de hi dans du hi ? -->
+        <zeroOrMore>
+          <choice>
+            <ref name="textual"/>
+            <ref name="indexable"/>
+          </choice>
+        </zeroOrMore>
+      </element>
+    </define>
+    
+    <define name="g">
+      <element name="g">
+        <a:documentation>Caractère particulier qui peuvent ne pas être correctement rendus dans les polices unicode habituelles. L'encadrement du caractère risqué ou approximatif permet d'adapter le rendu selon le média de destination. Indiquer obligatoirement un code local dans l’attribut @n (dans l'esprit du nom d'une entité XML).</a:documentation>
+        <div xmlns="http://www.w3.org/1999/xhtml">
+          <a:example><c n="cent">¢</c></a:example>
+        </div>
+        <ref name="n-att"/>
+        <ref name="rendering.char"/>
+        <text/>
+        <optional>
+          <ref name="note"/>
+        </optional>
+      </element>
+    </define>
+
+    <define name="c">
+      <element name="c">
+        <a:documentation>Caractère auquel attacher des propriétés particulières, par exemple pour isoler une lettrine.</a:documentation>
+        <a:example>
+          <l><c n="vertical">L</c>’amour est libre, il n’est jamais soumis au sort</l>
+          <l><c rend="vertical">O</c> Lou, le mien est plus fort encor que la mort</l>
+          <l><c rend="vertical">U</c>n cœur, le mien te suit dans ton voyage au Nord</l>
+        </a:example>
+        <div xmlns="http://www.w3.org/1999/xhtml">
+          <div><span style="font-size: 170%; font-weight: bold; display: inline-block; transform-origin: top right 0; margin-top: 1.35em; position: absolute; transform: rotate(90deg);">L</span>’amour est libre, il n’est jamais soumis au sort</div>
+          <div><span style="font-size: 170%; font-weight: bold; display: inline-block; transform-origin: top right 0; margin-top: 1.35em; position: absolute; transform: rotate(90deg);">O</span> Lou, le mien est plus fort encor que la mort</div>
+          <div><span style="font-size: 170%; font-weight: bold; display: inline-block; transform-origin: top right 0; margin-top: 1.35em; position: absolute; transform: rotate(90deg);">U</span>n cœur, le mien te suit dans ton voyage au Nord</div>
+        </div>
+        <optional>
+          <ref name="n-att"/>
+        </optional>
+        <optional>
+          <attribute name="rend">
+            <choice>
+              <ref name="rend.font"/>
+              <value>vertical</value>
+              <value>drop-cap</value>
+            </choice>
+          </attribute>
+        </optional>
+        <text/>
+        <optional>
+          <ref name="note"/>
+        </optional>
+      </element>
+    </define>
+
+    <define name="seg">
+      <element name="seg">
+        <a:documentation>Segment de texte à distinguer, à utiliser en derniers recours lorsqu’aucun autre élément n’est approprié, permet notamment de porter une classe ou un identifiant, &lt;html5:span></a:documentation>
+        <optional>
+          <!-- <ref name="type-att"/> -->
+          <attribute name="type">
+            <choice>
+              
+              <value>exquote</value>
+              <a:documentation>Baliser dans une citation les incises et commentaires qui viennent l’interrompre.</a:documentation><!-- http://listserv.brown.edu/archives/cgi-bin/wa?A2=TEI-L;bc182630.1306 -->
+              <value>tab</value>
+              <!--
+              <text/>
+              -->
+            </choice>
+          </attribute>
+        </optional>
+        <ref name="rendering.char"/>
+        <ref name="xml-atts"/>
+        <zeroOrMore>
+          <choice>
+            <text/>
+            <ref name="typo"/>
+            <ref name="point"/>
+          </choice>
+        </zeroOrMore>
+      </element>
+    </define>
+    
+    <define name="space">
+      <element name="space">
+        <a:documentation>Espace significatif. Dans le mesure du possible, éviter cet élément lorsque l’espace peut être représenté par une suite d’espaces insécables ' ' (caractère unicode équivalent à l’entité XML <![CDATA[&#160;]]>). </a:documentation>
+        <optional>
+          <attribute name="extent">
+            <a:documentation>Renseigner avec une expression CSS : width:5ex /* 5 caractères de long */; width:50% /* une demi-ligne */; height:4em /* 4 ligne de haut */</a:documentation>
+          </attribute>
+        </optional>
+        <optional>
+          <attribute name="rend">
+            <choice>
+              <value>tab</value>
+            </choice>
+          </attribute>
+        </optional>
+         <data type="token">
+          <param name="pattern"> *</param>
+        </data>
+      </element>
+    </define>
+    
+     <define name="gap">
+      <element name="gap">
+        <a:documentation>Texte non transcrit. Indiquer obligatoirement une raison et un ordre de grandeur. Les unités de distance linéaire sont interprétées verticalement lorsque que l’élément est utilisé au niveau paragraphe, sinon elles sont interprétées horizontalement. Pour les manques horizontaux sur plus d'une ligne, préférer un ordre de grandeur en caractères.</a:documentation>
+        <attribute name="reason">
+          <choice>
+            <value>illisible</value>
+            <value>hors projet</value>
+            <text/>
+          </choice>
+        </attribute>
+        <attribute name="quantity"/>
+        <attribute name="unit">
+          <choice>
+            <value>lines</value>
+            <a:documentation>lignes de texte</a:documentation>
+            <value>chars</value>
+            <a:documentation>caractères</a:documentation>
+            <value>mm</value>
+            <a:documentation>millimètres</a:documentation>
+            <value>cm</value>
+            <a:documentation>centimètres</a:documentation>
+          </choice>
+        </attribute>     
+      </element>
+    </define>
+
+  </div>
+  
+  <div xml:id="function">
+    <a:documentation>Fonctions</a:documentation>
+    <define name="function">
+      <a:documentation>Balises de niveau caractère qui indiquent la fonction d’un segment de texte, sans préjuger de sa mise en valeur typographique.</a:documentation>
+      <choice>
+        <ref name="add"/>
+        <ref name="app"/>
+        <ref name="code"/>
+        <ref name="corr"/>
+        <ref name="date"/>
+        <ref name="del"/>
+        <ref name="email"/>
+        <ref name="foreign"/>
+        <ref name="formula"/>
+        <ref name="gloss"/>
+        <ref name="num"/>
+        <ref name="phr"/>
+        <ref name="q"/>
+        <ref name="ref"/>
+        <ref name="said"/>
+        <ref name="seg"/>
+        <ref name="surname"/>
+      </choice>
+    </define>
+    
+    <define name="s">
+      <element name="s">
+        <a:documentation>Pour découpage à la phrase</a:documentation>
+        <ref name="xml-atts"/>
+        <ref name="flow"/>
+      </element>
+    </define>
+    
+    <define name="ref">
+      <element name="ref">
+        <a:documentation>Lien simple, html5:&lt;a href="target">texte&lt;/a>. Pour les liens internes, utiliser une URI ancre, #p0101 (page 101).</a:documentation>
+        <ref name="xml-atts"/>
+        <attribute name="target">
+          <text/>
+        </attribute>
+        <ref name="rendering.char"/>
+        <optional>
+          <ref name="type-att"/>
+        </optional>
+        <zeroOrMore>
+          <choice>
+            <text/>
+            <element name="hi">
+              <attribute name="rend">
+                <choice>
+                  <value>sub</value>
+                  <value>sup</value>
+                  <value>sc</value>
+                  <value>i</value>
+                  <value>n</value>
+                </choice>
+              </attribute>
+              <ref name="textual"/>
+            </element>
+            <ref name="author"/>
+            <ref name="title"/>
+            <ref name="num"/>
+            <ref name="point"/>
+          </choice>
+        </zeroOrMore>
+      </element>
+    </define>
+
+    <define name="email">
+      <element name="email">
+        <a:documentation>Adresse courriel</a:documentation>
+        <text/>
+      </element>
+    </define>
+
+    <define name="said">
+      <element name="said">
+        <a:documentation>Parole, par exemple dans un dialogue de roman</a:documentation>
+        <ref name="xml-atts"/>
+        <ref name="flow"/>
+      </element>
+    </define>
+    
+    <define name="q">
+      <element name="q">
+        <a:documentation>L’usage de cette balise est très déconseillé, sa sémantique étant particulièrement vague</a:documentation>
+        <ref name="xml-atts"/>
+        <zeroOrMore>
+          <choice>
+            <ref name="textual"/>
+            <ref name="indexable"/>
+          </choice>
+        </zeroOrMore>
+      </element>
+    </define>
+
+    <define name="app">
+      <element name="app">
+        <a:documentation>Note d’apparat critique</a:documentation>
+        <ref name="n-att"/>
+        <ref name="xml-atts"/>
+        <optional>
+          <element name="lem">
+            <ref name="flow"/>
+          </element>
+          <ref name="note"/>
+        </optional>
+      </element>
+    </define>
+
+    <define name="num">
+      <element name="num">
+        <a:documentation>Nombre</a:documentation>
+        <div xmlns="http://www.w3.org/1999/xhtml">
+          <p>Le balisage des nombres est spécialement utile pour les chiffres romains, afin qu’ils puissent paraître en petites capitales selon les conventions d’édition, par exemple les siècles. <span style="font-variant:small-caps">xvi</span><sup>e</sup> s.</p>
+        <a:example><num>xvi<hi rend="sup">e</hi></num> s.</a:example>
+        </div>
+        <optional>
+          <ref name="type-att"/>
+        </optional>
+        <optional>
+          <attribute name="value">
+            <a:documentation>Pour certains corpus, comme les éditions de comptabilités manuscrites, les valeurs numériques peuvent être exploitées (ex : vérification automatique de sommes). L’attribut @value permet d’inscrire de telles valeurs en notation décimale.</a:documentation>
+            <data type="integer"/>
+          </attribute>
+        </optional>
+        <ref name="textual"/>
+      </element>
+    </define>
+    
+    <define name="add">
+      <element name="add">
+        <a:documentation>Segment de texte inséré, &lt;html5:ins&gt;</a:documentation>
+        <text/><!-- TODO: macro {text}, hi, num ? -->
+      </element>
+    </define>
+    
+    <define name="del">
+      <element name="del">
+        <a:documentation>Segment de texte supprimé, &lt;html5:del&gt;</a:documentation>
+        <text/><!-- TODO: macro {text}, hi, num ? -->
+      </element>
+    </define>
+    
+    <define name="corr">
+      <element name="corr">
+        <a:documentation>Segment de texte corrigé</a:documentation>
+        <optional>
+          <attribute name="n"/>
+          <a:documentation>Permet de retenir le mot corrigé</a:documentation>
+        </optional>
+        <text/><!-- TODO: macro {text}, hi, num ? -->
+      </element>
+    </define>
+    
+    <define name="formula">
+      <element name="formula">
+        <a:documentation>Formule mathématique</a:documentation>
+        <optional>
+          <ref name="rend-att"/>
+        </optional>
+        <optional>
+          <ref name="id-att"/>
+        </optional>
+        <zeroOrMore>
+          <choice>
+            <text/>
+            <ref name="hi"/>
+            <ref name="graphic"/>
+          </choice>
+        </zeroOrMore>
+        <text/>
+      </element>
+    </define>
+
+    <define name="foreign">
+      <element name="foreign">
+        <a:documentation>Mot, expression, ou proposition dans une langue différente du contexte. Permet de spécifier une police particulière pour certains alphabets (grec, hébreu…).</a:documentation>
+        <ref name="xml-atts"/>
+        <ref name="textual"/>
+      </element>
+    </define>
+
+    <define name="gloss">
+      <element name="gloss">
+        <a:documentation>Glose, définition</a:documentation>
+        <ref name="xml-atts"/>
+        <ref name="rendering.char"/>
+        <ref name="textual"/>
+      </element>
+    </define>
+
+    <define name="phr">
+      <element name="phr">
+        <a:documentation>Syntagme, expression au sens grammatical</a:documentation>
+        <ref name="xml-atts"/>
+        <ref name="rendering.char"/>
+        <ref name="textual"/>
+      </element>
+    </define>
+
+    <define name="date">
+      <element name="date">
+        <a:documentation>Date</a:documentation>
+        <ref name="xml-atts"/>
+        <optional>
+          <ref name="evidence-att">
+            <a:documentation>Date forgée</a:documentation>
+          </ref>
+        </optional>
+        <optional>
+          <attribute name="type"/>
+        </optional>
+        <optional>
+          <attribute name="when"/>
+        </optional>
+        <ref name="rendering.char"/>
+        <ref name="textual"/>
+      </element>
+    </define>
+    
+
+    <define name="stage">
+      <element name="stage">
+        <a:documentation>Théâtre, didascalie, pouvant apparaître à différents niveaux du texte.</a:documentation>
+        <optional>
+          <attribute name="rend">
+            <choice>
+              <ref name="rend.align"/>
+              <value>sc</value>
+              <text/>
+            </choice>
+          </attribute>
+        </optional>
+        <optional>
+          <attribute name="type">
+            <choice>
+              <value>setting</value>
+              <value>entrance</value>
+              <value>exit</value>
+              <value>business</value>
+              <value>novelistic</value>
+              <value>delivery</value>
+              <value>modifier</value>
+              <value>location</value>
+              <value>mixed</value>
+              <value>didascalia</value>
+              <value>castList</value>
+            </choice>
+          </attribute>
+        </optional>
+        <ref name="flow"/>
+      </element>
+    </define>
+
+    <define name="code">
+      <element name="code">
+        <a:documentation>Segment de code informatique, souvent en police machine à écrire, &lt;html5:code></a:documentation>
+        <ref name="textual"/>
+      </element>
+    </define>
+    
+    <define name="textual">
+      <a:documentation>Contenu quasi textuel avec une typographie minimale, notamment à l’intérieur d'une balise fonctionnelle</a:documentation>
+      <zeroOrMore>
+        <choice>
+          <text/>
+          <ref name="corr"/>
+          <element name="hi">
+            <attribute name="rend">
+              <choice>
+                <value>sub</value>
+                <value>sup</value>
+                <value>sc</value>
+                <value>i</value>
+                <value>n</value>
+              </choice>
+            </attribute>
+            <ref name="textual"/>
+          </element>
+          <ref name="ref"/>
+          <ref name="num"/>
+          <ref name="point"/>
+        </choice>
+      </zeroOrMore>
+    </define>
+  </div>
+  
+  
+  <div xml:id="entites">
+    <a:documentation>Entités nommées</a:documentation>
+    
+    <define name="indexable">
+      <a:documentation>Balises de niveau caractère utiles à l’indexation des entités nommées</a:documentation>
+      <choice>
+        <ref name="name"/>
+        <ref name="orgName"/>
+        <ref name="persName"/>
+        <ref name="placeName"/>
+        <ref name="rs"/>
+        <ref name="term"/>
+        <ref name="title"/>
+      </choice>
+    </define>
+    
+    <define name="author">
+      <element name="author">
+        <a:documentation>Auteur dans une référence bibliographique.</a:documentation>
+        <div xmlns="http://www.w3.org/1999/xhtml">
+          <p>Utile pour établir l’index des auteurs référencés dans le texte. L’élement <a:el>author</a:el> n’étant pas autorisé en dehors de <a:el>bibl</a:el>, les auteurs cités au fil du texte sont balisés avec <a:el>persName type="author"</a:el>.</p>
+        </div>
+        <ref name="index-atts"/>
+        <ref name="rendering.char"/>
+        <zeroOrMore>
+          <choice>
+            <text/>
+            <ref name="point"/>
+            <ref name="surname"/>
+            <ref name="forename"/>
+            <ref name="num"/>
+            <ref name="hi"/>
+          </choice>
+        </zeroOrMore>
+      </element>
+    </define>
+    
+    <!-- on place où docAuthor ? -->
+    <define name="docAuthor">
+      <element name="docAuthor">
+        <a:documentation>Auteur du document, ou de la section (selon le contexte). Dans une page de titre, répétera une information déjà définie dans l’entête de métadonnées, par contre, est obligatoire pour les préfaciers, ou les chapitres dans un ouvrage collectif.</a:documentation>
+        <div xmlns="http://www.w3.org/1999/xhtml">
+          <p>L’élément <a:el>docAuthor</a:el> relève d’une logique de métadonnée bibliographique : il permet par exemple d’établir la liste des contributeurs d’un recueil d’articles. Il n’est en aucun cas utilisé l’indexation des auteurs cités dans un texte (voir <a:el>author</a:el> et <a:el>persName type="author"</a:el>).</p>
+          <!-- TODO -->
+          <p>De type <em>bloc</em> dans un <a:el>titlePage</a:el> et de type <em>inline</em> dans un <a:el>byline</a:el>.</p>
+        </div>
+        <ref name="rendering.block"/>
+        <ref name="index-atts"/>
+        <zeroOrMore>
+          <choice>
+            <text/>
+            <ref name="forename"/>
+            <ref name="hi"/>
+            <ref name="num"/>
+            <ref name="point"/>
+            <ref name="surname"/>
+          </choice>
+        </zeroOrMore>
+      </element>
+    </define>
+    
+    <define name="name">
+      <element name="name">
+        <a:documentation>Entités nommmées non résolues (personne, lieu, institution, initiales…)</a:documentation>
+        <div xmlns="http://www.w3.org/1999/xhtml">
+          <p>Ce repérage très générique des entités peut être produit automatiquement. Il est utile notamment à l’extraction des mots qui ne sont pas du dictionnaire, pour les traitements lexicographiques.</p>
+          <p>Ce balisage est temporaire et, idéalement, il doit être précisé : <a:el>name</a:el> ne porte pas les attributs d’indexation (index-atts()) car la résolution des entités doit permettre de préciser la sémantique (<a:el>persName</a:el>, <a:el>placeName</a:el>, etc.).</p>
+        </div>
+        <ref name="xml-atts"/>
+        <optional>
+          <attribute name="type"/>
+        </optional>
+        <ref name="rendering.char"/>
+        <ref name="textual"/>
+      </element>
+    </define>
+    
+    <define name="persName">
+      <element name="persName">
+        <a:documentation>Nom de personne, d’auteur, de personnage</a:documentation>
+        <div xmlns="http://www.w3.org/1999/xhtml">
+          <p>Les noms de personne peuvent être balisés pour différents objectifs :</p>
+          <ul>
+            <li><b>Mise en forme typographique</b> : si l’objectif est la mise en petites capitales des noms de famille, utiliser <a:el>surname</a:el>, afin que <a:el>persName</a:el> encadre la totalité d’un nom de personne, nom, prénom, et autres composantes compris.</li> 
+            <li><b>Traitements linguistiques</b> : le but sera d’inclure tous les noms propres. Il doit être possible de remplacer <a:el>persName</a:el> par "il" ou "elle" sans rompre la signification de la phrase. Pour un tel objectif, il convient de baliser aussi les noms abrégés ("K.", "Joseph K.").</li>
+            <li><b>Indexation</b> : il est nécessaire d'ajouter l’attribut utile (index-atts()) à l’identification de la personne, notamment pour les pronoms, et permettre les regroupements.<br/>
+              <a:example><persName key="dieu">Il</persName></a:example>
+              L’attribut <a:att>type</a:att> permet, grâce à la valeur "author", d’indexer les <em>auteurs mentionnés</em> au fil du texte. De manière complémentaire, l’élement <a:el>author</a:el>, autorisé uniquement dans <a:el>bibl</a:el>, permet d’indexer les <em>auteurs référencés</em>, c’est-à-dire ceux dont les citations sont explicitement référencées par un auteur ou un éditeur scientifique. Pour établir l’index des auteurs cités dans un texte, il convient donc de regrouper les clés (<a:att>key</a:att>, <a:att>corresp</a:att> ou <a:att>ref</a:att>, cf index-atts()) renseignées pour les éléments <a:el>persName @type="author"]</a:el> et <a:el>author</a:el>.<br/>
+              Auteur mentionné :
+              <a:example>Je veux parler du drame d’amour qui mit aux prises, voici soixante ans passé, deux des beaux génies de notre âge : <persName type="author" ref="http://www.idref.fr/027043339">Alfred de Musset</persName> et <persName type="author" ref="http://www.idref.fr/027121577">George Sand</persName>.</a:example>
+              Auteur référencé :
+              <a:example><note>Le merveilleux <bibl><title>Cyrano</title> de <author ref="http://www.idref.fr/027109860">M. Edmond Rostand</author></bibl> est venu confirmer cette hypothèse. (NdA)</note></a:example>
+            </li>
+          </ul>
+        </div>
+        <ref name="xml-atts"/>
+        <ref name="index-atts"/>
+        <!-- en cas de mise en forme -->
+        <ref name="rendering.char"/>
+        <optional>
+          <ref name="evidence-att"/>
+        </optional>
+        <optional>
+          <attribute name="type">
+            <choice>
+              <value>author</value>
+              <a:documentation>Référence à un auteur</a:documentation>
+              <value>character</value>
+              <a:documentation>Référence à un personnage d’œuvre littéraire</a:documentation>
+              <value>actor</value>
+              <a:documentation>Référence à un acteur (dans une pièce de théâtre)</a:documentation>
+              <text/>
+            </choice>
+          </attribute>
+        </optional>
+        <zeroOrMore>
+          <choice>
+            <text/>
+            <ref name="point"/>
+            <ref name="surname"/>
+            <ref name="forename"/>
+            <ref name="num"/>
+            <ref name="hi"/>
+          </choice>
+        </zeroOrMore>
+      </element>
+    </define>
+    
+    <define name="surname">
+      <element name="surname">
+        <a:documentation>Nom de famille, souvent en petites capitales</a:documentation>
+        <ref name="rendering.char"/>
+        <zeroOrMore>
+          <choice>
+            <text/>
+            <ref name="point"/>
+          </choice>
+        </zeroOrMore>
+      </element>
+    </define>
+
+    <define name="forename">
+      <element name="forename">
+        <a:documentation>Prénom</a:documentation>
+        <zeroOrMore>
+          <choice>
+            <text/>
+            <ref name="point"/>
+          </choice>
+        </zeroOrMore>
+      </element>
+    </define>
+    
+    <define name="placeName">
+      <element name="placeName">
+        <a:documentation>Nom de lieu</a:documentation>
+        <div xmlns="http://www.w3.org/1999/xhtml">
+          <p>Comme les noms de personnes, le balisage des noms de lieux peut avoir plusieurs objectifs.</p>
+          <p>Objectif linguistique : inclure une expression remplaçable par ici où là : <a:el><placeName>rue <persName>Léon Trulin</persName></placeName></a:el></p>
+        </div>
+        <ref name="index-atts"/>
+        <ref name="xml-atts"/>
+        <ref name="rendering.char"/>
+        <zeroOrMore>
+          <choice>
+            <text/>
+            <ref name="point"/>
+            <ref name="num"/>
+            <ref name="hi"/>
+          </choice>
+        </zeroOrMore>
+      </element>
+    </define>
+
+    <define name="rs">
+      <element name="rs">
+        <a:documentation>Référence à une entité</a:documentation>
+        <div xmlns="http://www.w3.org/1999/xhtml">
+          <p>Comme les noms de personnes, le balisage des noms de lieux peut avoir plusieurs objectifs.</p>
+          <p>Objectif linguistique : inclure une expression remplaçable par ici où là : <a:el><placeName>rue <persName>Léon Trulin</persName></placeName></a:el></p>
+        </div>
+        <ref name="index-atts"/>
+        <ref name="xml-atts"/>
+        <ref name="rendering.char"/>
+        <attribute name="type">
+          <choice>
+            <value>event</value>
+            <a:documentation>Événement</a:documentation>
+          </choice>
+        </attribute>
+        <zeroOrMore>
+          <choice>
+            <text/>
+            <ref name="point"/>
+            <ref name="num"/>
+            <ref name="hi"/>
+          </choice>
+        </zeroOrMore>
+      </element>
+    </define>
+
+    <define name="orgName">
+      <element name="orgName">
+        <a:documentation>Nom d’organisation</a:documentation>
+        <ref name="index-atts"/>
+        <ref name="xml-atts"/>
+        <ref name="rendering.char"/>
+        <zeroOrMore>
+          <choice>
+            <text/>
+            <ref name="point"/>
+            <ref name="hi"/>
+          </choice>
+        </zeroOrMore>
+      </element>
+    </define>
+
+    <define name="roleName">
+      <element name="roleName">
+        <a:documentation>Rôle</a:documentation>
+        <optional>
+          <ref name="index-atts"/>
+        </optional>
+        <ref name="xml-atts"/>
+        <ref name="rendering.char"/>
+        <zeroOrMore>
+          <choice>
+            <text/>
+            <ref name="point"/>
+            <ref name="hi"/>
+          </choice>
+        </zeroOrMore>
+      </element>
+    </define>
+
+    <define name="title">
+      <element name="title">
+        <a:documentation>Titre d'ouvrage</a:documentation>
+        <optional>
+          <attribute name="level">
+            <choice>
+              <value>a</value>
+              <a:documentation>(analytic) titre analytique, partie d'un ensemble plus grand, par exemple un article, un poème…</a:documentation>
+              <value>m</value>
+              <a:documentation>(monographic) titre de monographie,  comme un livre, un recueil ou autre item publié séparément</a:documentation>
+              <value>j</value>
+              <a:documentation>(journal) titre de revue ou de périodique</a:documentation>
+              <value>s</value>
+              <a:documentation>(serial) titre de collection ou autre publication en série</a:documentation>
+              <value>u</value>
+              <a:documentation>(unpublished) titre de matériau non publié, par exemple des thèses, des dissertations, si elles n'ont pas été publiées par un éditeur commercial</a:documentation>
+            </choice>
+          </attribute>
+        </optional>
+        <ref name="index-atts"/>
+        <ref name="xml-atts"/>
+        <optional>
+          <attribute name="rend"/>
+        </optional>
+        <optional>
+          <attribute name="n-att"/>
+        </optional>
+        <zeroOrMore>
+          <choice>
+            <text/>
+            <ref name="point"/>
+            <ref name="hi"/>
+            <ref name="num"/>
+            <!-- 
+            <ref name="title"/>
+            <ref name="persName"/>
+            <ref name="placeName"/>
+            -->
+          </choice>
+        </zeroOrMore>
+      </element>
+    </define>
+    
+  </div>
+  
+  <div xml:id="index">
+    <a:documentation>Indexation</a:documentation>
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <p>L’indexation d’un texte peut se faire de deux manières :</p>
+      <ol>
+        <li>Par le regroupement automatique des clés inscrites pour l’identification de chacun des segments indexés.</li>
+        <li>En liant les segments indexés aux entrées correspondantes définies dans une ressource prédéfinie (lexique, référentiel d’autorités), pour les désambiguïser.</li>
+      </ol>
+      <p>Le jeu d’attributs défini pour l’indexation prévoit ces deux cas de figure.</p>
+    </div>
+    <define name="index-atts">
+      <a:documentation>Jeu d’attributs utiles à l’indexation d’un élément</a:documentation>
+      <div xmlns="http://www.w3.org/1999/xhtml">
+        <p>Une entité indexée peut être identifiée par (du plus vague au plus précis) :</p>
+        <ul>
+          <li><a:att>key</a:att> – à minima une clé, utile au regroupement des entrées pour générer automatiquement un index ;</li>
+          <li><a:att>corresp</a:att> – un pointeur vers l’ID défini dans une liste d’autorité, inscrite dans le fichier même (<a:el>back</a:el>) ou dans un fichier déporté ;</li>
+          <li><a:att>ref</a:att> – idéalement une URI identifiant l’entité indexée.</li>
+        </ul>
+        <p>On conserve la possibilité de renseigner conjointement les attributs <a:att>ref</a:att> et <a:att>corresp</a:att> pour lier l’entité indexée à la fois à un référentiel partagé (type <a href="http://www.idref.fr/autorites/autorites.html" taget="abes">idRef</a>) et à un référentiel plus spécifique (un fichier XML/TEI), dédié au projet scientifique.</p>
+        <p>La maîtrise de l’attribution de ce jeu d’attributs aux justes éléments indexables est essentiel, de manière à éviter tout risque d’indexation redondante (par ex. persName > name|forname|surname, etc.).</p>
+      </div>
+      <optional>
+        <ref name="key-att"/>
+      </optional>
+      <optional>
+        <ref name="corresp-att"/>
+      </optional>
+      <optional>
+        <ref name="ref-att"/>
+      </optional>
+      <optional>
+        <ref name="cert-att"/>
+      </optional>
+    </define>
+    
+    <div xml:id="index_odt">
+      <a:documentation>Conversion ODT</a:documentation>
+      <define name="term">
+        <element name="term">
+          <a:documentation>Terme (mot ou expression), &lt;html5:dfn> (terme défini, “defining instance of a term”)</a:documentation>
+          <div xmlns="http://www.w3.org/1999/xhtml">
+            <p>Il est très utile de pouvoir récupérer l’indexation saisie par un chercheur dans un fichier de traitement de texte. Une chaîne de caractères indexée dans un index lexical se caractérise par une "entrée" normalisée (qui peut différer de la chaîne de caractères sélectionnée) et deux clés optionnelles ("clé1" et "clé2") qui permettent de regrouper hiérarchiquement les entrées. Un tel index lexical est généré grâce au regroupement automatique des entrées insérées dans le fichier. L’interprétation sémantique faite ici de l’élément <a:el>term</a:el> est un peu limite au regard des <i>Guidelines</i> mais se justifie par sa simplicité (pas d’élément parent <a:el>index</a:el>) et la disponibilité du jeu d’attribut <a href="http://www.tei-c.org/release/doc/tei-p5-doc/fr/html/ref-att.typed.html">att.typed</a> utile à l’expression des clés 1 et 2.</p>
+            <p>Cet usage de <a:el>term</a:el> est conçu pour la conversion automatique d’un index lexical ODT. Il serait à rapporter au 3<sup>e</sup> niveau d’encodage défini par les <i><a href="http://purl.oclc.org/NET/teiinlibraries">Best Practices for TEI in Libraries</a></i>, à savoir un fichier XML/TEI issu d’une conversion OCR. Un tel encodage doit ensuite être précisé de manière à désambiguïser les entités indexées (<a:el>persName</a:el>, <a:el>placeName</a:el>, etc.).</p>
+            <p><a:el>term</a:el> sert aussi au repérage sémantique de notions au fil du texte, parfois mises en valeur par l’auteur lui-même. Cette mise en valeur typographique est inscrite en valeur de <a:att>rend</a:att>.</p>
+          </div>
+          <ref name="index-atts">
+            <a:documentation>Contraindre @key pour l’entrée d’index ODT</a:documentation>
+          </ref>
+          <optional>
+            <attribute name="type">
+              <a:documentation>Clé1 de regroupement</a:documentation>
+            </attribute>
+          </optional>
+          <optional>
+            <attribute name="subtype">
+              <a:documentation>Clé2 de regroupement</a:documentation>
+            </attribute>
+          </optional>
+          <!-- attributs plus générique, inutiles pour la représentation d’un index lexical ODT -->
+          <ref name="xml-atts"/>
+          <optional>
+            <ref name="rend-att"/>
+          </optional>
+          <!--
+          <optional>
+            <attribute name="rend">
+              <choice>
+                <value>index</value>
+                <text/>
+              </choice>
+            </attribute>
+          </optional>
+          -->
+          <ref name="textual"/>
+        </element>
+      </define>
+    </div>
+    
+  </div>
+
+  <div xml:id="point">
+    <a:documentation>Points</a:documentation>
+    <define name="point">
+      <a:documentation>Balises hors du flux textuel principal (saut de page ou de ligne, notes...)</a:documentation>
+      <div xmlns="http://www.w3.org/1999/xhtml">
+        <a:example href="teibook.xml#point"/>
+      </div>
+      <choice>
+        <ref name="index"/>
+        <ref name="pb"/>
+        <ref name="note"/>
+        <ref name="graphic"/>
+        <ref name="lb"/>
+        <ref name="anchor"/>
+        <ref name="cb"/>
+        <ref name="milestone"/>
+      </choice>
+    </define>
+    <define name="pb">
+      <element name="pb">
+        <a:documentation>Saut de page “page break”</a:documentation>
+        <div xmlns="http://www.w3.org/1999/xhtml">
+          <p>Le saut de page permet de conserver un lien avec une ou plusieurs éditions imprimées de référence.</p>
+          <p>Le numéro de page imprimé est inscrit dans l’attribut <a:att>n</a:att>. Ce numéro se rapporte à la page qui suit, la balise <a:el>pb</a:el> étant placée en début de page. Il est conseillé d’enregistrer tous les sauts de pages, même les pages blanches non numérotées.</p>
+          <p>Un lien à une image de la page numérisée peut être inscrit dans l’attribut <a:att>facs</a:att>. Quelle que soit la convention de nommage adoptée par le numériseur, ce nom de fichier doit être unique ; il est inutile de préciser les chemins relatifs qui varient selon les contextes applicatifs. L’attribut xml:id est utilisé comme ancre de destination pour les renvois à une page.</p>
+          <p>En cas de note interrompue par un saut de page, il est déconseiller d’indiquer le saut de page à cet endroit, un saut de page doit être unique, et dans le flux de texte principal.</p>
+          <p>Pour une édition de source, lorsque la foliotation de l’original est conservée, utiliser le même élément mais en précisant le sigle du témoin dans l’attribut <a:att>ed</a:att> dont provient le n° de folio (dans ce cas, titre courant et fichier image ne sont pas requis).</p>
+          <p>Lorsqu’un saut de page coupe un mot dans l’édition imprimée, on conseillera de résoudre la césure, et de placer le saut de page après le mot non coupé + une espace (une page ne doit jamais commencer par une espace).</p>
+        </div>
+        
+        <optional>
+          <ref name="n-att"/>
+        </optional>
+        <ref name="xml-atts"/>
+        <choice>
+          <group>
+            <optional>
+              <ref name="facs-att"/>
+            </optional>
+            <optional>
+              <attribute name="ana">
+                <a:documentation xmlns="http://www.w3.org/1999/xhtml">Titre courant de la page imprimée. Si le titre courant comporte de la variation typographique, par exemple de l’italique ou des lettres en exposant, les chevrons des balises seront échappés avec les entités xml conventionnelles <![CDATA[< : &lt;, > : &gt;]]> afin de conserver un XML valide.</a:documentation>
+              </attribute>
+            </optional>
+          </group>
+          <ref name="ed"/>
+        </choice>
+      </element>
+    </define>
+
+    <define name="note">
+      <element name="note">
+        <a:documentation>Une note, encodée dans le flux du texte, au point de l’appel.</a:documentation>
+        <div xmlns="http://www.w3.org/1999/xhtml">
+        <p>Une note ne contient que du texte riche, ou que des blocs (le mélange texte avec blocs n'est pas autorisé).</p>
+        <p>Le numéro ou la lettre d’appel dans le texte original est contenu dans l’attribut <a:att>n</a:att>. Si la note ne comporte pas d'attribut <a:att>n</a:att>, elle apparaît dans le flux, mais le bloc est considéré comme relevant d'un autre statut que le texte environnant. Lorsque plusieurs types de notes cohabitent (hors apparat critique <a:el>app</a:el>), chaque type doit pouvoir être distingué, afin notamment de pouvoir filtrer les notes pour certains exports (ex : texte hors droit à destination de la recherche, avec les notes de l’auteur hors droit, sans les notes de l’éditeur encore sous droits d’auteur). Le responsable d’une note sera alors précisé dans l’attribut <a:att>resp</a:att>. Il est aussi possible de distinguer les notes par leur présentation typographique <a:att>rend</a:att>.</p>
+        </div>
+        <ref name="xml-atts"/>
+        <optional>
+          <ref name="n-att"/>
+        </optional>
+        <optional>
+          <attribute name="resp">
+            <choice>
+              <value>author</value>
+              <a:documentation>note de l’auteur</a:documentation>
+              <value>editor</value>
+              <a:documentation>note de l’éditeur</a:documentation>
+              <value>translator</value>
+              <a:documentation>note du traducteur</a:documentation>
+              <value>©</value>
+              <a:documentation>note protégée par le droit d’auteur au moment de l’écriture du fichier</a:documentation>
+              <text/>
+            </choice>
+          </attribute>
+        </optional>
+        <!-- Quel genre de rendu attendu ?
+        <ref name="rendering-atts"/>
+        -->
+        <optional>
+          <ref name="type-att"/>
+        </optional>
+        <optional>
+          <ref name="place-att"/>
+        </optional>
+        <ref name="rendering-atts"/>
+        <choice>
+          <!-- Attention au déterminisme xsd pour <figure>, ne pas autoriser note dans note, ainsi que saut de page (ex: note de fin, ou note sur plus d'une page) -->
+          <oneOrMore>
+            <choice>
+              <text/>
+              <!--
+              <ref name="quote-c"/>
+              <ref name="bibl"/>
+              XSD cos -->
+              <ref name="anchor"/>
+              <ref name="quote-c"/>
+              <ref name="function"/>
+              <ref name="indexable"/>
+              <ref name="lb"/>
+              <ref name="typo"/>
+            </choice>
+          </oneOrMore>
+          <oneOrMore>
+            <ref name="block"/>
+          </oneOrMore>
+        </choice>
+      </element>
+    </define>
+    <define name="fw">
+      <element name="fw">
+        <a:documentation>Mentions hors teneur (titre courant, numéro de page, tampon…)</a:documentation>
+        <optional>
+          <attribute name="type">
+            <choice>
+              <value>header</value>
+              <a:documentation>titre courant en haut de la page</a:documentation>
+              <value>footer</value>
+              <a:documentation>un titre courant en bas de la page</a:documentation>
+              <value>pageNum</value>
+              <a:documentation>(numéro de page) numéro de page ou symbole de foliotation</a:documentation>
+              <value>lineNum</value>
+              <a:documentation>(numéro de ligne) numéro d'une ligne en prose ou en vers</a:documentation>
+              <value>sig</value>
+              <a:documentation>(signature) signature ou marque de cahier</a:documentation>
+              <value>catch</value>
+              <a:documentation>(réclame) une réclame</a:documentation>
+            </choice>
+          </attribute>
+        </optional>
+        <ref name="xml-atts"/>
+        <ref name="flow"/>
+      </element>
+    </define>
+
+    <define name="graphic">
+      <element name="graphic">
+        <a:documentation>Image &lt;html5:img src="{@url}"></a:documentation>
+        <attribute name="url"/>
+        <optional>
+          <ref name="desc"/>
+        </optional>
+      </element>
+    </define>
+
+        
+    <define name="index">
+      <element name="index">
+        <a:documentation>Clé d'index</a:documentation>
+        <optional>
+          <attribute name="indexName"/>
+        </optional>
+        <optional>
+          <attribute name="n"/>
+        </optional>
+        <zeroOrMore>
+          <ref name="term"/>
+        </zeroOrMore>
+      </element>
+    </define>
+
+
+    <define name="cb">
+      <element name="cb">
+        <a:documentation>Saut de colonne</a:documentation>
+        <div xmlns="http://www.w3.org/1999/xhtml">
+          <p>Conservation des sauts de colonne de l’édition imprimée. Un tel numéro est nécessaire pour le référencement des citations des textes imprimés en colonnes (un dictionnaire par exemple). Par convention, on accole le numéro de page à la lettre de colonne pour constituer une référence de colonne unique par ouvrage. Par exemple 245c pour la troisième colonne de la page 245.</p>
+        </div>
+        <empty/>
+        <ref name="n-att"/>
+      </element>
+    </define>
+
+    <define name="lb">
+      <element name="lb">
+        <a:documentation>Saut de ligne “line break” &lt;html5:br/></a:documentation>
+        <div xmlns="http://www.w3.org/1999/xhtml"> (<i>line break</i>)
+          <p><a:el>lb</a:el> peut être utilisé pour forcer un saut de ligne, par exemple dans un titre.</p>
+          <p>Dans le cas d’un texte avec lignes numérotées qui ne sont pas des vers inclus dans un élément <a:el>l</a:el>, les numéros sont utiles au référencement des citations des notes d’apparat critique. Il est donc nécessaire de conserver tous les sauts de lignes dans le flux du texte, et d’inscrire le numéro — quand il est imprimé — dans l’attribut <a:att>n</a:att>. <b>Attention</b> : certaines éditions alternent l’emplacement du numéro de ligne selon les pages paires ou impaires (marges intérieures ou extérieures). Conformément à la spécification TEI, le numéro inscrit doit toujours se rapporter à ce qui suit. Les césures sont traitées comme pour le reste du texte. Une édition électronique de référence doit proposer une exploitation de ces sauts de ligne pour garantir une citabilité de qualité égale à la version imprimée. Si plusieurs numérotations concurrentes des lignes sont conservées, elles sont distinguées par l’attribut <a:att>ed</a:att>.</p>
+          <a:example href="teibook.xml#lb"/>
+        </div>
+        <optional>
+          <ref name="n-att"/>
+        </optional>
+        <optional>
+          <ref name="ed"/>
+        </optional>
+        <empty/>
+      </element>
+    </define>
+    
+    <define name="milestone">
+      <element name="milestone">
+        <a:documentation>Borne anonyme, vide, permet d’étiqueter des points qui n’entrent pas dans la hiérarchie éditoriale, et qui ne sont pas des sauts de page <a:el>pb</a:el>, de colonne <a:el>cb</a:el> ou de ligne <a:el>lb</a:el></a:documentation>
+        <empty/>
+        <attribute name="unit">
+          <choice>
+            <value>hr</value>
+            <a:documentation>Trait de séparation</a:documentation>
+            <value>rule</value>
+            <a:documentation>Trait de séparation</a:documentation>
+            <text/>
+          </choice>
+        </attribute>
+      </element>
+    </define>
+
+    
+    <define name="anchor">
+      <element name="anchor">
+        <a:documentation>Une ancre, lorsqu’un point (et non un segment) identifiant est requis. Exemple : destination d’un lien. Pour identifier un segment (et non un point), renseigner l’attribut @xml:id de l'élément conteneur (section &lt;div> ; bloc &lt;p>, &lt;list>… ; segment &lt;term>…)</a:documentation>
+        <!-- is optional because of a problem in rng2xsd conversion -->
+        <ref name="xml-atts"/>
+      </element>
+    </define>
+    <define name="ed">
+      <attribute name="ed">
+        <a:documentation>Sigle permettant d'identifier l’édition d’origine d’une numérotation (de page, folio, colonne, ligne…)</a:documentation>
+        <div xmlns="http://www.w3.org/1999/xhtml">
+          <p>Idéalement, un tel sigle est défini par l’éditeur (date d’une édition imprimée, lettre dans le stemma d’un manuscrit…). Il est indispensable de choisir une clé cohérente dans tout le texte lorsque plusieurs numérotations concurrentes cohabitent.</p>
+          <p>Lors d’une numérisation, on peut choisir d’adopter provisoirement un code qui décrit l’apparence physique du numéro (mise en valeur typographique), et laisser l’interprétation à un éditeur électronique postérieur.</p>
+        </div>
+        <choice>
+          <value>margin</value>
+          <a:documentation>Numéro dans la marge</a:documentation>
+          <value>marginBig</value>
+          <a:documentation>Numéro dans la marge, plus grand (relativement à un autre)</a:documentation>
+          <value>marginBold</value>
+          <a:documentation>Numéro dans la marge, en gras (relativement à un autre qui serait maigre)</a:documentation>
+          <value>[]</value>
+          <a:documentation>Numéro entre crochets</a:documentation>
+          <value>()</value>
+          <a:documentation>Numéro entre parenthèses</a:documentation>
+          <data type="token"/>
+        </choice>
+      </attribute>
+    </define>
+  </div>
+
+<!--
+  <define name="anyTEI">
+    <a:documentation>Motif récursif pour autoriser tout contenu TEI sans validation de structure.</a:documentation>
+    <element ns="http://www.tei-c.org/ns/1.0">
+      <anyName/>
+      <zeroOrMore>
+        <attribute>
+          <anyName/>
+        </attribute>
+      </zeroOrMore>
+      <zeroOrMore>
+        <choice>
+          <text/>
+          <ref name="anyTEI"/>
+        </choice>
+      </zeroOrMore>
+    </element>
+  </define>
+-->
+
+  <div xml:id="atts">
+    <a:documentation>Attributs</a:documentation>
+    <define name="corresp-att">
+      <attribute name="corresp">
+        <a:documentation>Pointeur vers une liste d’autorité</a:documentation>
+      </attribute>
+    </define>
+    <define name="id-att">
+      <attribute name="xml:id">
+        <a:documentation>Identifiant, au moins unique pour le document.</a:documentation>
+        <data type="ID"/>
+      </attribute>
+    </define>
+    <define name="key-att">
+      <attribute name="key">
+        <a:documentation>Terme normalisé (clé de regroupement) pour une entité indexable (auteur, titre, personne, lieu…)</a:documentation>
+      </attribute>
+    </define>
+    <define name="facs-att">
+      <attribute name="facs">
+        <a:documentation>Lien vers une image</a:documentation>
+      </attribute>
+    </define>
+    <define name="cert-att">
+      <attribute name="cert">
+        <a:documentation>Degré de certitude d'une information</a:documentation>
+      </attribute>
+    </define>
+    <define name="evidence-att">
+      <attribute name="evidence">
+        <a:documentation>Nature de la preuve attestant la justesse de l'interprétation</a:documentation>
+        <value>conjecture</value>
+        <a:documentation>Interprétation faite par l’annotateur sur la base de son expertise</a:documentation>
+        <!-- NB: d’autres valeurs autorisées sont documentées -->
+      </attribute>
+    </define>
+    <define name="lang-att">
+      <attribute name="xml:lang">
+        <a:documentation>Code normalisé de langue.</a:documentation>
+      </attribute>
+    </define>
+    <define name="n-att">
+      <attribute name="n"/>
+    </define>
+    <define name="place-att">
+      <attribute name="place">
+        <choice>
+          <!-- TEI, mais peu fréquents -->
+          <value>above</value>
+          <a:documentation>au-dessus de la ligne</a:documentation>
+          <value>below</value>
+          <a:documentation>au-dessous de la ligne</a:documentation>
+          <value>book</value>
+          <a:documentation>fin de livre (non TEI)</a:documentation>
+          <value>bottom</value>
+          <a:documentation>dans la marge inférieure</a:documentation>
+          <value>bubble</value>
+          <a:documentation>fenêtre au survol</a:documentation>
+          <value>div</value>
+          <a:documentation>fin de section (non TEI)</a:documentation>
+          <value>end</value>
+          <a:documentation>à la fin, par exemple d'un chapitre ou d'un volume</a:documentation>
+          <value>inline</value>
+          <a:documentation>dans le corps du texte</a:documentation>
+          <value>inspace</value>
+          <a:documentation>dans un espace prédéfini, par exemple à gauche d'un scripteur précédent</a:documentation>
+          <value>margin</value>
+          <a:documentation>dans la marge (gauche, droite ou les deux en même temps)</a:documentation>
+          <value>oppposite</value>
+          <a:documentation>sur la page opposée, c'est-à-dire en regard</a:documentation>
+          <value>overleaf</value>
+          <a:documentation>de l'autre côté de la feuille</a:documentation>
+          <value>top</value>
+          <a:documentation>dans la marge supérieure</a:documentation>
+          <data type="token"/>
+        </choice>
+      </attribute>
+    </define>
+    <define name="ref-att">
+      <attribute name="ref">
+        <a:documentation>URI de référence pour un terme indexable : auteur, titre, personne, lieu…</a:documentation>
+        <data type="anyURI"/>
+      </attribute>
+    </define>
+    <define name="rend-att">
+      <attribute name="rend">
+        <a:documentation>Indication de rendu, selon un vocabulaire contrôlé. Interprété comme une liste de classes CSS comme dans l'attribut  @html5:class. Conserve une information de la source, ou suggère une présentation. À distinguer de la précision sémantique de l’élément, indiquée avec l’attribut @type</a:documentation>
+      </attribute>
+    </define>
+    <define name="type-att">
+      <attribute name="type">
+        <a:documentation>Type, qualifiant l’élément parent, indépendamment de son apparence. Dans la mesure du possible, une liste d’autorité contextuelle sera proposée au niveau de l’élément.</a:documentation>
+      </attribute>
+    </define>
+    <define name="xml-atts">
+      <optional>
+        <ref name="lang-att"/>
+      </optional>
+      <optional>
+        <ref name="id-att"/>
+      </optional>
+    </define>
+    <define name="rendering-atts">
+      <optional>
+        <ref name="rend-att"/>
+      </optional>
+      <optional>
+        <ref name="rendition-att"/>
+      </optional>
+    </define>
+    <define name="rendering.figure">
+      <a:documentation>Information de rendu pour un conteneur de blocs, concerne notamment la possibilité d'encadrer plusieurs paragraphes.</a:documentation>
+      <optional>
+        <attribute name="rend">
+          <ref name="rend.border"/>
+        </attribute>
+      </optional>
+      <optional>
+        <ref name="rendition-att"/>
+      </optional>
+    </define>
+    <define name="rendering.block">
+      <a:documentation>Information de rendu pour un bloc, combine des rendus de niveau caractère et de niveau bloc avec possibilité de classe personnalisé comme une liste de tokens séparés d'espaces.</a:documentation>
+      <optional>
+        <attribute name="rend">
+          <!-- list ? -->
+          <choice>
+            <ref name="rend.font"/>
+            <ref name="rend.align"/>
+            <value>argument</value>
+            <a:documentation>Valeur sémantique d’un élément argument, mais qui autorise à placer un élément &lt;stage&gt; avant (édition de théâtre)</a:documentation>
+            <value>indent</value>
+            <a:documentation>Indentation de première ligne (lorsque pas d’indentation par défaut)</a:documentation>
+            <value>lg</value>
+            <a:documentation>Utile provisoirement, mais lg/l est préférable.</a:documentation>
+            <value>noindent</value>
+            <a:documentation>Pas d’indentation de première ligne (lorsque indentation par défaut)</a:documentation>
+            <!-- Essayer de bloquer ? Et laisser rendition pour personnaliser
+            <data type="token"/>
+            -->
+            <!--  -->
+            <value>pre</value>
+            <a:documentation>Bloc préformaté, conserver les espaces et sauts de ligne, police à chasse fixe. Pour des exemples de codes, préférer @lt;eg>. @rend='pre' peut servir à rendre des formules mathématiques.</a:documentation>
+          </choice>
+        </attribute>
+      </optional>
+      <optional>
+        <ref name="rendition-att"/>
+      </optional>
+    </define>
+    <define name="rendering.char">
+      <a:documentation>Information de rendu pour un segment de caractères, liste fermée de tokens séparés d’espaces.</a:documentation>
+      <optional>
+        <attribute name="rend">
+          <ref name="rend.font"/>
+        </attribute>
+      </optional>
+      <optional>
+        <ref name="rendition-att"/>
+      </optional>
+    </define>
+    <define name="rendition-att">
+      <attribute name="rendition">
+        <a:documentation>Lien à une déclaration locale de stylage (URI ancre, ex : #surtitre, vers une déclaration &lt;rendition xml:id="surtitre"> dans &lt;teiHeader>). L'attribut @rend est contraint dans ce schéma à une liste close de valeurs dont le traitement est garanti, @rendition permet d'ajouter d’autres classes</a:documentation>
+        <data type="anyURI"/>
+      </attribute>
+    </define>
+    <define name="rend.font">
+      <a:documentation>Styles de caractères, pour un segment de texte ou un bloc, valeurs reprises de html5 ou CSS</a:documentation>
+      <choice>
+        <value>b</value>
+        <a:documentation>gras “bold” &lt;html5:b></a:documentation>
+        <value>bi</value>
+        <a:documentation>gras “bold” et italique (rare et déconseillé, souvent le signe qu’une balise sémantique est nécessaire, comme un titre)</a:documentation>
+        <value>big</value>
+        <a:documentation>taille de caractère relativement plus grande</a:documentation>
+        <value>bold</value>
+        <a:documentation>gras, css{font-weight:bold}</a:documentation>
+        <value>i</value>
+        <a:documentation>italique “italic” &lt;html5:i></a:documentation>
+        <value>italic</value>
+        <a:documentation>italique, css{font-style:italic}</a:documentation>
+        <value>ls</value>
+        <a:documentation>espacé “letter-spacing”</a:documentation>
+        <value>letter-spacing</value>
+        <a:documentation>espacé css{letter-spacing:2px}</a:documentation>
+        <value>n</value>
+        <a:documentation>normal (annule toutes les mmises en formes héritées de niveau caractère)</a:documentation>
+        <value>s</value>
+        <a:documentation>Barré “strike” &lt;html5:s></a:documentation>
+        <value>sc</value>
+        <a:documentation>petites capitales “small-caps”</a:documentation>
+        <value>small</value>
+        <a:documentation>taille de caractère relativement plus petite</a:documentation>
+        <value>smallcaps</value>
+        <a:documentation>petites capitales</a:documentation>
+        <value>small-caps</value>
+        <a:documentation>petites capitales css{font-variant:small-caps}</a:documentation>
+        <value>sup</value>
+        <a:documentation>Exposant &lt;html5:sup></a:documentation>
+        <value>sub</value>
+        <a:documentation>Indice &lt;html5:sub></a:documentation>
+        <value>strike</value>
+        <a:documentation>Barré &lt;html5:strike></a:documentation>
+        <value>uc</value>
+        <a:documentation>capitales “uppercase”</a:documentation>
+        <value>uppercase</value>
+        <a:documentation>capitales css{text-transform:uppercase}</a:documentation>
+        <value>u</value>
+        <a:documentation>souligné “underline” &lt;html5:u></a:documentation>
+        <value>underline</value>
+        <a:documentation>souligné css{text-decoration:unbderline}</a:documentation>
+      </choice>
+    </define>
+    <define name="rend.align">
+      <a:documentation>Valeurs normalisées d'alignement de blocs, CSS text-align</a:documentation>
+      <choice>
+        <value>center</value>
+        <a:documentation>centré</a:documentation>
+        <!-- souvent, cas général, va servir à repérer des scores de traitement de texte
+        <value>indent</value>
+        <a:documentation>indentation positive de la première ligne</a:documentation>
+        -->
+        <value>hanging</value>
+        <a:documentation>indentation négative de la première ligne</a:documentation>
+        <value>justify</value>
+        <a:documentation>justifié</a:documentation>
+        <value>left</value>
+        <a:documentation>aligné à gauche</a:documentation>
+        <value>margin</value>
+        <a:documentation>bloc décroché à gauche</a:documentation>
+        <value>noindent</value>
+        <a:documentation>pas d’indentation de première ligne</a:documentation>
+        <value>right</value>
+        <a:documentation>aligné à droite</a:documentation>
+      </choice>
+    </define>
+    <define name="rend.border">
+      <a:documentation>Valeurs normalisées pour indiquer l'encadrement d'une boîte (combinable), empruntées à CSS</a:documentation>
+      <choice>
+        <value>border</value>
+        <a:documentation>encadré</a:documentation>
+        <value>border-bottom</value>
+        <a:documentation>trait en bas</a:documentation>
+        <value>border-left</value>
+        <a:documentation>trait à gauche</a:documentation>
+        <value>border-right</value>
+        <a:documentation>trait à droite</a:documentation>
+        <value>border-top</value>
+        <a:documentation>trait en haut</a:documentation>
+        <value>noborder</value>
+        <a:documentation>pas de bord</a:documentation>
+      </choice>
+    </define>
+  </div>
+
+  <!-- appel du teiHeader, revoir URI : http://svn.code.sf.net/p/algone/code/teibook/teibookHeader.rng -->
+  <include 
+    href="teinteHeader.rng"
+    h:href="./teinteHeader.rng" 
+    h:title="Schéma de l'entête de métadonnées Teibook"/>
+</grammar>
