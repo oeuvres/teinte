@@ -357,9 +357,12 @@ TODO: listes, tables, liens
         <xsl:copy-of select="$lf"/>
       </xsl:otherwise>
     </xsl:choose>
+    <!--
     <xsl:call-template name="sent">
       <xsl:with-param name="txt" select="normalize-space($txt)"/>
     </xsl:call-template>
+    -->
+    <xsl:value-of select="normalize-space($txt)"/>
   </xsl:template>
 
   <xsl:template match="tei:lb" mode="md">
