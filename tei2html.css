@@ -30,7 +30,7 @@ body,html { min-height: 100%; margin: 0; padding: 0; }
 body { font: 16px/24px Georgia, "Bitstream Vera Serif", Times, serif; }
 .subtitle, textarea.readonly, .dialogue li, .titleStmt h1 { font-family: Georgia, "Bitstream Vera Serif", Times, serif; }
 .cb, .pb, .ed, small.l, small.l-n { font-family: "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif; }
-.availability, figcaption, li.bibl, div.bibl, .editionStmt, .footnotes, .marginalia, .note, #noterefover, .publicationStmt, .sourceDesc, .speaker, .stage { font-size: 13px;  font-family: "Lucida Grande", Verdana, sans-serif; }
+.availability, figcaption, li.bibl, div.bibl, .editionStmt, .footnotes, .marginalia, .note, #noterefover, .publicationStmt, .sourceDesc, .speaker, .stage { font-size: 14px;  font-family: "Lucida Grande", Verdana, sans-serif; }
 aside, .breadcrumb, .but, caption, .cb, form label, nav, .pb, .tabs { font-family: "Droid Sans", "Lucida Grande", Verdana, sans-serif; font-size: 12px; line-height: 1.1em; }
 tt, pre{ font-family: "Andale Mono", "Lucida Console", Courier, "MS Courier New", monospace; }
 .dingbat { font-family: "FreeSans", "DejaVu Sans", "Lucida Sans Unicode", "Arial Unicode MS", sans-serif }
@@ -146,8 +146,7 @@ input:-moz-placeholder { color: #AAA !important; font-style: italic !important; 
 input:-ms-input-placeholder { color: #AAA !important; font-style: italic !important; font-weight: normal !important;  } 
 
 /** TEI elements, in TEI element name order, before type modifier in next block */
-
-section.act, section.chapter, section.dedication, section.footnotes, section.preface { page-break-before: always; }
+h1.act, h2.act, h1.castList, h2.castList { text-transform: uppercase; }
 .actor { font-variant: small-caps; }
 .argument { margin: 2em 0 3em 0; line-height: 140%; text-indent: 0; font-size: 85%; font-style: italic; text-align: justify }
 p.argument { font-style: normal; line-height: 140%; text-indent: 2em; }
@@ -245,9 +244,10 @@ div.salute, p.salute { margin: 1em 0 1em 4em; text-indent: 0em; font-style: ital
 .sp p { text-indent: 0; }
 .sp blockquote { margin-left: 3rem; }
 .sp { orphans: 2; widows: 2; }
-div.speaker, p.speaker { margin-top: 1em; margin-bottom: 0.5ex; font-weight: normal; font-variant: small-caps; font-size: 1.1em; text-indent: 3em; text-indent: 3rem; line-height: 120%; }
-.speaker  i, .speaker em { font-variant: normal; font-size: 90%; }
+div.speaker, p.speaker { margin-top: 1em; margin-bottom: 0.5ex; font-weight: normal; text-transform: uppercase; font-size: 0.9em; text-indent: 3em; text-indent: 3rem; line-height: 120%; }
+.speaker  i, .speaker em { font-variant: normal; font-size: 90%; text-transform: none; }
 .stage { font-style: italic; font-variant: normal; }
+section > div.stage { font-style: normal; }
 div.stage { text-align: justify; line-height: 120%; }
 .stage.indent { text-indent: 3rem; }
 div.stage.sc { font-style: normal; text-align: center; font-size: 105%; margin-bottom: 1ex; }
@@ -258,6 +258,7 @@ div.stage .i, div.stage i, div.stage em { font-style: normal; }
 hi.i, h2.sub, h2.i, h3.sub ,h4.sub,h5.sub,h6.sub { font-style: italic; font-weight: normal; border: none; margin-top: 0; padding-top: 0; }
 .titlePage h1.sub { font-weight: normal; margin-top: 0; padding-top: 0; }
 .scene h2, .scene h3 { font-weight: normal; font-style: italic; text-align: center; margin-left: auto; margin-right: auto; }
+h2.verse.scene, h3.verse.scene { text-align: left; margin-left: 5em; }
 .sourceDesc { }
 .subtitle { font-style: italic; font-weight: normal; text-align: center; font-size: 200%; margin-bottom: 2em; }
 section section .subtitle { font-size: 150%; }
@@ -516,6 +517,7 @@ details.minus > * { display: block; }
   body , #article { margin: 0; padding: 0; }
   body , #article{ font-family: Georgia, "Bitstream Vera Serif", Times, serif ; color: #000000; font-size: 16pt; }
   #aside, section.act, section.chapter, section.preface {  -webkit-column-count: 2; -moz-column-count: 2; column-count: 2; -webkit-column-gap: 2rem; -moz-column-gap: 2rem; column-gap: 2rem; -webkit-column-rule: 1pt #CCC solid; -moz-column-rule: 1pt #CCC solid; column-rule: 1pt #CCC solid; font-size: 14pt; }
+  section.act, section.chapter, section.dedication, section.footnotes, section.preface { page-break-before: always; }
   #aside { width: 100% !important; }
   body, .dialogue li { line-height: 130%; }
   .speaker, .stage { font-family: sans-serif; text-align: center; }

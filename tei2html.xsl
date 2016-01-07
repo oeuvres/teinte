@@ -45,6 +45,8 @@ absence de déclaration de DTD.
   <xsl:key name="note-pb" match="tei:note" use="generate-id(  preceding::*[self::tei:pb[not(@ed)][@n] ][1] ) "/>
   <!-- test if there are code examples to js prettyprint -->
   <xsl:key name="prettify" match="eg:egXML|tei:tag" use="1"/>
+  <!-- mainly in verse -->
+  <xsl:variable name="verse" select="count(/*/tei:text/tei:body//tei:l) &gt; count(/*/tei:text/tei:body//tei:p)"/>
   <!-- Racine -->
   <xsl:template match="/*">
     <xsl:apply-templates select="." mode="html"/>
@@ -419,6 +421,7 @@ et -1 pour chaque niveau ensuite, d'où le paramètre $level qui peut
         <xsl:call-template name="atts">
           <xsl:with-param name="class">
             <xsl:value-of select="../@type"/>
+            <xsl:if test="$verse"> verse</xsl:if>
           </xsl:with-param>
         </xsl:call-template>
         <xsl:apply-templates select="node()[local-name()!='pb']"/>
@@ -519,6 +522,7 @@ et -1 pour chaque niveau ensuite, d'où le paramètre $level qui peut
     <xsl:variable name="el">
       <xsl:choose>
         <xsl:when test="self::tei:trailer">p</xsl:when>
+        <xsl:when test="parent::tei:titlePage">p</xsl:when>
         <xsl:otherwise>div</xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
@@ -1303,7 +1307,7 @@ Tables
     <xsl:variable name="el">
       <xsl:choose>
         <xsl:when test="parent::tei:div">div</xsl:when>
-        <xsl:when test="parent::tei:titlePage">div</xsl:when>
+        <xsl:when test="parent::tei:titlePage">p</xsl:when>
         <!-- bug in LibreOffice
         <xsl:when test="$format=$html5">time</xsl:when>
         -->

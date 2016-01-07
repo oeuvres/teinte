@@ -10,7 +10,7 @@
   <a:documentation>Teibook</a:documentation>
   <div xmlns="http://www.w3.org/1999/xhtml">
     <ul class="auteurs">
-      <li>[FG] <a href="#" onmouseover="this.href='mailto'+'\x3A'+'glorieux'+'\x40'+'algone.net'">Frédéric Glorieux</a></li>
+      <li>[FG] <a href="#" onmouseover="this.href='mailto'+'\x3A'+'glorieux'+'\x40'+'fictif.org'">Frédéric Glorieux</a></li>
       <li>[VJ] <a href="#" onmouseover="this.href='mailto'+'\x3A'+'jolivet'+'\x40'+'algone.net'">Vincent Jolivet</a></li>
     </ul>
     <p>Ce schéma est une restriction de la recommandation <a href="http://www.tei-c.org/release/doc/tei-p5-doc/en/html/REF-ELEMENTS.html">TEI P5</a> adaptée à la structuration de livres imprimés.
