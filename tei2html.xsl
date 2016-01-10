@@ -24,7 +24,6 @@ sont officiellement ditribuées par le consortium TEI, cependant ce développeme
   <xsl:import href="tei2toc.xsl"/>
   <!-- included, so that priorities will not be flatten by import chain (ex: from tei2site.html) -->
   <xsl:include href="teiHeader2html.xsl"/>
-  
   <!-- Name of this xsl, change link resolution  -->
   <xsl:variable name="this">tei2html.xsl</xsl:variable>
   <!--
@@ -62,6 +61,11 @@ absence de déclaration de DTD.
       </xsl:when>
       <!-- Complete doc -->
       <xsl:otherwise>
+        <!--  browser will not like doctype -->
+        <xsl:if test="$xslbase != $theme">
+          <xsl:text disable-output-escaping="yes">&lt;!DOCTYPE html></xsl:text>
+          <xsl:value-of select="$lf"/>
+        </xsl:if>
         <html>
           <xsl:call-template name="att-lang"/>
           <head>
@@ -927,9 +931,29 @@ Tables
               </small>
             </xsl:when>
           </xsl:choose>
+          <!-- Rupted verse, get the exact spacer from previous verse -->
+          <span class="spacer" style="visibility: hidden;">
+            <xsl:apply-templates select="preceding::tei:l[1]" mode="lspacer"/>
+          </span>
           <xsl:apply-templates/>
         </div>
       </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  <xsl:template match="tei:l" mode="lspacer">
+    <xsl:variable name="txt">
+      <xsl:apply-templates mode="title"/>
+    </xsl:variable>
+    <xsl:choose>
+      <xsl:when test="@part = 'M'">
+        <xsl:apply-templates select="preceding::tei:l[1]" mode="lspacer"/>
+        <xsl:value-of select="$txt"/>
+        <xsl:text> </xsl:text>
+      </xsl:when>
+      <xsl:when test="@part = 'I'">
+        <xsl:value-of select="$txt"/>
+        <xsl:text> </xsl:text>
+      </xsl:when>
     </xsl:choose>
   </xsl:template>
   <!--

@@ -45,7 +45,12 @@ TODO: listes, tables, liens
   </xsl:template>
   <xsl:template match="tei:TEI">
     <book>
+      <xsl:text>---</xsl:text>
+      <xsl:value-of select="$lf"/>
       <xsl:call-template name="txt-fields"/>
+      <xsl:text>---</xsl:text>
+      <xsl:value-of select="$lf"/>
+      <xsl:value-of select="$lf"/>
       <xsl:apply-templates mode="md"/>
       <xsl:variable name="notes">
         <xsl:apply-templates mode="txt-fn"/>
@@ -198,7 +203,7 @@ TODO: listes, tables, liens
     <xsl:apply-templates mode="md"/>
   </xsl:template>
   <xsl:template match="tei:speaker/text()" mode="md">
-    <xsl:value-of select="translate(., $abc, $ABC)"/>
+    <xsl:value-of select="translate(., $lc, $uc)"/>
   </xsl:template>
   <xsl:template match="tei:stage" mode="md">
     <xsl:choose>

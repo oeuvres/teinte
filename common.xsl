@@ -44,6 +44,10 @@ Gobal TEI parameters and variables are divided in different categories
   <xsl:param name="corpusid"/>
   <!-- Maybe set by a parent transformation, used here for link resolution -->
   <xsl:param name="mode"/>
+  <!-- Path from XML file to xsl applied, useful for browser transformation -->
+  <xsl:param name="xslbase">
+    <xsl:call-template name="xslbase"/>
+  </xsl:param>
   <!-- Allow caller to override protocol for theme (https) -->
   <xsl:param name="http">http://</xsl:param>
   <xsl:param name="theme">
@@ -73,12 +77,10 @@ Gobal TEI parameters and variables are divided in different categories
           </xsl:otherwise>
         </xsl:choose>
       </xsl:when>
-      <xsl:otherwise>2014</xsl:otherwise>
+      <xsl:otherwise>2016</xsl:otherwise>
     </xsl:choose>
   </xsl:param>
-  <xsl:param name="xslbase">
-    <xsl:call-template name="xslbase"/>
-  </xsl:param>
+
   <!-- Type de sortie : html5, xhtml, …? -->
   <xsl:param name="format">html5</xsl:param>
   <!-- give name of file from the caller -->

@@ -235,9 +235,11 @@ a.noteback { font-size: 85%; }
 .num { font-family: inherit; line-height: 100%; font-variant: small-caps; }
 .num sup { font-variant: normal; }
 .opener { margin-bottom: 1em; }
+/*
 div.part-Y { text-indent: 3em; }
 .l.part-M { margin-left: 3em; text-indent: 0; padding-left: 0; }
 .l.part-F { margin-left: 6em; text-indent: 0; padding-left: 0; }
+*/
 div.salute, p.salute { margin: 1em 0 1em 4em; text-indent: 0em; font-style: italic; text-align: right; }
 .letter .salute { text-align: left; font-style: inherit; }
 .signed { margin-top: 2em; margin-bottom: 2em; text-indent: 0; text-align: right; }
