@@ -8,6 +8,12 @@ class Teinte_Doc {
   public $dom;
   /** Xpath processor */
   public $xpath;
+  /** filepath */
+  public $file;
+  /** filename without extension */
+  public $filename;
+  /** file freshness */
+  public $filemtime;
   /** XSLTProcessor */
   private $_trans;
   /** XSL DOM document */
@@ -18,6 +24,9 @@ class Teinte_Doc {
    * Constructor, load file and prepare work
    */
   public function __construct($teifile) {
+    $this->file = $teifile;
+    $this->filemtime = filemtime($teifile);
+    $this->filename = pathinfo($teifile, PATHINFO_FILENAME);
     $this->load($teifile);
     $this->_xsldom = new DOMDocument();
   }
