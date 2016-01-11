@@ -46,7 +46,7 @@ class Teinte_Doc {
   /**
    * Output markdown
    */
-  public function md($destfile=null) {
+  public function markdown($destfile=null) {
     return $this->transform(dirname(__FILE__).'/tei2md.xsl', $destfile);
   }
   /**

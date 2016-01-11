@@ -931,10 +931,17 @@ Tables
               </small>
             </xsl:when>
           </xsl:choose>
-          <!-- Rupted verse, get the exact spacer from previous verse -->
-          <span class="spacer" style="visibility: hidden;">
-            <xsl:apply-templates select="preceding::tei:l[1]" mode="lspacer"/>
-          </span>
+          <xsl:if test="@part = 'M' or @part = 'm' or @part = 'F' or @part = 'f'">
+            <xsl:variable name="txt">
+              <xsl:apply-templates select="preceding::tei:l[ancestor::tei:body][1]" mode="lspacer"/>
+            </xsl:variable>
+            <xsl:if test="normalize-space($txt) != ''">
+               <!-- Rupted verse, get the exact spacer from previous verse -->
+              <span class="spacer" style="visibility: hidden;">
+                <xsl:value-of select="$txt"/>
+              </span>
+            </xsl:if>
+          </xsl:if>
           <xsl:apply-templates/>
         </div>
       </xsl:otherwise>
@@ -954,6 +961,11 @@ Tables
         <xsl:value-of select="$txt"/>
         <xsl:text> </xsl:text>
       </xsl:when>
+      <!-- No part="I" -->
+      <xsl:otherwise>
+        <xsl:value-of select="$txt"/>
+        <xsl:text> </xsl:text>
+      </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
   <!--
