@@ -419,13 +419,20 @@ figcaption.less:before { float: left; margin-left: -2em; content: '◿'; } /*  *
 /* Global Layout */
 #header { height: 60px; z-index: 2; position: relative; background-color: #FFFFFF; }
 #aside { page-break-after: always; }
+/* floatfix */
+#main:after, #main:before, #aside:after, #aside:before { content:""; display: table; }
+#main, #aside { zoom:1; clear:both; }
+#center, #contenu, #main, #article { min-height: 100%; }
+#article { background-color: #FFFFFF; }
+
 /** specific wide screen, not for print or phone */
 @media screen {
+  body { background-color: #E2DED0; }
   #center { }
   #contenu { position: relative; }
-  #article  { border-right: #E2DED0 1px solid; box-shadow: 10px 0px 50px #E2DED0; padding: 3em 4em 3em 4em; border-bottom: 1px dotted #FFFFFF; min-height: 100%; }
-  #aside  { padding: 1em 1em 2em 1em; padding: 1rem 1rem 2rem 1rem; background-color: #E2DED0; background-image: -webkit-gradient(linear, left top, right top,from(#FFFFFF),to(#E2DED0)); background-image: -webkit-linear-gradient(right, #FFFFFF, #E2DED0); background-image: -moz-linear-gradient(left, #FFFFFF, #E2DED0); background-image: -ms-linear-gradient(right, #FFFFFF, #E2DED0); background-image: -o-linear-gradient(left, #FFFFFF, #E2DED0); background-image: linear-gradient(right, #FFFFFF, #E2DED0); }
-  body.article { box-shadow: 10px 0px 50px #E2DED0; }
+  #article  { border-right: #E2DED0 1px solid; padding: 3em 4em 3em 4em; border-bottom: 1px dotted #FFFFFF;  } /* box-shadow: 10px 0px 50px #E2DED0; box shadow is not 100% for long doc */
+  #aside  { padding: 1em 1em 2em 1em; padding: 1rem 1rem 2rem 1rem;  }
+  #aside, .pannel  { background-color: #E2DED0; background-image: -webkit-gradient(linear, right top, left top, from(#FFFFFF),to(#E2DED0)); background-image: -webkit-linear-gradient(left, #FFFFFF, #E2DED0); background-image: -moz-linear-gradient(right, #FFFFFF, #E2DED0); background-image: -ms-linear-gradient(left, #FFFFFF, #E2DED0); background-image: -o-linear-gradient(right, #FFFFFF, #E2DED0); background-image: linear-gradient(left, #FFFFFF, #E2DED0); }
   body.article { width: 100ex; margin: 3em auto 2em auto;  padding: 1em; }
   .marginalia { margin-right: -2.5em; width: 8em;}
 }
@@ -439,7 +446,6 @@ figcaption.less:before { float: left; margin-left: -2em; content: '◿'; } /*  *
   .marginalia { margin-right: -10em; width: 15em;}
 }
 
-#center, #contenu, #main { height: 100%; }
 
 
 #aside, #toolbar, #header { color: #808099; }
