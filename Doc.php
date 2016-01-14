@@ -31,6 +31,18 @@ class Teinte_Doc {
     $this->_xsldom = new DOMDocument();
   }
   /**
+   * Output an html fragment
+   */
+  public function article($destfile=null) {
+    return $this->transform(
+      dirname(__FILE__).'/tei2html.xsl', 
+      $destfile, 
+      array(
+        'root'=> 'article',
+      )
+    );
+  }
+  /**
    * Output html
    */
   public function html($destfile=null, $theme = null) {

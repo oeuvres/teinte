@@ -60,6 +60,7 @@ big { font-weight: normal; font-size: 180%; }
 blockquote { margin: 1.5em 0em 1.5em 7em; text-align: justify; line-height: 130%; font-size: 92%; padding: 0 ; }
 .note blockquote { margin: 1ex 0em 1ex 2em; }
 blockquote p { text-indent: 2em; }
+button { border: none; padding: 0; cursor: pointer; }
 cite { font-style: normal; }
 code { font-size: 13px; }
 dd { text-align: justify }
@@ -86,6 +87,7 @@ figure a { text-decoration: none; border-bottom: none; }
 figure a:hover { text-decoration: none; border-bottom: none; }
 figure h1 { font-size: inherit; font-weight: bold; margin: 1em 0 1ex 0; text-align: center; }
 figure h2 { font-size: inherit; font-weight: bold; margin: 1em 0 1ex 0; text-align: left; }
+form a { text-decoration: none; border-bottom: none;  }
 form label { padding: 0; line-height: 100%; }
 form h1 { margin: 0; padding: 0; }
 h1, h2, h3, h4, h5, h6 { clear: both; -webkit-hyphens: none !important; adobe-hyphenate: none; -moz-hyphens: none; hyphens: none; page-break-after: avoid; page-break-inside: avoid; orphans: 0; }

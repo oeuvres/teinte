@@ -952,6 +952,12 @@ Tables
       <xsl:apply-templates mode="title"/>
     </xsl:variable>
     <xsl:choose>
+      <!-- encoding error -->
+      <xsl:when test="@part = 'F'">
+        <xsl:apply-templates select="preceding::tei:l[1]" mode="lspacer"/>
+        <xsl:value-of select="$txt"/>
+        <xsl:text> </xsl:text>
+      </xsl:when>
       <xsl:when test="@part = 'M'">
         <xsl:apply-templates select="preceding::tei:l[1]" mode="lspacer"/>
         <xsl:value-of select="$txt"/>
@@ -961,7 +967,7 @@ Tables
         <xsl:value-of select="$txt"/>
         <xsl:text> </xsl:text>
       </xsl:when>
-      <!-- No part="I" -->
+      <!-- No part="I" ? -->
       <xsl:otherwise>
         <xsl:value-of select="$txt"/>
         <xsl:text> </xsl:text>
