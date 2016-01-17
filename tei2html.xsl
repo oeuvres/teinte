@@ -936,7 +936,7 @@ Tables
               <xsl:apply-templates select="preceding::tei:l[ancestor::tei:body][1]" mode="lspacer"/>
             </xsl:variable>
             <xsl:if test="normalize-space($txt) != ''">
-               <!-- Rupted verse, get the exact spacer from previous verse -->
+              <!-- Rupted verse, get the exact spacer from previous verse -->
               <span class="spacer" style="visibility: hidden;">
                 <xsl:value-of select="$txt"/>
               </span>
@@ -2102,6 +2102,8 @@ Call that in
     <xsl:param name="cont" select="*"/>
     <!-- for notes by pages -->
     <xsl:param name="pb" select="$cont//tei:pb[@n][not(@ed)]"/>
+    <!-- Handle on current node -->
+    <xsl:variable name="current" select="."/>
     <xsl:variable name="notes">
       <xsl:if test="$app">
         <xsl:variable name="apparatus">
@@ -2151,13 +2153,20 @@ Call that in
             <xsl:variable name="notes4page">
               <!-- notes abc ? @n and translate(@n, 'abcdefghijklmnopqrstuvwxyz-.', '') -->
               <xsl:for-each select="key('note-pb', generate-id())[@resp = 'author'][not(@place = 'margin')]">
-                <xsl:call-template name="note"/>
+                <!-- do not output notes for a page, outside from the <div> scope  -->
+                <xsl:if test="ancestor::*[count(.|$current)=1]">
+                  <xsl:call-template name="note"/>
+                </xsl:if>
               </xsl:for-each>
               <xsl:for-each select="key('note-pb', generate-id())[@resp = 'editor'][not(@place = 'margin')]">
-                <xsl:call-template name="note"/>
+                <xsl:if test="ancestor::*[count(.|$current)=1]">
+                  <xsl:call-template name="note"/>
+                </xsl:if>
               </xsl:for-each>
               <xsl:for-each select="key('note-pb', generate-id())[not(@resp) or (@resp != 'editor' and @resp != 'author')][not(@place = 'margin')]">
-                <xsl:call-template name="note"/>
+                <xsl:if test="ancestor::*[count(.|$current)=1]">
+                  <xsl:call-template name="note"/>
+                </xsl:if>
               </xsl:for-each>
             </xsl:variable>
             <xsl:if test="$notes4page != ''">

@@ -479,15 +479,14 @@ notamment pour établir cible et source de liens.
   <xsl:template name="id" match="*" mode="id">
     <xsl:param name="prefix"/>
     <xsl:param name="suffix"/>
-    <xsl:variable name="id0">, '"</xsl:variable>
-    <xsl:variable name="id1">-_</xsl:variable>
+    <xsl:variable name="id0"> '":,; </xsl:variable>
     <xsl:value-of select="$prefix"/>
     <xsl:choose>
       <xsl:when test="@xml:id">
-        <xsl:value-of select="translate(@xml:id, $id0, $id1)"/>
+        <xsl:value-of select="translate(@xml:id, $id0, '')"/>
       </xsl:when>
       <xsl:when test="@id">
-        <xsl:value-of select="translate(@id, $id0, $id1)"/>
+        <xsl:value-of select="translate(@id, $id0, '')"/>
       </xsl:when>
       <xsl:when test="not(ancestor::tei:group) and (self::tei:div or starts-with(local-name(), 'div'))">
         <!-- should I put file id as div id prefix ? -->
@@ -556,11 +555,11 @@ notamment pour établir cible et source de liens.
       <xsl:when test="self::tei:pb">
         <xsl:choose>
           <xsl:when test="contains('0123456789IVXDCM', substring(@n,1,1))">
-            <xsl:text>p</xsl:text>
-            <xsl:value-of select="normalize-space(translate(@n, ' .', ''))"/>
+            <xsl:text>pb</xsl:text>
+            <xsl:value-of select="normalize-space(translate(@n, $id0, ''))"/>
           </xsl:when>
           <xsl:when test="@n != ''">
-            <xsl:value-of select="normalize-space(translate(@n, ' .', ''))"/>
+            <xsl:value-of select="normalize-space(translate(@n, $id0, ''))"/>
           </xsl:when>
           <xsl:otherwise>
             <xsl:text>p</xsl:text>
