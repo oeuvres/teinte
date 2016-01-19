@@ -185,9 +185,8 @@ et -1 pour chaque niveau ensuite, d'où le paramètre $level qui peut
       </xsl:apply-templates>
       <!-- groupes de textes, procéder les notes par textes -->
       <xsl:if test="not(tei:group)">
-        <xsl:for-each select="/">
-          <xsl:call-template name="footnotes"/>
-        </xsl:for-each>
+        <!-- No notes in teiHeader ? -->
+        <xsl:call-template name="footnotes"/>
       </xsl:if>
     </article>
   </xsl:template>
@@ -526,6 +525,7 @@ et -1 pour chaque niveau ensuite, d'où le paramètre $level qui peut
     <xsl:variable name="el">
       <xsl:choose>
         <xsl:when test="self::tei:trailer">p</xsl:when>
+        <xsl:when test="self::tei:docImprint">div</xsl:when>
         <xsl:when test="parent::tei:titlePage">p</xsl:when>
         <xsl:otherwise>div</xsl:otherwise>
       </xsl:choose>
@@ -2133,7 +2133,7 @@ Call that in
       </xsl:for-each>
       -->
       <xsl:choose>
-        <xsl:when test=" $pb">
+        <xsl:when test=" $pb ">
           <!-- first notes before the first pb, slow ? -->
           <xsl:variable name="notes1" select=".//tei:note[following::tei:pb[generate-id(.) = generate-id($pb[1])]]"/>
           <xsl:if test="$notes1">
@@ -3122,14 +3122,14 @@ Centralize some html attribute policy, especially for id, and class
     </xsl:call-template>
     <!-- Shall we identify element ? -->
     <xsl:choose>
-      <xsl:when test="@id">
+      <xsl:when test="normalize-space(@id) != ''">
         <xsl:attribute name="id">
-          <xsl:value-of select="@id"/>
+          <xsl:value-of select="translate(normalize-space(@id), ' ', '')"/>
         </xsl:attribute>
       </xsl:when>
-      <xsl:when test="@xml:id">
+      <xsl:when test="normalize-space(@xml:id) != ''">
         <xsl:attribute name="id">
-          <xsl:value-of select="@xml:id"/>
+          <xsl:value-of select="translate(normalize-space(@xml:id), ' ', '')"/>
         </xsl:attribute>
       </xsl:when>
       <xsl:when test="self::tei:castList or self::tei:div or self::tei:div0 or self::tei:div1 or self::tei:div2 or self::tei:div3 or self::tei:div4 or self::tei:div5 or self::tei:div6 or self::tei:div7 or self::tei:graphic or self::tei:figure or self::tei:group or self::tei:text  or contains($els-unique, concat(' ', local-name(), ' '))">

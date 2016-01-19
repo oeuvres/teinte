@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../xrem/rng2html.xsl"?>
-<grammar xmlns="http://relaxng.org/ns/structure/1.0" 
-  xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" 
-  xmlns:h="http://www.w3.org/1999/xhtml" 
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes" 
-  ns="http://www.tei-c.org/ns/1.0" 
-  xml:lang="fr">
+<grammar xmlns="http://relaxng.org/ns/structure/1.0" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes" ns="http://www.tei-c.org/ns/1.0" xml:lang="fr">
   <a:documentation>Teibook</a:documentation>
   <div xmlns="http://www.w3.org/1999/xhtml">
     <ul class="auteurs">
@@ -22,18 +16,36 @@
       Il vise à produire au moins une édition électronique de qualité (ePub avec table des matières, site en ligne), tout en permettant des enrichissements sémantiques ultérieurs.
     </p>
     <ul>
-      <li><a href="teibook.rng">Le schéma</a></li>
-      <li><a href="teibook.xml">Document de test (dont sont tirés les exemples)</a></li>
+      <li>
+        <a href="teibook.rng">Le schéma</a>
+      </li>
+      <li>
+        <a href="teibook.xml">Document de test (dont sont tirés les exemples)</a>
+      </li>
     </ul>
     <p>Plan de ce document</p>
     <ul>
-      <li><a href="#text">Texte, commentaires, instruction de traitement</a></li>
-      <li><a href="#structure">Structure et sections</a></li>
-      <li><a href="#block">Paragraphes et autres blocs</a></li>
-      <li><a href="#zone">Zones sémantiques en entrée ou en sortie de section</a></li>
-      <li><a href="#typo">Typographie d’apparence</a></li>
-      <li><a href="#function">Segments fonctionnels</a></li>
-      <li><a href="#point">Notes, sauts et autres points</a></li>
+      <li>
+        <a href="#text">Texte, commentaires, instruction de traitement</a>
+      </li>
+      <li>
+        <a href="#structure">Structure et sections</a>
+      </li>
+      <li>
+        <a href="#block">Paragraphes et autres blocs</a>
+      </li>
+      <li>
+        <a href="#zone">Zones sémantiques en entrée ou en sortie de section</a>
+      </li>
+      <li>
+        <a href="#typo">Typographie d’apparence</a>
+      </li>
+      <li>
+        <a href="#function">Segments fonctionnels</a>
+      </li>
+      <li>
+        <a href="#point">Notes, sauts et autres points</a>
+      </li>
     </ul>
     <h2 id="text">Texte</h2>
     <p>Idéalement, tous les caractères du texte imprimé, de toutes les pages, doivent être inscrits comme des nœuds de texte. Le filtrage de certains composants s’effectuera a posteriori, par le balisage (exemple : ne pas afficher la table des matières originale au profit d’un sommaire automatique). Cette attitude conservatoire évite de présumer des intérêts futurs de la recherche.</p>
@@ -41,7 +53,7 @@
     <!-- p><b>Grec ancien</b> — lettres à pb</p -->
     <p><b>Guillemets</b> — Autant que possible, on évitera les <s>"guillemets droits"</s>, afin de favoriser les guillemets orientés, qui s'ouvrent et se ferment pour délimiter un segment, en distinguant les « guillemets français » et les  “guillemets anglais”. Les guillemets français encadrent généralement du texte cité ou rapporté, d'un autre auteur que le texte environnant, et sont susceptibles (sous contrôle humain) d'être encadrés pas la balise <a:el>quote</a:el>. Les guillemets anglais encadrent généralement des segments plus courts, qui pourraient aussi paraître en italique : terme technique <a:el>term</a:el>, langue étrangère <a:el>foreign</a:el>, mot en mention <a:el>mentionned</a:el>…</p>
     <p><b>Apostrophes</b> — Autant que possible, éviter les <s>'apostrophes droites'</s>, pour privilégier l’apostrophe courbe et orientée.</p>
-<!-- 
+    <!-- 
 Zero width space: x​x​x​x​x​x​x​x​x​x
 
 Word joiner (Zero width no-break space): x⁠x⁠x⁠x⁠x⁠x⁠x⁠x⁠x⁠x
@@ -65,12 +77,10 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
   </div>
   <div xml:id="structure">
     <a:documentation>Structure générale</a:documentation>
-
     <start>
       <a:documentation>Elément racine</a:documentation>
       <ref name="TEI"/>
     </start>
-
     <define name="TEI">
       <element name="TEI">
         <a:documentation>Structure générale d’un document TEI</a:documentation>
@@ -86,26 +96,30 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
           <p>Dès la numérisation, le fichier doit obligatoirement porter en racine un identifiant correspondant au nom du fichier xml sans l’extension. Lorsque l'identifiant est un code isbn, uniquement en chiffres, il n'est pas compatible avec les valeurs autorisées dans l'attribut <a href="http://www.tei-c.org/release/doc/tei-p5-doc/fr/html/CO.html#CORS1" target="_blank">xml:id</a>, aussi ce nom de fichier est inscrit dans un attribut <a:att>n</a:att>.</p>
           <p>Le document comportera aussi un <a href="http://www.loc.gov/standards/iso639-2/php/French_list.php" target="_blank">code de langue iso</a> dans l’attribut <a:att>xml:lang</a:att> en racine.</p>
           <a:example>
-<TEI xml:lang="fr">
-  <teiHeader>…</teiHeader>
-  <text>
-    <front>
-      <titlePage>page de titre</titlePage>
-      <argument>quatrième de couverture</argument>
-      <div type="preface">tout paratexte autre que le corps du texte, souvent numéroté en chiffres romain</div>
-    </front>
-    <body>
-      <head>Corps du livre</head>
-      <div><head>Chapitre 1</head></div>
-      <div><head>Chapitre 2</head></div>
-      <!-- … -->
-    </body>
-    <back>
-      <div type="index">…</div>     
-      <div type="toc">…</div>
-    </back>
-  </text>
-</TEI>            
+            <TEI xml:lang="fr">
+              <teiHeader>…</teiHeader>
+              <text>
+                <front>
+                  <titlePage>page de titre</titlePage>
+                  <argument>quatrième de couverture</argument>
+                  <div type="preface">tout paratexte autre que le corps du texte, souvent numéroté en chiffres romain</div>
+                </front>
+                <body>
+                  <head>Corps du livre</head>
+                  <div>
+                    <head>Chapitre 1</head>
+                  </div>
+                  <div>
+                    <head>Chapitre 2</head>
+                  </div>
+                  <!-- … -->
+                </body>
+                <back>
+                  <div type="index">…</div>
+                  <div type="toc">…</div>
+                </back>
+              </text>
+            </TEI>
           </a:example>
         </div>
         <ref name="lang-att"/>
@@ -153,7 +167,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </element>
       </element>
     </define>
-
     <define name="group">
       <element name="group">
         <choice>
@@ -166,7 +179,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </choice>
       </element>
     </define>
-
     <define name="text">
       <element name="text">
         <a:documentation>Un texte dans un groupe <a:el>group</a:el></a:documentation>
@@ -180,7 +192,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </optional>
       </element>
     </define>
-
     <define name="front">
       <element name="front">
         <a:documentation>Le texte préliminaire tel qu’imprimé</a:documentation>
@@ -223,7 +234,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
             <br/>Le texte de la page doit être transcrit.
             <br/>La disposition est imitée par des éléments de type bloc. Leur positionnement exact n'est pas requis.
             <br/>L'interprétation sémantique (auteur, titre, date, imprimeur…) n’est pas requise.</p>
-            <a:example href="teibook.xml#titlePage"/>
+          <a:example href="teibook.xml#titlePage"/>
         </div>
         <optional>
           <ref name="facs-att"/>
@@ -299,7 +310,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
             <ref name="head"/>
           </choice>
         </zeroOrMore>
-          <!-- Au moins une div si on veut éviter un conflit de <pb/> -->
+        <!-- Au moins une div si on veut éviter un conflit de <pb/> -->
         <choice>
           <oneOrMore>
             <ref name="div"/>
@@ -316,8 +327,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </zeroOrMore>
       </element>
     </define>
-    
-
     <define name="body">
       <element name="body">
         <a:documentation>Texte principal</a:documentation>
@@ -334,7 +343,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </choice>
       </element>
     </define>
-
     <define name="div.atts">
       <optional>
         <attribute name="type">
@@ -389,7 +397,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
       </optional>
       <ref name="xml-atts"/>
     </define>
-    
     <define name="div">
       <element name="div">
         <a:documentation>Sections du texte, &lt;html5:section>, &lt;html5:article> </a:documentation>
@@ -398,23 +405,22 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
           <p>Une section doit principalement contenir soit des <a href="#block">blocs</a>, soit des sections (<a:el>div</a:el>).</p>
           <a:example>
             <!-- Une interprétation éditoriale de la Bible où un livre est considéré comme l’unité documentaire référencée par la table des matières -->
-<TEI xmlns="http://www.tei-c.org/ns/1.0">
-  <!-- … -->
-  <text>
-    <body>
-      <head>la Bible</head>
-      <a:example href="teibook.xml#AT"/>
-      <a:example href="teibook.xml#NT"/>
-    </body>
-  </text>
-</TEI>
+            <TEI xmlns="http://www.tei-c.org/ns/1.0">
+              <!-- … -->
+              <text>
+                <body>
+                  <head>la Bible</head>
+                  <a:example href="teibook.xml#AT"/>
+                  <a:example href="teibook.xml#NT"/>
+                </body>
+              </text>
+            </TEI>
           </a:example>
         </div>
         <ref name="div.atts"/>
         <ref name="div.cont"/>
       </element>
     </define>
-    
     <define name="div1">
       <element name="div1">
         <ref name="div.atts"/>
@@ -433,7 +439,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <ref name="div.cont"/>
       </element>
     </define>
-    
     <define name="div.cont">
       <oneOrMore>
         <choice>
@@ -468,53 +473,50 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
           </zeroOrMore>
         </group>
       </zeroOrMore>
-
-        <choice>
-          <!-- closer -->
-
-          <zeroOrMore>
-            <group>
-              <choice>
-                <ref name="byline"/>
-                <ref name="dateline"/>
-                <ref name="note"/>
-                <ref name="postscript"/>
-                <ref name="salute"/>
-                <ref name="signed"/>
-                <ref name="trailer"/>
-              </choice>
-              <zeroOrMore>
-                <choice>
-                  <ref name="fw"/>
-                  <ref name="pb"/>
-                  <ref name="cb"/>
-                  <ref name="milestone"/>
-                </choice>
-              </zeroOrMore>
-            </group>
-          </zeroOrMore>
-          <!-- div -->
+      <choice>
+        <!-- closer -->
+        <zeroOrMore>
+          <group>
+            <choice>
+              <ref name="byline"/>
+              <ref name="dateline"/>
+              <ref name="note"/>
+              <ref name="postscript"/>
+              <ref name="salute"/>
+              <ref name="signed"/>
+              <ref name="trailer"/>
+            </choice>
             <zeroOrMore>
-              <group>
-                <choice>
-                  <ref name="div"/>
-                  <ref name="div2"/>
-                  <ref name="div3"/>
-                </choice>
-                 <zeroOrMore>
-                  <choice>
-                    <ref name="fw"/>
-                    <ref name="pb"/>
-                    <ref name="cb"/>
-                    <ref name="milestone"/>
-                  </choice>
-                </zeroOrMore>
-              </group>
+              <choice>
+                <ref name="fw"/>
+                <ref name="pb"/>
+                <ref name="cb"/>
+                <ref name="milestone"/>
+              </choice>
             </zeroOrMore>
-        </choice>
+          </group>
+        </zeroOrMore>
+        <!-- div -->
+        <zeroOrMore>
+          <group>
+            <choice>
+              <ref name="div"/>
+              <ref name="div2"/>
+              <ref name="div3"/>
+            </choice>
+            <zeroOrMore>
+              <choice>
+                <ref name="fw"/>
+                <ref name="pb"/>
+                <ref name="cb"/>
+                <ref name="milestone"/>
+              </choice>
+            </zeroOrMore>
+          </group>
+        </zeroOrMore>
+      </choice>
     </define>
   </div>
-  
   <div xml:id="block">
     <a:documentation>Blocs</a:documentation>
     <define name="block">
@@ -562,12 +564,11 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </choice>
       </oneOrMore>
     </define>
-
     <define name="p">
       <element name="p">
         <a:documentation>Paragraphe de texte, html5:p</a:documentation>
-        <div xmlns="http://www.w3.org/1999/xhtml">  
-<p><a href="http://www.w3.org/TR/html5/the-p-element.html#the-p-element">[html]</a> Pour les paragraphes numérotés, le numéro de l’édition imprimée est à inscrire dans l’attribut <a:att>n</a:att>.</p>
+        <div xmlns="http://www.w3.org/1999/xhtml">
+          <p><a href="http://www.w3.org/TR/html5/the-p-element.html#the-p-element">[html]</a> Pour les paragraphes numérotés, le numéro de l’édition imprimée est à inscrire dans l’attribut <a:att>n</a:att>.</p>
         </div>
         <ref name="xml-atts"/>
         <optional>
@@ -584,7 +585,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
     </define>
     <define name="eg">
       <element name="eg">
-        <a:documentation>Exemple de code, apparaissant souvent en texte préformaté, html5:pre</a:documentation>        
+        <a:documentation>Exemple de code, apparaissant souvent en texte préformaté, html5:pre</a:documentation>
         <ref name="xml-atts"/>
         <optional>
           <ref name="n-att"/>
@@ -657,28 +658,28 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
     <define name="label">
       <element name="label">
         <a:documentation>Étiquette, pour un intitulé court, de niveau paragraphe ou de niveau caractère. Utilisé par exemple pour les intertitres, pour des listes de définitions, ou dans le théâtre.</a:documentation>
-          <ref name="rendering.block"/>
-          <zeroOrMore>
+        <ref name="rendering.block"/>
+        <zeroOrMore>
+          <choice>
+            <ref name="textual"/>
+            <ref name="name"/>
+            <ref name="foreign"/>
+            <ref name="term"/>
+          </choice>
+        </zeroOrMore>
+        <optional>
+          <ref name="place-att"/>
+        </optional>
+        <optional>
+          <attribute name="type">
             <choice>
-              <ref name="textual"/>
-              <ref name="name"/>
-              <ref name="foreign"/>
-              <ref name="term"/>
+              <value>head</value>
+              <a:documentation>Intertitre indépendant de la hiérarchie du document (pas un titre de partie ou de section)</a:documentation>
+              <value>speaker</value>
+              <a:documentation>Théâtre, intertitre avant une tirade contenant généralement au moins un nom de personnage &lt;name>, et parfois des didascalies &lt;stage></a:documentation>
             </choice>
-          </zeroOrMore>
-          <optional>
-            <ref name="place-att"/>
-          </optional>
-          <optional>
-            <attribute name="type">
-              <choice>
-                <value>head</value>
-                <a:documentation>Intertitre indépendant de la hiérarchie du document (pas un titre de partie ou de section)</a:documentation>
-                <value>speaker</value>
-                <a:documentation>Théâtre, intertitre avant une tirade contenant généralement au moins un nom de personnage &lt;name>, et parfois des didascalies &lt;stage></a:documentation>
-              </choice>
-            </attribute>
-          </optional>
+          </attribute>
+        </optional>
       </element>
     </define>
     <define name="bibl">
@@ -760,7 +761,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
           </choice>
         </oneOrMore>
       </element>
-     </define>
+    </define>
     <!-- blocs conteneurs de blocs -->
     <define name="quote-p">
       <element name="quote">
@@ -778,7 +779,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
               <!-- COS <ref name="bibl"/> -->
               <text/>
               <ref name="typo"/>
-              
               <ref name="function"/>
               <ref name="indexable"/>
               <ref name="point"/>
@@ -820,8 +820,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <ref name="flow"/>
       </element>
     </define>
-
-
     <define name="cit">
       <element name="cit">
         <a:documentation>Permet de regrouper un texte cité avec sa référence bibliographique.</a:documentation>
@@ -831,13 +829,12 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </oneOrMore>
       </element>
     </define>
-
     <define name="sp">
       <element name="sp">
         <a:documentation>Théâtre : tirade, tour de parole</a:documentation>
         <attribute name="who">
           <data type="IDREFS"/>
-        </attribute>       
+        </attribute>
         <ref name="xml-atts"/>
         <optional>
           <element name="speaker">
@@ -862,7 +859,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </optional>
       </element>
     </define>
-
     <define name="entryFree">
       <a:documentation>Une entrée pour un glossaire</a:documentation>
       <element name="entryFree">
@@ -893,17 +889,16 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
               </zeroOrMore>
             </element>
           </choice>
-        </oneOrMore>      
+        </oneOrMore>
       </element>
     </define>
-
     <define name="list">
       <element name="list">
         <a:documentation>Listes, &lt;html5:ul> &lt;html5:ol> &lt;html5:dl></a:documentation>
-        <div xmlns="http://www.w3.org/1999/xhtml">   
+        <div xmlns="http://www.w3.org/1999/xhtml">
           <p>Les listes récursives permettent de représenter de nombreux composants textuels, il sont notamment utilisés, selon les conseils de la documentation TEI, pour les index ou les tables des matières.</p>
           <a:example href="teibook.xml#list"/>
-          <p>Liste de définitions, <a href="http://www.w3.org/TR/html5/the-dl-element.html#the-dl-element">[html]</a>,  adapté à l’encodage de tables à deux colonnes de type légende ou dictionnaire. L’attribut <a:att>rend</a:att> permet à un programme d’interpréter différemment l’information.</p>        
+          <p>Liste de définitions, <a href="http://www.w3.org/TR/html5/the-dl-element.html#the-dl-element">[html]</a>,  adapté à l’encodage de tables à deux colonnes de type légende ou dictionnaire. L’attribut <a:att>rend</a:att> permet à un programme d’interpréter différemment l’information.</p>
           <a:example href="teibook.xml#dl"/>
         </div>
         <optional>
@@ -943,7 +938,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </oneOrMore>
       </element>
     </define>
-
     <define name="rend.list">
       <attribute name="rend">
         <a:documentation>Type de liste, indiqué par un caractère, ou une valeur CSS standard</a:documentation>
@@ -980,7 +974,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </choice>
       </attribute>
     </define>
-    
     <define name="item">
       <element name="item">
         <optional>
@@ -1059,8 +1052,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </oneOrMore>
       </element>
     </define>
-
-    
     <define name="table">
       <element name="table">
         <a:documentation>Table, &lt;html5:table>. Avant essaiera de limiter l'usage des tables aux structures de contenu qui ne peuvent pas être ramenées à une liste &lt;list> (penser notamment aux listes de définitions qui correspondent à des tableaux à deux colonnes)</a:documentation>
@@ -1071,7 +1062,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
             <ref name="index"/>
           </choice>
         </zeroOrMore>
-         <oneOrMore>
+        <oneOrMore>
           <choice>
             <element name="row">
               <optional>
@@ -1104,20 +1095,19 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
                   <optional>
                     <!-- TODO border ? -->
                     <attribute name="rend">
-                      <choice>
-                        <value>center</value>
-                        <value>center bottom</value>
-                        <value>center middle</value>
-                        <value>center top</value>
-                        <value>left</value>
-                        <value>left bottom</value>
-                        <value>left middle</value>
-                        <value>left top</value>
-                        <value>right</value>
-                        <value>right bottom</value>
-                        <value>right middle</value>
-                        <value>right top</value>
-                      </choice>
+                      <list>
+                        <choice>
+                          <choice>
+                            <value>center</value>
+                            <value>bottom</value>
+                            <value>middle</value>
+                            <value>top</value>
+                            <value>left</value>
+                            <value>right</value>
+                          </choice>
+                          <ref name="rend.font"/>
+                        </choice>
+                      </list>
                     </attribute>
                   </optional>
                   <optional>
@@ -1141,7 +1131,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </oneOrMore>
       </element>
     </define>
-    
     <define name="figure">
       <element name="figure">
         <a:documentation>Boîte hors du flux, parfois encadrée, pouvant contenir une image, une table, une formule, ou autre objet susceptible d’être référencé dans une table dédiée. Permet notamment d’envelopper une image avec sa légende. &lt;html5:figure></a:documentation>
@@ -1175,7 +1164,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </oneOrMore>
       </element>
     </define>
-
   </div>
   <div xml:id="zone">
     <a:documentation>Entrées et sorties de section</a:documentation>
@@ -1265,13 +1253,13 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
       <element name="epigraph">
         <a:documentation>Épigraphe, citation en exergue de section</a:documentation>
         <a:example>
-<epigraph>
-  <l>Quand tu diras à Tabaqui<note n="9" place="bottom">Le Chacal.</note> : Frère, à l’Hyène :
+          <epigraph>
+            <l>Quand tu diras à Tabaqui<note n="9" place="bottom">Le Chacal.</note> : Frère, à l’Hyène :
   <lb/>Voici mon gibier,</l>
-  <l>Tu feras ta trêve avec Jacala<note n="10" place="bottom">Crocodile de rivière,  habituellement charognard.</note>, le Ventre qui court
+            <l>Tu feras ta trêve avec Jacala<note n="10" place="bottom">Crocodile de rivière,  habituellement charognard.</note>, le Ventre qui court
   <lb/>sur quatre pieds.</l>
-  <bibl>Loi de Jungle.</bibl>
-</epigraph>
+            <bibl>Loi de Jungle.</bibl>
+          </epigraph>
         </a:example>
         <ref name="xml-atts"/>
         <ref name="rendering.block"/>
@@ -1359,15 +1347,12 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </choice>
       </zeroOrMore>
     </define>
-
-    
     <define name="emph">
       <element name="emph">
         <a:documentation>Mise en valeur, &lt;html5:em></a:documentation>
         <ref name="textual"/>
       </element>
     </define>
-
     <define name="hi">
       <element name="hi">
         <a:documentation>Mise en forme de niveau caractère, sans interprétation sémantique (ex : italique, gras, couleurs…)</a:documentation>
@@ -1380,7 +1365,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
             <hi rend="i">« J’appelle <hi rend="i">typographie</hi> la mise à plat d’une pensée »</hi>
             <!-- Balisage TEI plus sémantique -->
             <q>J'appelle <term rend="i">typographie</term> la mise à plat d’une pensée</q>
-          </a:example>          
+          </a:example>
         </div>
         <attribute name="rend">
           <choice>
@@ -1412,12 +1397,13 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </zeroOrMore>
       </element>
     </define>
-    
     <define name="g">
       <element name="g">
         <a:documentation>Caractère particulier qui peuvent ne pas être correctement rendus dans les polices unicode habituelles. L'encadrement du caractère risqué ou approximatif permet d'adapter le rendu selon le média de destination. Indiquer obligatoirement un code local dans l’attribut @n (dans l'esprit du nom d'une entité XML).</a:documentation>
         <div xmlns="http://www.w3.org/1999/xhtml">
-          <a:example><c n="cent">¢</c></a:example>
+          <a:example>
+            <c n="cent">¢</c>
+          </a:example>
         </div>
         <ref name="n-att"/>
         <ref name="rendering.char"/>
@@ -1427,7 +1413,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </optional>
       </element>
     </define>
-
     <define name="c">
       <element name="c">
         <a:documentation>Caractère auquel attacher des propriétés particulières, par exemple pour isoler une lettrine.</a:documentation>
@@ -1459,7 +1444,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </optional>
       </element>
     </define>
-
     <define name="seg">
       <element name="seg">
         <a:documentation>Segment de texte à distinguer, à utiliser en derniers recours lorsqu’aucun autre élément n’est approprié, permet notamment de porter une classe ou un identifiant, &lt;html5:span></a:documentation>
@@ -1467,9 +1451,9 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
           <!-- <ref name="type-att"/> -->
           <attribute name="type">
             <choice>
-              
               <value>exquote</value>
-              <a:documentation>Baliser dans une citation les incises et commentaires qui viennent l’interrompre.</a:documentation><!-- http://listserv.brown.edu/archives/cgi-bin/wa?A2=TEI-L;bc182630.1306 -->
+              <a:documentation>Baliser dans une citation les incises et commentaires qui viennent l’interrompre.</a:documentation>
+              <!-- http://listserv.brown.edu/archives/cgi-bin/wa?A2=TEI-L;bc182630.1306 -->
               <value>tab</value>
               <!--
               <text/>
@@ -1488,7 +1472,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </zeroOrMore>
       </element>
     </define>
-    
     <define name="space">
       <element name="space">
         <a:documentation>Espace significatif. Dans le mesure du possible, éviter cet élément lorsque l’espace peut être représenté par une suite d’espaces insécables ' ' (caractère unicode équivalent à l’entité XML <![CDATA[&#160;]]>). </a:documentation>
@@ -1504,13 +1487,12 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
             </choice>
           </attribute>
         </optional>
-         <data type="token">
+        <data type="token">
           <param name="pattern"> *</param>
         </data>
       </element>
     </define>
-    
-     <define name="gap">
+    <define name="gap">
       <element name="gap">
         <a:documentation>Texte non transcrit. Indiquer obligatoirement une raison et un ordre de grandeur. Les unités de distance linéaire sont interprétées verticalement lorsque que l’élément est utilisé au niveau paragraphe, sinon elles sont interprétées horizontalement. Pour les manques horizontaux sur plus d'une ligne, préférer un ordre de grandeur en caractères.</a:documentation>
         <attribute name="reason">
@@ -1532,12 +1514,10 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
             <value>cm</value>
             <a:documentation>centimètres</a:documentation>
           </choice>
-        </attribute>     
+        </attribute>
       </element>
     </define>
-
   </div>
-  
   <div xml:id="function">
     <a:documentation>Fonctions</a:documentation>
     <define name="function">
@@ -1562,7 +1542,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <ref name="surname"/>
       </choice>
     </define>
-    
     <define name="s">
       <element name="s">
         <a:documentation>Pour découpage à la phrase</a:documentation>
@@ -1570,7 +1549,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <ref name="flow"/>
       </element>
     </define>
-    
     <define name="ref">
       <element name="ref">
         <a:documentation>Lien simple, html5:&lt;a href="target">texte&lt;/a>. Pour les liens internes, utiliser une URI ancre, #p0101 (page 101).</a:documentation>
@@ -1605,14 +1583,12 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </zeroOrMore>
       </element>
     </define>
-
     <define name="email">
       <element name="email">
         <a:documentation>Adresse courriel</a:documentation>
         <text/>
       </element>
     </define>
-
     <define name="said">
       <element name="said">
         <a:documentation>Parole, par exemple dans un dialogue de roman</a:documentation>
@@ -1620,7 +1596,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <ref name="flow"/>
       </element>
     </define>
-    
     <define name="q">
       <element name="q">
         <a:documentation>L’usage de cette balise est très déconseillé, sa sémantique étant particulièrement vague</a:documentation>
@@ -1633,7 +1608,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </zeroOrMore>
       </element>
     </define>
-
     <define name="app">
       <element name="app">
         <a:documentation>Note d’apparat critique</a:documentation>
@@ -1647,13 +1621,12 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </optional>
       </element>
     </define>
-
     <define name="num">
       <element name="num">
         <a:documentation>Nombre</a:documentation>
         <div xmlns="http://www.w3.org/1999/xhtml">
           <p>Le balisage des nombres est spécialement utile pour les chiffres romains, afin qu’ils puissent paraître en petites capitales selon les conventions d’édition, par exemple les siècles. <span style="font-variant:small-caps">xvi</span><sup>e</sup> s.</p>
-        <a:example><num>xvi<hi rend="sup">e</hi></num> s.</a:example>
+          <a:example><num>xvi<hi rend="sup">e</hi></num> s.</a:example>
         </div>
         <optional>
           <ref name="type-att"/>
@@ -1667,21 +1640,20 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <ref name="textual"/>
       </element>
     </define>
-    
     <define name="add">
       <element name="add">
         <a:documentation>Segment de texte inséré, &lt;html5:ins&gt;</a:documentation>
-        <text/><!-- TODO: macro {text}, hi, num ? -->
+        <text/>
+        <!-- TODO: macro {text}, hi, num ? -->
       </element>
     </define>
-    
     <define name="del">
       <element name="del">
         <a:documentation>Segment de texte supprimé, &lt;html5:del&gt;</a:documentation>
-        <text/><!-- TODO: macro {text}, hi, num ? -->
+        <text/>
+        <!-- TODO: macro {text}, hi, num ? -->
       </element>
     </define>
-    
     <define name="corr">
       <element name="corr">
         <a:documentation>Segment de texte corrigé</a:documentation>
@@ -1689,10 +1661,10 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
           <attribute name="n"/>
           <a:documentation>Permet de retenir le mot corrigé</a:documentation>
         </optional>
-        <text/><!-- TODO: macro {text}, hi, num ? -->
+        <text/>
+        <!-- TODO: macro {text}, hi, num ? -->
       </element>
     </define>
-    
     <define name="formula">
       <element name="formula">
         <a:documentation>Formule mathématique</a:documentation>
@@ -1712,7 +1684,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <text/>
       </element>
     </define>
-
     <define name="foreign">
       <element name="foreign">
         <a:documentation>Mot, expression, ou proposition dans une langue différente du contexte. Permet de spécifier une police particulière pour certains alphabets (grec, hébreu…).</a:documentation>
@@ -1720,7 +1691,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <ref name="textual"/>
       </element>
     </define>
-
     <define name="gloss">
       <element name="gloss">
         <a:documentation>Glose, définition</a:documentation>
@@ -1729,7 +1699,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <ref name="textual"/>
       </element>
     </define>
-
     <define name="phr">
       <element name="phr">
         <a:documentation>Syntagme, expression au sens grammatical</a:documentation>
@@ -1738,7 +1707,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <ref name="textual"/>
       </element>
     </define>
-
     <define name="date">
       <element name="date">
         <a:documentation>Date</a:documentation>
@@ -1758,8 +1726,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <ref name="textual"/>
       </element>
     </define>
-    
-
     <define name="stage">
       <element name="stage">
         <a:documentation>Théâtre, didascalie, pouvant apparaître à différents niveaux du texte.</a:documentation>
@@ -1792,14 +1758,12 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <ref name="flow"/>
       </element>
     </define>
-
     <define name="code">
       <element name="code">
         <a:documentation>Segment de code informatique, souvent en police machine à écrire, &lt;html5:code></a:documentation>
         <ref name="textual"/>
       </element>
     </define>
-    
     <define name="textual">
       <a:documentation>Contenu quasi textuel avec une typographie minimale, notamment à l’intérieur d'une balise fonctionnelle</a:documentation>
       <zeroOrMore>
@@ -1825,11 +1789,8 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
       </zeroOrMore>
     </define>
   </div>
-  
-  
   <div xml:id="entites">
     <a:documentation>Entités nommées</a:documentation>
-    
     <define name="indexable">
       <a:documentation>Balises de niveau caractère utiles à l’indexation des entités nommées</a:documentation>
       <choice>
@@ -1842,7 +1803,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <ref name="title"/>
       </choice>
     </define>
-    
     <define name="author">
       <element name="author">
         <a:documentation>Auteur dans une référence bibliographique.</a:documentation>
@@ -1863,7 +1823,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </zeroOrMore>
       </element>
     </define>
-    
     <!-- on place où docAuthor ? -->
     <define name="docAuthor">
       <element name="docAuthor">
@@ -1887,7 +1846,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </zeroOrMore>
       </element>
     </define>
-    
     <define name="name">
       <element name="name">
         <a:documentation>Entités nommmées non résolues (personne, lieu, institution, initiales…)</a:documentation>
@@ -1903,14 +1861,13 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <ref name="textual"/>
       </element>
     </define>
-    
     <define name="persName">
       <element name="persName">
         <a:documentation>Nom de personne, d’auteur, de personnage</a:documentation>
         <div xmlns="http://www.w3.org/1999/xhtml">
           <p>Les noms de personne peuvent être balisés pour différents objectifs :</p>
           <ul>
-            <li><b>Mise en forme typographique</b> : si l’objectif est la mise en petites capitales des noms de famille, utiliser <a:el>surname</a:el>, afin que <a:el>persName</a:el> encadre la totalité d’un nom de personne, nom, prénom, et autres composantes compris.</li> 
+            <li><b>Mise en forme typographique</b> : si l’objectif est la mise en petites capitales des noms de famille, utiliser <a:el>surname</a:el>, afin que <a:el>persName</a:el> encadre la totalité d’un nom de personne, nom, prénom, et autres composantes compris.</li>
             <li><b>Traitements linguistiques</b> : le but sera d’inclure tous les noms propres. Il doit être possible de remplacer <a:el>persName</a:el> par "il" ou "elle" sans rompre la signification de la phrase. Pour un tel objectif, il convient de baliser aussi les noms abrégés ("K.", "Joseph K.").</li>
             <li><b>Indexation</b> : il est nécessaire d'ajouter l’attribut utile (index-atts()) à l’identification de la personne, notamment pour les pronoms, et permettre les regroupements.<br/>
               <a:example><persName key="dieu">Il</persName></a:example>
@@ -1954,7 +1911,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </zeroOrMore>
       </element>
     </define>
-    
     <define name="surname">
       <element name="surname">
         <a:documentation>Nom de famille, souvent en petites capitales</a:documentation>
@@ -1967,7 +1923,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </zeroOrMore>
       </element>
     </define>
-
     <define name="forename">
       <element name="forename">
         <a:documentation>Prénom</a:documentation>
@@ -1979,7 +1934,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </zeroOrMore>
       </element>
     </define>
-    
     <define name="placeName">
       <element name="placeName">
         <a:documentation>Nom de lieu</a:documentation>
@@ -2000,7 +1954,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </zeroOrMore>
       </element>
     </define>
-
     <define name="rs">
       <element name="rs">
         <a:documentation>Référence à une entité</a:documentation>
@@ -2027,7 +1980,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </zeroOrMore>
       </element>
     </define>
-
     <define name="orgName">
       <element name="orgName">
         <a:documentation>Nom d’organisation</a:documentation>
@@ -2043,7 +1995,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </zeroOrMore>
       </element>
     </define>
-
     <define name="roleName">
       <element name="roleName">
         <a:documentation>Rôle</a:documentation>
@@ -2061,7 +2012,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </zeroOrMore>
       </element>
     </define>
-
     <define name="title">
       <element name="title">
         <a:documentation>Titre d'ouvrage</a:documentation>
@@ -2104,9 +2054,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </zeroOrMore>
       </element>
     </define>
-    
   </div>
-  
   <div xml:id="index">
     <a:documentation>Indexation</a:documentation>
     <div xmlns="http://www.w3.org/1999/xhtml">
@@ -2142,7 +2090,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <ref name="cert-att"/>
       </optional>
     </define>
-    
     <div xml:id="index_odt">
       <a:documentation>Conversion ODT</a:documentation>
       <define name="term">
@@ -2185,9 +2132,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </element>
       </define>
     </div>
-    
   </div>
-
   <div xml:id="point">
     <a:documentation>Points</a:documentation>
     <define name="point">
@@ -2217,7 +2162,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
           <p>Pour une édition de source, lorsque la foliotation de l’original est conservée, utiliser le même élément mais en précisant le sigle du témoin dans l’attribut <a:att>ed</a:att> dont provient le n° de folio (dans ce cas, titre courant et fichier image ne sont pas requis).</p>
           <p>Lorsqu’un saut de page coupe un mot dans l’édition imprimée, on conseillera de résoudre la césure, et de placer le saut de page après le mot non coupé + une espace (une page ne doit jamais commencer par une espace).</p>
         </div>
-        
         <optional>
           <ref name="n-att"/>
         </optional>
@@ -2237,13 +2181,12 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </choice>
       </element>
     </define>
-
     <define name="note">
       <element name="note">
         <a:documentation>Une note, encodée dans le flux du texte, au point de l’appel.</a:documentation>
         <div xmlns="http://www.w3.org/1999/xhtml">
-        <p>Une note ne contient que du texte riche, ou que des blocs (le mélange texte avec blocs n'est pas autorisé).</p>
-        <p>Le numéro ou la lettre d’appel dans le texte original est contenu dans l’attribut <a:att>n</a:att>. Si la note ne comporte pas d'attribut <a:att>n</a:att>, elle apparaît dans le flux, mais le bloc est considéré comme relevant d'un autre statut que le texte environnant. Lorsque plusieurs types de notes cohabitent (hors apparat critique <a:el>app</a:el>), chaque type doit pouvoir être distingué, afin notamment de pouvoir filtrer les notes pour certains exports (ex : texte hors droit à destination de la recherche, avec les notes de l’auteur hors droit, sans les notes de l’éditeur encore sous droits d’auteur). Le responsable d’une note sera alors précisé dans l’attribut <a:att>resp</a:att>. Il est aussi possible de distinguer les notes par leur présentation typographique <a:att>rend</a:att>.</p>
+          <p>Une note ne contient que du texte riche, ou que des blocs (le mélange texte avec blocs n'est pas autorisé).</p>
+          <p>Le numéro ou la lettre d’appel dans le texte original est contenu dans l’attribut <a:att>n</a:att>. Si la note ne comporte pas d'attribut <a:att>n</a:att>, elle apparaît dans le flux, mais le bloc est considéré comme relevant d'un autre statut que le texte environnant. Lorsque plusieurs types de notes cohabitent (hors apparat critique <a:el>app</a:el>), chaque type doit pouvoir être distingué, afin notamment de pouvoir filtrer les notes pour certains exports (ex : texte hors droit à destination de la recherche, avec les notes de l’auteur hors droit, sans les notes de l’éditeur encore sous droits d’auteur). Le responsable d’une note sera alors précisé dans l’attribut <a:att>resp</a:att>. Il est aussi possible de distinguer les notes par leur présentation typographique <a:att>rend</a:att>.</p>
         </div>
         <ref name="xml-atts"/>
         <optional>
@@ -2322,7 +2265,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <ref name="flow"/>
       </element>
     </define>
-
     <define name="graphic">
       <element name="graphic">
         <a:documentation>Image &lt;html5:img src="{@url}"></a:documentation>
@@ -2332,8 +2274,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </optional>
       </element>
     </define>
-
-        
     <define name="index">
       <element name="index">
         <a:documentation>Clé d'index</a:documentation>
@@ -2348,8 +2288,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </zeroOrMore>
       </element>
     </define>
-
-
     <define name="cb">
       <element name="cb">
         <a:documentation>Saut de colonne</a:documentation>
@@ -2360,7 +2298,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <ref name="n-att"/>
       </element>
     </define>
-
     <define name="lb">
       <element name="lb">
         <a:documentation>Saut de ligne “line break” &lt;html5:br/></a:documentation>
@@ -2378,7 +2315,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <empty/>
       </element>
     </define>
-    
     <define name="milestone">
       <element name="milestone">
         <a:documentation>Borne anonyme, vide, permet d’étiqueter des points qui n’entrent pas dans la hiérarchie éditoriale, et qui ne sont pas des sauts de page <a:el>pb</a:el>, de colonne <a:el>cb</a:el> ou de ligne <a:el>lb</a:el></a:documentation>
@@ -2394,8 +2330,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </attribute>
       </element>
     </define>
-
-    
     <define name="anchor">
       <element name="anchor">
         <a:documentation>Une ancre, lorsqu’un point (et non un segment) identifiant est requis. Exemple : destination d’un lien. Pour identifier un segment (et non un point), renseigner l’attribut @xml:id de l'élément conteneur (section &lt;div> ; bloc &lt;p>, &lt;list>… ; segment &lt;term>…)</a:documentation>
@@ -2426,8 +2360,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
       </attribute>
     </define>
   </div>
-
-<!--
+  <!--
   <define name="anyTEI">
     <a:documentation>Motif récursif pour autoriser tout contenu TEI sans validation de structure.</a:documentation>
     <element ns="http://www.tei-c.org/ns/1.0">
@@ -2446,7 +2379,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
     </element>
   </define>
 -->
-
   <div xml:id="atts">
     <a:documentation>Attributs</a:documentation>
     <define name="corresp-att">
@@ -2702,10 +2634,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
       </choice>
     </define>
   </div>
-
   <!-- appel du teiHeader, revoir URI : http://svn.code.sf.net/p/algone/code/teibook/teibookHeader.rng -->
-  <include 
-    href="teinteHeader.rng"
-    h:href="./teinteHeader.rng" 
-    h:title="Schéma de l'entête de métadonnées Teibook"/>
+  <include href="teinteHeader.rng" h:href="./teinteHeader.rng" h:title="Schéma de l'entête de métadonnées Teibook"/>
 </grammar>

@@ -39,7 +39,7 @@ sont officiellement ditribuées par le consortium TEI, cependant ce développeme
       <xsl:apply-templates/>
     </i>
   </xsl:template>
-  <xsl:template match="tei:bibl/tei:* | tei:publisher" priority="-1">
+  <xsl:template match="tei:teiHeader//tei:bibl/tei:* | tei:publisher" priority="-1">
     <span>
       <xsl:call-template name="headatts"/>
       <xsl:apply-templates/>
@@ -73,7 +73,7 @@ sont officiellement ditribuées par le consortium TEI, cependant ce développeme
     </xsl:choose>
   </xsl:template>
   <xsl:template match="tei:notesStmt"/>
-  <xsl:template match="tei:bibl // tei:note | tei:biblStruct // tei:note">
+  <xsl:template match="tei:teiHeader // tei:bibl // tei:note">
     <span>
       <xsl:call-template name="headatts"/>
       <xsl:apply-templates/>
