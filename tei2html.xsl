@@ -282,6 +282,9 @@ et -1 pour chaque niveau ensuite, d'où le paramètre $level qui peut
       </xsl:choose>
     </xsl:param>
     <xsl:element name="{$el}" namespace="http://www.w3.org/1999/xhtml">
+      <xsl:attribute name="id">
+        <xsl:call-template name="id"/>
+      </xsl:attribute>
       <xsl:call-template name="atts">
         <xsl:with-param name="class">level<xsl:value-of select="$level + 1"/></xsl:with-param>
       </xsl:call-template>
@@ -751,32 +754,34 @@ et -1 pour chaque niveau ensuite, d'où le paramètre $level qui peut
   </xsl:template>
   <xsl:template match="tei:castList">
     <div>
+      <xsl:attribute name="id">
+        <xsl:call-template name="id"/>
+      </xsl:attribute>
       <xsl:call-template name="atts"/>
       <xsl:apply-templates select="tei:head | tei:p"/>
       <ul class="castList">
-        <xsl:apply-templates select="tei:castGroup | tei:castItem"/>
+        <xsl:for-each select="*[not(self::tei:head) and not(self::tei:p)]">
+          <li>
+            <xsl:call-template name="atts"/>
+            <xsl:apply-templates select="."/>
+          </li>
+        </xsl:for-each>
       </ul>
     </div>
   </xsl:template>
   <xsl:template match="tei:castItem">
-    <xsl:choose>
-      <xsl:when test="normalize-space(.) = ''"/>
-      <xsl:otherwise>
-        <li>
-          <xsl:call-template name="atts"/>
-          <xsl:apply-templates/>
-        </li>
-      </xsl:otherwise>
-    </xsl:choose>
+    <xsl:apply-templates/>
   </xsl:template>
   <xsl:template match="tei:castGroup">
-    <li>
-      <xsl:call-template name="atts"/>
-      <xsl:apply-templates select="tei:head | tei:note | tei:roleDesc"/>
-      <ul>
-        <xsl:apply-templates select="tei:castGroup | tei:castItem"/>
-      </ul>
-    </li>
+    <xsl:apply-templates select="tei:head | tei:note | tei:roleDesc"/>
+    <ul class="castGroup">
+      <xsl:for-each select="*">
+        <li>
+          <xsl:call-template name="atts"/>
+          <xsl:apply-templates select="."/>
+        </li>
+      </xsl:for-each>
+    </ul>
   </xsl:template>
   <xsl:template match="tei:castGroup/tei:head">
     <xsl:call-template name="span"/>
@@ -1185,6 +1190,7 @@ Tables
     <!-- test if inside mixed content, before adding a space, to keep automatic indent  -->
     <xsl:variable name="mixed" select="../text()[normalize-space(.) != '']"/>
     <xsl:choose>
+      <xsl:when test="normalize-space(@n) = ''"/>
       <xsl:when test="$text =''"/>
       <xsl:when test="$format = $epub2">
         <xsl:if test="$mixed != ''">
@@ -1522,8 +1528,10 @@ Tables
       </xsl:choose>
     </xsl:param>
     <xsl:element name="{$el}" namespace="http://www.w3.org/1999/xhtml">
+      <xsl:attribute name="id">
+        <xsl:call-template name="id"/>
+      </xsl:attribute>
       <xsl:call-template name="atts"/>
-      <xsl:apply-templates/>
       <!-- ?
       <a class="bookmark">
         <xsl:attribute name="href">
@@ -3122,19 +3130,16 @@ Centralize some html attribute policy, especially for id, and class
     </xsl:call-template>
     <!-- Shall we identify element ? -->
     <xsl:choose>
+      <!--
       <xsl:when test="normalize-space(@id) != ''">
         <xsl:attribute name="id">
           <xsl:value-of select="translate(normalize-space(@id), ' ', '')"/>
         </xsl:attribute>
       </xsl:when>
+      -->
       <xsl:when test="normalize-space(@xml:id) != ''">
         <xsl:attribute name="id">
           <xsl:value-of select="translate(normalize-space(@xml:id), ' ', '')"/>
-        </xsl:attribute>
-      </xsl:when>
-      <xsl:when test="self::tei:castList or self::tei:div or self::tei:div0 or self::tei:div1 or self::tei:div2 or self::tei:div3 or self::tei:div4 or self::tei:div5 or self::tei:div6 or self::tei:div7 or self::tei:graphic or self::tei:figure or self::tei:group or self::tei:text  or contains($els-unique, concat(' ', local-name(), ' '))">
-        <xsl:attribute name="id">
-          <xsl:call-template name="id"/>
         </xsl:attribute>
       </xsl:when>
       <xsl:when test="generate-id(..) = generate-id(/*/tei:text)">
@@ -3231,9 +3236,10 @@ Centralize some html attribute policy, especially for id, and class
     </xsl:choose>
   </xsl:template>
   <!-- @id, @lang, réécriture de certains attributs standard pour xhtml -->
-  <xsl:template match="@xml:lang | @xml:id | @id">
+  <xsl:template match="@xml:lang | @xml:id">
+    <xsl:variable name="id0"> '":,; </xsl:variable>
     <xsl:attribute name="{local-name(.)}">
-      <xsl:value-of select="."/>
+      <xsl:value-of select="translate(., $id0, '')"/>
     </xsl:attribute>
   </xsl:template>
   <!-- @xml:*, attributs à recopier à l'identique -->

@@ -479,7 +479,7 @@ notamment pour établir cible et source de liens.
   <xsl:template name="id" match="*" mode="id">
     <xsl:param name="prefix"/>
     <xsl:param name="suffix"/>
-    <xsl:variable name="id0"> '":,; </xsl:variable>
+    <xsl:variable name="id0"> '":,; /\</xsl:variable>
     <xsl:value-of select="$prefix"/>
     <xsl:choose>
       <xsl:when test="@xml:id">

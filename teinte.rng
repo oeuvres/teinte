@@ -2421,7 +2421,11 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
       </attribute>
     </define>
     <define name="n-att">
-      <attribute name="n"/>
+      <attribute name="n">
+        <data type="string">
+          <param name="minLength">1</param>
+        </data>
+      </attribute>
     </define>
     <define name="place-att">
       <attribute name="place">
