@@ -1,4 +1,11 @@
 <?php
+set_time_limit(-1);
+// included file, do nothing
+if (isset($_SERVER['SCRIPT_FILENAME']) && basename($_SERVER['SCRIPT_FILENAME']) != basename(__FILE__));
+else if (isset($_SERVER['ORIG_SCRIPT_FILENAME']) && realpath($_SERVER['ORIG_SCRIPT_FILENAME']) != realpath(__FILE__));
+// direct command line call, work
+else if (php_sapi_name() == "cli") Teinte_Doc::cli();
+
 /**
  Sample pilot for Teinte transformations of XML/TEI
  
@@ -20,6 +27,14 @@ class Teinte_Doc {
   private $_xsldom;
   /** Keep memory of last xsl, to optimize transformations */
   private $_xslfile;
+  /** formats */
+  static $_formats = array(
+    'article' => '.html',
+    'html' => '.html',
+    'markdown' => '.md',
+    'iramuteq' => '.txt',
+    
+  );
   /** 
    * Constructor, load file and prepare work
    */
@@ -29,6 +44,13 @@ class Teinte_Doc {
     $this->filename = pathinfo($teifile, PATHINFO_FILENAME);
     $this->load($teifile);
     $this->_xsldom = new DOMDocument();
+  }
+  /**
+   * 
+   */
+  public function export($format, $destfile) {
+    if (isset(self::$_formats[$format])) return call_user_func(array($this, $format), $destfile);
+    else if (STDERR) fwrite(STDERR, $format." ? format not yet implemented\n");
   }
   /**
    * Output an html fragment
@@ -116,5 +138,42 @@ class Teinte_Doc {
     $this->xpath = new DOMXpath($this->dom);
     $this->xpath->registerNamespace('tei', "http://www.tei-c.org/ns/1.0");
   }
+  /**
+   * Command line transform
+   */
+  public static function cli() {
+    $formats=implode('|', array_keys(self::$_formats));
+    array_shift($_SERVER['argv']); // shift first arg, the script filepath
+    if (!count($_SERVER['argv'])) exit('
+    usage    : php -f Doc.php ($formats)? "*.xml" destdir/?
+    format?  : optional dest format, default tei, others may be odtx, html
+    *.xml    : glob patterns are allowed, but in quotes, to not be expanded by shell
+    destdir? : optional destdir
+  ');
+    $format="html";
+    while ($arg=array_shift($_SERVER['argv'])) {
+      if ($arg[0]=='-') $format=substr($arg,1);
+      if(preg_match("/^($formats)\$/",$arg)) {
+        $format=$arg;
+      }
+      else if(!isset($srcglob)) {
+        $srcglob=$arg;
+      }
+      else if(!isset($destdir)) {
+        $destdir=rtrim($arg, '\\/').'/';
+      }
+    }
+    $count = 0;
+    foreach(glob($srcglob) as $srcfile) {
+      $count++;
+      $destname = pathinfo($srcfile, PATHINFO_FILENAME).self::$_formats[$format];
+      if (isset($destdir)) $destfile = $destdir.$destname;
+      else $destfile=dirname($srcfile).'/'.$destname;
+      if (STDERR) fwrite(STDERR, "$count. $srcfile > $destfile\n");
+      $doc=new Teinte_Doc($srcfile);
+      $doc->export($format, $destfile);
+    }
+  }
+
 }
 ?>
