@@ -7,14 +7,8 @@
       <li>[FG] <a href="#" onmouseover="this.href='mailto'+'\x3A'+'glorieux'+'\x40'+'fictif.org'">Frédéric Glorieux</a></li>
       <li>[VJ] <a href="#" onmouseover="this.href='mailto'+'\x3A'+'jolivet'+'\x40'+'algone.net'">Vincent Jolivet</a></li>
     </ul>
-    <p>Ce schéma est une restriction de la recommandation <a href="http://www.tei-c.org/release/doc/tei-p5-doc/en/html/REF-ELEMENTS.html">TEI P5</a> adaptée à la structuration de livres imprimés.
-      Cette simplification est un socle qui n'interdit pas les extensions mais au contraire précise le générique pour mieux repérer le spécifique.
-      Ce profil TEI peut être comparé aux recommandations <a href="http://www.tei-c.org/Vault/P5//2.3.0/doc/tei-p5-exemplars/html/tei_tite.doc.html">TEI Tite</a> et <a href="http://www.tei-c.org/SIG/Libraries/teiinlibraries/main-driver.html">Best Practices for TEI in Libraries</a>, conçues pour faire référence dans les projets de numérisation de masse. 
-      Ce profil profite de l'expérience acquise et la perfectionne en insistant sur quelques autres aspects : explications en français, exemples tirés de la tradition éditoriale francophone, numérisation avec un logiciel d’OCR par du personnel non entraîné, utilisation du traitement de textes.
-      Ce profil a été conçu en référence continuelle à <a href="http://www.w3.org/TR/html5/">HTML 5</a>, afin d'au moins garantir la conservation de la sémantique html en TEI.
-      Il permet d'encoder tout ce que peut produire un traitement de textes, notamment issu de la transformation <a href="http://algone.net/odt2tei/">odt2tei</a>.
-      Il vise à produire au moins une édition électronique de qualité (ePub avec table des matières, site en ligne), tout en permettant des enrichissements sémantiques ultérieurs.
-    </p>
+    <p>Ce schéma est une restriction de la recommandation <a href="http://www.tei-c.org/release/doc/tei-p5-doc/en/html/REF-ELEMENTS.html">TEI P5</a> adaptée à la structuration de livres imprimés. Cette simplification est un socle qui n'interdit pas les extensions mais au contraire précise le générique pour mieux repérer le spécifique. Ce profil TEI peut être comparé aux recommandations <a href="http://www.tei-c.org/Vault/P5//2.3.0/doc/tei-p5-exemplars/html/tei_tite.doc.html">TEI Tite</a> et <a href="http://www.tei-c.org/SIG/Libraries/teiinlibraries/main-driver.html">Best Practices for TEI in Libraries</a>, conçues pour faire référence dans les projets de numérisation de masse. Ce profil profite de l'expérience acquise et la perfectionne en insistant sur quelques autres aspects : explications en français, exemples tirés de la tradition éditoriale francophone, numérisation avec un logiciel d’OCR par du personnel non entraîné, utilisation du traitement de textes. Ce profil a été conçu en
+      référence continuelle à <a href="http://www.w3.org/TR/html5/">HTML 5</a>, afin d'au moins garantir la conservation de la sémantique html en TEI. Il permet d'encoder tout ce que peut produire un traitement de textes, notamment issu de la transformation <a href="http://algone.net/odt2tei/">odt2tei</a>. Il vise à produire au moins une édition électronique de qualité (ePub avec table des matières, site en ligne), tout en permettant des enrichissements sémantiques ultérieurs. </p>
     <ul>
       <li>
         <a href="teibook.rng">Le schéma</a>
@@ -51,7 +45,7 @@
     <p>Idéalement, tous les caractères du texte imprimé, de toutes les pages, doivent être inscrits comme des nœuds de texte. Le filtrage de certains composants s’effectuera a posteriori, par le balisage (exemple : ne pas afficher la table des matières originale au profit d’un sommaire automatique). Cette attitude conservatoire évite de présumer des intérêts futurs de la recherche.</p>
     <p><b>Entités</b> — Flux de caractères UTF-8. Toujours préférer un caractère unicode UTF-8 lorsque possible. Pas d'entités, car soit elles sont en chiffres, et elles correspondent à un caractère unicode, soit elles sont en lettres, et elles ne sont pas supportées par xml sans déclaration DTD <s><code>&amp;nbsp;, &amp;thinsp;, &amp;eacute;…</code></s> Exemple : pour une espace insécable inscrire le caractère ' ' (U+00A0, &amp;#160;), visible ici comme une espace mais distinguable dans certains éditeurs, de même pour les espaces fines ' ' ( U+2009, &amp;#8201;). Si des caractères rencontrés ne correspondent pas de façon exacte à un code unicode standard, alors utiliser <a:el>g n="{code local pour le caractère}">{approximation unicode}&lt;/g</a:el></p>
     <!-- p><b>Grec ancien</b> — lettres à pb</p -->
-    <p><b>Guillemets</b> — Autant que possible, on évitera les <s>"guillemets droits"</s>, afin de favoriser les guillemets orientés, qui s'ouvrent et se ferment pour délimiter un segment, en distinguant les « guillemets français » et les  “guillemets anglais”. Les guillemets français encadrent généralement du texte cité ou rapporté, d'un autre auteur que le texte environnant, et sont susceptibles (sous contrôle humain) d'être encadrés pas la balise <a:el>quote</a:el>. Les guillemets anglais encadrent généralement des segments plus courts, qui pourraient aussi paraître en italique : terme technique <a:el>term</a:el>, langue étrangère <a:el>foreign</a:el>, mot en mention <a:el>mentionned</a:el>…</p>
+    <p><b>Guillemets</b> — Autant que possible, on évitera les <s>"guillemets droits"</s>, afin de favoriser les guillemets orientés, qui s'ouvrent et se ferment pour délimiter un segment, en distinguant les « guillemets français » et les “guillemets anglais”. Les guillemets français encadrent généralement du texte cité ou rapporté, d'un autre auteur que le texte environnant, et sont susceptibles (sous contrôle humain) d'être encadrés pas la balise <a:el>quote</a:el>. Les guillemets anglais encadrent généralement des segments plus courts, qui pourraient aussi paraître en italique : terme technique <a:el>term</a:el>, langue étrangère <a:el>foreign</a:el>, mot en mention <a:el>mentionned</a:el>…</p>
     <p><b>Apostrophes</b> — Autant que possible, éviter les <s>'apostrophes droites'</s>, pour privilégier l’apostrophe courbe et orientée.</p>
     <!-- 
 Zero width space: x​x​x​x​x​x​x​x​x​x
@@ -62,7 +56,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
 -->
     <p>Caractères mal supportés par certaines polices ou clients, que l'on peut cependant conserver tel quel dans la source XML, sans entité ni transcodage.</p>
     <ul>
-      <li>espace normale &amp;#32; :  x x x</li>
+      <li>espace normale &amp;#32; : x x x</li>
       <li>espace insécable &amp;#160; (html:nbsp) : x x x</li>
       <li>espace fine &amp;#8201; (html:thinsp) : x x x</li>
       <li>espace large &amp;#8195; (html:emsp) : x x x</li>
@@ -196,10 +190,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
       <element name="front">
         <a:documentation>Le texte préliminaire tel qu’imprimé</a:documentation>
         <div xmlns="http://www.w3.org/1999/xhtml">
-          <p>Chaque section (introduction, préface, etc.) est contenue dans un <a:el>div</a:el>.
-            <br/>Si l’édition contient plusieurs types de numérotations des pages (romain, arabe), alors le <a:el>front</a:el> doit contenir une numérotation homogène (usuellement en chiffres romains).
-            <br/>Le <a:el>front</a:el> ne doit pas contenir de métadonnées structurées qui doivent être inscrites dans le <a:el>teiHeader</a:el>.
-          </p>
+          <p>Chaque section (introduction, préface, etc.) est contenue dans un <a:el>div</a:el>. <br/>Si l’édition contient plusieurs types de numérotations des pages (romain, arabe), alors le <a:el>front</a:el> doit contenir une numérotation homogène (usuellement en chiffres romains). <br/>Le <a:el>front</a:el> ne doit pas contenir de métadonnées structurées qui doivent être inscrites dans le <a:el>teiHeader</a:el>. </p>
           <a:example>
             <front>
               <titlePage>Obligatoire</titlePage>
@@ -230,10 +221,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
       <element name="titlePage">
         <a:documentation>Page de titre</a:documentation>
         <div xmlns="http://www.w3.org/1999/xhtml">
-          <p>Doit avant tout contenir un lien vers l’image de la page de titre, dans <a:el>pb facs="??"</a:el>.
-            <br/>Le texte de la page doit être transcrit.
-            <br/>La disposition est imitée par des éléments de type bloc. Leur positionnement exact n'est pas requis.
-            <br/>L'interprétation sémantique (auteur, titre, date, imprimeur…) n’est pas requise.</p>
+          <p>Doit avant tout contenir un lien vers l’image de la page de titre, dans <a:el>pb facs="??"</a:el>. <br/>Le texte de la page doit être transcrit. <br/>La disposition est imitée par des éléments de type bloc. Leur positionnement exact n'est pas requis. <br/>L'interprétation sémantique (auteur, titre, date, imprimeur…) n’est pas requise.</p>
           <a:example href="teibook.xml#titlePage"/>
         </div>
         <optional>
@@ -298,9 +286,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
       <element name="back">
         <a:documentation>Éléments en fin de livre : index, sommaires, glossaires, etc.</a:documentation>
         <div xmlns="http://www.w3.org/1999/xhtml">
-          <p>Les tables des matières imprimées sont encodées comme des listes (structure hiérarchique récursive), conformément aux conseils de la TEI.
-            <br/>Pour une version électronique (ex : epub), on souhaite pouvoir générer automatiquement la table des matières. 
-            <br/>Le n° de page est indiqué comme un lien renvoyant à un identifiant de <a:el>pb</a:el>.</p>
+          <p>Les tables des matières imprimées sont encodées comme des listes (structure hiérarchique récursive), conformément aux conseils de la TEI. <br/>Pour une version électronique (ex : epub), on souhaite pouvoir générer automatiquement la table des matières. <br/>Le n° de page est indiqué comme un lien renvoyant à un identifiant de <a:el>pb</a:el>.</p>
           <a:example href="teibook.xml#toc"/>
         </div>
         <ref name="xml-atts"/>
@@ -840,7 +826,8 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
           <element name="speaker">
             <zeroOrMore>
               <choice>
-                <ref name="flow"/>
+                <text/>
+                <ref name="hi"/>
               </choice>
             </zeroOrMore>
           </element>
@@ -898,7 +885,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <div xmlns="http://www.w3.org/1999/xhtml">
           <p>Les listes récursives permettent de représenter de nombreux composants textuels, il sont notamment utilisés, selon les conseils de la documentation TEI, pour les index ou les tables des matières.</p>
           <a:example href="teibook.xml#list"/>
-          <p>Liste de définitions, <a href="http://www.w3.org/TR/html5/the-dl-element.html#the-dl-element">[html]</a>,  adapté à l’encodage de tables à deux colonnes de type légende ou dictionnaire. L’attribut <a:att>rend</a:att> permet à un programme d’interpréter différemment l’information.</p>
+          <p>Liste de définitions, <a href="http://www.w3.org/TR/html5/the-dl-element.html#the-dl-element">[html]</a>, adapté à l’encodage de tables à deux colonnes de type légende ou dictionnaire. L’attribut <a:att>rend</a:att> permet à un programme d’interpréter différemment l’information.</p>
           <a:example href="teibook.xml#dl"/>
         </div>
         <optional>
@@ -1035,6 +1022,31 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
                 <text/>
                 <element name="role">
                   <ref name="id-att"/>
+                  <optional>
+                    <attribute name="rend">
+                      <list>
+                        <oneOrMore>
+                          <choice>
+                            <choice>
+                              <value>male</value>
+                              <value>female</value>
+                            </choice>
+                            <choice>
+                              <value>junior</value>
+                              <value>veteran</value>
+                              <value>minime</value>
+                              <value>senior</value>
+                            </choice>
+                            <choice>
+                              <value>inferior</value>
+                              <value>exterior</value>
+                              <value>superior</value>
+                            </choice>
+                          </choice>
+                        </oneOrMore>
+                      </list>
+                    </attribute>
+                  </optional>
                   <ref name="textual"/>
                 </element>
                 <element name="actor">
@@ -1254,10 +1266,8 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <a:documentation>Épigraphe, citation en exergue de section</a:documentation>
         <a:example>
           <epigraph>
-            <l>Quand tu diras à Tabaqui<note n="9" place="bottom">Le Chacal.</note> : Frère, à l’Hyène :
-  <lb/>Voici mon gibier,</l>
-            <l>Tu feras ta trêve avec Jacala<note n="10" place="bottom">Crocodile de rivière,  habituellement charognard.</note>, le Ventre qui court
-  <lb/>sur quatre pieds.</l>
+            <l>Quand tu diras à Tabaqui<note n="9" place="bottom">Le Chacal.</note> : Frère, à l’Hyène : <lb/>Voici mon gibier,</l>
+            <l>Tu feras ta trêve avec Jacala<note n="10" place="bottom">Crocodile de rivière, habituellement charognard.</note>, le Ventre qui court <lb/>sur quatre pieds.</l>
             <bibl>Loi de Jungle.</bibl>
           </epigraph>
         </a:example>
@@ -1870,12 +1880,8 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
             <li><b>Mise en forme typographique</b> : si l’objectif est la mise en petites capitales des noms de famille, utiliser <a:el>surname</a:el>, afin que <a:el>persName</a:el> encadre la totalité d’un nom de personne, nom, prénom, et autres composantes compris.</li>
             <li><b>Traitements linguistiques</b> : le but sera d’inclure tous les noms propres. Il doit être possible de remplacer <a:el>persName</a:el> par "il" ou "elle" sans rompre la signification de la phrase. Pour un tel objectif, il convient de baliser aussi les noms abrégés ("K.", "Joseph K.").</li>
             <li><b>Indexation</b> : il est nécessaire d'ajouter l’attribut utile (index-atts()) à l’identification de la personne, notamment pour les pronoms, et permettre les regroupements.<br/>
-              <a:example><persName key="dieu">Il</persName></a:example>
-              L’attribut <a:att>type</a:att> permet, grâce à la valeur "author", d’indexer les <em>auteurs mentionnés</em> au fil du texte. De manière complémentaire, l’élement <a:el>author</a:el>, autorisé uniquement dans <a:el>bibl</a:el>, permet d’indexer les <em>auteurs référencés</em>, c’est-à-dire ceux dont les citations sont explicitement référencées par un auteur ou un éditeur scientifique. Pour établir l’index des auteurs cités dans un texte, il convient donc de regrouper les clés (<a:att>key</a:att>, <a:att>corresp</a:att> ou <a:att>ref</a:att>, cf index-atts()) renseignées pour les éléments <a:el>persName @type="author"]</a:el> et <a:el>author</a:el>.<br/>
-              Auteur mentionné :
-              <a:example>Je veux parler du drame d’amour qui mit aux prises, voici soixante ans passé, deux des beaux génies de notre âge : <persName type="author" ref="http://www.idref.fr/027043339">Alfred de Musset</persName> et <persName type="author" ref="http://www.idref.fr/027121577">George Sand</persName>.</a:example>
-              Auteur référencé :
-              <a:example><note>Le merveilleux <bibl><title>Cyrano</title> de <author ref="http://www.idref.fr/027109860">M. Edmond Rostand</author></bibl> est venu confirmer cette hypothèse. (NdA)</note></a:example>
+              <a:example><persName key="dieu">Il</persName></a:example> L’attribut <a:att>type</a:att> permet, grâce à la valeur "author", d’indexer les <em>auteurs mentionnés</em> au fil du texte. De manière complémentaire, l’élement <a:el>author</a:el>, autorisé uniquement dans <a:el>bibl</a:el>, permet d’indexer les <em>auteurs référencés</em>, c’est-à-dire ceux dont les citations sont explicitement référencées par un auteur ou un éditeur scientifique. Pour établir l’index des auteurs cités dans un texte, il convient donc de regrouper les clés (<a:att>key</a:att>, <a:att>corresp</a:att> ou <a:att>ref</a:att>, cf index-atts()) renseignées pour les éléments <a:el>persName @type="author"]</a:el> et <a:el>author</a:el>.<br/> Auteur mentionné : <a:example>Je veux parler du drame d’amour qui mit aux prises, voici soixante ans passé, deux des beaux génies de notre âge : <persName type="author" ref="http://www.idref.fr/027043339">Alfred de Musset</persName> et <persName type="author"
+                  ref="http://www.idref.fr/027121577">George Sand</persName>.</a:example> Auteur référencé : <a:example><note>Le merveilleux <bibl><title>Cyrano</title> de <author ref="http://www.idref.fr/027109860">M. Edmond Rostand</author></bibl> est venu confirmer cette hypothèse. (NdA)</note></a:example>
             </li>
           </ul>
         </div>
@@ -2021,7 +2027,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
               <value>a</value>
               <a:documentation>(analytic) titre analytique, partie d'un ensemble plus grand, par exemple un article, un poème…</a:documentation>
               <value>m</value>
-              <a:documentation>(monographic) titre de monographie,  comme un livre, un recueil ou autre item publié séparément</a:documentation>
+              <a:documentation>(monographic) titre de monographie, comme un livre, un recueil ou autre item publié séparément</a:documentation>
               <value>j</value>
               <a:documentation>(journal) titre de revue ou de périodique</a:documentation>
               <value>s</value>
@@ -2301,8 +2307,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
     <define name="lb">
       <element name="lb">
         <a:documentation>Saut de ligne “line break” &lt;html5:br/></a:documentation>
-        <div xmlns="http://www.w3.org/1999/xhtml"> (<i>line break</i>)
-          <p><a:el>lb</a:el> peut être utilisé pour forcer un saut de ligne, par exemple dans un titre.</p>
+        <div xmlns="http://www.w3.org/1999/xhtml"> (<i>line break</i>) <p><a:el>lb</a:el> peut être utilisé pour forcer un saut de ligne, par exemple dans un titre.</p>
           <p>Dans le cas d’un texte avec lignes numérotées qui ne sont pas des vers inclus dans un élément <a:el>l</a:el>, les numéros sont utiles au référencement des citations des notes d’apparat critique. Il est donc nécessaire de conserver tous les sauts de lignes dans le flux du texte, et d’inscrire le numéro — quand il est imprimé — dans l’attribut <a:att>n</a:att>. <b>Attention</b> : certaines éditions alternent l’emplacement du numéro de ligne selon les pages paires ou impaires (marges intérieures ou extérieures). Conformément à la spécification TEI, le numéro inscrit doit toujours se rapporter à ce qui suit. Les césures sont traitées comme pour le reste du texte. Une édition électronique de référence doit proposer une exploitation de ces sauts de ligne pour garantir une citabilité de qualité égale à la version imprimée. Si plusieurs numérotations concurrentes des lignes sont conservées, elles sont distinguées par l’attribut <a:att>ed</a:att>.</p>
           <a:example href="teibook.xml#lb"/>
         </div>
@@ -2469,7 +2474,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
     </define>
     <define name="rend-att">
       <attribute name="rend">
-        <a:documentation>Indication de rendu, selon un vocabulaire contrôlé. Interprété comme une liste de classes CSS comme dans l'attribut  @html5:class. Conserve une information de la source, ou suggère une présentation. À distinguer de la précision sémantique de l’élément, indiquée avec l’attribut @type</a:documentation>
+        <a:documentation>Indication de rendu, selon un vocabulaire contrôlé. Interprété comme une liste de classes CSS comme dans l'attribut @html5:class. Conserve une information de la source, ou suggère une présentation. À distinguer de la précision sémantique de l’élément, indiquée avec l’attribut @type</a:documentation>
       </attribute>
     </define>
     <define name="type-att">

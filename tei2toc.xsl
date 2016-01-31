@@ -22,62 +22,39 @@ Alternative : les transformations de Sebastian Rahtz <a href="http://www.tei-c.
 sont officiellement ditribuées par le consortium TEI, cependant ce développement est en XSLT 2.0 (java requis).
 </p>
 -->
-<xsl:transform   version="1.1"   xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
-
-  xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:rng="http://relaxng.org/ns/structure/1.0"
-  xmlns:eg="http://www.tei-c.org/ns/Examples"
-  xmlns:tei="http://www.tei-c.org/ns/1.0" 
-  xmlns:html="http://www.w3.org/1999/xhtml"
-  xmlns:epub="http://www.idpf.org/2007/ops"
-  exclude-result-prefixes="eg html rng tei epub"
-
-  xmlns:exslt="http://exslt.org/common"
-  extension-element-prefixes="exslt"
-  >
+<xsl:transform version="1.1" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" xmlns:rng="http://relaxng.org/ns/structure/1.0" xmlns:eg="http://www.tei-c.org/ns/Examples" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" exclude-result-prefixes="eg html rng tei epub" xmlns:exslt="http://exslt.org/common" extension-element-prefixes="exslt">
   <xsl:import href="common.xsl"/>
   <!-- Name of this xsl  -->
-  <xsl:param name="this">tei2toc.xsl</xsl:param> 
-  <xsl:output encoding="UTF-8" indent="yes" method="xml"/>
-  <!-- What kind of root element to output ? html, div, article -->
+  <xsl:param name="this">tei2toc.xsl</xsl:param>
+  <!-- No XML declaration for html fragments -->
+  <xsl:output encoding="UTF-8" indent="yes" method="xml" omit-xml-declaration="yes"/>
+  <!-- What kind of root element to output ? html, nav, only front toc, or back or body -->
   <xsl:param name="root" select="$html"/>
   <!-- Racine -->
   <xsl:template match="/*">
     <xsl:choose>
-      <!-- Just a div element -->
-      <xsl:when test="$root='article'">
-        <article>
+      <xsl:when test="$root=$front">
+        <xsl:call-template name="toc-front"/>
+      </xsl:when>      
+      <xsl:when test="$root=$back">
+        <xsl:call-template name="toc-back"/>
+      </xsl:when>      
+      <!-- HTML fragment -->
+      <xsl:when test="$root=$nav">
+        <nav>
           <xsl:call-template name="att-lang"/>
-          <!--
-          <nav id="toc">
-            <header>
-              <a>
-                <xsl:attribute name="href">
-                  <xsl:for-each select="/*/tei:text">
-                    <xsl:call-template name="href"/>
-                  </xsl:for-each>
-                </xsl:attribute>
-                <xsl:copy-of select="$byline"/>
-                <xsl:copy-of select="$docTitle"/>
-                <xsl:if test="$docDate != ''">
-                  <xsl:text> (</xsl:text>
-                  <xsl:value-of select="$docDate"/>
-                  <xsl:text>)</xsl:text>
-                </xsl:if>
-              </a>
-            </header>
-            <xsl:call-template name="toc"/>
-          </nav>
-          -->
-          <xsl:apply-templates/>
-        </article>
+          <xsl:call-template name="toc-header"/>
+          <xsl:call-template name="toc"/>
+        </nav>
       </xsl:when>
       <!-- Complete doc -->
       <xsl:otherwise>
+        <xsl:text disable-output-escaping="yes">&lt;!DOCTYPE html></xsl:text>
+        <xsl:value-of select="$lf"/>
         <html>
           <xsl:call-template name="att-lang"/>
           <head>
-            <meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+            <meta http-equiv="Content-type" content="text/html; charset=UTF-8"/>
             <meta name="modified" content="{$date}"/>
             <!-- déclaration classes css locale (permettre la surcharge si généralisation) -->
             <!-- à travailler
@@ -87,39 +64,40 @@ sont officiellement ditribuées par le consortium TEI, cependant ce développeme
             <script type="text/javascript" src="{$theme}Tree.js">//</script>
           </head>
           <body class="{$corpusid}">
-                <nav>
-                  <header>
-                    <a>
-                      <xsl:attribute name="href">
-                        <xsl:for-each select="/*/tei:text">
-                          <xsl:call-template name="href"/>
-                        </xsl:for-each>
-                      </xsl:attribute>
-                      <xsl:if test="$byline">
-                        <xsl:copy-of select="$byline"/>
-                        <xsl:text> </xsl:text>
-                      </xsl:if>
-                      <xsl:if test="$docdate != ''">
-                        <span class="docDate">
-                          <xsl:text> (</xsl:text>
-                          <xsl:value-of select="$docdate"/>
-                          <xsl:text>)</xsl:text>
-                        </span>
-                      </xsl:if>
-                      <br/>
-                      <xsl:copy-of select="$doctitle"/>
-                    </a>
-                  </header>
-                  <xsl:call-template name="toc"/>
-                </nav>
-            
+            <nav>
+              <xsl:call-template name="toc-header"/>
+              <xsl:call-template name="toc"/>
+            </nav>
           </body>
         </html>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
 
-
+  <xsl:template name="toc-header">
+    <header>
+      <a>
+        <xsl:attribute name="href">
+          <xsl:for-each select="/*/tei:text">
+            <xsl:call-template name="href"/>
+          </xsl:for-each>
+        </xsl:attribute>
+        <xsl:if test="$byline">
+          <xsl:copy-of select="$byline"/>
+          <xsl:text> </xsl:text>
+        </xsl:if>
+        <xsl:if test="$docdate != ''">
+          <span class="docDate">
+            <xsl:text> (</xsl:text>
+            <xsl:value-of select="$docdate"/>
+            <xsl:text>)</xsl:text>
+          </span>
+        </xsl:if>
+        <br/>
+        <xsl:copy-of select="$doctitle"/>
+      </a>
+    </header>
+  </xsl:template>
 
   <!--
 <h3>mode="a" (lien html)</h3>
@@ -305,12 +283,6 @@ mais aussi pour le liage dans l'apparat critique. Ce mode fait usage des modes 
         </xsl:when>
       </xsl:choose>
     </xsl:param>
-    <xsl:variable name="element">
-      <xsl:choose>
-        <xsl:when test="$format = $epub2">div</xsl:when>
-        <xsl:otherwise>nav</xsl:otherwise>
-      </xsl:choose>
-    </xsl:variable>
     <ol class="tree">
       <!-- front in one <li> to hide some by default  -->
       <xsl:choose>
@@ -354,6 +326,24 @@ mais aussi pour le liage dans l'apparat critique. Ce mode fait usage des modes 
       </xsl:if>
     </ol>
   </xsl:template>
+  <xsl:template name="toc-front">
+    <xsl:choose>
+      <xsl:when test="/*/tei:text/tei:front[tei:div[normalize-space(.) != '']|tei:div1[normalize-space(.) != '']]">
+        <ol class="tree">
+          <xsl:apply-templates select="/*/tei:text/tei:front/*[self::tei:div|self::tei:div1][normalize-space(.) != '']" mode="li"/>
+        </ol>
+      </xsl:when>
+    </xsl:choose>
+  </xsl:template>
+  <xsl:template name="toc-back">
+    <xsl:choose>
+      <xsl:when test="/*/tei:text/tei:back[tei:div[normalize-space(.) != '']|tei:div1[normalize-space(.) != '']]">
+        <ol class="tree">
+          <xsl:apply-templates select="/*/tei:text/tei:back/*[self::tei:div|self::tei:div1][normalize-space(.) != '']" mode="li"/>
+        </ol>
+      </xsl:when>
+    </xsl:choose>
+  </xsl:template>
   <!--
 <h3>mode="bibl" (ligne bibliographique)</h3>
 
@@ -388,7 +378,7 @@ Dégager une ligne biliographique d'un élément, avec des enregistrements bibli
       <xsl:apply-templates select="tei:seriesStmt" mode="bibl"/>
     </xsl:variable>
     <xsl:if test="$date != '' and tei:publicationStmt/tei:idno">
-      <xsl:value-of select="$date"/>    
+      <xsl:value-of select="$date"/>
       <xsl:text>, </xsl:text>
     </xsl:if>
     <!-- URI de référence, requis -->
@@ -399,13 +389,13 @@ Dégager une ligne biliographique d'un élément, avec des enregistrements bibli
   <xsl:template match="tei:seriesStmt" mode="bibl">
     <span class="seriesStmt">
       <xsl:text> (</xsl:text>
-        <xsl:for-each select="*[not(@type='URI')]">
-          <xsl:apply-templates select="."/>
-          <xsl:choose>
-            <xsl:when test="position() = last()"/>
-            <xsl:otherwise>, </xsl:otherwise>
-          </xsl:choose>
-        </xsl:for-each>
+      <xsl:for-each select="*[not(@type='URI')]">
+        <xsl:apply-templates select="."/>
+        <xsl:choose>
+          <xsl:when test="position() = last()"/>
+          <xsl:otherwise>, </xsl:otherwise>
+        </xsl:choose>
+      </xsl:for-each>
       <xsl:text>)</xsl:text>
     </span>
   </xsl:template>

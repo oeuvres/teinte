@@ -487,6 +487,9 @@ et -1 pour chaque niveau ensuite, d'où le paramètre $level qui peut
   <xsl:template match="tei:sp">
     <div>
       <xsl:call-template name="atts"/>
+      <xsl:attribute name="id">
+        <xsl:call-template name="id"/>
+      </xsl:attribute>
       <xsl:apply-templates/>
     </div>
   </xsl:template>

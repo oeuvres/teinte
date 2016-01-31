@@ -309,7 +309,10 @@ Gobal TEI parameters and variables are divided in different categories
   <xsl:variable name="html5">html5</xsl:variable>
   <xsl:variable name="html">html</xsl:variable>
   <xsl:variable name="article">article</xsl:variable>
-
+  <xsl:variable name="nav">nav</xsl:variable>
+  <xsl:variable name="front">front</xsl:variable>
+  <xsl:variable name="back">back</xsl:variable>
+  
   <!-- Upper case letters with diactitics, for translate() -->
   <xsl:variable name="uc">ABCDEFGHIJKLMNOPQRSTUVWXYZÆŒÇÀÁÂÃÄÅÈÉÊËÌÍÎÏÒÓÔÕÖÙÚÛÜÝ</xsl:variable>
   <!-- Lower case letters with diacritic, for translate() -->
@@ -487,6 +490,25 @@ notamment pour établir cible et source de liens.
       </xsl:when>
       <xsl:when test="@id">
         <xsl:value-of select="translate(@id, $id0, '')"/>
+      </xsl:when>
+      <xsl:when test="@type = 'scene'">
+        <xsl:for-each select="parent::*[1]">
+          <xsl:call-template name="id"/>
+        </xsl:for-each>
+        <xsl:number format="01"/>
+      </xsl:when>
+      <xsl:when test="parent::*/@type = 'act'">
+        <xsl:for-each select="parent::*[1]">
+          <xsl:call-template name="id"/>
+        </xsl:for-each>
+        <xsl:number format="01"/>
+      </xsl:when>
+      <xsl:when test="self::tei:sp">
+        <xsl:for-each select="parent::*[1]">
+          <xsl:call-template name="id"/>
+        </xsl:for-each>
+        <xsl:text>-</xsl:text>
+        <xsl:number format="1"/>
       </xsl:when>
       <xsl:when test="not(ancestor::tei:group) and (self::tei:div or starts-with(local-name(), 'div'))">
         <!-- should I put file id as div id prefix ? -->
