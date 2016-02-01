@@ -8,7 +8,7 @@ else if (php_sapi_name() == "cli") Teinte_Doc::cli();
 
 /**
  Sample pilot for Teinte transformations of XML/TEI
- 
+
  */
 class Teinte_Doc {
   /** TEI/XML DOM Document to process */
@@ -33,9 +33,9 @@ class Teinte_Doc {
     'html' => '.html',
     'markdown' => '.md',
     'iramuteq' => '.txt',
-    
+
   );
-  /** 
+  /**
    * Constructor, load file and prepare work
    */
   public function __construct($teifile) {
@@ -46,9 +46,9 @@ class Teinte_Doc {
     $this->_xsldom = new DOMDocument();
   }
   /**
-   * 
+   *
    */
-  public function export($format, $destfile) {
+  public function export($format, $destfile=null) {
     if (isset(self::$_formats[$format])) return call_user_func(array($this, $format), $destfile);
     else if (STDERR) fwrite(STDERR, $format." ? format not yet implemented\n");
   }
@@ -57,8 +57,8 @@ class Teinte_Doc {
    */
   public function article($destfile=null) {
     return $this->transform(
-      dirname(__FILE__).'/tei2html.xsl', 
-      $destfile, 
+      dirname(__FILE__).'/tei2html.xsl',
+      $destfile,
       array(
         'root'=> 'article',
       )
@@ -70,8 +70,8 @@ class Teinte_Doc {
   public function html($destfile=null, $theme = null) {
     if (!$theme) $theme = 'http://oeuvres.github.io/Teinte/'; // where to find web assets like css and js for html file
     return $this->transform(
-      dirname(__FILE__).'/tei2html.xsl', 
-      $destfile, 
+      dirname(__FILE__).'/tei2html.xsl',
+      $destfile,
       array(
         'theme'=> $theme,
       )
@@ -92,7 +92,7 @@ class Teinte_Doc {
   /**
    * Zip multipage ?
    */
-  
+
   /**
    * An xslt transformer
    * TOTHINK : deal with errors
@@ -118,7 +118,7 @@ class Teinte_Doc {
     }
     // no dst file, return dom, so that piping can continue
     else {
-      $ret = $this->_trans->transformToDoc($this->dom);
+      $ret = $this->_trans->transformToXML($this->dom);
     }
     // reset parameters ! or they will kept on next transform if transformer is reused
     if(isset($pars) && count($pars)) {
@@ -126,7 +126,7 @@ class Teinte_Doc {
     }
     return $ret;
   }
-  /** 
+  /**
    * load an XML/TEI document
    */
   public function load($xmlfile) {

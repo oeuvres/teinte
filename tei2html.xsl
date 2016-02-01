@@ -1543,6 +1543,7 @@ Tables
         <xsl:text> §</xsl:text>
       </a>
       -->
+      <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
   <xsl:template match="tei:figure/tei:figDesc | tei:figure/tei:desc | tei:figure/tei:head">
