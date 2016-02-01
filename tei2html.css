@@ -358,9 +358,7 @@ div.right{ margin-left: 40%; }
 p.right { margin-bottom: 1em; text-align: right; }
 .sb { font-size: 200%; margin: 1em; text-indent: 0; }
 .sc, .smallcaps, .small-caps, .pmaj { font-variant: small-caps; }
-span.sub { vertical-align: bottom; line-height: 0.1; font-size: 0.7em; }
 .small { font-size: 70%; }
-.sup { 	vertical-align: super; line-height: 0.1; font-size: 0.7em; }
 h1.sub { font-size: 100%; padding-top:0; }
 .title i  { font-style: normal }
 .todo { border: #F00 solid 1px; background: #FFC; padding: 1ex; }
