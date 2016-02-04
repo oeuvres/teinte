@@ -4,8 +4,8 @@
   <a:documentation>Teibook</a:documentation>
   <div xmlns="http://www.w3.org/1999/xhtml">
     <ul class="auteurs">
-      <li>[FG] <a href="#" onmouseover="this.href='mailto'+'\x3A'+'glorieux'+'\x40'+'fictif.org'">Frédéric Glorieux</a></li>
-      <li>[VJ] <a href="#" onmouseover="this.href='mailto'+'\x3A'+'jolivet'+'\x40'+'algone.net'">Vincent Jolivet</a></li>
+      <li>[FG] <a href="#" onmouseover="this.href='mailto'+'\x3A'+'glorieux'+'\x40'+'fictif.org'">Frédéric Glorieux</a> (2013-…) création initiale et structuration</li>
+      <li>[VJ] <a href="#" onmouseover="this.href='mailto'+'\x3A'+'jolivet'+'\x40'+'algone.net'">Vincent Jolivet</a> (2013-2014) contributions</li>
     </ul>
     <p>Ce schéma est une restriction de la recommandation <a href="http://www.tei-c.org/release/doc/tei-p5-doc/en/html/REF-ELEMENTS.html">TEI P5</a> adaptée à la structuration de livres imprimés. Cette simplification est un socle qui n'interdit pas les extensions mais au contraire précise le générique pour mieux repérer le spécifique. Ce profil TEI peut être comparé aux recommandations <a href="http://www.tei-c.org/Vault/P5//2.3.0/doc/tei-p5-exemplars/html/tei_tite.doc.html">TEI Tite</a> et <a href="http://www.tei-c.org/SIG/Libraries/teiinlibraries/main-driver.html">Best Practices for TEI in Libraries</a>, conçues pour faire référence dans les projets de numérisation de masse. Ce profil profite de l'expérience acquise et la perfectionne en insistant sur quelques autres aspects : explications en français, exemples tirés de la tradition éditoriale francophone, numérisation avec un logiciel d’OCR par du personnel non entraîné, utilisation du traitement de textes. Ce profil a été conçu en
       référence continuelle à <a href="http://www.w3.org/TR/html5/">HTML 5</a>, afin d'au moins garantir la conservation de la sémantique html en TEI. Il permet d'encoder tout ce que peut produire un traitement de textes, notamment issu de la transformation <a href="http://algone.net/odt2tei/">odt2tei</a>. Il vise à produire au moins une édition électronique de qualité (ePub avec table des matières, site en ligne), tout en permettant des enrichissements sémantiques ultérieurs. </p>
@@ -42,7 +42,7 @@
       </li>
     </ul>
     <h2 id="text">Texte</h2>
-    <p>Idéalement, tous les caractères du texte imprimé, de toutes les pages, doivent être inscrits comme des nœuds de texte. Le filtrage de certains composants s’effectuera a posteriori, par le balisage (exemple : ne pas afficher la table des matières originale au profit d’un sommaire automatique). Cette attitude conservatoire évite de présumer des intérêts futurs de la recherche.</p>
+    <p>Idéalement, tous les caractères du texte imprimé, de toutes les pages, doivent être inscrits comme des nœuds de texte. Cette attitude conservatoire évite de présumer des intérêts futurs de la recherche. La seule réserve concerne les navigations ajoutées par l’éditeur (table des matières, index) que l’on essaiera autant que possible de générer automatiquement par la structure XML.</p>
     <p><b>Entités</b> — Flux de caractères UTF-8. Toujours préférer un caractère unicode UTF-8 lorsque possible. Pas d'entités, car soit elles sont en chiffres, et elles correspondent à un caractère unicode, soit elles sont en lettres, et elles ne sont pas supportées par xml sans déclaration DTD <s><code>&amp;nbsp;, &amp;thinsp;, &amp;eacute;…</code></s> Exemple : pour une espace insécable inscrire le caractère ' ' (U+00A0, &amp;#160;), visible ici comme une espace mais distinguable dans certains éditeurs, de même pour les espaces fines ' ' ( U+2009, &amp;#8201;). Si des caractères rencontrés ne correspondent pas de façon exacte à un code unicode standard, alors utiliser <a:el>g n="{code local pour le caractère}">{approximation unicode}&lt;/g</a:el></p>
     <!-- p><b>Grec ancien</b> — lettres à pb</p -->
     <p><b>Guillemets</b> — Autant que possible, on évitera les <s>"guillemets droits"</s>, afin de favoriser les guillemets orientés, qui s'ouvrent et se ferment pour délimiter un segment, en distinguant les « guillemets français » et les “guillemets anglais”. Les guillemets français encadrent généralement du texte cité ou rapporté, d'un autre auteur que le texte environnant, et sont susceptibles (sous contrôle humain) d'être encadrés pas la balise <a:el>quote</a:el>. Les guillemets anglais encadrent généralement des segments plus courts, qui pourraient aussi paraître en italique : terme technique <a:el>term</a:el>, langue étrangère <a:el>foreign</a:el>, mot en mention <a:el>mentionned</a:el>…</p>
@@ -86,9 +86,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
             <li>Le texte postliminaire <a:el>back</a:el> : annexes, bibliographie, index, etc.</li>
           </ul>
           <p>Le paratexte éditorial – préliminaire (<a:el>front</a:el>) et postliminaire (<a:el>back</a:el>) – ainsi que les métadonnées (<a:el>teiHeader</a:el>) constituent la valeur ajoutée par l’éditeur. Ce paratexte éditorial peut aussi figurer parfois dans le <a:el>body</a:el> : dans le cas d’une édition de source par exemple, le texte édité est contenu dans le <a:el>body</a:el> ainsi que les notes (<a:el>note</a:el>, <a:el>app</a:el>) ajoutées par l’éditeur).</p>
-          <p>Le fichier final comporte un <a:el>teiHeader</a:el> renseigné par l’éditeur, non requis au moment de la numérisation.</p>
-          <p>Dès la numérisation, le fichier doit obligatoirement porter en racine un identifiant correspondant au nom du fichier xml sans l’extension. Lorsque l'identifiant est un code isbn, uniquement en chiffres, il n'est pas compatible avec les valeurs autorisées dans l'attribut <a href="http://www.tei-c.org/release/doc/tei-p5-doc/fr/html/CO.html#CORS1" target="_blank">xml:id</a>, aussi ce nom de fichier est inscrit dans un attribut <a:att>n</a:att>.</p>
-          <p>Le document comportera aussi un <a href="http://www.loc.gov/standards/iso639-2/php/French_list.php" target="_blank">code de langue iso</a> dans l’attribut <a:att>xml:lang</a:att> en racine.</p>
+          <p>Le document comportera toujours un <a href="http://www.loc.gov/standards/iso639-2/php/French_list.php" target="_blank">code de langue iso</a> dans l’attribut <a:att>xml:lang</a:att> en racine, on privilégiera le code deux lettres lorsque possible (mieux supporté dans la chaîne éditoriale, par ex. epub).</p>
           <a:example>
             <TEI xml:lang="fr">
               <teiHeader>…</teiHeader>
@@ -109,8 +107,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
                   <!-- … -->
                 </body>
                 <back>
-                  <div type="index">…</div>
-                  <div type="toc">…</div>
+                  <div type="glossary">…</div>
                 </back>
               </text>
             </TEI>
@@ -148,7 +145,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <ref name="teiHeader"/>
         <element name="text">
           <optional>
-            <!-- TEINUM obligatoire -->
             <ref name="front"/>
           </optional>
           <choice>
@@ -190,7 +186,9 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
       <element name="front">
         <a:documentation>Le texte préliminaire tel qu’imprimé</a:documentation>
         <div xmlns="http://www.w3.org/1999/xhtml">
-          <p>Chaque section (introduction, préface, etc.) est contenue dans un <a:el>div</a:el>. <br/>Si l’édition contient plusieurs types de numérotations des pages (romain, arabe), alors le <a:el>front</a:el> doit contenir une numérotation homogène (usuellement en chiffres romains). <br/>Le <a:el>front</a:el> ne doit pas contenir de métadonnées structurées qui doivent être inscrites dans le <a:el>teiHeader</a:el>. </p>
+          <p>Chaque section (introduction, préface, etc.) est contenue dans un <a:el>div</a:el>. 
+            <br/>Si l’édition contient plusieurs types de numérotations des pages (romain, arabe), alors le <a:el>front</a:el> doit contenir une numérotation homogène (usuellement en chiffres romains). 
+          </p>
           <a:example>
             <front>
               <titlePage>Obligatoire</titlePage>
@@ -221,7 +219,11 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
       <element name="titlePage">
         <a:documentation>Page de titre</a:documentation>
         <div xmlns="http://www.w3.org/1999/xhtml">
-          <p>Doit avant tout contenir un lien vers l’image de la page de titre, dans <a:el>pb facs="??"</a:el>. <br/>Le texte de la page doit être transcrit. <br/>La disposition est imitée par des éléments de type bloc. Leur positionnement exact n'est pas requis. <br/>L'interprétation sémantique (auteur, titre, date, imprimeur…) n’est pas requise.</p>
+          <p>Le texte de la page de titre doit être transcrit. 
+          <br/>La disposition est imitée avec des éléments de type bloc. Leur positionnement exact n'est pas requis. 
+          <br/>L'interprétation sémantique (auteur, titre, date, imprimeur…) n’est pas requise, les métadonnées doivent plutôt être inscrites dans le <a:el>teiHeader</a:el>.
+            <br/>Si la page de titre est riche d’informations utiles, il est vain de vouloir l’imiter dans un XML qui ne conserve que l’information et n’engage pas la présentation que peuvent en faire les applications, on conseillera plutôt d’en conserver l’image, à lier par la référence de la page <a:el>pb facs="??"</a:el>.
+          </p>
           <a:example href="teibook.xml#titlePage"/>
         </div>
         <optional>
@@ -286,7 +288,10 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
       <element name="back">
         <a:documentation>Éléments en fin de livre : index, sommaires, glossaires, etc.</a:documentation>
         <div xmlns="http://www.w3.org/1999/xhtml">
-          <p>Les tables des matières imprimées sont encodées comme des listes (structure hiérarchique récursive), conformément aux conseils de la TEI. <br/>Pour une version électronique (ex : epub), on souhaite pouvoir générer automatiquement la table des matières. <br/>Le n° de page est indiqué comme un lien renvoyant à un identifiant de <a:el>pb</a:el>.</p>
+          <p>
+            Si le projet éditorial ou scientifique requiert de conserver une table des matières imprimée,
+            elle sera encodée comme une liste <a:el>list</a:el> (structure hiérarchique récursive), conformément aux conseils de la TEI. 
+            Un n° de page sera indiqué comme un lien renvoyant à l’identifiant du saut de page dans le texte <a:el>pb n="305" xml:id="pb305"</a:el>.</p>
           <a:example href="teibook.xml#toc"/>
         </div>
         <ref name="xml-atts"/>
@@ -296,7 +301,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
             <ref name="head"/>
           </choice>
         </zeroOrMore>
-        <!-- Au moins une div si on veut éviter un conflit de <pb/> -->
+        <!-- Peut-on imaginer un <back> sans <div> ? -->
         <choice>
           <oneOrMore>
             <ref name="div"/>
@@ -357,6 +362,8 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
             <a:documentation>Glossaire, paratexte, généralement dans &lt;back></a:documentation>
             <value>index</value>
             <a:documentation>Index, paratexte, généralement dans &lt;back></a:documentation>
+            <value>interlude</value>
+            <a:documentation>Dans une pièce de théâtre, intermède, par example dansé ou musical, le texte y a un statut différent des actes pleins.</a:documentation>
             <value>introduction</value>
             <a:documentation>Introduction, paratexte, généralement dans &lt;front></a:documentation>
             <value>letter</value>
@@ -367,14 +374,18 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
             <a:documentation>Un poème</a:documentation>
             <value>preface</value>
             <a:documentation>Préface, paratexte, généralement dans &lt;front></a:documentation>
+            <value>prologue</value>
+            <a:documentation>Prologue, par exemple dans une pièce de théâtre, préférer une division typée à l’élément prologue de la TEI qui n’est autorisé que dans l’avant-texte <a:el>front</a:el>.</a:documentation>
             <value>scene</value>
             <a:documentation>Théâtre, scène.</a:documentation>
             <value>set</value>
             <a:documentation>Théâtre, pages liminaires.</a:documentation>
             <value>toc</value>
             <a:documentation>Table des matières, synonyme de “contents”, paratexte dans &lt;front> ou &lt;back></a:documentation>
+            <!--
             <data type="Name"/>
             <a:documentation>Mot clé libre lorsqu’aucune des valeurs définies semble adaptée</a:documentation>
+            -->
           </choice>
         </attribute>
       </optional>
@@ -554,7 +565,10 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
       <element name="p">
         <a:documentation>Paragraphe de texte, html5:p</a:documentation>
         <div xmlns="http://www.w3.org/1999/xhtml">
-          <p><a href="http://www.w3.org/TR/html5/the-p-element.html#the-p-element">[html]</a> Pour les paragraphes numérotés, le numéro de l’édition imprimée est à inscrire dans l’attribut <a:att>n</a:att>.</p>
+          <p><a href="http://www.w3.org/TR/html5/the-p-element.html#the-p-element">[html]</a></p>
+          <!-- ??
+ Pour les paragraphes numérotés, le numéro de l’édition imprimée est à inscrire dans l’attribut <a:att>n</a:att>.
+          -->
         </div>
         <ref name="xml-atts"/>
         <optional>
@@ -599,7 +613,10 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
     <define name="l">
       <element name="l">
         <a:documentation>Un vers, généralement contenu dans une strophe &lt;lg></a:documentation>
-        <div xmlns="http://www.w3.org/1999/xhtml">Les indentations spécifiques sont à inscrire sous forme d’espaces insécables (caractère unicode équivalent à l’entité XML <![CDATA[&#160;]]>). Pour les vers numérotés, le numéro est inscrit dans l’attribut <a:att>n</a:att>.</div>
+        <div xmlns="http://www.w3.org/1999/xhtml">
+          <br/>Pour les vers rompus du théâtre (– Hé ? – Quoi ! – Ah…), renseigner l’attribut @part qui permettra à une application de rétablir les alignements, indiquer explicitement la succession pour informer un automate : Initial (1) – Medial (0 ou n) – Final (1)
+          
+          <br/>Les indentations spécifiques sont à inscrire sous forme d’espaces insécables (caractère unicode équivalent à l’entité XML <![CDATA[&#160;]]>). Pour les vers numérotés, le numéro est inscrit dans l’attribut <a:att>n</a:att>.</div>
         <ref name="xml-atts"/>
         <optional>
           <ref name="n-att"/>
@@ -607,10 +624,12 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <optional>
           <attribute name="part">
             <choice>
+              <!--
               <value>Y</value>
               <a:documentation>“Yes” (oui), fragment de vers</a:documentation>
               <value>N</value>
               <a:documentation>“No” (non), vers entier</a:documentation>
+              -->
               <value>I</value>
               <a:documentation>“Initial”, début de vers</a:documentation>
               <value>M</value>
@@ -1031,17 +1050,8 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
                               <value>male</value>
                               <value>female</value>
                             </choice>
-                            <choice>
-                              <value>junior</value>
-                              <value>veteran</value>
-                              <value>minime</value>
-                              <value>senior</value>
-                            </choice>
-                            <choice>
-                              <value>inferior</value>
-                              <value>exterior</value>
-                              <value>superior</value>
-                            </choice>
+                            <ref name="val-age"/>
+                            <ref name="val-status"/>
                           </choice>
                         </oneOrMore>
                       </list>
@@ -1062,6 +1072,71 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
             </zeroOrMore>
           </element>
         </oneOrMore>
+      </element>
+    </define>
+    <define name="val-age">
+      <choice>
+        <value>junior</value>
+        <value>veteran</value>
+        <value>minime</value>
+        <value>senior</value>
+      </choice>
+    </define>
+    <define name="val-status">
+      <choice>
+        <value>inferior</value>
+        <value>exterior</value>
+        <value>superior</value>
+      </choice>
+    </define>
+    <define name="listPerson">
+      <element name="listPerson">
+        <choice>
+          <oneOrMore>
+            <ref name="person"/>
+          </oneOrMore>
+          <oneOrMore>
+            <element name="listPerson">
+              <attribute name="type">
+                <value>group</value>
+              </attribute>
+              <oneOrMore>
+                <ref name="person"/>
+              </oneOrMore>
+            </element>
+          </oneOrMore>
+        </choice>
+      </element>
+    </define>
+    <define name="person">
+      <element name="person">
+        <choice>
+          <ref name="id-att"/>
+          <attribute name="corresp"/>
+        </choice>
+        <optional>
+          <attribute name="role">
+            <ref name="val-status"/>
+          </attribute>
+        </optional>
+        <optional>
+          <attribute name="sex">
+            <choice>
+              <value>1</value>
+              <a:documentation>Homme</a:documentation>
+              <value>2</value>
+              <a:documentation>Femme</a:documentation>
+              <value>O</value>
+              <a:documentation>Inconnu</a:documentation>
+              <value>9</value>
+              <a:documentation>Non applicable</a:documentation>
+              <value>rose</value>
+            </choice>
+          </attribute>
+        </optional>
+        <optional>
+          <attribute name="copyOf"/>
+        </optional>
       </element>
     </define>
     <define name="table">
@@ -1765,7 +1840,13 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
             </choice>
           </attribute>
         </optional>
-        <ref name="flow"/>
+        <oneOrMore>
+          <choice>
+            <text/>
+            <ref name="listPerson"/>
+            <ref name="hi"/>
+          </choice>
+        </oneOrMore>
       </element>
     </define>
     <define name="code">

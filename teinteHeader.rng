@@ -891,10 +891,12 @@
     <define name="keywords">
       <element name="keywords">
         <a:documentation>Groupe de mots-clés sujet issus d’un même thésaurus (taxonomie)</a:documentation>
-        <attribute name="scheme">
-          <a:documentation>Désigne le thésaurus des mots-clés utilisés (définition locale ou URI)</a:documentation>
-          <text/>
-        </attribute>
+        <optional>
+          <attribute name="scheme">
+            <a:documentation>Désigne le thésaurus des mots-clés utilisés (définition locale ou URI)</a:documentation>
+            <text/>
+          </attribute>
+        </optional>
         <oneOrMore>
           <ref name="textClass.term"/>
         </oneOrMore>
@@ -914,10 +916,15 @@
               <value>subject</value>
               <value>person</value>
               <value>work</value>
-              <text/>
+              <data type="Name"/>
             </choice>
           </attribute>
         </optional>
+        <optional>
+          <attribute name="subtype">
+            <data type="Name"/>
+          </attribute>
+        </optional>        
         <optional>
           <attribute name="key">
             <a:documentation>Numéro de la notice d’autorité</a:documentation>
