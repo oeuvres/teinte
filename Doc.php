@@ -146,7 +146,7 @@ class Teinte_Doc {
     array_shift($_SERVER['argv']); // shift first arg, the script filepath
     if (!count($_SERVER['argv'])) exit('
     usage    : php -f Doc.php ($formats)? "*.xml" destdir/?
-    format?  : optional dest format, default tei, others may be odtx, html
+    format?  : optional dest format, default is html
     *.xml    : glob patterns are allowed, but in quotes, to not be expanded by shell
     destdir? : optional destdir
   ');
