@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Œuvres</title>
+    <link rel="stylesheet" type="text/css" href="tei2html.css" />
+  </head>
+  <body>
+    <div id="center" style="padding: 2em;">
+
+      <h1>Teinte</h1>
+      <p>Useful resources for TEI, available online.</p>
+      <dl>
+        <dt><a href="teinte.rng">teinte.rng</a></dt>
+        <dd>A generic TEI schema for books
+          <pre>
+&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;?xml-model href="http://oeuvres.github.io/Teinte/teinte.rng"
+  type="application/xml"
+  schematypens="http://relaxng.org/ns/structure/1.0"?>
+          </pre>
+        </dd>
+        <dt><a href="tei2html.xsl">tei2html.xsl</a></dt>
+        <dd>A generic TEI transformation handling all the teinte.rng specifications.
+          <pre>
+xsltproc http://oeuvres.github.io/Teinte/tei2html.xsl mytei.xml > mytei.html
+          </pre>
+        </dd>
+      <dl>
+
+    </div>
+  </body>
+</html>
