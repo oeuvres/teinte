@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
 <?xml-stylesheet type="text/xsl" href="../xrem/rng2html.xsl"?>
+-->
 <grammar xmlns="http://relaxng.org/ns/structure/1.0" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes" ns="http://www.tei-c.org/ns/1.0" xml:lang="fr">
   <a:documentation>Teibook</a:documentation>
   <div xmlns="http://www.w3.org/1999/xhtml">
@@ -1040,7 +1042,9 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
               <choice>
                 <text/>
                 <element name="role">
-                  <ref name="id-att"/>
+                  <optional>
+                    <ref name="id-att"/>                    
+                  </optional>
                   <optional>
                     <attribute name="rend">
                       <list>
@@ -1091,10 +1095,21 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
     </define>
     <define name="listPerson">
       <element name="listPerson">
+        <optional>
+          <ref name="id-att"/>
+        </optional>
+        <optional>
+          <ref name="n-att"/>
+        </optional>
+        <optional>
+          <attribute name="type">
+            <value>configuration</value>
+          </attribute>
+        </optional>
         <choice>
-          <oneOrMore>
+          <zeroOrMore>
             <ref name="person"/>
-          </oneOrMore>
+          </zeroOrMore>
           <oneOrMore>
             <element name="listPerson">
               <attribute name="type">
@@ -1114,6 +1129,9 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
           <ref name="id-att"/>
           <attribute name="corresp"/>
         </choice>
+        <optional>
+          <ref name="n-att"/>
+        </optional>
         <optional>
           <attribute name="role">
             <ref name="val-status"/>
@@ -1282,7 +1300,15 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
             </choice>
           </attribute>
         </optional>
-        <ref name="flow"/>
+        <oneOrMore>
+          <choice>
+            <text/>
+            <ref name="hi"/>
+            <ref name="listPerson"/>
+            <ref name="lb"/>
+            <ref name="note"/>
+          </choice>
+        </oneOrMore>
       </element>
     </define>
     <define name="argument">
