@@ -283,6 +283,7 @@ div.speaker, p.speaker { margin-top: 1em; margin-bottom: 0.5ex; font-weight: nor
 .speaker  i, .speaker em { font-variant: normal; font-size: 90%; text-transform: none; }
 .stage { font-style: italic; font-variant: normal; }
 section > div.stage { font-style: normal; }
+section > div.stage i, section > div.stage em { font-style: italic; }
 div.stage { text-align: justify; line-height: 120%; }
 .stage.indent { text-indent: 3rem; }
 div.stage.sc { font-style: normal; text-align: center; font-size: 105%; margin-bottom: 1ex; }

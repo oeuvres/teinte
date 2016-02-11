@@ -4,10 +4,10 @@
  * © 2015, frederic.glorieux@fictif.org et LABEX OBVIL
  *
  * This program is a free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License 
+ * under the terms of the GNU Lesser General Public License
  * http://www.gnu.org/licenses/lgpl.html
  * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
  */
@@ -135,7 +135,7 @@ th.num, table.sortable th.num { text-align: right; font-weight: 100; font-size: 
     // numerical key
     if (table.lines[0][key] === +table.lines[0][key]) {
       var comparator=function(a, b) {
-        return a[key] - b[key];
+        return b[key] - a[key]; // for numeric keys, default, bigger first
       }
       if (reverse) table.lines.reverse(comparator);
       else table.lines.sort(comparator);

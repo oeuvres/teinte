@@ -2,8 +2,15 @@
 <!--
 <?xml-stylesheet type="text/xsl" href="../xrem/rng2html.xsl"?>
 -->
-<grammar xmlns="http://relaxng.org/ns/structure/1.0" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes" ns="http://www.tei-c.org/ns/1.0" xml:lang="fr">
-  <a:documentation>Teibook</a:documentation>
+<grammar xmlns="http://relaxng.org/ns/structure/1.0" 
+  xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" 
+  xmlns:h="http://www.w3.org/1999/xhtml" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  
+  datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes"  
+  ns="http://www.tei-c.org/ns/1.0" 
+  xml:lang="fr">
+  <a:documentation>Teinte, TEI pour les livres</a:documentation>
   <div xmlns="http://www.w3.org/1999/xhtml">
     <ul class="auteurs">
       <li>[FG] <a href="#" onmouseover="this.href='mailto'+'\x3A'+'glorieux'+'\x40'+'fictif.org'">Frédéric Glorieux</a> (2013-…) création initiale et structuration</li>
@@ -839,6 +846,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
               <choice>
                 <text/>
                 <ref name="hi"/>
+                <ref name="listPerson"/>
               </choice>
             </zeroOrMore>
           </element>
@@ -1038,6 +1046,9 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
                   <optional>
                     <ref name="rend-role"/>
                   </optional>
+                  <optional>
+                    <ref name="n-att"/>
+                  </optional>
                   <ref name="textual"/>
                 </element>
                 <element name="actor">
@@ -1130,9 +1141,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
             <ref name="id-att"/>
             <ref name="n-att"/>
             <optional>
-              <attribute name="role">
-                <ref name="val-status"/>
-              </attribute>
+              <ref name="corresp-att"/>
             </optional>
             <optional>
               <attribute name="sex">
@@ -1153,8 +1162,28 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
               <ref name="rend-role"/>
             </optional>
           </group>
-          <attribute name="corresp"/>
+          <group>
+            <ref name="corresp-att"/>
+          </group>
         </choice>
+        <optional>
+          <optional>
+            <attribute name="role">
+              <list>
+                <choice>
+                  <ref name="val-status"/>
+                  <choice>
+                    <value>hidden</value>
+                    <value>offstage</value>
+                    <value>dead</value>
+                    <value>absent</value>
+                    <value>unconscious</value>
+                  </choice>
+                </choice>
+              </list>
+            </attribute>
+          </optional>
+        </optional>
         <optional>
           <attribute name="copyOf"/>
         </optional>
@@ -1667,7 +1696,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
     </define>
     <define name="ref">
       <element name="ref">
-        <a:documentation>Lien simple, html5:&lt;a href="target">texte&lt;/a>. Pour les liens internes, utiliser une URI ancre, #p0101 (page 101).</a:documentation>
+        <a:documentation>Lien simple, html5:&lt;a href="@target">texte&lt;/a>. Pour les liens internes, utiliser une URI ancre, #pb0101 (page 101).</a:documentation>
         <ref name="xml-atts"/>
         <attribute name="target">
           <text/>

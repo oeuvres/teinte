@@ -939,7 +939,7 @@ Tables
               </small>
             </xsl:when>
           </xsl:choose>
-          <xsl:if test="@part = 'M' or @part = 'm' or @part = 'F' or @part = 'f'">
+          <xsl:if test="@part = 'M' or @part = 'm' or @part = 'F' or @part = 'f'  or @part = 'y'  or @part = 'Y'">
             <xsl:variable name="txt">
               <xsl:apply-templates select="preceding::tei:l[ancestor::tei:body][1]" mode="lspacer"/>
             </xsl:variable>
@@ -961,12 +961,19 @@ Tables
     </xsl:variable>
     <xsl:choose>
       <!-- encoding error -->
+      <xsl:when test="not(@part)"/>
+      <!-- encoding error -->
       <xsl:when test="@part = 'F'">
         <xsl:apply-templates select="preceding::tei:l[1]" mode="lspacer"/>
         <xsl:value-of select="$txt"/>
         <xsl:text> </xsl:text>
       </xsl:when>
       <xsl:when test="@part = 'M'">
+        <xsl:apply-templates select="preceding::tei:l[1]" mode="lspacer"/>
+        <xsl:value-of select="$txt"/>
+        <xsl:text> </xsl:text>
+      </xsl:when>
+      <xsl:when test="@part = 'Y'">
         <xsl:apply-templates select="preceding::tei:l[1]" mode="lspacer"/>
         <xsl:value-of select="$txt"/>
         <xsl:text> </xsl:text>
@@ -998,42 +1005,56 @@ Tables
       <!-- si @rend est un nom d'élément HTML -->
       <xsl:when test="contains( ' b big em i s small strike strong sub sup tt u ', concat(' ', $rend, ' '))">
         <xsl:element name="{$rend}" namespace="http://www.w3.org/1999/xhtml">
-          <xsl:if test="@type">
-            <xsl:attribute name="class">
-              <xsl:value-of select="@type"/>
-            </xsl:attribute>
-          </xsl:if>
+          <xsl:call-template name="atts"/>
           <xsl:apply-templates/>
         </xsl:element>
       </xsl:when>
+      <xsl:when test="$rend = ''">
+        <em>
+          <xsl:call-template name="atts"/>
+          <xsl:apply-templates/>
+        </em>
+      </xsl:when>
       <xsl:when test="starts-with($rend, 'it')">
         <i>
+          <xsl:call-template name="atts"/>
+          <xsl:apply-templates/>
+        </i>
+      </xsl:when>
+      <xsl:when test="starts-with($rend, 'it')">
+        <i>
+          <xsl:call-template name="atts"/>
           <xsl:apply-templates/>
         </i>
       </xsl:when>
       <xsl:when test="contains($rend, 'bold') or contains($rend, 'gras')">
         <b>
+          <xsl:call-template name="atts"/>
           <xsl:apply-templates/>
         </b>
       </xsl:when>
       <xsl:when test="starts-with($rend, 'ind')">
         <sub>
+          <xsl:call-template name="atts"/>
           <xsl:apply-templates/>
         </sub>
       </xsl:when>
       <xsl:when test="starts-with($rend, 'exp')">
         <sup>
+          <xsl:call-template name="atts"/>
           <xsl:apply-templates/>
         </sup>
       </xsl:when>
       <!-- surlignages venus de la transformation ODT -->
       <xsl:when test="$rend='bg' or $rend='mark'">
         <span class="bg" style="background-color:#{@n};">
+          <xsl:call-template name="atts"/>
           <xsl:apply-templates/>
         </span>
       </xsl:when>
       <xsl:when test="$rend='col' or $rend='color'">
         <span class="col" style="color:#{@n};">
+          <xsl:call-template name="atts"/>
           <xsl:apply-templates/>
         </span>
       </xsl:when>
@@ -1874,9 +1895,7 @@ Tables
     <div>
       <xsl:call-template name="atts"/>
       <xsl:choose>
-        <xsl:when test="@columns and number(@columns) &gt; 1">
-          &lt;TODO&gt;
-        </xsl:when>
+        <xsl:when test="@columns and number(@columns) &gt; 1"> &lt;TODO&gt; </xsl:when>
         <xsl:when test="@ruledLines">
           <xsl:value-of select="@ruledLines"/>
           <xsl:text> </xsl:text>
@@ -2676,7 +2695,7 @@ Call that in
       <xsl:attribute name="class">app</xsl:attribute>
       <xsl:attribute name="onmouseover">this.className='apprdg'</xsl:attribute>
       <xsl:attribute name="onmouseout">if(!this.cloc) this.className='app'</xsl:attribute>
-      <xsl:attribute name="onclick">if(this.cloc) {this.className='app'; this.cloc=null; } else { this.cloc=true;  this.className='apprdg'}; return true;</xsl:attribute>
+      <xsl:attribute name="onclick">if(this.cloc) {this.className='app'; this.cloc=null; } else { this.cloc=true; this.className='apprdg'}; return true;</xsl:attribute>
       <!-- ajouts et omissions -->
       <xsl:apply-templates select="tei:lem"/>
       <xsl:call-template name="noteref"/>

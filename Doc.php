@@ -161,6 +161,7 @@ class Teinte_Doc {
       }
       else if(!isset($destdir)) {
         $destdir=rtrim($arg, '\\/').'/';
+        if (!file_exists($destdir)) mkdir($destdir, true);
       }
     }
     $count = 0;
