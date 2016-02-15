@@ -39,11 +39,15 @@ class Teinte_Doc {
    * Constructor, load file and prepare work
    */
   public function __construct($teifile) {
+    $this->_xsldom = new DOMDocument();
+    if (is_a($teifile, 'DOMDocument') ) {
+      $this->dom = $teifile;
+      return;
+    }
     $this->file = $teifile;
     $this->filemtime = filemtime($teifile);
     $this->filename = pathinfo($teifile, PATHINFO_FILENAME);
     $this->load($teifile);
-    $this->_xsldom = new DOMDocument();
   }
   /**
    *
@@ -52,6 +56,19 @@ class Teinte_Doc {
     if (isset(self::$_formats[$format])) return call_user_func(array($this, $format), $destfile);
     else if (STDERR) fwrite(STDERR, $format." ? format not yet implemented\n");
   }
+  /**
+   * Output toc
+   */
+   public function toc($root) {
+     return $this->transform(
+       dirname(__FILE__).'/tei2toc.xsl',
+       null,
+       array(
+         'root'=> $root,
+       )
+     );
+   }
+
   /**
    * Output an html fragment
    */

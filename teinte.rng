@@ -211,7 +211,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
             <ref name="titlePage"/>
             <ref name="argument"/>
             <ref name="castList"/>
-            <ref name="prologue"/>
             <ref name="div"/>
             <ref name="div1"/>
           </choice>
@@ -844,9 +843,10 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
           <element name="speaker">
             <zeroOrMore>
               <choice>
-                <text/>
+                <text/>                
                 <ref name="hi"/>
                 <ref name="listPerson"/>
+                <ref name="note"/>
               </choice>
             </zeroOrMore>
           </element>
@@ -1349,19 +1349,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <optional>
           <attribute name="ana"/>
         </optional>
-        <ref name="xml-atts"/>
-        <ref name="rendering.figure"/>
-        <optional>
-          <ref name="head"/>
-        </optional>
-        <zeroOrMore>
-          <ref name="block"/>
-        </zeroOrMore>
-      </element>
-    </define>
-    <define name="prologue">
-      <element name="prologue">
-        <a:documentation>Début d’une pièce de théâtre, contient des blocs</a:documentation>
         <ref name="xml-atts"/>
         <ref name="rendering.figure"/>
         <optional>
@@ -1906,6 +1893,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
               <text/>
               <ref name="listPerson"/>
               <ref name="hi"/>
+              <ref name="note"/>
             </choice>
           </oneOrMore>
           <oneOrMore>

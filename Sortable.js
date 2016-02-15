@@ -92,6 +92,8 @@ table.sortable th a { display:block; } \
 table.sortable a:hover { background: #FFFFFF; box-shadow: 0px 0px 20px #AAAAAA; } \
 table.sortable th a:hover { background-color: #FFFFFF; border: none} \
 th.num, table.sortable th.num { text-align: right; font-weight: 100; font-size: 85%; padding: 0 1px; } \
+.sortheader { cursor: pointer; } \
+/* .sortheader b { -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } */ \
 ";
     var head = document.getElementsByTagName('head')[0];
     head.insertBefore(css, head.firstChild);
@@ -187,7 +189,7 @@ th.num, table.sortable th.num { text-align: right; font-weight: 100; font-size: 
       var text = cell.innerHTML.replace(/<.+>/g, '');
       if (cell.className.indexOf("unsort") != -1 || cell.className.indexOf("nosort") != -1 || Sortable.trim(text) == '') continue;
       cell.table=table;
-      cell.innerHTML = '<a href="#" class="sortheader" onclick="Sortable.sort(this.parentNode.table, \'key'+i+'\', this.reverse); this.reverse=!this.reverse ; return false;">↓'+text+'↑</a>'; //
+      cell.innerHTML = '<b class="sortheader" onclick="Sortable.sort(this.parentNode.table, \'key'+i+'\', this.reverse); this.reverse=!this.reverse ; return false;">↓'+text+'↑</b>'; //
     }
     if (!table.tBodies) {
       tbody = table.createTBody();

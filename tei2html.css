@@ -38,11 +38,11 @@ article:after { content: " "; display: block; height: 0; clear: both; visibilit
 body,html { min-height: 100%; margin: 0; padding: 0; }
 /* fonts */
 /* pas mûr -moz-hyphens: auto; -webkit-hyphens: auto; adobe-hyphenate: auto; hyphens: auto; */
-body { font: 16px/24px Georgia, "Bitstream Vera Serif", Times, serif; }
-.subtitle, textarea.readonly, .dialogue li, .titleStmt h1 { font-family: Georgia, "Bitstream Vera Serif", Times, serif; }
+body { font: 16px Georgia, "Bitstream Vera Serif", Times, serif; }
+.serif, .subtitle, textarea.readonly, .dialogue li, .titleStmt h1 { font-family: Georgia, "Bitstream Vera Serif", Times, serif; }
 .cb, .pb, .ed, small.l, small.l-n { font-family: "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif; }
-.availability, figcaption, li.bibl, div.bibl, .editionStmt, .footnotes, .marginalia, .note, #noterefover, .publicationStmt, .sourceDesc, .speaker, .stage { font-size: 14px;  font-family: "Lucida Grande", Verdana, sans-serif; }
-aside, .breadcrumb, .but, caption, .cb, form label, nav, .pb, .tabs { font-family: "Droid Sans", "Lucida Grande", Verdana, sans-serif; font-size: 12px; line-height: 1.1em; }
+.sans-serif, .availability, figcaption, li.bibl, div.bibl, .editionStmt, .footnotes, .marginalia, .note, #noterefover, .publicationStmt, .sourceDesc, .speaker, .stage { font-size: 14px;  font-family: "Lucida Grande", Verdana, sans-serif; }
+.interface, aside, .breadcrumb, .but, caption, .cb, form label, nav, .pb, .tabs { font-family: "Droid Sans", "Lucida Grande", Verdana, sans-serif; font-size: 12px; line-height: 1.1em; }
 tt, pre { font-family: "Andale Mono", "Lucida Console", Courier, "MS Courier New", monospace; }
 .dingbat { font-family: "FreeSans", "DejaVu Sans", "Lucida Sans Unicode", "Arial Unicode MS", sans-serif }
 blockquote, dd , p.p, .argument, .availability, div.bibl, li.bibl, .dialogue li , .justify, .note, div.stage { text-align: justify; }
@@ -157,7 +157,7 @@ tfoot { border-top: solid 1px #000000; }
 button, input, optgroup, select, textarea { font-size: inherit; margin: 0; }
 button { overflow: visible; }
 button, select { text-transform: none; }
-button, html input[type="button"], input[type="reset"], input[type="submit"], .but, .button { -webkit-appearance: button; cursor: pointer; font-family: sans-serif; display: inline; cursor: pointer; border: 1px solid #AAA !important; background-color: #E2DED0; text-decoration: none !important; padding: 2px 5px 0 5px; margin: 1px; line-height: 100%; text-shadow: 1px 1px #FFFFFF; white-space: nowrap; -webkit-border-radius: 1ex; -moz-border-radius: 1ex; border-radius: 1ex; }
+button, html input[type="button"], input[type="reset"], input[type="submit"], .but, .button { -webkit-appearance: button; cursor: pointer; font-family: sans-serif; display: inline; cursor: pointer; border: 1px solid #AAA !important; background-color: #E2DED0; text-decoration: none !important; padding: 2px 5px 0 5px; margin: 1px; line-height: 100%; text-shadow: 1px 1px #FFFFFF; white-space: nowrap; -webkit-border-radius: 0.5ex; -moz-border-radius: 0.5ex; border-radius: 0.5ex; }
 button[disabled], html input[disabled] { cursor: default; }
 button::-moz-focus-inner, input::-moz-focus-inner { border: 0; padding: 0; }
 form a { text-decoration: none; border-bottom: none;  }
@@ -344,6 +344,7 @@ span.exquote { font-style: normal; }/* seg[@type='exquote'] */
 h1.main { margin-top: 1.5em; }
 .margin { margin-left: 20%; text-indent: 0 }
 .noborder { border: none; }
+.noselect { -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;}
 .normal, div.normal, .n { quotes: '' ''; color: #000; font-weight: normal; font-style: normal; text-decoration: none; border-bottom: none; font-variant: normal; text-transform: none; }
 .noindent { text-indent: 0; } /* automatic */
 .indent { text-indent: 2em; }
@@ -364,7 +365,6 @@ h1.sub { font-size: 100%; padding-top:0; }
 .todo { border: #F00 solid 1px; background: #FFC; padding: 1ex; }
 .u, .underline { text-decoration: underline; }
 .uc, .uppercase, .maj { text-transform: uppercase; }
-.unselectable { -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
 
 nav.prevnext {margin-top: 1ex; margin-bottom: 1ex; }
 table.prevnext { border: 1px solid #EEEEEE; }

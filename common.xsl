@@ -497,18 +497,22 @@ notamment pour établir cible et source de liens.
         </xsl:for-each>
         <xsl:number format="01"/>
       </xsl:when>
-      <xsl:when test="parent::*/@type = 'act'">
-        <xsl:for-each select="parent::*[1]">
-          <xsl:call-template name="id"/>
-        </xsl:for-each>
-        <xsl:number format="01"/>
-      </xsl:when>
       <xsl:when test="self::tei:sp">
         <xsl:for-each select="parent::*[1]">
           <xsl:call-template name="id"/>
         </xsl:for-each>
         <xsl:text>-</xsl:text>
         <xsl:number format="1"/>
+      </xsl:when>
+      <xsl:when test="parent::*/@type = 'act'">
+        <xsl:for-each select="parent::*[1]">
+          <xsl:call-template name="id"/>
+        </xsl:for-each>
+        <xsl:number format="01"/>
+      </xsl:when>
+      <xsl:when test="self::tei:listPerson and @type = 'configuration'">
+        <xsl:text>conf</xsl:text>
+        <xsl:number count="tei:listPerson[@type='configuration']" level="any"/>
       </xsl:when>
       <xsl:when test="not(ancestor::tei:group) and (self::tei:div or starts-with(local-name(), 'div'))">
         <!-- should I put file id as div id prefix ? -->

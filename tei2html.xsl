@@ -616,6 +616,14 @@ et -1 pour chaque niveau ensuite, d'où le paramètre $level qui peut
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
+  <!-- Pour l’instant ne pas afficher les configurations -->
+  <xsl:template match="tei:listPerson">
+    <span>
+      <xsl:attribute name="id">
+        <xsl:call-template name="id"/>
+      </xsl:attribute>
+    </span>
+  </xsl:template>
   <!-- Pseudo-listes  -->
   <xsl:template match="tei:respStmt">
     <xsl:variable name="name" select="name()"/>
