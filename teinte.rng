@@ -1117,6 +1117,16 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
             <value>configuration</value>
           </attribute>
         </optional>
+        <optional>
+          <attribute name="subtype">
+            <choice>
+              <value>break</value>
+              <value>escape</value>
+              <value>search</value>
+              <value>escape-search</value>
+            </choice>
+          </attribute>
+        </optional>
         <choice>
           <zeroOrMore>
             <ref name="person"/>
@@ -1178,6 +1188,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
                     <value>dead</value>
                     <value>absent</value>
                     <value>unconscious</value>
+                    <value>aside</value>
                   </choice>
                 </choice>
               </list>
