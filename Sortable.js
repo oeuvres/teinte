@@ -80,7 +80,7 @@ table.sortable td.string { text-align: left; } \
 table.sortable tr td { border-bottom: none; border-top: none; } \
 tr.even { } \
 tr.odd { background-color: #F5F3EB; } \
-table.sortable th, table.table th, table.data th { vertical-align: middle; text-align: left; padding: 5px 1ex 5px 1ex; background-color: #F5F3EB; border: none; } \
+table.sortable th { vertical-align: middle; text-align: left; padding: 5px 1ex 5px 1ex; background-color: #F5F3EB; border: none; } \
 table.sortable th { text-align: center; } \
 tr.even th, tr.odd th { text-align: right; } \
 table.sortable tr.mod5 td { border-top: solid 1px #888; } \

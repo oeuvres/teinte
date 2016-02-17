@@ -33,7 +33,6 @@ audio:not([controls]) { display: none; height: 0; }
 
 table, td, code, dd { font-size: 100%; }
 * { -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -ms-box-sizing: border-box; box-sizing: border-box; }
-/* the float fix */
 article:after { content: " "; display: block; height: 0; clear: both; visibility: hidden; }
 body,html { min-height: 100%; margin: 0; padding: 0; }
 /* fonts */
@@ -402,10 +401,9 @@ ul.none, ol.none, ul.simple, ol.simple { list-style-type: none; }
 .upper-roman > li { margin-top: 1em; margin-bottom: 1em; }
 
 /* Tables */
-table.data, table.table, table.search { font-family: sans-serif; font-size: 12px; line-height: 105%; border: 1px solid; border-color: #CCCCCC; margin-top: 1em; margin-bottom: 2em; border-collapse: collapse; }
+table.data, table.table, table.search { font-family: sans-serif; border: 1px solid; border-color: #CCCCCC; margin-top: 1em; margin-bottom: 2em; border-collapse: collapse; }
 caption { font-size: 1.1em; color: #000000; font-weight: bold; text-align: center; padding: 4px 2px 2px 2px; }
 th { padding: 1px 1ex; }
-table.table td, table.data td  { vertical-align: top; border: #CCCCCC 1px solid; padding: 2px 1ex; }
 th.border, td.border { border: #CCCCCC 1px solid !important; padding: 2px 1ex; }
 td.left, th.left { text-align: left !important; }
 td.center, th.center { text-align: center !important; }
@@ -415,8 +413,8 @@ td.middle, th.middle { vertical-align: middle !important; }
 td.bottom, th.bottom { vertical-align: middle !important; }
 table.table pre { font-size: 110%; white-space: normal; }
 table.table p { line-height: 110%; }
-td.data, table.data th { text-align: right; } /* numbers */
-table.data td { padding: 1px; text-align: right; border-top: none; border-bottom: none; }
+table.table th, table.data th { vertical-align: middle; text-align: right; padding: 5px 1ex 5px 1ex; background-color: #F5F3EB; border: none; border-right: 2px #FFF solid; border-bottom: 2px #FFF solid; }
+table.data td { padding: 1px 0.5ex 1px 1ex; text-align: right; border-bottom: 1px solid #CCC; border-top: 1px solid #CCC; border-left: 1px solid #000; border-right: 1px solid #000; }
 table.data tr:hover, table.data tr:hover th { background-color: #FFFFCC; }
 table.data td a { padding: 1px 1ex; display: block; }
 table.data td a:hover { background-color: #CCCCCC; }
