@@ -217,8 +217,56 @@ mais aussi pour le liage dans l'apparat critique. Ce mode fait usage des modes 
       <xsl:call-template name="a"/>
     </li>
   </xsl:template>
+  <xsl:template match="tei:back | tei:body | tei:front" mode="li">
+    <xsl:param name="class">tree</xsl:param>
+    <!-- un truc pour pouvoir maintenir ouvert des niveaux de table des matières -->
+    <xsl:param name="less" select="0"/>
+    <!-- limit depth -->
+    <xsl:param name="depth"/>
+    <xsl:choose>
+      <!-- simple content ? -->
+      <xsl:when test="tei:p | tei:l | tei:list | tei:argument | tei:table | tei:docTitle | tei:docAuthor">
+        <li>
+          <xsl:call-template name="a"/>
+        </li>
+      </xsl:when>
+      <xsl:when test="count(*) = 1">
+        <li>
+          <xsl:call-template name="a"/>
+        </li>
+      </xsl:when>
+      <!-- div content -->
+      <xsl:when test="tei:div[normalize-space(.) != '']|tei:div1[normalize-space(.) != '']">
+        <li class="more">
+          <span>
+            <xsl:call-template name="title"/>
+          </span>
+          <ol>
+            <xsl:for-each select="tei:back | tei:body | tei:castList | tei:div | tei:div0 | tei:div1 | tei:div2 | tei:div3 | tei:div4 | tei:div5 | tei:div6 | tei:div7 | tei:front | tei:group | tei:text">
+              <xsl:choose>
+                <!-- ??? first section with no title, no forged title -->
+                <xsl:when test="self::div and position() = 1 and not(tei:head) and ../tei:head "/>
+                <xsl:otherwise>
+                  <xsl:apply-templates select="." mode="li">
+                    <xsl:with-param name="less" select="number($less) - 1"/>
+                    <xsl:with-param name="depth" select="number($depth) - 1"/>
+                    <xsl:with-param name="class"/>
+                  </xsl:apply-templates>
+                </xsl:otherwise>
+              </xsl:choose>
+            </xsl:for-each>
+          </ol>
+        </li>
+      </xsl:when>
+      <xsl:otherwise>
+        <li>
+          <xsl:call-template name="a"/>
+        </li>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
   <!-- sectionnement, traverser -->
-  <xsl:template match="tei:back | tei:body | tei:div | tei:div0 | tei:div1 | tei:div2 | tei:div3 | tei:div4 | tei:div5 | tei:div6 | tei:div7 | tei:front | tei:group " mode="li">
+  <xsl:template match=" tei:div | tei:div0 | tei:div1 | tei:div2 | tei:div3 | tei:div4 | tei:div5 | tei:div6 | tei:div7 | tei:group " mode="li">
     <xsl:param name="class">tree</xsl:param>
     <!-- un truc pour pouvoir maintenir ouvert des niveaux de table des matières -->
     <xsl:param name="less" select="0"/>
@@ -284,28 +332,7 @@ mais aussi pour le liage dans l'apparat critique. Ce mode fait usage des modes 
       </xsl:choose>
     </xsl:param>
     <ol class="tree">
-      <!-- front in one <li> to hide some by default  -->
-      <xsl:choose>
-        <xsl:when test="/*/tei:text/tei:front[count(tei:div|tei:div1) = 1]">
-          <xsl:apply-templates select="/*/tei:text/tei:front/*" mode="li">
-            <xsl:with-param name="depth" select="$depth"/>
-            <xsl:with-param name="less" select="$less"/>
-          </xsl:apply-templates>
-        </xsl:when>
-        <xsl:when test="/*/tei:text/tei:front[tei:div[normalize-space(.) != '']|tei:div1[normalize-space(.) != '']]">
-          <li class="more">
-            <span>
-              <xsl:apply-templates select="/*/tei:text/tei:front" mode="title"/>
-            </span>
-            <ol>
-              <xsl:apply-templates select="/*/tei:text/tei:front/*[self::tei:div|self::tei:div1][normalize-space(.) != '']" mode="li">
-                <xsl:with-param name="depth" select="$depth"/>
-                <xsl:with-param name="less" select="$less"/>
-              </xsl:apply-templates>
-            </ol>
-          </li>
-        </xsl:when>
-      </xsl:choose>
+      <xsl:apply-templates select="/*/tei:text/tei:front" mode="li"/>
       <xsl:apply-templates select="/*/tei:text/tei:body/* | /*/tei:text/tei:group/* " mode="li">
         <xsl:with-param name="depth" select="$depth"/>
         <xsl:with-param name="less" select="$less"/>
@@ -327,19 +354,23 @@ mais aussi pour le liage dans l'apparat critique. Ce mode fait usage des modes 
     </ol>
   </xsl:template>
   <xsl:template name="toc-front">
-    <xsl:choose>
-      <xsl:when test="/*/tei:text/tei:front[tei:div[normalize-space(.) != '']|tei:div1[normalize-space(.) != '']]">
-        <ol class="tree">
-          <xsl:apply-templates select="/*/tei:text/tei:front/*[self::tei:div|self::tei:div1][normalize-space(.) != '']" mode="li"/>
-        </ol>
-      </xsl:when>
-    </xsl:choose>
+    <xsl:for-each select="/*/tei:text/tei:front">
+      <xsl:call-template name="paratoc"/>
+    </xsl:for-each>
   </xsl:template>
   <xsl:template name="toc-back">
+    <xsl:for-each select="/*/tei:text/tei:back">
+      <xsl:call-template name="paratoc"/>
+    </xsl:for-each>
+  </xsl:template>
+  <xsl:template name="paratoc">
     <xsl:choose>
-      <xsl:when test="/*/tei:text/tei:back[tei:div[normalize-space(.) != '']|tei:div1[normalize-space(.) != '']]">
+      <xsl:when test="tei:p | tei:l | tei:list | tei:argument | tei:table | tei:docTitle | tei:docAuthor">
+        <xsl:call-template name="a"/>
+      </xsl:when>
+      <xsl:when test="tei:div[normalize-space(.) != '']|tei:div1[normalize-space(.) != '']">
         <ol class="tree">
-          <xsl:apply-templates select="/*/tei:text/tei:back/*[self::tei:div|self::tei:div1][normalize-space(.) != '']" mode="li"/>
+          <xsl:apply-templates select="*[self::tei:div|self::tei:div1][normalize-space(.) != '']" mode="li"/>
         </ol>
       </xsl:when>
     </xsl:choose>

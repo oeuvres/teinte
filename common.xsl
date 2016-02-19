@@ -491,6 +491,7 @@ notamment pour établir cible et source de liens.
       <xsl:when test="@id">
         <xsl:value-of select="translate(@id, $id0, '')"/>
       </xsl:when>
+      <xsl:when test="/tei:TEI/tei:text/tei:front and count(.|/tei:TEI/tei:text/tei:front)=1">front</xsl:when>
       <xsl:when test="@type = 'scene'">
         <xsl:for-each select="parent::*[1]">
           <xsl:call-template name="id"/>
@@ -542,8 +543,6 @@ notamment pour établir cible et source de liens.
       </xsl:when>
       <!-- find index -->
       <xsl:when test="/tei:TEI/tei:text and count(.|/tei:TEI/tei:text)=1">index</xsl:when>
-      <xsl:when test="/tei:TEI/tei:text/tei:front and count(.|/tei:TEI/tei:text/tei:front)=1">index</xsl:when>
-      <xsl:when test="not(/tei:TEI/tei:text/tei:front) and count(.|/tei:TEI/tei:text/tei:group|/tei:TEI/tei:text/tei:body)=1">index</xsl:when>
       <!-- éléments hauts -->
       <xsl:when test="count(.. | /*) = 1">
         <!-- should I put file id as div id prefix ? -->
