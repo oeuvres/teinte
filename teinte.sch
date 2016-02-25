@@ -10,7 +10,7 @@
         </sch:rule>
         <sch:rule context="tei:pb">
             <sch:report test="normalize-space(@n) = '' or not(@n)">Numéro de page manquant</sch:report>
-            <sch:report test="count(key('pb', concat(normalize-space(@ed), normalize-space(@n)))) &gt; 1"><sch:value-of select="@n"/>, ce numéro de page semble dupliqué</sch:report>
+            <sch:report test="not(@xml:id) and count(key('pb', concat(normalize-space(@ed), normalize-space(@n)))) &gt; 1"><sch:value-of select="@n"/>, ce numéro de page semble dupliqué</sch:report>
             <sch:report test="local-name(following-sibling::*[1]) = 'div'">Il est conseillé de mettre un saut de page au début d’un div (plutôt qu’en dehors), de manière à faciliter le retour à la page</sch:report>
         </sch:rule>
         <sch:rule context="@target">

@@ -526,7 +526,7 @@ et -1 pour chaque niveau ensuite, d'où le paramètre $level qui peut
       <xsl:if test=".=''"> </xsl:if>
     </p>
   </xsl:template>
-  <xsl:template match="tei:acheveImprime | tei:byline | tei:caption | tei:dateline | tei:desc | tei:div/tei:docAuthor | tei:titlePage/tei:docAuthor | tei:docEdition | tei:docImprint | tei:imprimatur | tei:performance | tei:premiere | tei:printer | tei:privilege | tei:signed | tei:salute | tei:set | tei:trailer
+  <xsl:template match="tei:acheveImprime | tei:byline | tei:caption | tei:dateline | tei:desc | tei:docEdition | tei:docImprint | tei:imprimatur | tei:performance | tei:premiere | tei:printer | tei:privilege | tei:signed | tei:salute | tei:set | tei:trailer
     ">
     <xsl:variable name="el">
       <xsl:choose>
@@ -1388,6 +1388,7 @@ Tables
       <xsl:choose>
         <xsl:when test="parent::tei:div">div</xsl:when>
         <xsl:when test="parent::tei:titlePage">p</xsl:when>
+        <xsl:when test="parent::tei:front">p</xsl:when>
         <!-- bug in LibreOffice
         <xsl:when test="$format=$html5">time</xsl:when>
         -->
@@ -1836,10 +1837,18 @@ Tables
     </xsl:choose>
   </xsl:template>
   <xsl:template match="tei:author | tei:biblScope | tei:collation | tei:collection | tei:dim | tei:docAuthor | tei:editor | tei:edition | tei:extent | tei:funder | tei:publisher | tei:stamp | tei:biblFull/tei:titleStmt/tei:title">
-    <span>
+    <xsl:variable name="element">
+      <xsl:choose>
+        <xsl:when test="parent::titlePage">p</xsl:when>
+        <xsl:when test="parent::front">p</xsl:when>
+        <xsl:when test="parent::div">p</xsl:when>
+        <xsl:otherwise>span</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:element name="{$element}">
       <xsl:call-template name="atts"/>
       <xsl:apply-templates/>
-    </span>
+    </xsl:element>
   </xsl:template>
   <!-- generic div -->
   <xsl:template match="tei:accMat | tei:additional | tei:additions | tei:addrLine | tei:adminInfo | tei:binding | tei:bindingDesc | tei:closer | tei:condition | tei:equiv | tei:history | tei:licence | tei:listRef | tei:objectDesc | tei:origin | tei:provenance | tei:physDesc | tei:biblFull/tei:publicationStmt | tei:source | tei:speaker | tei:support | tei:supportDesc | tei:surrogates | tei:biblFull/tei:titleStmt" name="div">

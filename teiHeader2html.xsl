@@ -79,6 +79,7 @@ sont officiellement ditribuées par le consortium TEI, cependant ce développeme
       <xsl:apply-templates/>
     </span>
   </xsl:template>
+
   <xsl:template match="tei:fileDesc/tei:titleStmt/tei:title">
     <xsl:choose>
       <xsl:when test="@type= 'formal' or @type='reference' or @type='DEAF' or @type='gmd'"/>
@@ -121,6 +122,8 @@ sont officiellement ditribuées par le consortium TEI, cependant ce développeme
   <!-- Bloc de publication, réordonné -->
   <xsl:template match="tei:fileDesc/tei:publicationStmt">
     <xsl:choose>
+      <!-- bug -->
+      <xsl:when test="normalize-space(.) =''"/>
       <xsl:when test="tei:distributor">
         <div>
           <xsl:call-template name="headatts"/>
@@ -132,7 +135,9 @@ sont officiellement ditribuées par le consortium TEI, cependant ce développeme
           </xsl:for-each>
         </div>
       </xsl:when>
-      <xsl:when test="normalize-space(tei:publisher) =''"/>
+      <xsl:when test="tei:p">
+        <xsl:apply-templates/>
+      </xsl:when>
       <xsl:otherwise>
         <xsl:element name="div" namespace="http://www.w3.org/1999/xhtml">
           <xsl:call-template name="headatts"/>
@@ -405,11 +410,11 @@ sont officiellement ditribuées par le consortium TEI, cependant ce développeme
         <div>
           <xsl:call-template name="headatts"/>
           <!-- Reorder -->
-          <xsl:apply-templates select="tei:author"/>
           <!-- Garder ?
           <xsl:apply-templates select="/*/tei:teiHeader[1]/tei:profileDesc[1]/tei:creation[1]"/>
           -->
           <xsl:apply-templates select="tei:title"/>
+          <xsl:apply-templates select="tei:author"/>
           <xsl:apply-templates select="tei:editor | tei:funder | tei:meeting | tei:principal | tei:sponsor"/>
           <xsl:apply-templates select="tei:respStmt"/>
           <xsl:if test="../tei:publicationStmt/tei:date">

@@ -343,7 +343,7 @@ span.exquote { font-style: normal; }/* seg[@type='exquote'] */
 h1.main { margin-top: 1.5em; }
 .margin { margin-left: 20%; text-indent: 0 }
 .noborder { border: none; }
-.noselect { -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;}
+.noselect { -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
 .normal, div.normal, .n { quotes: '' ''; color: #000; font-weight: normal; font-style: normal; text-decoration: none; border-bottom: none; font-variant: normal; text-transform: none; }
 .noindent { text-indent: 0; } /* automatic */
 .indent { text-indent: 2em; }
