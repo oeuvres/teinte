@@ -808,8 +808,7 @@ résoudre les césures, ou les alternatives éditoriales.
       </xsl:when>
       -->
       <!-- Front or back with no local title, use a generic label  -->
-      <xsl:when test="(/*/tei:text/tei:front and count(.|/*/tei:text/tei:front) = 1) or 
-        (/*/tei:text/tei:back and count(.|/*/tei:text/tei:back) = 1)">
+      <xsl:when test="self::tei:front|self::tei:back">
         <xsl:call-template name="message"/>
       </xsl:when>
       <!-- Level <text>, get a short title to display, an author maybe nice as a prefix -->

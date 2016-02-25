@@ -265,6 +265,22 @@ mais aussi pour le liage dans l'apparat critique. Ce mode fait usage des modes 
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
+  <xsl:template match="tei:group/tei:text" mode="li">
+    <li class="more">
+      <xsl:call-template name="a"/>
+      <xsl:choose>
+        <!-- simple content -->
+        <xsl:when test="not(tei:front|tei:back) and tei:body/tei:p | tei:body/tei:l | tei:body/tei:list | tei:body/tei:argument | tei:body/tei:table | tei:body/tei:docTitle | tei:body/tei:docAuthor"/>
+        <xsl:otherwise>
+          <ol>
+            <xsl:apply-templates select="tei:front" mode="li"/>
+            <xsl:apply-templates select="tei:body/*" mode="li"/>
+            <xsl:apply-templates select="tei:back" mode="li"/>
+          </ol>
+        </xsl:otherwise>
+      </xsl:choose>
+    </li>
+  </xsl:template>
   <!-- sectionnement, traverser -->
   <xsl:template match=" tei:div | tei:div0 | tei:div1 | tei:div2 | tei:div3 | tei:div4 | tei:div5 | tei:div6 | tei:div7 | tei:group " mode="li">
     <xsl:param name="class">tree</xsl:param>
