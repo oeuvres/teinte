@@ -38,16 +38,22 @@ class Teinte_Doc {
   /**
    * Constructor, load file and prepare work
    */
-  public function __construct($teifile) {
-    $this->_xsldom = new DOMDocument();
-    if (is_a($teifile, 'DOMDocument') ) {
-      $this->dom = $teifile;
-      return;
+  public function __construct($tei) {
+    if (is_a($tei, 'DOMDocument') ) {
+      $this->dom = $tei;
     }
-    $this->file = $teifile;
-    $this->filemtime = filemtime($teifile);
-    $this->filename = pathinfo($teifile, PATHINFO_FILENAME);
-    $this->load($teifile);
+    else if(file_exists($tei)) {
+      $this->file = $tei;
+      $this->filemtime = filemtime($tei);
+      $this->filename = pathinfo($tei, PATHINFO_FILENAME);
+      $this->dom = self::dom($tei);
+    }
+    else {
+      throw new Exception('Teinte, what is it? '.print_r($tei, true));
+    }
+    $this->_xsldom = new DOMDocument();
+    $this->xpath = new DOMXpath($this->dom);
+    $this->xpath->registerNamespace('tei', "http://www.tei-c.org/ns/1.0");
   }
   /**
    *
@@ -98,7 +104,7 @@ class Teinte_Doc {
    * Output markdown
    */
   public function markdown($destfile=null) {
-    return $this->transform(dirname(__FILE__).'/tei2md.xsl', $destfile);
+    return $this->transform(dirname(__FILE__).'/tei2md.xsl', $destfile, array('filename' => $this->filename));
   }
   /**
    * Output iramuteq text
@@ -107,14 +113,17 @@ class Teinte_Doc {
     return $this->transform(dirname(__FILE__).'/tei2iramuteq.xsl', $destfile);
   }
   /**
-   * Zip multipage ?
+   * Preprocess TEI with a transformation
    */
+   public function pre($xslfile, $pars=null) {
+     $this->dom = $this->transform($xslfile, new DOMDocument(), $pars);
+   }
 
   /**
    * An xslt transformer
    * TOTHINK : deal with errors
    */
-  public function transform($xslfile, $destfile=null, $pars=null) {
+  public function transform($xslfile, $dest=null, $pars=null) {
     // allow reuse of same xsl for performances
     if ($this->_xslfile != $xslfile) {
       // load xsl file
@@ -129,9 +138,16 @@ class Teinte_Doc {
         $this->_trans->setParameter(null, $key, $value);
       }
     }
-    if ($destfile) {
-      $this->_trans->transformToURI($this->dom, $destfile);
-      $ret = $destfile;
+    if (is_a($dest, 'DOMDocument') ) {
+      $ret = $this->_trans->transformToDoc($this->dom);
+    }
+    else if ($dest) {
+      if (!is_dir(dirname($dest))) {
+        mkdir(dirname($dest), 0775, true);
+        @chmod(dirname($dest), 0775);  // let @, if www-data is not owner but allowed to write
+      }
+      $this->_trans->transformToURI($this->dom, $dest);
+      $ret = $dest;
     }
     // no dst file, return dom, so that piping can continue
     else {
@@ -139,22 +155,19 @@ class Teinte_Doc {
     }
     // reset parameters ! or they will kept on next transform if transformer is reused
     if(isset($pars) && count($pars)) {
-      foreach ($pars as $key => $value) $this->_trans->removeParameter('', $key);
+      foreach ($pars as $key => $value) $this->_trans->removeParameter(null, $key);
     }
     return $ret;
   }
-  /**
-   * load an XML/TEI document
-   */
-  public function load($xmlfile) {
-    $this->dom = new DOMDocument();
-    $this->dom->preserveWhiteSpace = false;
-    $this->dom->formatOutput=true;
-    $this->dom->substituteEntities=true;
-    $this->dom->load($xmlfile, LIBXML_NOENT | LIBXML_NONET | LIBXML_NSCLEAN | LIBXML_NOCDATA | LIBXML_COMPACT | LIBXML_PARSEHUGE | LIBXML_NOERROR | LIBXML_NOWARNING);
-    $this->xpath = new DOMXpath($this->dom);
-    $this->xpath->registerNamespace('tei', "http://www.tei-c.org/ns/1.0");
+  public static function dom($xmlfile) {
+    $dom = new DOMDocument();
+    $dom->preserveWhiteSpace = false;
+    $dom->formatOutput=true;
+    $dom->substituteEntities=true;
+    $dom->load($xmlfile, LIBXML_NOENT | LIBXML_NONET | LIBXML_NSCLEAN | LIBXML_NOCDATA | LIBXML_COMPACT | LIBXML_PARSEHUGE | LIBXML_NOERROR | LIBXML_NOWARNING);
+    return $dom;
   }
+
   /**
    * Command line transform
    */

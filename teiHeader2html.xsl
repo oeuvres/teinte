@@ -194,37 +194,48 @@ sont officiellement ditribuées par le consortium TEI, cependant ce développeme
   <!-- éléments teiHeader retenus -->
   <xsl:template match="tei:charDecl | tei:langUsage | tei:catRef"/>
   <!-- Ligne avec intitulé -->
-  <xsl:template match="tei:sourceDesc">    
-    <xsl:if test="normalize-space(.) != '' or tei:bibl/tei:ref">
-      <div>
-        <xsl:call-template name="headatts"/>
-        <xsl:variable name="message">
-          <xsl:call-template name="message"/>
-        </xsl:variable>
-        <xsl:choose>
-          <xsl:when test="tei:bibl">
-            <xsl:for-each select="tei:bibl">
+  <xsl:template match="tei:sourceDesc">
+    <xsl:choose>
+      <xsl:when test="tei:bibl/tei:ref">
+        <div>
+          <xsl:call-template name="headatts"/>
+          <xsl:apply-templates/>
+        </div>
+      </xsl:when>
+      <!-- Paul Fièvre, temporaire -->
+      <xsl:when test="tei:permalien"/>
+      <xsl:when test="normalize-space(.) = ''"/>
+      <xsl:otherwise>
+        <div>
+          <xsl:call-template name="headatts"/>
+          <xsl:variable name="message">
+            <xsl:call-template name="message"/>
+          </xsl:variable>
+          <xsl:choose>
+            <xsl:when test="tei:bibl">
+              <xsl:for-each select="tei:bibl">
+                <label>
+                  <xsl:value-of select="$message"/>
+                  <xsl:text> : </xsl:text>
+                </label>
+                <xsl:apply-templates select="./node()"/>
+                <xsl:if test="position()!=last()"><br/></xsl:if>
+              </xsl:for-each>
+            </xsl:when>
+            <xsl:when test="tei:msDesc">
               <label>
                 <xsl:value-of select="$message"/>
                 <xsl:text> : </xsl:text>
               </label>
-              <xsl:apply-templates select="./node()"/>
-              <xsl:if test="position()!=last()"><br/></xsl:if>
-            </xsl:for-each>
-          </xsl:when>
-          <xsl:when test="tei:msDesc">
-            <label>
-              <xsl:value-of select="$message"/>
-              <xsl:text> : </xsl:text>
-            </label>
-            <xsl:apply-templates select="tei:msDesc[1]"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:apply-templates/>
-          </xsl:otherwise>
-        </xsl:choose>
-      </div>
-    </xsl:if>
+              <xsl:apply-templates select="tei:msDesc[1]"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:apply-templates/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </div>      
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   <xsl:template match="tei:msDesc">
     <span>
@@ -410,13 +421,11 @@ sont officiellement ditribuées par le consortium TEI, cependant ce développeme
         <div>
           <xsl:call-template name="headatts"/>
           <!-- Reorder -->
-          <!-- Garder ?
-          <xsl:apply-templates select="/*/tei:teiHeader[1]/tei:profileDesc[1]/tei:creation[1]"/>
-          -->
           <xsl:apply-templates select="tei:title"/>
           <xsl:apply-templates select="tei:author"/>
           <xsl:apply-templates select="tei:editor | tei:funder | tei:meeting | tei:principal | tei:sponsor"/>
           <xsl:apply-templates select="tei:respStmt"/>
+          <xsl:apply-templates select="/*/tei:teiHeader[1]/tei:profileDesc[1]/tei:creation[1]"/>
           <xsl:if test="../tei:publicationStmt/tei:date">
             <div class="date">
               <xsl:apply-templates select="../tei:publicationStmt/tei:date"/>
@@ -549,9 +558,7 @@ sont officiellement ditribuées par le consortium TEI, cependant ce développeme
   <xsl:template match="tei:creation">
     <xsl:if test="tei:date">
       <div>
-        <xsl:text>[</xsl:text>
         <xsl:apply-templates select="tei:date[1]"/>
-        <xsl:text>]</xsl:text>
       </div>
     </xsl:if>
   </xsl:template>

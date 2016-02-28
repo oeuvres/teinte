@@ -88,6 +88,10 @@ Gobal TEI parameters and variables are divided in different categories
   <!-- doc name -->
   <xsl:param name="docid">
     <xsl:choose>
+      <!-- filename -->
+      <xsl:when test="$filename != ''">
+        <xsl:value-of select="$filename"/>
+      </xsl:when>
       <xsl:when test="/*/@xml:id != ''">
         <xsl:value-of select="/*/@xml:id"/>
       </xsl:when>
@@ -96,10 +100,6 @@ Gobal TEI parameters and variables are divided in different categories
       </xsl:when>
       <xsl:when test="/*/@n != '' and /*/@n != '0'">
         <xsl:value-of select="/*/@n"/>
-      </xsl:when>
-      <!-- filename -->
-      <xsl:when test="$filename != ''">
-        <xsl:value-of select="$filename"/>
       </xsl:when>
       <!-- try to generate a significant code from author title -->
       <xsl:otherwise>

@@ -4,7 +4,7 @@
 
 LGPL http://www.gnu.org/licenses/lgpl.html
 © 2005 Frederic.Glorieux@fictif.org et École nationale des chartes
-© 2012 Frederic.Glorieux@fictif.org 
+© 2012 Frederic.Glorieux@fictif.org
 © 2013 Frederic.Glorieux@fictif.org et LABEX OBVIL
 
 
@@ -53,8 +53,8 @@ if (!document.createElementNS) document.createElementNS = function(uri, name) {
   return document.createElement(name);
 };
 
- 
- 
+
+
 var Tree = {
 
   /** default class name for root ul */
@@ -121,7 +121,7 @@ li.here { color: #000; background-color: #FFFFFF; border-top: 1px #E2DED0 solid;
 li.here mark { background: inherit; }\
 ";
     var head = document.getElementsByTagName('head')[0];
-    
+
     head.insertBefore(css, head.firstChild);
   },
   /**
@@ -151,7 +151,7 @@ li.here mark { background: inherit; }\
       if (asidescroll) Tree.aside.scrollTop = asidescroll;
       // OK with unload ?
       if (window.addEventListener) window.addEventListener('unload', function(){ sessionStorage.setItem("asidescroll", Tree.aside.scrollTop); }, false);
-      
+
     }
     // don’t work well on drag with Chrome
     // window.addEventListener("mousedown", function(){ window.ismousedown = true;  }, false);
@@ -189,7 +189,7 @@ li.here mark { background: inherit; }\
       Tree.facsclose.onclick = function() { this.parentNode.style.visibility = "hidden"; Tree.facsimg.src = ''; };
       document.getElementsByTagName("body")[0].appendChild(Tree.facsdiv);
       Tree.facsdiv.id = 'facsdiv';
-      Tree.facsdiv.style.resize = 'both'; 
+      Tree.facsdiv.style.resize = 'both';
       Tree.facsdiv.setAttribute('draggable', 'true');
       Tree.facsdiv.style.position = 'absolute';
       Tree.facsdiv.style.visibility = 'hidden';
@@ -214,13 +214,13 @@ li.here mark { background: inherit; }\
     if (!el) return;
     // take all possible trees, cast nodeset to array, so concat will work
     var nsa = Array.prototype.slice.call(el.getElementsByTagName('ul')).concat(Array.prototype.slice.call(el.getElementsByTagName('menu'))).concat(Array.prototype.slice.call(el.getElementsByTagName('ol')));
-    
+
     // loop on candidate <ul>
     // go down (increment) or you will have pb with # links
     for(var i=0; i < nsa.length ; i++) {
       Tree.treeprep(nsa[i]);
     }
-    // TODO 
+    // TODO
     var embed = document.getElementsByTagName('figcaption');
     for (var i = 0; i < embed.length; i++) Tree.embedprep(embed.item(i));
     Tree.loaded=true;
@@ -235,7 +235,7 @@ li.here mark { background: inherit; }\
       parent.style.width = (width) + 'px';
       parent = parent.parentNode;
     }
-    sessionStorage.setItem("asidewidth", this.offsetWidth); 
+    sessionStorage.setItem("asidewidth", this.offsetWidth);
   },
   /**
    * Resize left pannel
@@ -247,7 +247,7 @@ li.here mark { background: inherit; }\
     w.y=w.innerHeight||e.clientHeight||g.clientHeight;
     if (window.x > 1024) {
       Tree.aside.style.resize = 'horizontal';
-      Tree.aside.addEventListener('mousemove', Tree.asideresize, false); 
+      Tree.aside.addEventListener('mousemove', Tree.asideresize, false);
       var asidewidth = sessionStorage.getItem("asidewidth");
       // no memory for short screen, chrome, impossible to reduce
       if (asidewidth && asidewidth < window.x && Tree.isfirefox) {
@@ -265,7 +265,7 @@ li.here mark { background: inherit; }\
     // resize to shorter
     else {
       sessionStorage.removeItem("asidewidth");
-      Tree.aside.removeEventListener('mousemove', Tree.asideresize, false); 
+      Tree.aside.removeEventListener('mousemove', Tree.asideresize, false);
       Tree.aside.style.resize = 'none';
       Tree.aside.style.width = '';
       var parent = Tree.aside.parentNode;
@@ -297,7 +297,7 @@ li.here mark { background: inherit; }\
     return false;
   },
   /**
-   * Get window possition of an element  
+   * Get window possition of an element
    */
   top: function(node) {
     var top = 0;
@@ -413,7 +413,7 @@ li.here mark { background: inherit; }\
     // Attach the tree
     nav.appendChild(tree);
   },
-  /** 
+  /**
    * Add events to a block with a corresp link to load content inside
    */
   embedprep: function(bibl) {
@@ -448,7 +448,7 @@ li.here mark { background: inherit; }\
     }
   },
   /**
-   * Add events to a a recursive list 
+   * Add events to a a recursive list
    */
   treeprep: function(ul) {
     if (!ul) return false;
@@ -480,7 +480,7 @@ li.here mark { background: inherit; }\
       }
       if(!a) continue;
       // now, check if item should be opened
-      
+
       target=a.getAttribute('href'); // should return unresolved URI like written in source file
       if(location.pathname != a.pathname) continue; // not same path, go away
       keep = true; // at least, correct path, but check if hash or query could be better
@@ -500,7 +500,6 @@ li.here mark { background: inherit; }\
       */
       // close parents of first found
       if (Tree.lastHere) {
-        console.log(Tree.lastHere);
         Tree.lastHere.className=Tree.lastHere.className.replace(Tree.reHereDel, '');
         Tree.close(Tree.lastHere);
       }
@@ -515,7 +514,7 @@ li.here mark { background: inherit; }\
     else { ul.className=ul.className+" treejs"; }
     // changing global class should have resized object
     // check if link is visible, if not, scroll to it
-    /* 
+    /*
     if (Tree.top(Tree.lastHere) > Tree.winHeight()) {
       lastid = window.location.hash;
       if (lastid == '#') lastid=null;
@@ -591,7 +590,6 @@ li.here mark { background: inherit; }\
       li=arguments[i];
       if (li.className == null) li=document.getElementById(arguments[i]);
       if (!li) continue;
-      console.log(li);
       while (li && li.tagName.toLowerCase() == 'li') {
         if (li.className.match(Tree.reLessmore) || li.getElementsByTagName('UL').length > 0)
           li.className = (li.className.replace(Tree.reLessmore, ' ') +" "+Tree.MORE).trim();
@@ -646,7 +644,7 @@ li.here mark { background: inherit; }\
     return false;
   },
  /**
-  * Get an absolute y coordinate for an object 
+  * Get an absolute y coordinate for an object
   * [FG] : buggy with absolute object
   * <http://www.quirksmode.org/js/findpos.html>
   *
@@ -701,7 +699,7 @@ var Notes = {
   },
   pos: function(el) {
     if (!el.offsetParent) return;
-    var left = 0; 
+    var left = 0;
     var top = 0;
     // do not substract the body.scrollTop in Chrome, the last offsetParent
     while (el.offsetParent) {

@@ -226,7 +226,7 @@ aside .docDate { float: right; }
 .fileDesc, .fileDesc > p { text-align: center; text-indent: 0; }
 .fileDesc label { font-weight: bold; }
 .fileDesc  > .titleStmt { text-align: center; margin: 0 0 5em 0; }
-.titleStmt > p { text-align: center; }
+.titleStmt > p { text-align: center; text-indent: 0; }
 .titleStmt h1 { padding-top: 0; padding-bottom: 0; margin-top: 1em; margin-bottom: 1em; }
 .titleStmt div { margin-top: 0.5em; margin-bottom: 0.5em; }
 
@@ -292,7 +292,7 @@ blockquote > div.stage.sc { text-align: left; }
 div.stage .i, div.stage i, div.stage em { font-style: normal; }
 hi.i, h2.sub, h2.i, h3.sub ,h4.sub,h5.sub,h6.sub { font-style: italic; font-weight: normal; border: none; margin-top: 0; padding-top: 0; }
 .titlePage h1.sub { font-weight: normal; margin-top: 0; padding-top: 0; }
-.scene h2, .scene h3 { font-weight: normal; font-style: italic; text-align: center; margin-left: auto; margin-right: auto; }
+.scene h2, .scene h3 { font-weight: normal; font-style: italic; text-align: center; margin-left: auto; margin-right: auto; text-transform: uppercase;}
 h2.verse.scene, h3.verse.scene { text-align: left; margin-left: 5em; }
 .sourceDesc { }
 .subtitle { font-style: italic; font-weight: normal; text-align: center; font-size: 200%; margin-bottom: 2em; }

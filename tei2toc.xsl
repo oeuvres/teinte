@@ -231,18 +231,16 @@ mais aussi pour le liage dans l'apparat critique. Ce mode fait usage des modes 
         </li>
       </xsl:when>
       <xsl:when test="count(*) = 1">
-        <li>
-          <xsl:call-template name="a"/>
-        </li>
+        <xsl:apply-templates select="*/*" mode="li"/>
       </xsl:when>
       <!-- div content -->
-      <xsl:when test="tei:div[normalize-space(.) != '']|tei:div1[normalize-space(.) != '']">
+      <xsl:otherwise>
         <li class="more">
           <span>
             <xsl:call-template name="title"/>
           </span>
           <ol>
-            <xsl:for-each select="tei:back | tei:body | tei:castList | tei:div | tei:div0 | tei:div1 | tei:div2 | tei:div3 | tei:div4 | tei:div5 | tei:div6 | tei:div7 | tei:front | tei:group | tei:text">
+            <xsl:for-each select="tei:castList | tei:div | tei:div1 | tei:titlePage">
               <xsl:choose>
                 <!-- ??? first section with no title, no forged title -->
                 <xsl:when test="self::div and position() = 1 and not(tei:head) and ../tei:head "/>
@@ -256,11 +254,6 @@ mais aussi pour le liage dans l'apparat critique. Ce mode fait usage des modes 
               </xsl:choose>
             </xsl:for-each>
           </ol>
-        </li>
-      </xsl:when>
-      <xsl:otherwise>
-        <li>
-          <xsl:call-template name="a"/>
         </li>
       </xsl:otherwise>
     </xsl:choose>
@@ -349,10 +342,8 @@ mais aussi pour le liage dans l'apparat critique. Ce mode fait usage des modes 
     </xsl:param>
     <ol class="tree">
       <xsl:apply-templates select="/*/tei:text/tei:front" mode="li"/>
-      <xsl:apply-templates select="/*/tei:text/tei:body/* | /*/tei:text/tei:group/* " mode="li">
-        <xsl:with-param name="depth" select="$depth"/>
-        <xsl:with-param name="less" select="$less"/>
-      </xsl:apply-templates>
+      <xsl:apply-templates select="/*/tei:text/tei:body" mode="li"/>
+      <xsl:apply-templates select="/*/tei:text/tei:group/*" mode="li"/>
       <!-- back in one <li> to hide some by default  -->
       <xsl:if test="/*/tei:text/tei:back[tei:div[normalize-space(.) != '']|tei:div1[normalize-space(.) != '']]">
         <li class="more">
