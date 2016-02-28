@@ -1839,9 +1839,9 @@ Tables
   <xsl:template match="tei:author | tei:biblScope | tei:collation | tei:collection | tei:dim | tei:docAuthor | tei:editor | tei:edition | tei:extent | tei:funder | tei:publisher | tei:stamp | tei:biblFull/tei:titleStmt/tei:title">
     <xsl:variable name="element">
       <xsl:choose>
-        <xsl:when test="parent::titlePage">p</xsl:when>
-        <xsl:when test="parent::front">p</xsl:when>
-        <xsl:when test="parent::div">p</xsl:when>
+        <xsl:when test="parent::tei:titlePage">p</xsl:when>
+        <xsl:when test="parent::tei:front">p</xsl:when>
+        <xsl:when test="parent::tei:div">p</xsl:when>
         <xsl:otherwise>span</xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
