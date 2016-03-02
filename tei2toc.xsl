@@ -217,6 +217,7 @@ mais aussi pour le liage dans l'apparat critique. Ce mode fait usage des modes 
       <xsl:call-template name="a"/>
     </li>
   </xsl:template>
+
   <xsl:template match="tei:back | tei:body | tei:front" mode="li">
     <xsl:param name="class">tree</xsl:param>
     <!-- un truc pour pouvoir maintenir ouvert des niveaux de table des matières -->
@@ -230,11 +231,7 @@ mais aussi pour le liage dans l'apparat critique. Ce mode fait usage des modes 
           <xsl:call-template name="a"/>
         </li>
       </xsl:when>
-      <xsl:when test="count(*) = 1">
-        <xsl:apply-templates select="*/*" mode="li"/>
-      </xsl:when>
-      <!-- div content -->
-      <xsl:otherwise>
+      <xsl:when test="self::tei:front or self::tei:back">
         <li class="more">
           <span>
             <xsl:call-template name="title"/>
@@ -245,16 +242,19 @@ mais aussi pour le liage dans l'apparat critique. Ce mode fait usage des modes 
                 <!-- ??? first section with no title, no forged title -->
                 <xsl:when test="self::div and position() = 1 and not(tei:head) and ../tei:head "/>
                 <xsl:otherwise>
-                  <xsl:apply-templates select="." mode="li">
-                    <xsl:with-param name="less" select="number($less) - 1"/>
-                    <xsl:with-param name="depth" select="number($depth) - 1"/>
-                    <xsl:with-param name="class"/>
-                  </xsl:apply-templates>
+                  <xsl:apply-templates select="." mode="li"/>
                 </xsl:otherwise>
               </xsl:choose>
             </xsl:for-each>
           </ol>
         </li>
+      </xsl:when>
+      <xsl:when test="self::tei:body">
+        <xsl:apply-templates select="tei:castList | tei:div | tei:div1 | tei:titlePage" mode="li"/>
+      </xsl:when>
+      <!-- div content -->
+      <xsl:otherwise>
+        <xsl:apply-templates select="tei:castList | tei:div | tei:div1 | tei:titlePage" mode="li"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -267,7 +267,7 @@ mais aussi pour le liage dans l'apparat critique. Ce mode fait usage des modes 
         <xsl:otherwise>
           <ol>
             <xsl:apply-templates select="tei:front" mode="li"/>
-            <xsl:apply-templates select="tei:body/*" mode="li"/>
+            <xsl:apply-templates select="tei:body" mode="li"/>
             <xsl:apply-templates select="tei:back" mode="li"/>
           </ol>
         </xsl:otherwise>
@@ -332,32 +332,11 @@ mais aussi pour le liage dans l'apparat critique. Ce mode fait usage des modes 
   </xsl:template>
   <!-- Générer une navigation dans les sections -->
   <xsl:template name="toc">
-    <xsl:param name="less"/>
-    <xsl:param name="depth">
-      <xsl:choose>
-        <xsl:when test="key('id', 'toc-depth')">
-          <xsl:value-of select="key('id', 'toc-depth')/@n"/>
-        </xsl:when>
-      </xsl:choose>
-    </xsl:param>
     <ol class="tree">
       <xsl:apply-templates select="/*/tei:text/tei:front" mode="li"/>
       <xsl:apply-templates select="/*/tei:text/tei:body" mode="li"/>
-      <xsl:apply-templates select="/*/tei:text/tei:group/*" mode="li"/>
-      <!-- back in one <li> to hide some by default  -->
-      <xsl:if test="/*/tei:text/tei:back[tei:div[normalize-space(.) != '']|tei:div1[normalize-space(.) != '']]">
-        <li class="more">
-          <span>
-            <xsl:apply-templates select="/*/tei:text/tei:back" mode="title"/>
-          </span>
-          <ol>
-            <xsl:apply-templates select="/*/tei:text/tei:back/*[normalize-space(.) != '']" mode="li">
-              <xsl:with-param name="depth" select="$depth"/>
-              <xsl:with-param name="less" select="$less"/>
-            </xsl:apply-templates>
-          </ol>
-        </li>
-      </xsl:if>
+      <xsl:apply-templates select="/*/tei:text/tei:group" mode="li"/>
+      <xsl:apply-templates select="/*/tei:text/tei:back" mode="li"/>
     </ol>
   </xsl:template>
   <xsl:template name="toc-front">
