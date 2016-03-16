@@ -847,6 +847,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
                 <ref name="hi"/>
                 <ref name="listPerson"/>
                 <ref name="note"/>
+                <ref name="ref"/>
               </choice>
             </zeroOrMore>
           </element>
@@ -860,6 +861,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
               <ref name="quote-p"/>
               <ref name="label"/>
               <ref name="figure"/>
+              <ref name="note"/>
             </choice>
           </oneOrMore>
         </optional>
@@ -1905,6 +1907,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
               <ref name="listPerson"/>
               <ref name="hi"/>
               <ref name="note"/>
+              <ref name="ref"/>
             </choice>
           </oneOrMore>
           <oneOrMore>

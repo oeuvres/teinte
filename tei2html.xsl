@@ -19,8 +19,21 @@ Alternative : les transformations de Sebastian Rahtz <a href="http://www.tei-c.
 sont officiellement ditribuées par le consortium TEI, cependant ce développement est en XSLT 2.0 (java requis).
 </p>
 -->
-<xsl:transform version="1.1" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" xmlns:rng="http://relaxng.org/ns/structure/1.0" xmlns:eg="http://www.tei-c.org/ns/Examples" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" exclude-result-prefixes="eg html rng tei epub" xmlns:exslt="http://exslt.org/common" extension-element-prefixes="exslt">
+<xsl:transform version="1.0" 
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+  xmlns="http://www.w3.org/1999/xhtml" 
+  xmlns:rng="http://relaxng.org/ns/structure/1.0" 
+  xmlns:eg="http://www.tei-c.org/ns/Examples" 
+  xmlns:tei="http://www.tei-c.org/ns/1.0" 
+  xmlns:html="http://www.w3.org/1999/xhtml" 
+  xmlns:epub="http://www.idpf.org/2007/ops" 
+  exclude-result-prefixes="eg html rng tei epub" 
+  xmlns:exslt="http://exslt.org/common" 
+  extension-element-prefixes="exslt"
+  >
+  <!--
   <xsl:import href="common.xsl"/>
+  -->
   <xsl:import href="tei2toc.xsl"/>
   <!-- included, so that priorities will not be flatten by import chain (ex: from tei2site.html) -->
   <xsl:include href="teiHeader2html.xsl"/>
@@ -1677,7 +1690,9 @@ Tables
   </xsl:template>
   -->
   <!-- Poetic information, rendering? -->
-  <xsl:template match="tei:caesura"/>
+  <xsl:template match="tei:caesura">
+    <xsl:text> </xsl:text>
+  </xsl:template> 
   <!-- Cross without a trace? -->
   <xsl:template match="tei:corr">
     <xsl:choose>

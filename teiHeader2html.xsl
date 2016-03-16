@@ -12,7 +12,7 @@ transforme du TEI en HTML5.
 Alternative : les transformations de Sebastian Rahtz <a href="http://www.tei-c.org/Tools/Stylesheets/">tei-c.org/Tools/Stylesheets/</a>
 sont officiellement ditribuées par le consortium TEI, cependant ce développement est en XSLT 2.0 (java requis).
 -->
-<xsl:transform version="1.1"   xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+<xsl:transform version="1.0"   xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 
   xmlns="http://www.w3.org/1999/xhtml"
   xmlns:tei="http://www.tei-c.org/ns/1.0" 

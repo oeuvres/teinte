@@ -4,7 +4,7 @@
 <h1>TEI » HTML (tei2html.xsl)</h1>
 
 LGPL  http://www.gnu.org/licenses/lgpl.html
-© 2005 ajlsm.com (Cybertheses)
+© 2005 ajlsm.com et Cybertheses
 © 2007 Frederic.Glorieux@fictif.org
 © 2010 Frederic.Glorieux@fictif.org et École nationale des chartes
 © 2012 Frederic.Glorieux@fictif.org 
@@ -22,7 +22,18 @@ Alternative : les transformations de Sebastian Rahtz <a href="http://www.tei-c.
 sont officiellement ditribuées par le consortium TEI, cependant ce développement est en XSLT 2.0 (java requis).
 </p>
 -->
-<xsl:transform version="1.1" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" xmlns:rng="http://relaxng.org/ns/structure/1.0" xmlns:eg="http://www.tei-c.org/ns/Examples" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" exclude-result-prefixes="eg html rng tei epub" xmlns:exslt="http://exslt.org/common" extension-element-prefixes="exslt">
+<xsl:transform version="1.0" 
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+  xmlns="http://www.w3.org/1999/xhtml" 
+  xmlns:rng="http://relaxng.org/ns/structure/1.0"
+  xmlns:eg="http://www.tei-c.org/ns/Examples"
+  xmlns:tei="http://www.tei-c.org/ns/1.0"
+  xmlns:html="http://www.w3.org/1999/xhtml" 
+  xmlns:epub="http://www.idpf.org/2007/ops" 
+  exclude-result-prefixes="eg html rng tei epub" 
+  xmlns:exslt="http://exslt.org/common" 
+  extension-element-prefixes="exslt"
+  >
   <xsl:import href="common.xsl"/>
   <!-- Name of this xsl  -->
   <xsl:param name="this">tei2toc.xsl</xsl:param>

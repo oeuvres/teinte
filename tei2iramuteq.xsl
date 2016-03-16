@@ -10,7 +10,12 @@ Doit pouvoir fonctionner en import.
 
 
 -->
-<xsl:transform version="1.1" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.tei-c.org/ns/1.0" xmlns:tei="http://www.tei-c.org/ns/1.0" exclude-result-prefixes="tei">
+<xsl:transform version="1.0"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns="http://www.tei-c.org/ns/1.0"
+  xmlns:tei="http://www.tei-c.org/ns/1.0"
+  exclude-result-prefixes="tei"
+  >
   <!-- Importer des dates -->
   <xsl:import href="common.xsl"/>
   <xsl:key name="split" match="/" use="'root'"/>

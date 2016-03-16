@@ -16,20 +16,19 @@ Different templates shared among the callers
  * mode for links
 
 -->
-<xsl:transform
-  version="1.1"
-  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-  xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:tei="http://www.tei-c.org/ns/1.0" 
-  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
-  exclude-result-prefixes="rdf rdfs tei"
-
-  xmlns:exslt="http://exslt.org/common"
-  xmlns:saxon="http://icl.com/saxon"
+<xsl:transform  version="1.0"
+  xmlns="http://www.w3.org/1999/xhtml" 
   xmlns:date="http://exslt.org/dates-and-times"
-  extension-element-prefixes="exslt saxon date"
->
+  xmlns:exslt="http://exslt.org/common"
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" 
+  xmlns:saxon="http://icl.com/saxon" 
+  xmlns:tei="http://www.tei-c.org/ns/1.0" 
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  
+  exclude-result-prefixes="rdf rdfs tei" 
+  extension-element-prefixes="exslt saxon date" 
+  >
   <!-- 
 Gobal TEI parameters and variables are divided in different categories
  * parameters set exclusively by the caller, impossible to guess from TEI file
@@ -52,7 +51,7 @@ Gobal TEI parameters and variables are divided in different categories
   <xsl:param name="http">http://</xsl:param>
   <xsl:param name="theme">
     <xsl:choose>
-       <xsl:when test="$xslbase != ''">
+      <xsl:when test="$xslbase != ''">
         <xsl:value-of select="$xslbase"/>
       </xsl:when>
       <xsl:otherwise><xsl:value-of select="$http"/>oeuvres.github.io/Teinte/</xsl:otherwise>
@@ -80,7 +79,6 @@ Gobal TEI parameters and variables are divided in different categories
       <xsl:otherwise>2016</xsl:otherwise>
     </xsl:choose>
   </xsl:param>
-
   <!-- Type de sortie : html5, xhtml, …? -->
   <xsl:param name="format">html5</xsl:param>
   <!-- give name of file from the caller -->
@@ -103,29 +101,29 @@ Gobal TEI parameters and variables are divided in different categories
       </xsl:when>
       <!-- try to generate a significant code from author title -->
       <xsl:otherwise>
-          <xsl:for-each select="/tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author[1]">
-            <xsl:variable name="author">
-              <xsl:choose>
-                <xsl:when test="@key != ''">
-                  <xsl:value-of select="substring-before(concat(substring-before(concat(@key,','), ','), '('), '(')"/>
-                </xsl:when>
-                <xsl:when test="contains(., ' ')">
-                  <xsl:value-of select="substring-before(., ' ')"/>
-                </xsl:when>
-                <xsl:otherwise>
-                  <xsl:value-of select="."/>
-                </xsl:otherwise>
-              </xsl:choose>
-            </xsl:variable>
-            <xsl:value-of select="translate(normalize-space($author), $idfrom, $idto)"/>
-            <xsl:text>_</xsl:text>
-          </xsl:for-each>
-          <xsl:for-each select="/tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[1]">
-            <xsl:variable name="mot1">
-              <xsl:value-of select="translate(normalize-space(substring-before(concat(.,' '), ' ')), $idfrom, $idto)"/>
-            </xsl:variable>
-            <xsl:variable name="mot2">
-              <xsl:value-of select="
+        <xsl:for-each select="/tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author[1]">
+          <xsl:variable name="author">
+            <xsl:choose>
+              <xsl:when test="@key != ''">
+                <xsl:value-of select="substring-before(concat(substring-before(concat(@key,','), ','), '('), '(')"/>
+              </xsl:when>
+              <xsl:when test="contains(., ' ')">
+                <xsl:value-of select="substring-before(., ' ')"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="."/>
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:variable>
+          <xsl:value-of select="translate(normalize-space($author), $idfrom, $idto)"/>
+          <xsl:text>_</xsl:text>
+        </xsl:for-each>
+        <xsl:for-each select="/tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[1]">
+          <xsl:variable name="mot1">
+            <xsl:value-of select="translate(normalize-space(substring-before(concat(.,' '), ' ')), $idfrom, $idto)"/>
+          </xsl:variable>
+          <xsl:variable name="mot2">
+            <xsl:value-of select="
               translate(
                 normalize-space(
                   substring-before(
@@ -133,16 +131,16 @@ Gobal TEI parameters and variables are divided in different categories
                   ' ')
                 ), 
               $idfrom, $idto)"/>
-            </xsl:variable>
-            <xsl:choose>
-              <xsl:when test="contains(' le la les un une des de ', concat(' ',$mot1,' '))">
-                <xsl:value-of select="$mot2"/>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:value-of select="$mot1"/>
-              </xsl:otherwise>
-            </xsl:choose>
-          </xsl:for-each>
+          </xsl:variable>
+          <xsl:choose>
+            <xsl:when test="contains(' le la les un une des de ', concat(' ',$mot1,' '))">
+              <xsl:value-of select="$mot2"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="$mot1"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:for-each>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:param>
@@ -156,16 +154,16 @@ Gobal TEI parameters and variables are divided in different categories
         </xsl:for-each>
       </xsl:when>
       <xsl:when test="/*/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:biblFull/tei:title">
-        <xsl:apply-templates select="/*/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:biblFull/tei:title[1]/node()" mode="title"/>
+        <xsl:apply-templates mode="title" select="/*/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:biblFull/tei:title[1]/node()"/>
       </xsl:when>
       <xsl:when test="/*/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:bibl/tei:title">
-        <xsl:apply-templates select="/*/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:bibl/tei:title[1]/node()" mode="title"/>
+        <xsl:apply-templates mode="title" select="/*/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:bibl/tei:title[1]/node()"/>
       </xsl:when>
       <xsl:when test="/*/tei:text/tei:group/tei:head">
-        <xsl:apply-templates select="/*/tei:text/tei:group/tei:head[1]/node()" mode="title"/>
+        <xsl:apply-templates mode="title" select="/*/tei:text/tei:group/tei:head[1]/node()"/>
       </xsl:when>
       <xsl:when test="/*/tei:text/tei:body/tei:head">
-        <xsl:apply-templates select="/*/tei:text/tei:body/tei:head[1]/node()" mode="title"/>
+        <xsl:apply-templates mode="title" select="/*/tei:text/tei:body/tei:head[1]/node()"/>
       </xsl:when>
       <xsl:when test="$docid != ''">
         <xsl:copy-of select="$docid"/>
@@ -212,19 +210,19 @@ Gobal TEI parameters and variables are divided in different categories
   <xsl:param name="docdate">
     <xsl:choose>
       <xsl:when test="/*/tei:teiHeader/tei:profileDesc/tei:creation/tei:date[concat(.,@when,@notBefore,@notAfter)!='']">
-        <xsl:apply-templates select="/*/tei:teiHeader/tei:profileDesc/tei:creation[1]/tei:date[1]" mode="year"/>
+        <xsl:apply-templates mode="year" select="/*/tei:teiHeader/tei:profileDesc/tei:creation[1]/tei:date[1]"/>
       </xsl:when>
       <xsl:when test="/*/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:biblFull/tei:publicationStmt/tei:date">
-        <xsl:apply-templates select="/*/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:biblFull[1]/tei:publicationStmt[1]/tei:date[1]"  mode="year"/>
+        <xsl:apply-templates mode="year" select="/*/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:biblFull[1]/tei:publicationStmt[1]/tei:date[1]"/>
       </xsl:when>
       <xsl:when test="/*/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:bibl[@type='struct']/tei:date">
-        <xsl:apply-templates select="/*/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:bibl[@type='struct'][1]/tei:date[1]" mode="year"/>
+        <xsl:apply-templates mode="year" select="/*/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:bibl[@type='struct'][1]/tei:date[1]"/>
       </xsl:when>
       <xsl:when test="/*/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:bibl/tei:date">
-        <xsl:apply-templates select="/*/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:bibl[1]/tei:date[1]" mode="year"/>
+        <xsl:apply-templates mode="year" select="/*/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:bibl[1]/tei:date[1]"/>
       </xsl:when>
       <xsl:when test="/*/tei:teiHeader/tei:fileDesc/tei:publicationStmt/tei:date">
-        <xsl:apply-templates select="/*/tei:teiHeader/tei:fileDesc/tei:publicationStmt/tei:date[1]" mode="year"/>
+        <xsl:apply-templates mode="year" select="/*/tei:teiHeader/tei:fileDesc/tei:publicationStmt/tei:date[1]"/>
       </xsl:when>
     </xsl:choose>
   </xsl:param>
@@ -232,20 +230,19 @@ Gobal TEI parameters and variables are divided in different categories
   <xsl:variable name="issued">
     <xsl:choose>
       <xsl:when test="/*/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:biblFull/tei:publicationStmt/tei:date">
-        <xsl:apply-templates select="/*/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:biblFull[1]/tei:publicationStmt[1]/tei:date[1]"  mode="year"/>
+        <xsl:apply-templates mode="year" select="/*/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:biblFull[1]/tei:publicationStmt[1]/tei:date[1]"/>
       </xsl:when>
       <xsl:when test="/*/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:bibl[@type='struct']/tei:date">
-        <xsl:apply-templates select="/*/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:bibl[@type='struct'][1]/tei:date[1]" mode="year"/>
+        <xsl:apply-templates mode="year" select="/*/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:bibl[@type='struct'][1]/tei:date[1]"/>
       </xsl:when>
       <xsl:when test="/*/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:bibl/tei:date">
-        <xsl:apply-templates select="/*/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:bibl[1]/tei:date[1]" mode="year"/>
+        <xsl:apply-templates mode="year" select="/*/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:bibl[1]/tei:date[1]"/>
       </xsl:when>
       <xsl:when test="/*/tei:teiHeader/tei:fileDesc/tei:publicationStmt/tei:date">
-        <xsl:apply-templates select="/*/tei:teiHeader/tei:fileDesc/tei:publicationStmt[1]/tei:date[1]" mode="year"/>
+        <xsl:apply-templates mode="year" select="/*/tei:teiHeader/tei:fileDesc/tei:publicationStmt[1]/tei:date[1]"/>
       </xsl:when>
     </xsl:choose>
   </xsl:variable>
-    
   <!-- la chaîne identifiante (ISBN, URI…) -->
   <xsl:param name="identifier">
     <xsl:choose>
@@ -287,7 +284,7 @@ Gobal TEI parameters and variables are divided in different categories
   <xsl:variable name="rdf:Property" select="document($messages, document(''))/*/rdf:Property"/>
   <!-- Useful in Teinte package -->
   <xsl:variable name="this"/>
-   <!-- A separate page for footnotes ? -->
+  <!-- A separate page for footnotes ? -->
   <xsl:param name="fnpage"/>
   <!-- A dest folder for graphics -->
   <xsl:param name="images"/>
@@ -296,7 +293,6 @@ Gobal TEI parameters and variables are divided in different categories
   <xsl:variable name="els-unique"> editorialDecl licence projectDesc revisionDesc samplingDecl sourceDesc TEI teiHeader </xsl:variable>
   <!-- Une barre d'espaces insécables, utilisable pour de l'indentation automatique -->
   <xsl:variable name="nbsp">                                                                                         </xsl:variable>
-
   <xsl:variable name="lf">
     <xsl:text>&#10;</xsl:text>
   </xsl:variable>
@@ -312,7 +308,6 @@ Gobal TEI parameters and variables are divided in different categories
   <xsl:variable name="nav">nav</xsl:variable>
   <xsl:variable name="front">front</xsl:variable>
   <xsl:variable name="back">back</xsl:variable>
-  
   <!-- Upper case letters with diactitics, for translate() -->
   <xsl:variable name="uc">ABCDEFGHIJKLMNOPQRSTUVWXYZÆŒÇÀÁÂÃÄÅÈÉÊËÌÍÎÏÒÓÔÕÖÙÚÛÜÝ</xsl:variable>
   <!-- Lower case letters with diacritic, for translate() -->
@@ -323,10 +318,9 @@ Gobal TEI parameters and variables are divided in different categories
   <xsl:variable name="apos">'</xsl:variable>
   <xsl:variable name="quote">"</xsl:variable>
   <!-- a key for identified elements -->
-  <xsl:key name="id" match="*" use="@xml:id"/>
+  <xsl:key match="*" name="id" use="@xml:id"/>
   <!-- A key to count elements by name -->
-  <xsl:key name="qname" match="*" use="local-name()"/>
-  
+  <xsl:key match="*" name="qname" use="local-name()"/>
   <!-- Put a lang attribute  -->
   <xsl:template name="att-lang">
     <xsl:variable name="lang-loc" select="ancestor-or-self::*[@xml:lang][1]/@xml:lang"/>
@@ -371,7 +365,6 @@ Gobal TEI parameters and variables are divided in different categories
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
- 
   <xsl:template name="key">
     <xsl:choose>
       <xsl:when test="@key and contains(@key, '(')">
@@ -385,7 +378,6 @@ Gobal TEI parameters and variables are divided in different categories
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-  
   <!-- Create a titlePage from teiHeader -->
   <xsl:template name="titlePage">
     <xsl:apply-templates select="/*/tei:teiHeader"/>
@@ -417,14 +409,13 @@ Gobal TEI parameters and variables are divided in different categories
     </div>
     -->
   </xsl:template>
-  
   <!-- Créer un titre hiérarchique pour /html/head/title d'une section -->
   <xsl:template name="titlebranch">
     <xsl:variable name="titlebranch">
       <xsl:for-each select="ancestor-or-self::*">
         <xsl:sort order="descending" select="position()"/>
         <xsl:variable name="branch">
-          <xsl:apply-templates select="." mode="title"/>
+          <xsl:apply-templates mode="title" select="."/>
         </xsl:variable>
         <xsl:variable name="branchNorm" select="normalize-space($branch)"/>
         <xsl:choose>
@@ -468,10 +459,7 @@ Gobal TEI parameters and variables are divided in different categories
     -->
     <xsl:value-of select="normalize-space($titlebranch)"/>
   </xsl:template>
-
-
-
-<!--
+  <!--
 <h3>mode="id" (identifiant)</h3>
 
 <p>
@@ -479,7 +467,7 @@ Mode permettant d'associer un identifiant unique dans le contexte d'un document,
 notamment pour établir cible et source de liens.
 </p>
 -->
-  <xsl:template name="id" match="*" mode="id">
+  <xsl:template match="*" mode="id" name="id">
     <xsl:param name="prefix"/>
     <xsl:param name="suffix"/>
     <xsl:variable name="id0"> '":,; /\</xsl:variable>
@@ -528,7 +516,7 @@ notamment pour établir cible et source de liens.
           <xsl:when test="ancestor::tei:front">front-</xsl:when>
           <xsl:when test="ancestor::tei:back">back-</xsl:when>
         </xsl:choose>
-        <xsl:number count="tei:div|tei:div1|tei:div2|tei:div3|tei:div4" level="multiple" format="1-1"/>
+        <xsl:number count="tei:div|tei:div1|tei:div2|tei:div3|tei:div4" format="1-1" level="multiple"/>
       </xsl:when>
       <!-- hiérarchie simple de div  -->
       <xsl:when test="self::tei:div and not(ancestor::tei:group)">
@@ -539,7 +527,7 @@ notamment pour établir cible et source de liens.
           <xsl:text>_</xsl:text>        
         </xsl:if>
         -->
-        <xsl:number count="tei:div"  level="multiple" format="1-1"/>
+        <xsl:number count="tei:div" format="1-1" level="multiple"/>
       </xsl:when>
       <!-- find index -->
       <xsl:when test="/tei:TEI/tei:text and count(.|/tei:TEI/tei:text)=1">index</xsl:when>
@@ -564,7 +552,7 @@ notamment pour établir cible et source de liens.
         </xsl:if>
         -->
         <xsl:value-of select="local-name()"/>
-        <xsl:number level="multiple" from="/*/tei:text/tei:group" format="-1-1"/>
+        <xsl:number format="-1-1" from="/*/tei:text/tei:group" level="multiple"/>
       </xsl:when>
       <!-- éléments uniques identifiables par leur nom -->
       <xsl:when test="contains($els-unique, concat(' ', local-name(), ' '))">
@@ -633,7 +621,7 @@ notamment pour établir cible et source de liens.
             </xsl:for-each>
             <xsl:text>-</xsl:text>
           </xsl:when>
-        </xsl:choose>        
+        </xsl:choose>
         <xsl:text>fn</xsl:text>
         <xsl:variable name="n">
           <xsl:call-template name="n"/>
@@ -658,8 +646,7 @@ notamment pour établir cible et source de liens.
     </xsl:choose>
     <xsl:value-of select="$suffix"/>
   </xsl:template>
-
-<!--
+  <!--
 <h3>mode="n" (numéro)</h3>
 
 <p>
@@ -670,7 +657,7 @@ Un tel numéro peut etre très utile pour
 
 -->
   <!-- Numéro élément, priorité aux indications de l'auteur (en général) -->
-  <xsl:template name="n" match="node()" mode="n">
+  <xsl:template match="node()" mode="n" name="n">
     <xsl:variable name="id" select="translate((@xml:id | @id), 'abcdefghijklmnopqrstuvwxyz', '')"/>
     <xsl:choose>
       <xsl:when test="@n">
@@ -678,25 +665,24 @@ Un tel numéro peut etre très utile pour
       </xsl:when>
       <!-- numérotation hiérarchique des sections -->
       <xsl:when test="self::tei:div">
-        <xsl:number level="multiple" format="1-1"/>
+        <xsl:number format="1-1" level="multiple"/>
       </xsl:when>
       <xsl:when test="self::tei:div0 or self::tei:div1 or self::tei:div2 or self::tei:div3 or self::tei:div4 or self::tei:div5 or self::tei:div6 or self::tei:div7">
-        <xsl:number count="tei:div0 | tei:div1 | tei:div2 | tei:div3 | tei:div4 | tei:div5 | tei:div6 | tei:div7" level="multiple" format="1-1"/>
+        <xsl:number count="tei:div0 | tei:div1 | tei:div2 | tei:div3 | tei:div4 | tei:div5 | tei:div6 | tei:div7" format="1-1" level="multiple"/>
       </xsl:when>
       <xsl:when test="number($id)">
         <xsl:value-of select="$id"/>
       </xsl:when>
       <!-- textes non identifiés (ou numérotés) -->
       <xsl:when test="self::tei:text and ancestor::tei:group">
-        <xsl:number level="any" from="tei:text/tei:group"/>
+        <xsl:number from="tei:text/tei:group" level="any"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:number level="any" from="/*/tei:text/tei:body | /*/tei:text/tei:front | /*/tei:text/tei:back"/>
+        <xsl:number from="/*/tei:text/tei:body | /*/tei:text/tei:front | /*/tei:text/tei:back" level="any"/>
       </xsl:otherwise>
-    </xsl:choose>    
+    </xsl:choose>
   </xsl:template>
-
- <!--
+  <!--
 <h3>mode="title" (titre long)</h3>
 
 <p>
@@ -726,7 +712,7 @@ résoudre les césures, ou les alternatives éditoriales.
     </xsl:choose>
   </xsl:template>
   <!-- find a title for a section  -->
-  <xsl:template name="title" match="tei:back | tei:body | tei:div | tei:div0 | tei:div1 | tei:div2 | tei:div3 | tei:div4 | tei:div5 | tei:div6 | tei:div7 | tei:front | tei:group | tei:TEI | tei:text | tei:titlePage"  mode="title">
+  <xsl:template match="tei:back | tei:body | tei:div | tei:div0 | tei:div1 | tei:div2 | tei:div3 | tei:div4 | tei:div5 | tei:div6 | tei:div7 | tei:front | tei:group | tei:TEI | tei:text | tei:titlePage" mode="title" name="title">
     <!-- Author in a title ? -->
     <!-- Numérotation construite (?) -->
     <xsl:choose>
@@ -735,7 +721,7 @@ résoudre les césures, ou les alternatives éditoriales.
         <xsl:value-of select="tei:index[@indexName='head'][@n != '']/@n"/>
       </xsl:when>
       <xsl:when test="tei:index/tei:term[@type='head']">
-        <xsl:apply-templates select="(tei:index/tei:term[@type='head'])[1]" mode="title"/>
+        <xsl:apply-templates mode="title" select="(tei:index/tei:term[@type='head'])[1]"/>
       </xsl:when>
       <!-- title for a titlePage is "Title page" -->
       <xsl:when test="self::tei:titlePage">
@@ -745,7 +731,7 @@ résoudre les césures, ou les alternatives éditoriales.
         <xsl:variable name="byline">
           <xsl:choose>
             <xsl:when test="tei:byline">
-              <xsl:apply-templates select="tei:byline" mode="title"/>
+              <xsl:apply-templates mode="title" select="tei:byline"/>
             </xsl:when>
             <xsl:when test="tei:index[@indexName='author' or @indexName='creator']">
               <xsl:for-each select="tei:index[@indexName='author' or @indexName='creator']">
@@ -779,7 +765,7 @@ résoudre les césures, ou les alternatives éditoriales.
         </xsl:variable>
         <xsl:variable name="title">
           <xsl:for-each select="tei:head[not(@type='sub')]">
-            <xsl:apply-templates select="." mode="title"/>
+            <xsl:apply-templates mode="title" select="."/>
             <xsl:if test="position() != last()">
               <!-- test if title end by ponctuation -->
               <xsl:variable name="norm" select="normalize-space(.)"/>
@@ -816,17 +802,17 @@ résoudre les césures, ou les alternatives éditoriales.
         <xsl:variable name="title">
           <xsl:choose>
             <xsl:when test="tei:body/tei:head">
-              <xsl:apply-templates select="tei:body/tei:head[1]" mode="title"/>
+              <xsl:apply-templates mode="title" select="tei:body/tei:head[1]"/>
             </xsl:when>
             <xsl:when test="tei:front/tei:head">
-              <xsl:apply-templates select="tei:front/tei:head[1]" mode="title"/>
+              <xsl:apply-templates mode="title" select="tei:front/tei:head[1]"/>
             </xsl:when>
             <xsl:when test="not(ancestor::tei:group)">
               <xsl:copy-of select="$doctitle"/>
             </xsl:when>
             <!-- title for a titlePage is "Title page" -->
             <xsl:when test="tei:front/tei:titlePage">
-              <xsl:apply-templates select="(.//tei:front/tei:titlePage[1]/tei:docTitle[1]/tei:titlePart[1] | .//tei:front/tei:titlePage[1]/tei:titlePart[1])[1]" mode="title"/>
+              <xsl:apply-templates mode="title" select="(.//tei:front/tei:titlePage[1]/tei:docTitle[1]/tei:titlePart[1] | .//tei:front/tei:titlePage[1]/tei:titlePart[1])[1]"/>
             </xsl:when>
           </xsl:choose>
         </xsl:variable>
@@ -874,31 +860,31 @@ résoudre les césures, ou les alternatives éditoriales.
         </xsl:choose>
       </xsl:when>
       <xsl:when test="tei:docTitle">
-        <xsl:apply-templates select="tei:docTitle[1]/tei:titlePart[1]" mode="title"/>
+        <xsl:apply-templates mode="title" select="tei:docTitle[1]/tei:titlePart[1]"/>
       </xsl:when>
       <!-- a date as a title (ex, acte) -->
       <xsl:when test="tei:docDate">
-        <xsl:apply-templates select="tei:docDate[1]" mode="title"/>
+        <xsl:apply-templates mode="title" select="tei:docDate[1]"/>
       </xsl:when>
       <!-- A <text> ? -->
       <xsl:when test="tei:front/tei:titlePage">
-        <xsl:apply-templates select="tei:front/tei:titlePage" mode="title"/>
+        <xsl:apply-templates mode="title" select="tei:front/tei:titlePage"/>
       </xsl:when>
       <!-- /TEI/text ? -->
       <xsl:when test="../tei:teiHeader">
-        <xsl:apply-templates select="../tei:teiHeader" mode="title"/>
+        <xsl:apply-templates mode="title" select="../tei:teiHeader"/>
       </xsl:when>
       <!-- Après front, supposé plus affichable qu'un teiHeader -->
       <xsl:when test="tei:teiHeader">
-        <xsl:apply-templates select="tei:teiHeader" mode="title"/>
+        <xsl:apply-templates mode="title" select="tei:teiHeader"/>
       </xsl:when>
       <xsl:when test="tei:dateline">
-        <xsl:apply-templates select="tei:dateline" mode="title"/>
+        <xsl:apply-templates mode="title" select="tei:dateline"/>
       </xsl:when>
       <!-- Groupement de sections dont le titre est porté par la première ?? -->
       <!-- ex: body/div0 -->
       <xsl:when test="count(*) =1 and tei:div">
-        <xsl:apply-templates select="*" mode="title"/>
+        <xsl:apply-templates mode="title" select="*"/>
       </xsl:when>
       <!--
       <xsl:when test="tei:div[1]/tei:head">
@@ -968,16 +954,16 @@ résoudre les césures, ou les alternatives éditoriales.
   <xsl:template match="tei:choice" mode="title">
     <xsl:choose>
       <xsl:when test="tei:reg">
-        <xsl:apply-templates select="tei:reg/node()" mode="title"/>
+        <xsl:apply-templates mode="title" select="tei:reg/node()"/>
       </xsl:when>
       <xsl:when test="tei:expan">
-        <xsl:apply-templates select="tei:expan/node()" mode="title"/>
+        <xsl:apply-templates mode="title" select="tei:expan/node()"/>
       </xsl:when>
       <xsl:when test="tei:corr">
-        <xsl:apply-templates select="tei:corr/node()" mode="title"/>
+        <xsl:apply-templates mode="title" select="tei:corr/node()"/>
       </xsl:when>
       <xsl:when test="tei:ex">
-        <xsl:apply-templates select="tei:ex/node()" mode="title"/>
+        <xsl:apply-templates mode="title" select="tei:ex/node()"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:apply-templates/>
@@ -1021,12 +1007,12 @@ résoudre les césures, ou les alternatives éditoriales.
   <!-- Mode title -->
   <xsl:template match="tei:teiHeader" mode="title">
     <xsl:if test="tei:fileDesc/tei:titleStmt/tei:author">
-      <xsl:apply-templates select="tei:fileDesc/tei:titleStmt/tei:author[1]" mode="title"/>
+      <xsl:apply-templates mode="title" select="tei:fileDesc/tei:titleStmt/tei:author[1]"/>
       <xsl:text>. </xsl:text>
     </xsl:if>
-    <xsl:apply-templates select="tei:fileDesc/tei:titleStmt/tei:title[1]" mode="title"/>
+    <xsl:apply-templates mode="title" select="tei:fileDesc/tei:titleStmt/tei:title[1]"/>
     <xsl:variable name="date">
-      <xsl:apply-templates select="tei:profileDesc[1]/tei:creation[1]/tei:date[1]" mode="title"/>
+      <xsl:apply-templates mode="title" select="tei:profileDesc[1]/tei:creation[1]/tei:date[1]"/>
     </xsl:variable>
     <xsl:if test="normalize-space($date) != ''">
       <xsl:text> (</xsl:text>
@@ -1036,26 +1022,26 @@ résoudre les césures, ou les alternatives éditoriales.
   </xsl:template>
   <!-- Keep some rendering in title TOC -->
   <xsl:template match="tei:hi" mode="title">
-      <xsl:choose>
-        <xsl:when test=". =''"/>
-        <!-- si @rend est un nom d'élément HTML -->
-        <xsl:when test="contains( ' b big em i s small strike strong sub sup tt u ', concat(' ', @rend, ' '))">
-          <xsl:element name="{@rend}" namespace="http://www.w3.org/1999/xhtml">
-            <xsl:if test="@type">
-              <xsl:attribute name="class">
-                <xsl:value-of select="@type"/>
-              </xsl:attribute>
-            </xsl:if>
-            <xsl:apply-templates mode="title"/>
-          </xsl:element>
-        </xsl:when>
-        <!-- sinon appeler le span général -->
-        <xsl:otherwise>
-          <span class="{@rend}">
-            <xsl:apply-templates mode="title"/>
-          </span>
-        </xsl:otherwise>
-      </xsl:choose>
+    <xsl:choose>
+      <xsl:when test=". =''"/>
+      <!-- si @rend est un nom d'élément HTML -->
+      <xsl:when test="contains( ' b big em i s small strike strong sub sup tt u ', concat(' ', @rend, ' '))">
+        <xsl:element name="{@rend}" namespace="http://www.w3.org/1999/xhtml">
+          <xsl:if test="@type">
+            <xsl:attribute name="class">
+              <xsl:value-of select="@type"/>
+            </xsl:attribute>
+          </xsl:if>
+          <xsl:apply-templates mode="title"/>
+        </xsl:element>
+      </xsl:when>
+      <!-- sinon appeler le span général -->
+      <xsl:otherwise>
+        <span class="{@rend}">
+          <xsl:apply-templates mode="title"/>
+        </span>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   <xsl:template match="tei:emph" mode="title">
     <em>
@@ -1087,7 +1073,7 @@ résoudre les césures, ou les alternatives éditoriales.
   </xsl:template>
   -->
   <xsl:template match="*" mode="label">
-    <xsl:apply-templates select="." mode="title"/>
+    <xsl:apply-templates mode="title" select="."/>
   </xsl:template>
   <!-- 
     Centralisation of internal links rewriting, to call when current() node is the target.
@@ -1169,10 +1155,8 @@ résoudre les césures, ou les alternatives éditoriales.
         <xsl:text>#</xsl:text>
         <xsl:value-of select="$id"/>
       </xsl:otherwise>
-    </xsl:choose>    
+    </xsl:choose>
   </xsl:template>
-
-
   <!--
 <h3>mode="label" (titre court)</h3>
 
@@ -1195,9 +1179,6 @@ Le mode label génère un intitulé court obtenu par une liste de valeurs locali
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-
-
-
   <!-- pour obtenir un chemin relatif à l'XSLT appliquée -->
   <xsl:template name="xslbase">
     <xsl:param name="path" select="/processing-instruction('xml-stylesheet')[contains(., 'xsl')]"/>
@@ -1238,7 +1219,6 @@ Le mode label génère un intitulé court obtenu par une liste de valeurs locali
       </xsl:when>
     </xsl:choose>
   </xsl:template>
-
   <!-- <*>, modèle par défaut d'interception des éléments non pris en charge -->
   <xsl:template match="*">
     <span class="error">
@@ -1251,7 +1231,6 @@ Le mode label génère un intitulé court obtenu par une liste de valeurs locali
       </b>
     </span>
   </xsl:template>
-
   <!-- Utile au déboguage, affichage de l'élément en cours -->
   <xsl:template name="tag">
     <b style="color:red">
@@ -1267,7 +1246,6 @@ Le mode label génère un intitulé court obtenu par une liste de valeurs locali
       <xsl:text>&gt;</xsl:text>
     </b>
   </xsl:template>
-
   <!--
     AGA, xslt 1 donc pas de fonction replace, un template pour y remedier.
   -->
@@ -1290,7 +1268,6 @@ Le mode label génère un intitulé court obtenu par une liste de valeurs locali
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-
   <!-- attribut de dates en fonctions de la valeur courant,
 dégrossi le travail, mais du reste à faire  -->
   <xsl:template name="date">
@@ -1313,8 +1290,7 @@ dégrossi le travail, mais du reste à faire  -->
       </xsl:when>
       <!-- deux dates, problème -->
       <xsl:when test="contains(., ')(')">
-        <!-- xsl:message>Acte <xsl:value-of select="ancestor::text[1]/@n"/>, 2 dates <xsl:value-of select="."/></xsl:message -->
-      </xsl:when>
+        <!-- xsl:message>Acte <xsl:value-of select="ancestor::text[1]/@n"/>, 2 dates <xsl:value-of select="."/></xsl:message --> </xsl:when>
       <!-- que des chiffres, année ? -->
       <xsl:when test="translate(., '()1234567890.', '') = ''">
         <xsl:attribute name="when">
@@ -1350,11 +1326,9 @@ dégrossi le travail, mais du reste à faire  -->
       </xsl:when>
       <!-- cas non pris en compte, à remplir ensuite -->
       <xsl:otherwise>
-        <!-- xsl:message>Acte <xsl:value-of select="ancestor::text[1]/@n"/>, date non prise en charge <xsl:value-of select="."/></xsl:message -->
-      </xsl:otherwise>
+        <!-- xsl:message>Acte <xsl:value-of select="ancestor::text[1]/@n"/>, date non prise en charge <xsl:value-of select="."/></xsl:message --> </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-
   <!-- Pour débogage afficher un path -->
   <xsl:template name="idpath">
     <xsl:for-each select="ancestor-or-self::*">
@@ -1367,14 +1341,12 @@ dégrossi le travail, mais du reste à faire  -->
       </xsl:if>
     </xsl:for-each>
   </xsl:template>
-
   <!-- Mettre un point à la fin d'un contenu -->
   <xsl:template name="dot">
     <xsl:param name="current" select="."/>
     <xsl:variable name="lastChar" select="substring($current, string-length($current))"/>
     <xsl:if test="translate($lastChar, '.?!,;:', '') != ''">. </xsl:if>
   </xsl:template>
-
   <!--
 Historique
 ==========

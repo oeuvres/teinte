@@ -10,7 +10,7 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
 Split a single TEI book in a multi-pages site
 
 -->
-<xsl:transform version="1.1"
+<xsl:transform version="1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns="http://www.w3.org/1999/xhtml"
   xmlns:tei="http://www.tei-c.org/ns/1.0"
