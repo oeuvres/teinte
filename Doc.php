@@ -175,38 +175,41 @@ class Teinte_Doc {
     $formats=implode('|', array_keys(self::$_formats));
     array_shift($_SERVER['argv']); // shift first arg, the script filepath
     if (!count($_SERVER['argv'])) exit('
-    usage    : php -f Doc.php ($formats)? "*.xml" destdir/?
+    usage    : php -f Doc.php ($formats)? destdir/? "*.xml"
     format?  : optional dest format, default is html
-    *.xml    : glob patterns are allowed, but in quotes, to not be expanded by shell
-    destdir? : optional destdir
+    destdir/? : optional destdir
+    *.xml    : glob patterns are allowed, with or without quotes, to not be expanded by shell
   ');
+
     $format="html";
-    while ($arg=array_shift($_SERVER['argv'])) {
-      if ($arg[0]=='-') $format=substr($arg,1);
-      if(preg_match("/^($formats)\$/",$arg)) {
-        $format=$arg;
+    if( preg_match( "/^($formats)\$/", trim($_SERVER['argv'][0], '- ') )) {
+      $format = array_shift($_SERVER['argv']);
+      $format = trim($format, '- ');
+    }
+
+    $lastc = substr($_SERVER['argv'][0], -1);
+    if ('/' == $lastc || '\\' == $lastc) {
+      $destdir = array_shift($_SERVER['argv']);
+      $destdir = rtrim($destdir, '/\\').'/';
+      if (!file_exists($destdir)) {
+        mkdir($destdir, 0775, true);
+        @chmod($dir, 0775);  // let @, if www-data is not owner but allowed to write
       }
-      else if(!isset($srcglob)) {
-        $srcglob=$arg;
-      }
-      else if(!isset($destdir)) {
-        $destdir=rtrim($arg, '\\/').'/';
-        if (!file_exists($destdir)) {
-          mkdir(dirname($dest), 0775, true);
-          @chmod(dirname($dest), 0775);
-        }
-      }
+    }
+
+
     $count = 0;
-    foreach(glob($srcglob) as $srcfile) {
-      $count++;
-      $destname = pathinfo($srcfile, PATHINFO_FILENAME).self::$_formats[$format];
-      if (isset($destdir)) $destfile = $destdir.$destname;
-      else $destfile=dirname($srcfile).'/'.$destname;
-      if (STDERR) fwrite(STDERR, "$count. $srcfile > $destfile\n");
-      $doc=new Teinte_Doc($srcfile);
-      $doc->export($format, $destfile);
+    foreach ($_SERVER['argv'] as $glob) {
+      foreach(glob($glob) as $srcfile) {
+        $count++;
+        $destname = pathinfo($srcfile, PATHINFO_FILENAME).self::$_formats[$format];
+        if (isset($destdir)) $destfile = $destdir.$destname;
+        else $destfile=dirname($srcfile).'/'.$destname;
+        if (STDERR) fwrite(STDERR, "$count. $srcfile > $destfile\n");
+        $doc=new Teinte_Doc($srcfile);
+        $doc->export($format, $destfile);
+      }
     }
   }
-
 }
 ?>
