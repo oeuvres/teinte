@@ -191,9 +191,11 @@ class Teinte_Doc {
       }
       else if(!isset($destdir)) {
         $destdir=rtrim($arg, '\\/').'/';
-        if (!file_exists($destdir)) mkdir($destdir, true);
+        if (!file_exists($destdir)) {
+          mkdir(dirname($dest), 0775, true);
+          @chmod(dirname($dest), 0775);
+        }
       }
-    }
     $count = 0;
     foreach(glob($srcglob) as $srcfile) {
       $count++;
