@@ -175,11 +175,12 @@ class Teinte_Doc {
     $formats=implode('|', array_keys(self::$_formats));
     array_shift($_SERVER['argv']); // shift first arg, the script filepath
     if (!count($_SERVER['argv'])) exit('
-    usage    : php -f Doc.php ($formats)? destdir/? "*.xml"
-    format?  : optional dest format, default is html
+    usage     : php -f Doc.php ($formats)? destdir/? "*.xml"
+    format?   : optional dest format, default is html
     destdir/? : optional destdir
-    *.xml    : glob patterns are allowed, with or without quotes, to not be expanded by shell
-  ');
+    *.xml     : glob patterns are allowed, with or without quotes, to not be expanded by shell
+
+');
 
     $format="html";
     if( preg_match( "/^($formats)\$/", trim($_SERVER['argv'][0], '- ') )) {

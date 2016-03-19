@@ -348,8 +348,9 @@ CREATE INDEX oeuvre_year_author ON oeuvre(year, author, title);
    */
   static function cli() {
     $timeStart = microtime(true);
-    $usage = "\n usage    : php -f ".basename(__FILE__).' base.sqlite action "dir/*.xml"'."\n";
+    $usage = "\nusage    : php -f ".basename(__FILE__).' base.sqlite action "dir/*.xml"'."\n\n";
     array_shift($_SERVER['argv']); // shift first arg, the script filepath
+    if (count($_SERVER['argv']) < 2) exit($usage);
     $sqlite = array_shift($_SERVER['argv']);
     $action = array_shift($_SERVER['argv']);
     $base = new Teinte_Build($sqlite, STDERR);
