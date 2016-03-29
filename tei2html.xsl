@@ -3218,6 +3218,8 @@ Centralize some html attribute policy, especially for id, and class
       <xsl:text> </xsl:text>
       <xsl:value-of select="@type"/>
       <xsl:text> </xsl:text>
+      <xsl:value-of select="@subtype"/>
+      <xsl:text> </xsl:text>
       <xsl:value-of select="@role"/>
       <xsl:text> </xsl:text>
       <xsl:value-of select="@ana"/>

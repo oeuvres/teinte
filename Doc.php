@@ -56,6 +56,49 @@ class Teinte_Doc {
     $this->xpath->registerNamespace('tei', "http://www.tei-c.org/ns/1.0");
   }
   /**
+   * Book metadata
+   */
+  public function meta() {
+    $meta = array();
+    $meta['code'] = pathinfo($this->file, PATHINFO_FILENAME);
+
+    $nl = $this->xpath->query("/*/tei:teiHeader//tei:author");
+    if (!$nl->length)
+      $meta['author'] = null;
+    else if ($nl->item(0)->hasAttribute("key"))
+      $meta['author'] = $nl->item(0)->getAttribute("key");
+    else
+      $meta['author'] = $nl->item(0)->textContent;
+    if (($pos = strpos($meta['author'], '('))) $meta['author'] = trim(substr($meta['author'], 0, $pos));
+
+    $nl = $this->xpath->query("/*/tei:teiHeader//tei:title");
+    if ($nl->length) $meta['title'] = $nl->item(0)->textContent;
+    else $meta['title'] = null;
+
+
+    $nl = $this->xpath->query("/*/tei:teiHeader/tei:profileDesc/tei:creation/tei:date");
+    // loop on dates
+    $meta['created'] = null;
+    $meta['issued'] = null;
+    $meta['year'] = null;
+    foreach ($nl as $date) {
+      $value = $date->getAttribute ('when');
+      if (!$value) $value = $date->nodeValue;
+      $value = substr(trim($value), 0, 4);
+      if (!is_numeric($value)) continue;
+      if ($date->getAttribute ('type') == "created" && !$meta['created']) $meta['created'] = $value;
+      else if ($date->getAttribute ('type') == "issued" && !$meta['issued']) $meta['issued'] = $value;
+      $value = null;
+    }
+    // dates with no attribute
+    if (!$meta['created'] && isset($value) && is_numeric($value)) $meta['created'] = $value;
+
+
+
+
+    return $meta;
+  }
+  /**
    *
    */
   public function export($format, $destfile=null) {
@@ -164,7 +207,7 @@ class Teinte_Doc {
     $dom->preserveWhiteSpace = false;
     $dom->formatOutput=true;
     $dom->substituteEntities=true;
-    $dom->load($xmlfile, LIBXML_NOENT | LIBXML_NONET | LIBXML_NSCLEAN | LIBXML_NOCDATA | LIBXML_COMPACT | LIBXML_PARSEHUGE | LIBXML_NOERROR | LIBXML_NOWARNING);
+    $dom->load($xmlfile, LIBXML_NOENT | LIBXML_NONET | LIBXML_NSCLEAN | LIBXML_NOCDATA | LIBXML_COMPACT | LIBXML_PARSEHUGE | LIBXML_NOWARNING);
     return $dom;
   }
 
@@ -175,7 +218,7 @@ class Teinte_Doc {
     $formats=implode('|', array_keys(self::$_formats));
     array_shift($_SERVER['argv']); // shift first arg, the script filepath
     if (!count($_SERVER['argv'])) exit('
-    usage     : php -f Doc.php ($formats)? destdir/? "*.xml"
+    usage     : php -f Doc.php ('.$formats.')? destdir/? "*.xml"
     format?   : optional dest format, default is html
     destdir/? : optional destdir
     *.xml     : glob patterns are allowed, with or without quotes, to not be expanded by shell
