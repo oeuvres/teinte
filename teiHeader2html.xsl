@@ -203,7 +203,7 @@ sont officiellement ditribuées par le consortium TEI, cependant ce développeme
         </div>
       </xsl:when>
       <!-- Paul Fièvre, temporaire -->
-      <xsl:when test="tei:permalien"/>
+      <xsl:when test="tei:permalien | tei:inspiration | tei:genre"/>
       <xsl:when test="normalize-space(.) = ''"/>
       <xsl:otherwise>
         <div>

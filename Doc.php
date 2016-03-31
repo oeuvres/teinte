@@ -12,15 +12,15 @@ else if (php_sapi_name() == "cli") Teinte_Doc::cli();
  */
 class Teinte_Doc {
   /** TEI/XML DOM Document to process */
-  public $dom;
+  private $dom;
   /** Xpath processor */
-  public $xpath;
+  private $xpath;
   /** filepath */
-  public $file;
+  private $file;
   /** filename without extension */
-  public $filename;
+  private $filename;
   /** file freshness */
-  public $filemtime;
+  private $filemtime;
   /** XSLTProcessor */
   private $_trans;
   /** XSL DOM document */
@@ -42,7 +42,7 @@ class Teinte_Doc {
     if (is_a($tei, 'DOMDocument') ) {
       $this->dom = $tei;
     }
-    else if(file_exists($tei)) {
+    else if(is_string($tei)) { // maybe file or url
       $this->file = $tei;
       $this->filemtime = filemtime($tei);
       $this->filename = pathinfo($tei, PATHINFO_FILENAME);
@@ -55,6 +55,21 @@ class Teinte_Doc {
     $this->xpath = new DOMXpath($this->dom);
     $this->xpath->registerNamespace('tei', "http://www.tei-c.org/ns/1.0");
   }
+  /**
+   * Reuse DOM
+   */
+  public function getDom()
+  {
+      return $this->dom;
+  }
+  /**
+   * Reuse xpath
+   */
+  public function getXpath()
+  {
+      return $this->xpath;
+  }
+
   /**
    * Book metadata
    */
@@ -80,18 +95,20 @@ class Teinte_Doc {
     // loop on dates
     $meta['created'] = null;
     $meta['issued'] = null;
-    $meta['year'] = null;
+    $meta['date'] = null;
     foreach ($nl as $date) {
       $value = $date->getAttribute ('when');
       if (!$value) $value = $date->nodeValue;
       $value = substr(trim($value), 0, 4);
-      if (!is_numeric($value)) continue;
+      if (!is_numeric($value)) {
+        $value = null;
+        continue;
+      }
+      if (!$meta['date']) $meta['date'] = $value;
       if ($date->getAttribute ('type') == "created" && !$meta['created']) $meta['created'] = $value;
       else if ($date->getAttribute ('type') == "issued" && !$meta['issued']) $meta['issued'] = $value;
-      $value = null;
     }
-    // dates with no attribute
-    if (!$meta['created'] && isset($value) && is_numeric($value)) $meta['created'] = $value;
+    if (!$meta['issued'] && isset($value) && is_numeric($value)) $meta['issued'] = $value;
 
 
 

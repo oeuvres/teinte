@@ -34,7 +34,7 @@ audio:not([controls]) { display: none; height: 0; }
 table, td, code, dd { font-size: 100%; }
 * { -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -ms-box-sizing: border-box; box-sizing: border-box; }
 article:after { content: " "; display: block; height: 0; clear: both; visibility: hidden; }
-body,html { min-height: 100%; margin: 0; padding: 0; }
+body, html { min-height: 100%; margin: 0; padding: 0; }
 /* fonts */
 /* pas mûr -moz-hyphens: auto; -webkit-hyphens: auto; adobe-hyphenate: auto; hyphens: auto; */
 body { font: 16px Georgia, "Bitstream Vera Serif", Times, serif; }
@@ -447,7 +447,7 @@ figcaption.less:before { float: left; margin-left: -2em; content: '◿'; } /*  *
 #header { height: 60px; z-index: 2; position: relative; background-color: #FFFFFF; }
 #aside { page-break-after: always;  }
 /* floatfix */
-#main:after, #main:before, #aside:after, #aside:before { content:""; display: table; }
+#main:after, #main:before, #aside:after, #aside:before, #center:after, #center:before { content:""; display: table; }
 #main, #aside { zoom:1; clear:both; position: relative; }
 #main {background-color: #FFFFFF; }
 #center, #cont, #contenu, #main, #article { min-height: 100%; }
@@ -458,7 +458,7 @@ figcaption.less:before { float: left; margin-left: -2em; content: '◿'; } /*  *
   body { background-color: #E2DED0; }
   #center { }
   #contenu {  }
-  #article  { border-right: #E2DED0 1px solid; padding: 3em 4em 3em 4em; border-bottom: 1px dotted #FFFFFF;  } /* box-shadow: 10px 0px 50px #E2DED0; box shadow is not 100% for long doc */
+  #article  { padding: 3em 4em 3em 4em; border-bottom: 1px dotted #FFFFFF;  } /* box-shadow: 10px 0px 50px #E2DED0; box shadow is not 100% for long doc */
   #aside  { padding: 1em 1em 2em 1em; padding: 1rem 1rem 2rem 1rem;  }
   #aside, .pannel  { background-color: #E2DED0; background-image: -webkit-gradient(linear, left top, right top, from(#E2DED0),to(#FFFFFF)); background-image: -webkit-linear-gradient(left #E2DED0, #FFFFFF,); background-image: -moz-linear-gradient(left, #E2DED0, #FFFFFF); background-image: -ms-linear-gradient(left, #E2DED0, #FFFFFF); background-image: -o-linear-gradient(right, #FFFFFF, #E2DED0); background-image: linear-gradient(left, #E2DED0, #FFFFFF); }
   body.article { width: 100ex; margin: 3em auto 2em auto;  padding: 1em; }

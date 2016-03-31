@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  
+
 <h1>TEI » HTML (tei2html.xsl)</h1>
 
 LGPL  http://www.gnu.org/licenses/lgpl.html
 © 2005 ajlsm.com (Cybertheses)
 © 2007 Frederic.Glorieux@fictif.org
 © 2010 Frederic.Glorieux@fictif.org et École nationale des chartes
-© 2012 Frederic.Glorieux@fictif.org 
+© 2012 Frederic.Glorieux@fictif.org
 © 2013 Frederic.Glorieux@fictif.org et LABEX OBVIL
 
 <p>
-Cette transformation XSLT 1.0 (compatible navigateurs, PHP, Python, Java…) 
+Cette transformation XSLT 1.0 (compatible navigateurs, PHP, Python, Java…)
 transforme du TEI en HTML5.
 </p>
 <p>
@@ -19,16 +19,16 @@ Alternative : les transformations de Sebastian Rahtz <a href="http://www.tei-c.
 sont officiellement ditribuées par le consortium TEI, cependant ce développement est en XSLT 2.0 (java requis).
 </p>
 -->
-<xsl:transform version="1.0" 
-  xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
-  xmlns="http://www.w3.org/1999/xhtml" 
-  xmlns:rng="http://relaxng.org/ns/structure/1.0" 
-  xmlns:eg="http://www.tei-c.org/ns/Examples" 
-  xmlns:tei="http://www.tei-c.org/ns/1.0" 
-  xmlns:html="http://www.w3.org/1999/xhtml" 
-  xmlns:epub="http://www.idpf.org/2007/ops" 
-  exclude-result-prefixes="eg html rng tei epub" 
-  xmlns:exslt="http://exslt.org/common" 
+<xsl:transform version="1.0"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:rng="http://relaxng.org/ns/structure/1.0"
+  xmlns:eg="http://www.tei-c.org/ns/Examples"
+  xmlns:tei="http://www.tei-c.org/ns/1.0"
+  xmlns:html="http://www.w3.org/1999/xhtml"
+  xmlns:epub="http://www.idpf.org/2007/ops"
+  exclude-result-prefixes="eg html rng tei epub"
+  xmlns:exslt="http://exslt.org/common"
   extension-element-prefixes="exslt"
   >
   <!--
@@ -41,7 +41,7 @@ sont officiellement ditribuées par le consortium TEI, cependant ce développeme
   <xsl:variable name="this">tei2html.xsl</xsl:variable>
   <!--
 La méthode de sortie est xml, pour faire du html5.
-L'utilisation des attributs 
+L'utilisation des attributs
 est contraignante, difficile à surcharger par les transformations qui veulent une
 absence de déclaration de DTD.
 -->
@@ -161,13 +161,13 @@ Des comportement peuvent varier.
 </p>
 
 <p>
-<strong>Niveau de titre</strong> — &lt;h1> en tête de fichier, 
-et -1 pour chaque niveau ensuite, d'où le paramètre $level qui peut 
+<strong>Niveau de titre</strong> — &lt;h1> en tête de fichier,
+et -1 pour chaque niveau ensuite, d'où le paramètre $level qui peut
 être modifié par l'appeleur.
 </p>
 
 <p>
-<strong>Notes</strong> — Les notes peuvent être sorties en bas de chaque fichier 
+<strong>Notes</strong> — Les notes peuvent être sorties en bas de chaque fichier
 (une section ou tout le texte), rassemblées dans un fichier à part, sorties par texte
 (group/text)
 </p>
@@ -549,10 +549,12 @@ et -1 pour chaque niveau ensuite, d'où le paramètre $level qui peut
         <xsl:otherwise>div</xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
-    <xsl:element name="{$el}" namespace="http://www.w3.org/1999/xhtml">
-      <xsl:call-template name="atts"/>
-      <xsl:apply-templates/>
-    </xsl:element>
+    <xsl:if test="normalize-space(.) != '' ">
+      <xsl:element name="{$el}" namespace="http://www.w3.org/1999/xhtml">
+        <xsl:call-template name="atts"/>
+        <xsl:apply-templates/>
+      </xsl:element>
+    </xsl:if>
   </xsl:template>
   <xsl:template match="tei:address">
     <address>
@@ -1133,7 +1135,7 @@ Tables
   </xsl:template>
   <!--
     use the @scheme for a link ? TEI, Docbook…
-    
+
     -->
   <xsl:template match="tei:tag">
     <code class="language-xml prettyprint">
@@ -1163,7 +1165,7 @@ Tables
   <xsl:template match="tei:memberOf">
     <xsl:value-of select="@key"/>
   </xsl:template>
-  <!-- 
+  <!--
   zeroOrMore xmlns="http://relaxng.org/ns/structure/1.0">
       <choice
   -->
@@ -1479,7 +1481,7 @@ Tables
       <xsl:apply-templates/>
     </span>
   </xsl:template>
-  <!-- 
+  <!--
 <h3>Liens</h3>
   -->
   <!-- Template to override  -->
@@ -1550,13 +1552,13 @@ Tables
       <xsl:value-of select="@target"/>
     </a>
   </xsl:template>
-  <!-- Quelque chose à faire ? 
+  <!-- Quelque chose à faire ?
 
 <figure>
   <graphic url="../../../../elec/conferences/src/knoch-mund/olgiati.png"/>
   <head>© Mirta Olgiati</head>
 </figure>
-  
+
 <figure class="right">
   <a href="ferri/grande/Ill_2_Grillando.jpg"><img src="ferri/petite/Ill_2_Grillando.jpg" height="155" width="250"></a>
   <figcaption style="width: 250px;">
@@ -1564,7 +1566,7 @@ Tables
     [ill. 1] Paolo Grillando, Tractat[um] de hereticis et sortilegijs…, Lyon, 1536 [page de titre]. Cornell Library, Division of Rare Books and Manuscripts, Witchcraft BF1565 G85 1536.
     </figcaption>
 </figure>
-      
+
   -->
   <xsl:template match="tei:figure | tei:facsimile">
     <xsl:param name="el">
@@ -1692,7 +1694,7 @@ Tables
   <!-- Poetic information, rendering? -->
   <xsl:template match="tei:caesura">
     <xsl:text> </xsl:text>
-  </xsl:template> 
+  </xsl:template>
   <!-- Cross without a trace? -->
   <xsl:template match="tei:corr">
     <xsl:choose>
@@ -2024,7 +2026,7 @@ Tables
     </a>
   </xsl:template>
   <!--
-Elements block or inline level 
+Elements block or inline level
    -->
   <xsl:template match="tei:listBibl/tei:bibl">
     <li>
@@ -2158,7 +2160,7 @@ Elements block or inline level
 
 -->
   <!--
-Call that in 
+Call that in
   -->
   <xsl:template name="footnotes">
     <!-- children from which find notes -->
@@ -2446,7 +2448,7 @@ Call that in
       </xsl:when>
       <!--
       <xsl:when test="self::tei:app">
-        <xsl:number count="tei:app" format="a" level="any" from="*[key('split', generate-id())]"/> 
+        <xsl:number count="tei:app" format="a" level="any" from="*[key('split', generate-id())]"/>
       </xsl:when>
       note number by book, not by chapter
       <xsl:when test="$hasformat and ancestor::*[key('split', generate-id())] and $fnpage = ''">
@@ -2573,7 +2575,7 @@ Call that in
       </xsl:when>
       <!-- Note normalisée pour ajout -->
       <xsl:when test="self::tei:supplied">
-        <!-- Pas besoin de rappel pour note en contexte 
+        <!-- Pas besoin de rappel pour note en contexte
         <xsl:choose>
           <xsl:when test="local-name(..)='w'">
             <xsl:apply-templates select=".." mode="title"/>
@@ -2608,7 +2610,7 @@ Call that in
       </xsl:when>
       <!-- Note normalisée pour correction -->
       <xsl:when test="self::tei:choice">
-        <!-- pas de rappel de la forme corrigée 
+        <!-- pas de rappel de la forme corrigée
         <xsl:apply-templates select="tei:corr/node() | tei:expan/node() | tei:reg/node()"/>
         <xsl:text> </xsl:text>
         -->
