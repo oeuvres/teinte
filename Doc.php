@@ -12,15 +12,15 @@ else if (php_sapi_name() == "cli") Teinte_Doc::cli();
  */
 class Teinte_Doc {
   /** TEI/XML DOM Document to process */
-  private $dom;
+  private $_dom;
   /** Xpath processor */
-  private $xpath;
+  private $_xpath;
   /** filepath */
-  private $file;
+  private $_file;
   /** filename without extension */
-  private $filename;
+  private $_filename;
   /** file freshness */
-  private $filemtime;
+  private $_filemtime;
   /** XSLTProcessor */
   private $_trans;
   /** XSL DOM document */
@@ -40,44 +40,53 @@ class Teinte_Doc {
    */
   public function __construct($tei) {
     if (is_a($tei, 'DOMDocument') ) {
-      $this->dom = $tei;
+      $this->_dom = $tei;
     }
     else if(is_string($tei)) { // maybe file or url
-      $this->file = $tei;
-      $this->filemtime = filemtime($tei);
-      $this->filename = pathinfo($tei, PATHINFO_FILENAME);
-      $this->dom = self::dom($tei);
+      $this->_file = $tei;
+      $this->_filemtime = filemtime($tei);
+      $this->_filename = pathinfo($tei, PATHINFO_FILENAME);
+      $this->_dom( $tei );
     }
     else {
       throw new Exception('Teinte, what is it? '.print_r($tei, true));
     }
     $this->_xsldom = new DOMDocument();
-    $this->xpath = new DOMXpath($this->dom);
-    $this->xpath->registerNamespace('tei', "http://www.tei-c.org/ns/1.0");
-  }
-  /**
-   * Reuse DOM
-   */
-  public function getDom()
-  {
-      return $this->dom;
-  }
-  /**
-   * Reuse xpath
-   */
-  public function getXpath()
-  {
-      return $this->xpath;
+    $this->xpath();
   }
 
+ /**
+  * Set and return an XPath processor
+  */
+  public function xpath()
+  {
+    if ($this->_xpath) return $this->_xpath;
+    $this->_xpath = new DOMXpath($this->_dom);
+    $this->_xpath->registerNamespace('tei', "http://www.tei-c.org/ns/1.0");
+    return $this->_xpath;
+  }
+  /**
+   * Get the filename (with no extention)
+   */
+   public function filename()
+   {
+     return $this->_filename;
+   }
+   /**
+    * Read a readonly property
+    */
+    public function filemtime()
+    {
+      return $this->_filename;
+    }
   /**
    * Book metadata
    */
   public function meta() {
     $meta = array();
-    $meta['code'] = pathinfo($this->file, PATHINFO_FILENAME);
+    $meta['code'] = pathinfo($this->_file, PATHINFO_FILENAME);
 
-    $nl = $this->xpath->query("/*/tei:teiHeader//tei:author");
+    $nl = $this->_xpath->query("/*/tei:teiHeader//tei:author");
     if (!$nl->length)
       $meta['author'] = null;
     else if ($nl->item(0)->hasAttribute("key"))
@@ -86,12 +95,12 @@ class Teinte_Doc {
       $meta['author'] = $nl->item(0)->textContent;
     if (($pos = strpos($meta['author'], '('))) $meta['author'] = trim(substr($meta['author'], 0, $pos));
 
-    $nl = $this->xpath->query("/*/tei:teiHeader//tei:title");
+    $nl = $this->_xpath->query("/*/tei:teiHeader//tei:title");
     if ($nl->length) $meta['title'] = $nl->item(0)->textContent;
     else $meta['title'] = null;
 
 
-    $nl = $this->xpath->query("/*/tei:teiHeader/tei:profileDesc/tei:creation/tei:date");
+    $nl = $this->_xpath->query("/*/tei:teiHeader/tei:profileDesc/tei:creation/tei:date");
     // loop on dates
     $meta['created'] = null;
     $meta['issued'] = null;
@@ -164,7 +173,7 @@ class Teinte_Doc {
    * Output markdown
    */
   public function markdown($destfile=null) {
-    return $this->transform(dirname(__FILE__).'/tei2md.xsl', $destfile, array('filename' => $this->filename));
+    return $this->transform(dirname(__FILE__).'/tei2md.xsl', $destfile, array('filename' => $this->_filename));
   }
   /**
    * Output iramuteq text
@@ -183,49 +192,59 @@ class Teinte_Doc {
    * An xslt transformer
    * TOTHINK : deal with errors
    */
-  public function transform($xslfile, $dest=null, $pars=null) {
+  public function transform($xslfile, $dest=null, $pars=null)
+  {
     // allow reuse of same xsl for performances
-    if ($this->_xslfile != $xslfile) {
+    if ( $this->_xslfile != $xslfile ) {
       // load xsl file
-      $this->_xsldom->load($xslfile);
+      $this->_xsldom->load( $xslfile );
       // renew the processor
       $this->_trans = new XSLTProcessor();
-      $this->_trans->importStyleSheet($this->_xsldom);
+      $this->_trans->importStyleSheet( $this->_xsldom );
     }
     // add params
     if(isset($pars) && count($pars)) {
       foreach ($pars as $key => $value) {
-        $this->_trans->setParameter(null, $key, $value);
+        $this->_trans->setParameter( null, $key, $value );
       }
     }
     if (is_a($dest, 'DOMDocument') ) {
-      $ret = $this->_trans->transformToDoc($this->dom);
+      $ret = $this->_trans->transformToDoc( $this->_dom );
     }
     else if ($dest) {
       if (!is_dir(dirname($dest))) {
         mkdir(dirname($dest), 0775, true);
         @chmod(dirname($dest), 0775);  // let @, if www-data is not owner but allowed to write
       }
-      $this->_trans->transformToURI($this->dom, $dest);
+      $this->_trans->transformToURI( $this->_dom, $dest );
       $ret = $dest;
     }
     // no dst file, return dom, so that piping can continue
     else {
-      $ret = $this->_trans->transformToXML($this->dom);
+      $ret = $this->_trans->transformToXML( $this->_dom );
     }
     // reset parameters ! or they will kept on next transform if transformer is reused
     if(isset($pars) && count($pars)) {
-      foreach ($pars as $key => $value) $this->_trans->removeParameter(null, $key);
+      foreach ( $pars as $key => $value ) $this->_trans->removeParameter(null, $key);
     }
     return $ret;
   }
-  public static function dom($xmlfile) {
-    $dom = new DOMDocument();
-    $dom->preserveWhiteSpace = false;
-    $dom->formatOutput=true;
-    $dom->substituteEntities=true;
-    $dom->load($xmlfile, LIBXML_NOENT | LIBXML_NONET | LIBXML_NSCLEAN | LIBXML_NOCDATA | LIBXML_COMPACT | LIBXML_PARSEHUGE | LIBXML_NOWARNING);
-    return $dom;
+  /**
+   * Set and build a dom privately
+   */
+  private function _dom( $xmlfile ) {
+    $this->_dom = new DOMDocument();
+    $this->_dom->preserveWhiteSpace = false;
+    $this->_dom->formatOutput=true;
+    $this->_dom->substituteEntities=true;
+    $this->_dom->load($xmlfile, LIBXML_NOENT | LIBXML_NONET | LIBXML_NSCLEAN | LIBXML_NOCDATA | LIBXML_COMPACT | LIBXML_PARSEHUGE | LIBXML_NOWARNING);
+    return $this->_dom;
+  }
+  /**
+   * Get the dom
+   */
+  public function dom() {
+    return $this->_dom;
   }
 
   /**

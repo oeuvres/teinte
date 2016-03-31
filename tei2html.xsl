@@ -539,7 +539,7 @@ et -1 pour chaque niveau ensuite, d'où le paramètre $level qui peut
       <xsl:if test=".=''"> </xsl:if>
     </p>
   </xsl:template>
-  <xsl:template match="tei:acheveImprime | tei:byline | tei:caption | tei:dateline | tei:desc | tei:docEdition | tei:docImprint | tei:imprimatur | tei:performance | tei:premiere | tei:printer | tei:privilege | tei:signed | tei:salute | tei:set | tei:trailer
+  <xsl:template match="tei:acheveImprime | tei:approbation | tei:byline | tei:caption | tei:dateline | tei:desc | tei:docEdition | tei:docImprint | tei:imprimatur | tei:performance | tei:premiere | tei:printer | tei:privilege | tei:signed | tei:salute | tei:set | tei:trailer
     ">
     <xsl:variable name="el">
       <xsl:choose>
