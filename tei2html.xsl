@@ -946,6 +946,10 @@ Tables
                 <xsl:text>part-</xsl:text>
                 <xsl:value-of select="translate(@part, 'fimy', 'FIMY')"/>
               </xsl:if>
+              <xsl:if test="@met">
+                <xsl:text> </xsl:text>
+                <xsl:value-of select="@met"/>
+              </xsl:if>
             </xsl:with-param>
           </xsl:call-template>
           <xsl:choose>

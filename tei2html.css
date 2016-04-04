@@ -239,7 +239,21 @@ hr.footnotes { width: 15%; text-align: left; text-align: -moz-left; margin-right
 .form { font-weight: bold; }
 div.l dfn.gloss { display: block; position: absolute; padding: 5px 5px 5px 5px; border-radius: 10px; line-height: 110%; text-align: left; float: right; margin-left: 25em; width: 250px; font-size: small; background-color: #F3F3F3; text-indent: 0; }
 p dfn.gloss , div.gloss { padding: 5px 5px 5px 5px; border-radius: 10px; line-height: 110%; text-align: left; font-size: small; background-color: #F3F3F3; text-indent: 0; }
-div.l { text-align: left; text-indent: -2rem; padding-left: 2rem; }
+.l { text-align: left; text-indent: -2rem; padding-left: 2rem; }
+.l1 { padding-left: 13rem; } /* metric */
+.l2 { padding-left: 12rem; }
+.l3 { padding-left: 11rem; }
+.l4 { padding-left: 10rem; }
+.l5 { padding-left: 9rem; }
+.l6 { padding-left: 8rem; }
+.l7 { padding-left: 7rem; }
+.l8 { padding-left: 6rem; }
+.l9 { padding-left: 5rem; }
+.l10 { padding-left: 4rem; }
+.l11 { padding-left: 3rem; }
+.l12 { padding-left: 2rem; }
+.l13 { padding-left: 1rem; }
+.l14 { padding-left: 0rem; }
 .l .vertical { font-size: 170%; font-weight: bold; display: inline-block; transform-origin: top right 0; margin-top: 1.35em; position: absolute; transform: rotate(90deg); }
 label.label { font-weight: bold; }
 p.label, div.label { margin: 1.4em 0 0.7em 0; line-height: 105%; text-align: center; text-indent: 0; padding-left: 0; }
@@ -286,7 +300,7 @@ section > div.stage i, section > div.stage em { font-style: italic; }
 div.stage { text-align: justify; line-height: 120%; }
 .stage.indent { text-indent: 3rem; }
 div.stage.sc { font-style: normal; text-align: center; font-size: 105%; margin-bottom: 1ex; }
-.sp div.stage { margin-left: 3rem; margin-top: 0.5ex; margin-bottom: 0.5ex; }
+.sp div.stage { margin-top: 0.7ex; margin-bottom: 1ex; }
 .sp div.stage.right { margin-top: 0; margin-bottom: 0; text-indent: 0; text-align: right; }
 blockquote > div.stage.sc { text-align: left; }
 div.stage .i, div.stage i, div.stage em { font-style: normal; }
@@ -458,7 +472,7 @@ figcaption.less:before { float: left; margin-left: -2em; content: '◿'; } /*  *
   body { background-color: #E2DED0; }
   #center { }
   #contenu {  }
-  #article  { padding: 3em 4em 3em 4em; border-bottom: 1px dotted #FFFFFF;  } /* box-shadow: 10px 0px 50px #E2DED0; box shadow is not 100% for long doc */
+  #article  { padding: 3em 4em 3em 4em; border-bottom: 1px dotted #FFFFFF; } /* box-shadow: 10px 0px 50px #E2DED0; box shadow is not 100% for long doc */
   #aside  { padding: 1em 1em 2em 1em; padding: 1rem 1rem 2rem 1rem;  }
   #aside, .pannel  { background-color: #E2DED0; background-image: -webkit-gradient(linear, left top, right top, from(#E2DED0),to(#FFFFFF)); background-image: -webkit-linear-gradient(left #E2DED0, #FFFFFF,); background-image: -moz-linear-gradient(left, #E2DED0, #FFFFFF); background-image: -ms-linear-gradient(left, #E2DED0, #FFFFFF); background-image: -o-linear-gradient(right, #FFFFFF, #E2DED0); background-image: linear-gradient(left, #E2DED0, #FFFFFF); }
   body.article { width: 100ex; margin: 3em auto 2em auto;  padding: 1em; }

@@ -94,12 +94,19 @@ class Teinte_Doc {
     else
       $meta['author'] = $nl->item(0)->textContent;
     if (($pos = strpos($meta['author'], '('))) $meta['author'] = trim(substr($meta['author'], 0, $pos));
-
+    // title
     $nl = $this->_xpath->query("/*/tei:teiHeader//tei:title");
     if ($nl->length) $meta['title'] = $nl->item(0)->textContent;
     else $meta['title'] = null;
-
-
+    // publisher
+    $nl = $this->_xpath->query("/*/tei:teiHeader/tei:fileDesc/tei:publicationStmt/tei:publisher");
+    if ($nl->length) $meta['publisher'] = $nl->item(0)->textContent;
+    else $meta['publisher'] = null;
+    // identifier
+    $nl = $this->_xpath->query("/*/tei:teiHeader/tei:fileDesc/tei:publicationStmt/tei:idno");
+    if ($nl->length) $meta['identifier'] = $nl->item(0)->textContent;
+    else $meta['identifier'] = null;
+    // dates
     $nl = $this->_xpath->query("/*/tei:teiHeader/tei:profileDesc/tei:creation/tei:date");
     // loop on dates
     $meta['created'] = null;
