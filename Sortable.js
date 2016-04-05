@@ -80,8 +80,8 @@ table.sortable td.string { text-align: left; } \
 table.sortable tr td { border-bottom: none; border-top: none; } \
 tr.even { } \
 tr.odd { background-color: #F5F3EB; } \
-table.sortable th { vertical-align: middle; text-align: left; padding: 5px 1ex 5px 1ex; background-color: #F5F3EB; border: none; } \
-table.sortable th { text-align: center; } \
+table.sortable th { text-align: center; vertical-align: middle; text-align: left; padding: 5px 1ex 5px 1ex; background-color: #F5F3EB; border: none; } \
+table.sortable th.head, table.sortable td.head { vertical-align: bottom; } \
 tr.even th, tr.odd th { text-align: right; } \
 table.sortable tr.mod5 td { border-top: solid 1px #888; } \
 table.sortable tr.mod10 td {  } \
@@ -188,6 +188,7 @@ th.num, table.sortable th.num { text-align: right; font-weight: 100; font-size: 
       cell = firstRow.cells[i];
       var text = cell.innerHTML.replace(/<.+>/g, '');
       if (cell.className.indexOf("unsort") != -1 || cell.className.indexOf("nosort") != -1 || Sortable.trim(text) == '') continue;
+      cell.className = cell.className+' head';
       cell.table=table;
       cell.innerHTML = '<b class="sortheader" onclick="Sortable.sort(this.parentNode.table, \'key'+i+'\', this.reverse); this.reverse=!this.reverse ; return false;">↓'+text+'↑</b>'; //
     }
