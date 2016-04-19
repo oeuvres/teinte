@@ -16,6 +16,8 @@ Split a single TEI book in a multi-pages site
   exclude-result-prefixes="tei alix"
 >
   <xsl:import href="tei2html.xsl"/>
+  <!-- Name of file, provided by caller -->
+  <xsl:param name="filename"/>
   <!-- Options for the html field, be careful if not congruent -->
   <xsl:variable name="text-opts">IdfpoPV</xsl:variable>
   <!-- Options for a pure store field with no search and no effect on docFreq, useful for tocs, index… -->
@@ -40,7 +42,9 @@ use="generate-id(.)"/>
     <!-- Table des matières -->
     <xsl:value-of select="alix:docNew()"/>
     <xsl:call-template name="alix:metas"/>
-    <xsl:value-of select="alix:field('code', 'toc')"/>
+    <xsl:variable name="code" select="'toc'"/>
+    <xsl:value-of select="alix:field('href', concat($filename, '/', $code))"/>
+    <xsl:value-of select="alix:field('code', $code)"/>
     <xsl:variable name="html">
       <xsl:call-template name="toc"/>
     </xsl:variable>
@@ -52,7 +56,9 @@ use="generate-id(.)"/>
     <xsl:variable name="html">
       <xsl:apply-templates select="/*/tei:teiHeader"/>
     </xsl:variable>
-    <xsl:value-of select="alix:field('code', 'titlePage')"/>
+    <xsl:variable name="code" select="'titlePage'"/>
+    <xsl:value-of select="alix:field('href', concat($filename, '/', $code))"/>
+    <xsl:value-of select="alix:field('code', $code)"/>
     <xsl:value-of select="alix:field('html', $html, $html-opts)"/>
     <xsl:value-of select="alix:docWrite()"/>
     <!-- metas -->
@@ -84,6 +90,7 @@ use="generate-id(.)"/>
         </xsl:variable>
         <xsl:value-of select="alix:docNew()"/>
         <xsl:call-template name="alix:metas"/>
+        <xsl:value-of select="alix:field('href', concat($filename, '/', $code))"/>
         <xsl:value-of select="alix:field('code', $code)"/>
         <xsl:value-of select="alix:field('type', 'chapter')"/>
         <xsl:variable name="html">

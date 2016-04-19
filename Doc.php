@@ -77,7 +77,7 @@ class Teinte_Doc {
     */
     public function filemtime()
     {
-      return $this->_filename;
+      return $this->_filemtime;
     }
   /**
    * Book metadata
@@ -88,12 +88,12 @@ class Teinte_Doc {
 
     $nl = $this->_xpath->query("/*/tei:teiHeader//tei:author");
     if (!$nl->length)
-      $meta['author'] = null;
+      $meta['creator'] = null;
     else if ($nl->item(0)->hasAttribute("key"))
-      $meta['author'] = $nl->item(0)->getAttribute("key");
+      $meta['creator'] = $nl->item(0)->getAttribute("key");
     else
-      $meta['author'] = $nl->item(0)->textContent;
-    if (($pos = strpos($meta['author'], '('))) $meta['author'] = trim(substr($meta['author'], 0, $pos));
+      $meta['creator'] = $nl->item(0)->textContent;
+    if (($pos = strpos($meta['creator'], '('))) $meta['creator'] = trim(substr($meta['creator'], 0, $pos));
     // title
     $nl = $this->_xpath->query("/*/tei:teiHeader//tei:title");
     if ($nl->length) $meta['title'] = $nl->item(0)->textContent;
@@ -125,7 +125,7 @@ class Teinte_Doc {
       else if ($date->getAttribute ('type') == "issued" && !$meta['issued']) $meta['issued'] = $value;
     }
     if (!$meta['issued'] && isset($value) && is_numeric($value)) $meta['issued'] = $value;
-
+    $meta['source'] = null;
 
 
 

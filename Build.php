@@ -35,17 +35,17 @@ CREATE TABLE oeuvre (
   id         INTEGER, -- rowid auto
   code       TEXT,    -- nom de fichier sans extension
   filemtime  INTEGER, -- date de dernière modification du fichier pour update
-  publisher  TEXT,    -- nom de l’institution qui publie
-  identifier TEXT,    -- uri chez le publisher
-  source     TEXT,    -- XML TEI source URL
-  author     TEXT,    -- auteur
+  creator    TEXT,    -- auteur
+  date       INTEGER, -- année de publication
   title      TEXT,    -- titre
-  year       INTEGER, -- année de publication
+  identifier TEXT,    -- uri chez le publisher
+  publisher  TEXT,    -- nom de l’institution qui publie
+  source     TEXT,    -- XML TEI source URL
   PRIMARY KEY(id ASC)
 );
 CREATE UNIQUE INDEX oeuvre_code ON oeuvre(code);
-CREATE INDEX oeuvre_author_year ON oeuvre(author, year, title);
-CREATE INDEX oeuvre_year_author ON oeuvre(year, author, title);
+CREATE INDEX oeuvre_creator_date ON oeuvre(creator, date, title);
+CREATE INDEX oeuvre_date_creator ON oeuvre(date, creator, title);
 
   ";
   /** SQLite link, maybe useful outside */
@@ -136,46 +136,24 @@ CREATE INDEX oeuvre_year_author ON oeuvre(year, author, title);
   private function insert($srcfile, $setcode=null) {
     $teinte = new Teinte_Doc($srcfile);
     // supprimer la pièce, des triggers doivent normalement supprimer la cascade.
-    $this->pdo->exec("DELETE FROM oeuvre WHERE code = ".$this->pdo->quote($teinte->filename));
+    $this->pdo->exec("DELETE FROM oeuvre WHERE code = ".$this->pdo->quote( $teinte->filename() ) );
+    $meta = $teinte->meta();
     // métadonnées de pièces
-    $year = null;
-    $verse = null;
-    $genrecode = null;
-    $genre = null;
-    $author = $teinte->xpath->query("/*/tei:teiHeader//tei:author");
-    if ($author->length) $author = $author->item(0)->textContent;
-    else $author = null;
-    $nl = $teinte->xpath->query("/*/tei:teiHeader/tei:profileDesc/tei:creation/tei:date");
-    if ($nl->length) {
-      $n = $nl->item(0);
-      $year = 0 + $n->getAttribute ('when');
-      if(!$year) $year = 0 + $n->nodeValue;
-    }
-    if(!$year) $year = null;
-    $title = $teinte->xpath->query("/*/tei:teiHeader//tei:title");
-    if ($title->length) $title = $title->item(0)->textContent;
-    else $title = null;
-
-    $publisher = null;
-    $identifier = null;
-    $source = null;
-
     if (isset(self::$sets)) {
-      if(isset(self::$sets[$setcode]['publisher'])) $publisher = self::$sets[$setcode]['publisher'];
-      if(isset(self::$sets[$setcode]['identifier'])) $identifier = sprintf (self::$sets[$setcode]['identifier'], $teinte->filename);
-      if (isset(self::$sets[$setcode]['source'])) $source = sprintf (self::$sets[$setcode]['source'], $teinte->filename);
+      if(isset(self::$sets[$setcode]['publisher'])) $meta['publisher'] = self::$sets[$setcode]['publisher'];
+      if(isset(self::$sets[$setcode]['identifier'])) $meta['identifier'] = sprintf (self::$sets[$setcode]['identifier'], $teinte->filename);
+      if (isset(self::$sets[$setcode]['source'])) $meta['source'] = sprintf (self::$sets[$setcode]['source'], $teinte->filename);
     }
 
     $this->_insert->execute(array(
-      $teinte->filename,
-      $teinte->filemtime,
-      $publisher,
-      $identifier,
-      $source,
-      $author,
-      $title,
-      $year,
-
+      $teinte->filename(),
+      $teinte->filemtime(),
+      $meta['creator'],
+      $meta['date'],
+      $meta['title'],
+      $meta['identifier'],
+      $meta['publisher'],
+      $meta['source'],
     ));
     return $teinte;
   }
@@ -264,8 +242,8 @@ CREATE INDEX oeuvre_year_author ON oeuvre(year, author, title);
     // table temporaire en mémoire
     $this->pdo->exec("PRAGMA temp_store = 2;");
     $this->_insert = $this->pdo->prepare("
-    INSERT INTO oeuvre (code, filemtime, publisher, identifier, source, author, title, year)
-                VALUES (?,    ?,         ?,         ?,          ?,      ?,      ?,     ?);
+    INSERT INTO oeuvre (code, filemtime, creator, date, title, identifier, publisher, source)
+                VALUES (?,    ?,         ?,       ?,    ?,     ?,          ?,         ?);
     ");
     $this->_sqlmtime = $this->pdo->prepare("SELECT filemtime FROM oeuvre WHERE code = ?");
   }
