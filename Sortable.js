@@ -75,12 +75,13 @@ var Sortable = {
     css.type = "text/css";
     css.innerHTML = "\
 table.sortable { font-family: sans-serif; font-size: 12px; line-height: 105%; border: 1px solid; border-color: #CCCCCC; margin-top: 1em; margin-bottom: 2em; border-collapse: collapse; } \
+table.sortable caption { background-color: #F5F3EB; padding: 2px 1ex 2px 1ex } \
 table.sortable td { vertical-align: top; border: #CCCCCC 1px solid; padding: 2px 1ex; } \
 table.sortable td.string { text-align: left; } \
 table.sortable tr td { border-bottom: none; border-top: none; } \
 tr.even { } \
 tr.odd { background-color: #F5F3EB; } \
-table.sortable th { text-align: center; vertical-align: middle; text-align: left; padding: 5px 1ex 5px 1ex; background-color: #F5F3EB; border: none; } \
+table.sortable th { text-align: center; vertical-align: middle; text-align: left; padding: 5px 1ex 5px 1ex; background-color: #FFFFFF; border-top: 2px solid #CCCCCC; border-bottom: 2px solid #CCCCCC; } \
 table.sortable th.head, table.sortable td.head { vertical-align: bottom; } \
 tr.even th, tr.odd th { text-align: right; } \
 table.sortable tr.mod5 td { border-top: solid 1px #888; } \
@@ -134,8 +135,13 @@ th.num, table.sortable th.num { text-align: right; font-weight: 100; font-size: 
   sort: function(table, key, reverse) {
     // waited object not found, go out
     if (!table.lines) return;
-    // numerical key
-    if (table.lines[0][key] === +table.lines[0][key]) {
+    // get the first non empty value of the column
+    var i=0;
+    var max = table.lines.length;
+    while ( !table.lines[i][key] && i < max ) i++;
+    console.log(i+" "+table.lines[i][key]);
+    // seems numerical key
+    if (table.lines[i][key] === 0+table.lines[i][key]) {
       var comparator=function(a, b) {
         return b[key] - a[key]; // for numeric keys, default, bigger first
       }
@@ -143,8 +149,9 @@ th.num, table.sortable th.num { text-align: right; font-weight: 100; font-size: 
       else table.lines.sort(comparator);
     }
     else {
-      // save native String.toString()
-      var save = String.prototype.toString;
+      // This hack is said to be
+
+      /* Too much hacky
       // special case, a second sort, return 2 keys to sort on 2 columns
       if (Sortable.lastKey && Sortable.lastKey != key) {
         // if last key is numerical, normalize it with some 0000
@@ -155,8 +162,12 @@ th.num, table.sortable th.num { text-align: right; font-weight: 100; font-size: 
           String.prototype.toString = function () { return this[key]+this[Sortable.lastKey];};
         }
       }
+      */
+      // save native String.toString()
+      var save = String.prototype.toString;
+      // localeCompare() is to slow, our ADCII key approach is better
       // set the method
-      else String.prototype.toString = function () { return this[key];};
+      String.prototype.toString = function () { return this[key];};
       // do the sort
       if (reverse) table.lines.reverse();
       else table.lines.sort();
@@ -228,7 +239,8 @@ th.num, table.sortable th.num { text-align: right; font-weight: 100; font-size: 
     n=parseFloat(text.replace(/,/g, '.').replace(/[  ]/g, ''));
     // text
     if (isNaN(n)) {
-      text=text.toLowerCase().replace(/œ/g, 'oe').replace(/æ/g, 'ae').replace(/ç/g, 'c').replace(/ñ/g, 'n').replace(/[éèêë]/g, 'e').replace(/[áàâä]/g, 'a').replace(/[íìîï]/g, 'i').replace(/úùûü/, 'u').replace(/\W/g, '') +"__________";
+      text=text.toLowerCase().replace(/œ/g, 'oe').replace(/æ/g, 'ae').replace(/ç/g, 'c').replace(/ñ/g, 'n').replace(/[éèêë]/g, 'e').replace(/[áàâä]/g, 'a').replace(/[íìîï]/g, 'i').replace(/úùûü/, 'u').replace(/\W/g, '') ;
+      // +"__________" still usefull ?
       return text.substring(0, 10) ;
     }
     else {

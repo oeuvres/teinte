@@ -434,7 +434,7 @@
     </define>
     <define name="creation.date">
       <element name="date">
-        <a:documentation>Date formatée pour les traitements automatisés</a:documentation>
+        <a:documentation>Date formatée pour les traitements automatisés dans les attributs</a:documentation>
         <optional>
           <attribute name="type"><!-- TODO : on supprime ? -->
             <choice>
@@ -475,7 +475,9 @@
             </attribute>
           </group>
         </choice>
-        <text/>
+        <data type="string">
+          <param name="pattern">-?[0-9]{4}</param>
+        </data>
       </element>
     </define>
   <define name="id-att" combine="choice">

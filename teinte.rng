@@ -390,6 +390,9 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
       <optional>
         <ref name="n-att"/>
       </optional>
+      <optional>
+        <ref name="base-att"/>
+      </optional>
       <ref name="xml-atts"/>
     </define>
     <define name="div">
@@ -1349,10 +1352,13 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <oneOrMore>
           <choice>
             <text/>
+            <ref name="emph"/>
             <ref name="hi"/>
-            <ref name="listPerson"/>
             <ref name="lb"/>
+            <ref name="listPerson"/>
             <ref name="note"/>
+            <ref name="num"/>
+            <ref name="ref"/>
           </choice>
         </oneOrMore>
       </element>
@@ -1722,9 +1728,10 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
               <ref name="textual"/>
             </element>
             <ref name="author"/>
-            <ref name="title"/>
+            <ref name="emph"/>
             <ref name="num"/>
             <ref name="point"/>
+            <ref name="title"/>
           </choice>
         </zeroOrMore>
       </element>
@@ -2577,6 +2584,11 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
     <define name="lang-att">
       <attribute name="xml:lang">
         <a:documentation>Code normalisé de langue.</a:documentation>
+      </attribute>
+    </define>
+    <define name="base-att">
+      <attribute name="xml:base">
+        <a:documentation>Base de résolution des liens.</a:documentation>
       </attribute>
     </define>
     <define name="n-att">
