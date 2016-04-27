@@ -17,6 +17,7 @@ class Teinte_Build
 {
   static $kindlegen;
   static $formats = array(
+    'tei' => '.xml',
     'epub' => '.epub',
     'kindle' => '.mobi',
     'markdown' => '.md',

@@ -932,7 +932,9 @@ Tables
     <xsl:variable name="n">
       <xsl:call-template name="l-n"/>
     </xsl:variable>
+    <!-- or $prev/@n = $n SLOW
     <xsl:variable name="prev" select="preceding::tei:l[1]"/>
+    -->
     <xsl:choose>
       <!-- probablement vers vide pour espacement -->
       <xsl:when test="normalize-space(.) =''">
@@ -956,7 +958,7 @@ Tables
             <xsl:when test="not(number($n))"/>
             <xsl:when test="$n &lt; 1"/>
             <!-- previous verse has same number, usually a rupted verse -->
-            <xsl:when test="@part='M' or @part='F' or $prev/@n = $n"/>
+            <xsl:when test="@part='M' or @part='F'"/>
             <!-- line number could be multiple in a file, do not check repeated number in broken verses  -->
             <xsl:when test="ancestor::tei:quote"/>
             <xsl:when test="($n mod 5) = 0">
@@ -967,11 +969,11 @@ Tables
             </xsl:when>
           </xsl:choose>
           <xsl:if test="@part = 'M' or @part = 'm' or @part = 'F' or @part = 'f'  or @part = 'y'  or @part = 'Y'">
+            <!-- Rupted verse, get the exact spacer from previous verse -->
             <xsl:variable name="txt">
-              <xsl:apply-templates select="preceding::tei:l[ancestor::tei:body][1]" mode="lspacer"/>
+              <xsl:apply-templates select="preceding::tei:l[1]" mode="lspacer"/>
             </xsl:variable>
             <xsl:if test="normalize-space($txt) != ''">
-              <!-- Rupted verse, get the exact spacer from previous verse -->
               <span class="spacer" style="visibility: hidden;">
                 <xsl:value-of select="$txt"/>
               </span>
@@ -987,6 +989,8 @@ Tables
       <xsl:apply-templates mode="title"/>
     </xsl:variable>
     <xsl:choose>
+      <!-- ??? -->
+      <xsl:when test="not(ancestor::tei:body)"/>
       <!-- encoding error -->
       <xsl:when test="not(@part)"/>
       <!-- encoding error -->

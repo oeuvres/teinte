@@ -541,6 +541,7 @@ Tricky, <pb> could be hidden, forget.
             for-each seems more efficient than apply-templates
             -->
             <xsl:variable name="prev">
+              <!-- SLOW -->
               <xsl:for-each select="preceding::*[key('split', generate-id())][not(self::tei:titlePage)][1]">
                 <xsl:call-template name="a-label">
                   <xsl:with-param name="rel">prev</xsl:with-param>
