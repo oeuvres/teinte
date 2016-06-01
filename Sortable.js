@@ -94,7 +94,9 @@ table.sortable a:hover { background: #FFFFFF; box-shadow: 0px 0px 20px #AAAAAA; 
 table.sortable th a:hover { background-color: #FFFFFF; border: none} \
 th.num, table.sortable th.num { text-align: right; font-weight: 100; font-size: 85%; padding: 0 1px; } \
 .sortheader { cursor: pointer; } \
-/* .sortheader b { -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } */ \
+.sortheader:before { content: '▼'} \
+.sortheader:after { content: '▲'} \
+/* .sortheader b { -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } unselectable text is replaces by a line break, bad */ \
 ";
     var head = document.getElementsByTagName('head')[0];
     head.insertBefore(css, head.firstChild);
@@ -201,7 +203,7 @@ th.num, table.sortable th.num { text-align: right; font-weight: 100; font-size: 
       if (cell.className.indexOf("unsort") != -1 || cell.className.indexOf("nosort") != -1 || Sortable.trim(text) == '') continue;
       cell.className = cell.className+' head';
       cell.table=table;
-      cell.innerHTML = '<b class="sortheader" onclick="Sortable.sort(this.parentNode.table, \'key'+i+'\', this.reverse); this.reverse=!this.reverse ; return false;">↓'+text+'↑</b>'; //
+      cell.innerHTML = '<b class="sortheader" onclick="Sortable.sort(this.parentNode.table, \'key'+i+'\', this.reverse); this.reverse=!this.reverse ; return false;">'+text+'</b>'; //
     }
     if (!table.tBodies) {
       tbody = table.createTBody();

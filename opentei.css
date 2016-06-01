@@ -75,7 +75,7 @@ item list { margin-top:0em; margin-bottom:0em; }
 list, listBibl, listWit { list-style-type: disc; list-style-position: outside; margin-bottom: 1em; margin-left: 2em; margin-top: 1em; }
 list[type="bulleted"] { list-style-type: disc; list-style-position: outside; }
 list[type = "gloss"] item { display: block; margin-left:2em; }
-list[type = "gloss"] label { font-weight:bold; } 
+list[type = "gloss"] label { font-weight:bold; }
 list[type="none"] { list-style-type: none; }
 list[type="numbered"] { list-style-type: decimal; list-style-position: outside; }
 list[type="ordered"] { list-style-type: decimal; list-style-position: outside; }
@@ -130,7 +130,7 @@ note:after { content: " } "; color:#000000; }
 note[place="left"] { float: left; }
 note[place="right"] { float: right; }
 note[place="inline"], note[place="unspecified"] { display: inline; }
-index:before { content:oxy_attributes(); display:block; font-weight:bold; color:#afafaf; }
+index:before { content: oxy_attributes(); display:block; font-weight:bold; color:#afafaf; }
 
 
 /*
@@ -141,9 +141,9 @@ CARACTÈRES
 gap:after { content: "[…]"; font-style: italic; }
 *[rend="i"], hi[rend="i"], hi[rend="it"], hi[rend="italic"], mentioned, soCalled { font-style:italic; }
 hi[rend="i"] { color:red; }
-*[rend="b"], hi[rend="b"], hi[rend="bold"]{ font-weight:bold; }
-hi[rend="sc"], hi[rend="smallcaps"]{ color:red; }
-hi[rend="sup"]{ vertical-align:super; font-size:80%; line-height:0.1; }
+*[rend="b"], hi[rend="b"], hi[rend="bold"] { font-weight:bold; }
+hi[rend="sc"], hi[rend="smallcaps"] { color:red; }
+hi[rend="sup"] { vertical-align:super; font-size:80%; line-height:0.1; }
 hi[rend="ul"], hi[rend="u"], ref { text-decoration: underline; }
 name {background-color:#FFFF00}
 persName {background-color:#FFFFCC;}
@@ -226,20 +226,17 @@ profileDesc > textClass > classCode:before { content:"Code de classification —
 revisionDesc:before { content:"Révisions"; }
 change:before { display:block; content:"Qui ? "attr(who)" Quand ? "attr(when)" Quoi ? "; }
 
-@media oxygen{ 
-  back, div, div0, div1, div2, div3, div4, div5, div6, div7, front, group, text { -oxy-foldable:true; -oxy-not-foldable-child: head; }
+@media oxygen{
+  back, div, div0, div1, div2, div3, div4, div5, div6, div7, front, group, text { -oxy-foldable: true; -oxy-not-foldable-child: head; }
  *[target]:after{ link:attr(target); }
   oxy|comment { width:90%; font-family:monospace !important; display:block !important; color:green !important; font-size:11px !important; padding-left:2em  !important; border:1px solid; }
 }
 
-@media XMLmind-XML-Editor { 
+@media XMLmind-XML-Editor {
   graphic { margin-left:auto; margin-right:auto; margin-top:20px; border:1px solid black; content:image-viewport(attribute,url,data-type,anyURI,viewport-width,450,content-width,scale-to-fit,smooth,yes); }
   back, div, div0, div1, div2, div3, div4, div5, div6, div7, front, group, text { collapsible:yes; }
   back:before, div:before, div0:before, div1:before, div2:before, div3:before, div4:before, div5:before, div6:before, div7:before, front:before, group:before, text:before { display:block; content: " " element-name() " " collapser() " " ; font-size:11px; background-color:#efefef; text-align:right; }
   listWit { collapsible:yes; collapsed:yes; }
   listWit:before { content:"Témoins" collapser(); }
-  change:before { display:block; content:"— Date : \A"text-area(attribute,when,columns,15,rows,1,wrap,word)"\AResponsable : \A"text-area(attribute,who,columns,15,rows,1,wrap,word)"\AAction"; } 
+  change:before { display:block; content:"— Date : \A"text-area(attribute,when,columns,15,rows,1,wrap,word)"\AResponsable : \A"text-area(attribute,who,columns,15,rows,1,wrap,word)"\AAction"; }
 }
-
-
-
