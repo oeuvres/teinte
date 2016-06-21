@@ -470,7 +470,10 @@ TODO: listes, tables, liens
     <xsl:value-of select="$lf"/>
     <xsl:value-of select="substring('######', 1, $level)"/>
     <xsl:text> </xsl:text>
-    <xsl:value-of select="normalize-space($text)"/>
+    <xsl:variable name="head" select="normalize-space($text)"/>
+    <xsl:value-of select="$head"/>
+    <xsl:variable name="last" select="substring($head, string-length($head))"/>
+    <xsl:if test="$last != '.' and $last != '?' and $last != '!' and $last != '…'">.</xsl:if>
   </xsl:template>
 
   

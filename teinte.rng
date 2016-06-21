@@ -1905,6 +1905,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
               <value>mixed</value>
               <value>didascalia</value>
               <value>castList</value>
+              <text/>
             </choice>
           </attribute>
         </optional>
