@@ -200,7 +200,13 @@ TODO: listes, tables, liens
   </xsl:template>
   <xsl:template match="tei:speaker" mode="md">
     <xsl:text>    </xsl:text>
-    <xsl:apply-templates mode="md"/>
+    <xsl:variable name="raw">
+      <xsl:apply-templates mode="md"/>
+    </xsl:variable>
+    <xsl:variable name="speaker" select="normalize-space($raw)"/>
+    <xsl:value-of select="$speaker"/>
+    <xsl:variable name="last" select="substring($speaker, string-length($speaker))"/>
+    <xsl:if test="$last != '.' and $last != '?' and $last != '!' and $last != '…'">.</xsl:if>
   </xsl:template>
   <xsl:template match="tei:speaker/text()" mode="md">
     <xsl:value-of select="translate(., $lc, $uc)"/>
