@@ -7,8 +7,7 @@ else if (isset($_SERVER['ORIG_SCRIPT_FILENAME']) && realpath($_SERVER['ORIG_SCRI
 else if (php_sapi_name() == "cli") Teinte_Doc::cli();
 
 /**
- Sample pilot for Teinte transformations of XML/TEI
-
+ * Sample pilot for Teinte transformations of XML/TEI
  */
 class Teinte_Doc {
   /** TEI/XML DOM Document to process */
@@ -128,7 +127,8 @@ class Teinte_Doc {
     }
     if (!$meta['issued'] && isset($value) && is_numeric($value)) $meta['issued'] = $value;
     $meta['source'] = null;
-
+    $meta['filename'] = $this->filename();
+    $meta['filemtime'] = $this->filemtime();
 
 
     return $meta;
