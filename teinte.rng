@@ -1540,6 +1540,10 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <optional>
           <ref name="rendition-att"/>
         </optional>
+        <!-- généré par traitement de texte -->
+        <optional>
+          <ref name="lang-att"/>
+        </optional>
         <!-- Pas de hi dans du hi ? -->
         <zeroOrMore>
           <choice>

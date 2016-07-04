@@ -27,10 +27,10 @@ class Teinte_Doc {
   /** Keep memory of last xsl, to optimize transformations */
   private $_xslfile;
   /** formats */
-  static $ext = array(
+  public static $ext = array(
     'article' => '.html',
     'html' => '.html',
-    'markdown' => '.md',
+    'markdown' => '.txt',
     'iramuteq' => '.txt',
     'naked' => '.txt',
   );
@@ -197,7 +197,19 @@ class Teinte_Doc {
    */
   public function naked( $destfile=null )
   {
-    return $this->transform(dirname(__FILE__).'/tei2naked.xsl', $destfile);
+    $txt = $this->transform(dirname(__FILE__).'/tei2naked.xsl' );
+    $txt = preg_replace(
+      array(
+        "@([\s\(\[])(c|C|d|D|j|J|usqu|Jusqu|l|L|lorsqu|m|M|n|N|puisqu|Puisqu|qu|Qu|quoiqu|Quoiqu|s|S|t|T)['’]@u",
+      ),
+      array(
+        '$1$2e '
+      ),
+      $txt
+    );
+    if ( !$destfile ) return $txt;
+    file_put_contents( $destfile, $txt );
+    return $destfile;
   }
   /**
    * Preprocess TEI with a transformation
