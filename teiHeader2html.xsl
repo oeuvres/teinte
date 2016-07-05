@@ -184,9 +184,9 @@ sont officiellement ditribuées par le consortium TEI, cependant ce développeme
         <xsl:call-template name="message"/>
       </xsl:variable>
       <xsl:if test="string($message) != '' and string($message) != local-name()">
-        <label>
+        <b>
           <xsl:value-of select="$message"/>
-        </label>
+        </b>
       </xsl:if>
       <xsl:apply-templates/>
     </xsl:element>
@@ -214,19 +214,19 @@ sont officiellement ditribuées par le consortium TEI, cependant ce développeme
           <xsl:choose>
             <xsl:when test="tei:bibl">
               <xsl:for-each select="tei:bibl">
-                <label>
+                <b>
                   <xsl:value-of select="$message"/>
                   <xsl:text> : </xsl:text>
-                </label>
+                </b>
                 <xsl:apply-templates select="./node()"/>
                 <xsl:if test="position()!=last()"><br/></xsl:if>
               </xsl:for-each>
             </xsl:when>
             <xsl:when test="tei:msDesc">
-              <label>
+              <b>
                 <xsl:value-of select="$message"/>
                 <xsl:text> : </xsl:text>
-              </label>
+              </b>
               <xsl:apply-templates select="tei:msDesc[1]"/>
             </xsl:when>
             <xsl:otherwise>
