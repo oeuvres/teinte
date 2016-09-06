@@ -1,2 +1,4 @@
 *.bak
 sets.php
+
+.DS_Store

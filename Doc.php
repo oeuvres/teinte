@@ -193,6 +193,13 @@ class Teinte_Doc {
     return $this->transform(dirname(__FILE__).'/tei2iramuteq.xsl', $destfile);
   }
   /**
+   * Output txm XML
+   */
+  public function txm( $destfile=null )
+  {
+    return $this->transform(dirname(__FILE__).'/tei4txm.xsl', $destfile);
+  }
+  /**
    * Output naked text
    */
   public function naked( $destfile=null )

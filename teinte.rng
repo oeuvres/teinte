@@ -2,14 +2,7 @@
 <!--
 <?xml-stylesheet type="text/xsl" href="../xrem/rng2html.xsl"?>
 -->
-<grammar xmlns="http://relaxng.org/ns/structure/1.0" 
-  xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" 
-  xmlns:h="http://www.w3.org/1999/xhtml" 
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-  
-  datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes"  
-  ns="http://www.tei-c.org/ns/1.0" 
-  xml:lang="fr">
+<grammar datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes" ns="http://www.tei-c.org/ns/1.0" xml:lang="fr" xmlns="http://relaxng.org/ns/structure/1.0" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <a:documentation>Teinte, TEI pour les livres</a:documentation>
   <div xmlns="http://www.w3.org/1999/xhtml">
     <ul class="auteurs">
@@ -603,6 +596,9 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <optional>
           <ref name="type-att"/>
         </optional>
+        <optional>
+          <ref name="n-att"/>
+        </optional>
         <ref name="rendering.block"/>
         <ref name="xml-atts"/>
         <oneOrMore>
@@ -610,6 +606,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
             <ref name="l"/>
             <ref name="pb"/>
             <ref name="cb"/>
+            <ref name="lg"/>
           </choice>
         </oneOrMore>
       </element>
@@ -617,8 +614,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
     <define name="l">
       <element name="l">
         <a:documentation>Un vers, généralement contenu dans une strophe &lt;lg></a:documentation>
-        <div xmlns="http://www.w3.org/1999/xhtml">
-          <br/>Pour les vers rompus du théâtre (– Hé ? – Quoi ! – Ah…), renseigner l’attribut @part qui permettra à une application de rétablir les alignements, indiquer explicitement la succession pour informer un automate : Initial (1) – Medial (0 ou n) – Final (1) <br/>Les indentations spécifiques sont à inscrire sous forme d’espaces insécables (caractère unicode équivalent à l’entité XML <![CDATA[&#160;]]>). Pour les vers numérotés, le numéro est inscrit dans l’attribut <a:att>n</a:att>.</div>
+        <div xmlns="http://www.w3.org/1999/xhtml"> <br/>Pour les vers rompus du théâtre (– Hé ? – Quoi ! – Ah…), renseigner l’attribut @part qui permettra à une application de rétablir les alignements, indiquer explicitement la succession pour informer un automate : Initial (1) – Medial (0 ou n) – Final (1) <br/>Les indentations spécifiques sont à inscrire sous forme d’espaces insécables (caractère unicode équivalent à l’entité XML <![CDATA[&#160;]]>). Pour les vers numérotés, le numéro est inscrit dans l’attribut <a:att>n</a:att>.</div>
         <ref name="xml-atts"/>
         <optional>
           <ref name="n-att"/>
@@ -847,7 +843,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
           <element name="speaker">
             <zeroOrMore>
               <choice>
-                <text/>                
+                <text/>
                 <ref name="hi"/>
                 <ref name="listPerson"/>
                 <ref name="note"/>
@@ -2046,9 +2042,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
           <ul>
             <li><b>Mise en forme typographique</b> : si l’objectif est la mise en petites capitales des noms de famille, utiliser <a:el>surname</a:el>, afin que <a:el>persName</a:el> encadre la totalité d’un nom de personne, nom, prénom, et autres composantes compris.</li>
             <li><b>Traitements linguistiques</b> : le but sera d’inclure tous les noms propres. Il doit être possible de remplacer <a:el>persName</a:el> par "il" ou "elle" sans rompre la signification de la phrase. Pour un tel objectif, il convient de baliser aussi les noms abrégés ("K.", "Joseph K.").</li>
-            <li><b>Indexation</b> : il est nécessaire d'ajouter l’attribut utile (index-atts()) à l’identification de la personne, notamment pour les pronoms, et permettre les regroupements.<br/>
-              <a:example><persName key="dieu">Il</persName></a:example> L’attribut <a:att>type</a:att> permet, grâce à la valeur "author", d’indexer les <em>auteurs mentionnés</em> au fil du texte. De manière complémentaire, l’élement <a:el>author</a:el>, autorisé uniquement dans <a:el>bibl</a:el>, permet d’indexer les <em>auteurs référencés</em>, c’est-à-dire ceux dont les citations sont explicitement référencées par un auteur ou un éditeur scientifique. Pour établir l’index des auteurs cités dans un texte, il convient donc de regrouper les clés (<a:att>key</a:att>, <a:att>corresp</a:att> ou <a:att>ref</a:att>, cf index-atts()) renseignées pour les éléments <a:el>persName @type="author"]</a:el> et <a:el>author</a:el>.<br/> Auteur mentionné : <a:example>Je veux parler du drame d’amour qui mit aux prises, voici soixante ans passé, deux des beaux génies de notre âge : <persName type="author" ref="http://www.idref.fr/027043339">Alfred de Musset</persName> et <persName type="author" ref="http://www.idref.fr/027121577">George Sand</persName>.</a:example> Auteur référencé : <a:example><note>Le merveilleux <bibl><title>Cyrano</title> de <author ref="http://www.idref.fr/027109860">M. Edmond Rostand</author></bibl> est venu confirmer cette hypothèse. (NdA)</note></a:example>
-            </li>
+            <li><b>Indexation</b> : il est nécessaire d'ajouter l’attribut utile (index-atts()) à l’identification de la personne, notamment pour les pronoms, et permettre les regroupements.<br/> <a:example><persName key="dieu">Il</persName></a:example> L’attribut <a:att>type</a:att> permet, grâce à la valeur "author", d’indexer les <em>auteurs mentionnés</em> au fil du texte. De manière complémentaire, l’élement <a:el>author</a:el>, autorisé uniquement dans <a:el>bibl</a:el>, permet d’indexer les <em>auteurs référencés</em>, c’est-à-dire ceux dont les citations sont explicitement référencées par un auteur ou un éditeur scientifique. Pour établir l’index des auteurs cités dans un texte, il convient donc de regrouper les clés (<a:att>key</a:att>, <a:att>corresp</a:att> ou <a:att>ref</a:att>, cf index-atts()) renseignées pour les éléments <a:el>persName @type="author"]</a:el> et <a:el>author</a:el>.<br/> Auteur mentionné : <a:example>Je veux parler du drame d’amour qui mit aux prises, voici soixante ans passé, deux des beaux génies de notre âge : <persName ref="http://www.idref.fr/027043339" type="author">Alfred de Musset</persName> et <persName ref="http://www.idref.fr/027121577" type="author">George Sand</persName>.</a:example> Auteur référencé : <a:example><note>Le merveilleux <bibl><title>Cyrano</title> de <author ref="http://www.idref.fr/027109860">M. Edmond Rostand</author></bibl> est venu confirmer cette hypothèse. (NdA)</note></a:example> </li>
           </ul>
         </div>
         <ref name="xml-atts"/>
@@ -2473,10 +2467,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
     <define name="lb">
       <element name="lb">
         <a:documentation>Saut de ligne “line break” &lt;html5:br/></a:documentation>
-        <div xmlns="http://www.w3.org/1999/xhtml"> (<i>line break</i>) <p><a:el>lb</a:el> peut être utilisé pour forcer un saut de ligne, par exemple dans un titre.</p>
-          <p>Dans le cas d’un texte avec lignes numérotées qui ne sont pas des vers inclus dans un élément <a:el>l</a:el>, les numéros sont utiles au référencement des citations des notes d’apparat critique. Il est donc nécessaire de conserver tous les sauts de lignes dans le flux du texte, et d’inscrire le numéro — quand il est imprimé — dans l’attribut <a:att>n</a:att>. <b>Attention</b> : certaines éditions alternent l’emplacement du numéro de ligne selon les pages paires ou impaires (marges intérieures ou extérieures). Conformément à la spécification TEI, le numéro inscrit doit toujours se rapporter à ce qui suit. Les césures sont traitées comme pour le reste du texte. Une édition électronique de référence doit proposer une exploitation de ces sauts de ligne pour garantir une citabilité de qualité égale à la version imprimée. Si plusieurs numérotations concurrentes des lignes sont conservées, elles sont distinguées par l’attribut <a:att>ed</a:att>.</p>
-          <a:example href="teibook.xml#lb"/>
-        </div>
+        <div xmlns="http://www.w3.org/1999/xhtml"> (<i>line break</i>) <p><a:el>lb</a:el> peut être utilisé pour forcer un saut de ligne, par exemple dans un titre.</p> <p>Dans le cas d’un texte avec lignes numérotées qui ne sont pas des vers inclus dans un élément <a:el>l</a:el>, les numéros sont utiles au référencement des citations des notes d’apparat critique. Il est donc nécessaire de conserver tous les sauts de lignes dans le flux du texte, et d’inscrire le numéro — quand il est imprimé — dans l’attribut <a:att>n</a:att>. <b>Attention</b> : certaines éditions alternent l’emplacement du numéro de ligne selon les pages paires ou impaires (marges intérieures ou extérieures). Conformément à la spécification TEI, le numéro inscrit doit toujours se rapporter à ce qui suit. Les césures sont traitées comme pour le reste du texte. Une édition électronique de référence doit proposer une exploitation de ces sauts de ligne pour garantir une citabilité de qualité égale à la version imprimée. Si plusieurs numérotations concurrentes des lignes sont conservées, elles sont distinguées par l’attribut <a:att>ed</a:att>.</p> <a:example href="teibook.xml#lb"/> </div>
         <optional>
           <ref name="n-att"/>
         </optional>
@@ -2815,5 +2806,5 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
     </define>
   </div>
   <!-- appel du teiHeader, revoir URI : http://svn.code.sf.net/p/algone/code/teibook/teibookHeader.rng -->
-  <include href="teinteHeader.rng" h:href="./teinteHeader.rng" h:title="Schéma de l'entête de métadonnées Teibook"/>
+  <include h:href="./teinteHeader.rng" h:title="Schéma de l'entête de métadonnées Teibook" href="teinteHeader.rng"/>
 </grammar>
