@@ -237,7 +237,7 @@ mais aussi pour le liage dans l'apparat critique. Ce mode fait usage des modes 
     <xsl:param name="depth"/>
     <xsl:choose>
       <!-- simple content ? -->
-      <xsl:when test="tei:p | tei:l | tei:list | tei:argument | tei:table | tei:docTitle | tei:docAuthor">
+      <xsl:when test="not(tei:castList | tei:div | tei:div1 | tei:titlePage)">
         <li>
           <xsl:call-template name="a"/>
         </li>

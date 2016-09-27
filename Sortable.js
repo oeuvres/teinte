@@ -76,7 +76,7 @@ var Sortable = {
     css.innerHTML = "\
 table.sortable { font-family: sans-serif; font-size: 12px; line-height: 105%; border: 1px solid; border-color: #CCCCCC; margin-top: 1em; margin-bottom: 2em; border-collapse: collapse; } \
 table.sortable caption { background-color: #F5F3EB; padding: 2px 1ex 2px 1ex } \
-table.sortable td { vertical-align: top; border: #CCCCCC 1px solid; padding: 2px 1ex; } \
+table.sortable td { vertical-align: middle; border: #CCCCCC 1px solid; padding: 2px 1ex; } \
 table.sortable td.string { text-align: left; } \
 table.sortable tr td { border-bottom: none; border-top: none; } \
 tr.even { } \
@@ -238,7 +238,7 @@ th.num, table.sortable th.num { text-align: right; font-weight: 100; font-size: 
     // return text.substring(0, 10) ;
     text=Sortable.trim(text);
     // num
-    n=parseFloat(text.replace(/,/g, '.').replace(/[  ]/g, ''));
+    n=parseFloat(text.replace(/,/g, '.').replace(/[ ~]/g, ''));
     // text
     if (isNaN(n)) {
       text=text.toLowerCase().replace(/œ/g, 'oe').replace(/æ/g, 'ae').replace(/ç/g, 'c').replace(/ñ/g, 'n').replace(/[éèêë]/g, 'e').replace(/[áàâä]/g, 'a').replace(/[íìîï]/g, 'i').replace(/úùûü/, 'u').replace(/\W/g, '') ;
