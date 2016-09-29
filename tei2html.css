@@ -53,8 +53,6 @@ blockquote, dd , p.p, .argument, .availability, div.bibl, li.bibl, .dialogue li 
 
 /* html5 default, in alphabetic order */
 a:target, mark:target, b.mark:target { border-bottom: 3px #CCCCCC solid; background-color: #FFFFEE; border-radius-top-left: 0; }
-.note:target { background-color: #FFFFEE; border-top: 1px solid #E2DED0; }
-.note:target:before { content: "☞"; position: absolute; margin: 0 1ex 0 -7.5ex; font-size: 16px; }
 section:target { background: transparent !important; border-left: none; }
 a:target { }
 a { background-color: transparent; text-decoration: none; border-bottom: dashed 0.5px #00F; color: #339; }
@@ -72,7 +70,6 @@ b, strong { font-weight: inherit; }
 b, strong { font-weight: bolder; }
 big { font-weight: normal; font-size: 180%; }
 blockquote { margin: 1.5em 0em 1.5em 7em; text-align: justify; line-height: 130%; font-size: 92%; padding: 0 ; }
-.note blockquote { margin: 1ex 0em 1ex 2em; }
 blockquote p { text-indent: 2em; }
 cite { font-style: normal; }
 code { font-size: 13px; }
@@ -240,6 +237,8 @@ hr.footnotes { width: 15%; text-align: left; text-align: -moz-left; margin-right
 div.l dfn.gloss { display: block; position: absolute; padding: 5px 5px 5px 5px; border-radius: 10px; line-height: 110%; text-align: left; float: right; margin-left: 25em; width: 250px; font-size: small; background-color: #F3F3F3; text-indent: 0; }
 p dfn.gloss , div.gloss { padding: 5px 5px 5px 5px; border-radius: 10px; line-height: 110%; text-align: left; font-size: small; background-color: #F3F3F3; text-indent: 0; }
 .l { text-align: left; text-indent: -2rem; padding-left: 2rem; }
+.l:target { background-color: #FFFFEE; border-top: 1px solid #E2DED0; }
+.l:target:before { content: "☞"; position: absolute; margin: 0 1ex 0 -7.5ex; font-size: 16px; }
 .l1 { padding-left: 13rem; } /* metric */
 .l2 { padding-left: 12rem; }
 .l3 { padding-left: 11rem; }
@@ -263,6 +262,9 @@ div.lg { margin-top: 1em; margin-bottom: 1em; }
 .marginalia:target { background-color: #FFFFEE; }
 .marginalia:target:before { display:block; content: "☞"; font-size: 16px; position: absolute; margin: 0 0 0 -1.5em; }
 div.note, aside.note { line-height: 115%; margin: 1px 0 1em 0; clear: both; text-align: justify; }
+.note:target { background-color: #FFFFEE; border-top: 1px solid #E2DED0; }
+.note:target:before { content: "☞"; position: absolute; margin: 0 1ex 0 -7.5ex; font-size: 16px; }
+.note blockquote { margin: 1ex 0em 1ex 2em; }
 .note p { margin: 0; text-indent: 1em; text-indent: 1rem; }
 .note p.noindent { text-indent: 0; }
 p.note { text-indent: 0; margin-top: 1ex; margin-bottom: 1ex; }

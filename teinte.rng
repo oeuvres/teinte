@@ -1355,6 +1355,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
             <ref name="note"/>
             <ref name="num"/>
             <ref name="ref"/>
+            <ref name="term"/>
           </choice>
         </oneOrMore>
       </element>
