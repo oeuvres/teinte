@@ -1501,9 +1501,12 @@ Tables
           <xsl:value-of select="@subtype"/>
         </xsl:attribute>
       </xsl:if>
+      <xsl:variable name="html">
+        <xsl:apply-templates/>
+      </xsl:variable>     
       <xsl:choose>
-        <xsl:when test=". != ''">
-          <xsl:apply-templates/>
+        <xsl:when test="string($html) != ''">
+          <xsl:copy-of select="$html"/>
         </xsl:when>
         <xsl:otherwise>
           <xsl:call-template name="anchors">

@@ -198,7 +198,7 @@ p.caption { font-weight: bold; }
 ul.castList { list-style: none; }
 /* numbering */
 .cb, .pb, .ed, small.l, small.l-n { font-weight: normal; font-style: normal; color: grey; margin-top: 0; margin-bottom: 0; text-indent: 0; text-decoration: none; border: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
-.cb, .pb, .ed  { float: right; margin-right: -4.5rem; max-width: 10rem; }
+.cb, .pb, .ed  { float: right; margin-top: 0.1rem; margin-right: -4.5rem; max-width: 10rem; }
 .lb { color: grey; font-size: 11px; }
 .l-n { position:absolute; margin-left: -3em; margin-left: -2.5rem; }
 a.ed, a.pb {}
