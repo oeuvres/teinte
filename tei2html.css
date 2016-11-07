@@ -463,7 +463,7 @@ figcaption.less:before { float: left; margin-left: -2em; content: '◿'; } /*  *
 #header { height: 60px; z-index: 2; position: relative; background-color: #FFFFFF; }
 #aside { page-break-after: always;  }
 /* floatfix */
-#main:after, #main:before, #aside:after, #aside:before, #center:after, #center:before { content:""; display: table; }
+#main:after, #main:before, #aside:after, #aside:before, #center:after, #center:before { content:" "; visibility: hidden; display: block; clear: both; height: 0; }
 #main, #aside { zoom:1; clear:both; position: relative; }
 #main {background-color: #FFFFFF; }
 #center, #cont, #contenu, #main, #article { min-height: 100%; }

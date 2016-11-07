@@ -205,6 +205,7 @@ class Teinte_Doc {
   public function naked( $destfile=null )
   {
     $txt = $this->transform(dirname(__FILE__).'/tei2naked.xsl' );
+    /* TRÈS MAUVAISE IDÉE
     $txt = preg_replace(
       array(
         "@([\s\(\[])(c|C|d|D|j|J|usqu|Jusqu|l|L|lorsqu|m|M|n|N|puisqu|Puisqu|qu|Qu|quoiqu|Quoiqu|s|S|t|T)['’]@u",
@@ -214,6 +215,7 @@ class Teinte_Doc {
       ),
       $txt
     );
+    */
     if ( !$destfile ) return $txt;
     file_put_contents( $destfile, $txt );
     return $destfile;
