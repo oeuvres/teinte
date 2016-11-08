@@ -188,7 +188,7 @@ section > div.bibl, article > div.bibl, figcaption.bibl { text-indent: -2rem; pa
 figcaption.bibl { font-style: normal; text-align: left; padding: 0 0 0 2rem; }
 figure.bibl { margin: 0; padding: 0; border: none; }
 li.bibl { list-style: circle; font-size: 90%; } /* like li.witness */
-blockquote .bibl { margin-left: 2em; display: block; font-family: sans-serif; }
+blockquote .bibl { text-align: right; margin-top: 1ex; }
 .byline { text-align: right; margin-left: 45%; margin-top: 4ex; text-indent: 0; }
 aside .byline { margin-top: 0; text-align: left; margin: 0 20% 0 0; }
 .byline .docAuthor { font-variant: small-caps; }
