@@ -99,5 +99,13 @@ XML TEI allégé, par exemple pièce de théâtre sans didascalies, ou critique 
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
+  
+  <xsl:template match="tei:name[@type='authority'] | tei:persName[@type='authority']" mode="txm">
+    <authority>
+      <xsl:apply-templates mode="txm"/>
+    </authority>
+  </xsl:template>
+
+  <xsl:template match="tei:quote[tei:lg] | tei:p[tei:quote][normalize-space(text()) = ''] | tei:quote[tei:l]"/>
 
 </xsl:transform>
