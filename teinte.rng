@@ -1968,6 +1968,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
     <define name="indexable">
       <a:documentation>Balises de niveau caractère utiles à l’indexation des entités nommées</a:documentation>
       <choice>
+        <ref name="author"/>
         <ref name="name"/>
         <ref name="orgName"/>
         <ref name="persName"/>
