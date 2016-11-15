@@ -421,11 +421,11 @@ sont officiellement ditribuées par le consortium TEI, cependant ce développeme
         <div>
           <xsl:call-template name="headatts"/>
           <!-- Reorder -->
-          <xsl:apply-templates select="tei:title"/>
           <xsl:apply-templates select="tei:author"/>
+          <xsl:apply-templates select="/*/tei:teiHeader[1]/tei:profileDesc[1]/tei:creation[1]"/>
+          <xsl:apply-templates select="tei:title"/>
           <xsl:apply-templates select="tei:editor | tei:funder | tei:meeting | tei:principal | tei:sponsor"/>
           <xsl:apply-templates select="tei:respStmt"/>
-          <xsl:apply-templates select="/*/tei:teiHeader[1]/tei:profileDesc[1]/tei:creation[1]"/>
           <xsl:if test="../tei:publicationStmt/tei:date">
             <div class="date">
               <xsl:apply-templates select="../tei:publicationStmt/tei:date"/>

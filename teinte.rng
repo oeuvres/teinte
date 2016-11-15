@@ -520,6 +520,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <ref name="desc"/>
         <ref name="eg"/>
         <ref name="entryFree"/>
+        <ref name="epigraph"/>
         <ref name="figure"/>
         <ref name="l"/>
         <ref name="label"/>
@@ -1356,6 +1357,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
             <ref name="num"/>
             <ref name="ref"/>
             <ref name="term"/>
+            <ref name="title"/>
           </choice>
         </oneOrMore>
       </element>
@@ -1412,10 +1414,13 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <ref name="rendering.block"/>
         <oneOrMore>
           <choice>
-            <ref name="p"/>
-            <ref name="l"/>
-            <ref name="lb"/>
             <ref name="bibl"/>
+            <ref name="l"/>
+            <ref name="label"/>
+            <ref name="lg"/>
+            <ref name="lb"/>
+            <ref name="p"/>
+            <ref name="pb"/>
           </choice>
         </oneOrMore>
       </element>
