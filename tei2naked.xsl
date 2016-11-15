@@ -242,7 +242,18 @@ Texte nu, par exemple pièce de théâtre sans didascalies, ou critique sans cit
     tei:body | tei:group |
     tei:div | tei:div0 | tei:div1 | tei:div2 | tei:div4 | tei:div5 | tei:div6 | tei:div7 
 " mode="naked">
-    <xsl:apply-templates select="*" mode="naked"/>
+    <xsl:choose>
+      <xsl:when test="@type='argument'"/>
+      <xsl:when test="@type='appendix'"/>
+      <xsl:when test="@type='dedication'"/>
+      <xsl:when test="@type='postface'"/>
+      <xsl:when test="@type='preface'"/>
+      <xsl:when test="@type='privilege'"/>
+      <xsl:when test="@type='set'"/>
+      <xsl:otherwise>
+        <xsl:apply-templates select="*" mode="naked"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
 

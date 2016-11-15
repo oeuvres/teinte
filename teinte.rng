@@ -333,6 +333,8 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
             <a:documentation>Théâtre, acte.</a:documentation>
             <value>appendix</value>
             <a:documentation>Appendice, paratexte, généralement dans &lt;back></a:documentation>
+            <value>argument</value>
+            <a:documentation>Argument, paratexte, généralement en entête, parfois entre deux actes</a:documentation>
             <value>article</value>
             <a:documentation>Article, niveau de référence du découpage du texte. Peut être contenu dans une structuration supérieure (partie, livre…), ou contenir d'autres divisions (sections…). Ce terme ne doit pas être utilisé pour un niveau inférieur ou supérieur à la division de référence d'un texte.</a:documentation>
             <value>book</value>
@@ -363,8 +365,12 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
             <a:documentation>Notes de fin de volume, paratexte, généralement dans &lt;back></a:documentation>
             <value>poem</value>
             <a:documentation>Un poème</a:documentation>
+            <value>postface</value>
+            <a:documentation>Postface, paratexte, généralement dans &lt;back></a:documentation>
             <value>preface</value>
             <a:documentation>Préface, paratexte, généralement dans &lt;front></a:documentation>
+            <value>privilege</value>
+            <a:documentation>Privilège d’imprimer, paratexte</a:documentation>
             <value>prologue</value>
             <a:documentation>Prologue, par exemple dans une pièce de théâtre, préférer une division typée à l’élément prologue de la TEI qui n’est autorisé que dans l’avant-texte <a:el>front</a:el>.</a:documentation>
             <value>scene</value>
