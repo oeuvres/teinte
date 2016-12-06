@@ -36,7 +36,7 @@
           </titleStmt>
           <publicationStmt>
             <date when="2013-01"/>
-            <idno>http://svn.code.sf.net/p/algone/code/corpus/baudelaire/baudelaire_fleurs.xml</idno>
+            <idno>...</idno>
             <availability status="restricted">
               <licence target="http://creativecommons.org/publicdomain/mark/1.0/deed.fr"/>
             </availability>
@@ -128,7 +128,7 @@
       <!-- Laisser l’éditeur libre de son ordre -->
       <zeroOrMore>
         <choice>
-          <ref name="author.teiHeader"/>
+          <ref name="teiHeader.author"/>
           <ref name="principal"/>
           <ref name="editor"/>
           <ref name="funder"/>
@@ -191,7 +191,7 @@
         </choice>
       </attribute>
     </define>
-    <define name="author.teiHeader">
+    <define name="teiHeader.author">
       <element name="author">
         <a:documentation>Auteur(s) du texte, forme normalisée.</a:documentation>
         <ul xmlns="http://www.w3.org/1999/xhtml">
@@ -470,9 +470,12 @@
             </attribute>
           </group>
         </choice>
+        <text/>
+        <!--
         <data type="string">
           <param name="pattern">-?[0-9]{4}</param>
         </data>
+        -->
       </element>
     </define>
   <define name="id-att" combine="choice">
@@ -531,7 +534,7 @@
     <zeroOrMore>
       <choice>
         <text/>
-        <ref name="author.teiHeader"/>
+        <ref name="teiHeader.author"/>
         <element name="date">
           <text/>
         </element>
@@ -541,6 +544,7 @@
           <attribute name="target"/>
           <text/>
         </element>
+        <ref name="teiHeader.num"/>
         <element name="title">
           <ref name="pers.cont"/>
         </element>
@@ -1071,7 +1075,7 @@
         <zeroOrMore>
           <choice>
             <ref name="teiHeader.flow"/>
-            <ref name="author.teiHeader"/>
+            <ref name="teiHeader.author"/>
             <element name="author">
               <text/>
             </element>
