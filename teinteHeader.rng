@@ -163,7 +163,13 @@
                <data type="anyURI"/>
             </attribute>
           </optional>
-          <ref name="teiHeader.flow"/>
+          <zeroOrMore>
+            <choice>
+              <text/>
+              <ref name="teiHeader.hi"/>
+              <ref name="teiHeader.num"/>
+            </choice>
+          </zeroOrMore>
         </element>
       </oneOrMore>
     </define>
@@ -271,17 +277,6 @@
       <zeroOrMore>
         <choice>
           <text/>
-          <element name="hi">
-            <attribute name="rend">
-              <choice>
-                <value>sub</value>
-                <value>sup</value>
-                <value>sc</value>
-                <value>i</value>
-              </choice>
-            </attribute>
-            <text/>
-          </element>
           <element name="forename">
             <text/>
           </element>
@@ -503,6 +498,34 @@
       <ref name="teiHeader.flow"/>
     </element>
   </define>
+  <define name="teiHeader.hi">
+    <element name="hi">
+      <attribute name="rend">
+        <choice>
+          <value>sub</value>
+          <value>sup</value>
+          <value>sc</value>
+          <value>i</value>
+        </choice>
+      </attribute>
+      <text/>
+    </element>
+  </define>
+  <define name="teiHeader.num">
+    <element name="num">
+      <zeroOrMore>
+        <choice>
+          <text/>
+          <element name="hi">
+            <attribute name="rend">
+              <value>sup</value>
+            </attribute>
+            <text/>
+          </element>
+        </choice>
+      </zeroOrMore>
+    </element>
+  </define>
   <define name="teiHeader.flow">
     <a:documentation>Texte riche contrôlé, par exemple dans un titre</a:documentation>
     <zeroOrMore>
@@ -512,17 +535,7 @@
         <element name="date">
           <text/>
         </element>
-        <element name="hi">
-          <attribute name="rend">
-            <choice>
-              <value>sub</value>
-              <value>sup</value>
-              <value>sc</value>
-              <value>i</value>
-            </choice>
-          </attribute>
-          <text/>
-        </element>
+        <ref name="teiHeader.hi"/>
         <ref name="publisher"/>
         <element name="ref">
           <attribute name="target"/>
