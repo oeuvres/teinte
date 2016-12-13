@@ -2716,7 +2716,9 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
       <a:documentation>Information de rendu pour un segment de caractères, liste fermée de tokens séparés d’espaces.</a:documentation>
       <optional>
         <attribute name="rend">
-          <ref name="rend.font"/>
+          <list>
+            <ref name="rend.font"/>
+          </list>
         </attribute>
       </optional>
       <optional>

@@ -69,7 +69,7 @@ aside header { border: none; padding-right: 1em; margin: 1em 0 3em 0; }
 b, strong { font-weight: inherit; }
 b, strong { font-weight: bolder; }
 big { font-weight: normal; font-size: 180%; }
-blockquote { margin: 1.5em 0em 1.5em 7em; text-align: justify; line-height: 130%; font-size: 92%; padding: 0 ; }
+blockquote { margin: 1.5em 0em 1.5em 3r em; text-align: justify; line-height: 130%; font-size: 92%; padding: 0 ; }
 blockquote p { text-indent: 2em; }
 cite { font-style: normal; }
 code { font-size: 13px; }
@@ -89,10 +89,10 @@ figcaption { display: block; padding: 6px 8px;  }
 figcaption.head { background: #dddddd; text-align: center; }
 figcaption a:hover { background-color: #FFFFFF; }
 figcaption img { float: right; display: block; padding-left: 6px; margin-right: -10px; margin-top: -8px; }
-figure { display: block; position: relative; padding: 6px 6px 6px 6px; line-height: 105%; background: white; margin: 0; border: solid 1px #888888; text-align: center; margin-top: 1em; margin-bottom: 1em; }
+figure { display: block;  position: relative; padding: 6px 0; line-height: 105%; background: white; margin: 0; text-align: left; margin-top: 1em; margin-bottom: 1em; }
 figure.left { float: left; margin: 15px 15px 8px 0; }
 figure.right { float: right; margin: 15px 0 8px 15px; }
-figure img { padding : 6px; }
+figure img {  }
 figure a { text-decoration: none; border-bottom: none; }
 figure a:hover { text-decoration: none; border-bottom: none; }
 figure h1 { font-size: inherit; font-weight: bold; margin: 1em 0 1ex 0; text-align: center; }
@@ -198,7 +198,8 @@ p.caption { font-weight: bold; }
 ul.castList { list-style: none; }
 /* numbering */
 .cb, .pb, .ed, small.l, small.l-n { font-weight: normal; font-style: normal; color: grey; margin-top: 0; margin-bottom: 0; text-indent: 0; text-decoration: none; border: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
-.cb, .pb, .ed  { float: right; margin-top: 0.1rem; margin-right: -4.5rem; max-width: 10rem; }
+.cb, .pb, .ed  { float: right; margin-top: 0.1rem; margin-right: -5rem; max-width: 10rem; background-color: #FFFFFF; padding:1px 1ex 1px 0; }
+a.pb:hover { background-color: #FFFFFF; }
 .lb { color: grey; font-size: 11px; }
 .l-n { position:absolute; margin-left: -3em; margin-left: -2.5rem; }
 a.ed, a.pb {}
@@ -342,7 +343,7 @@ li.witness { list-style: square; font-size: 90%; font-family: sans-serif; }
 blockquote.border { border: none; padding: inherit; }
 a.bookmark { font-size: 60%; visibility: hidden; user-select: none; }
 h1:hover a.bookmark, h2:hover a.bookmark, h3:hover a.bookmark, h4:hover a.bookmark, h5:hover a.bookmark, h6:hover a.bookmark, a.bookmark:hover { color: #808080; visibility: visible; }
-.center, div.center, blockquote.center > * { text-align: center; text-indent: 0; margin-left: auto; margin-right: auto; padding-left: 0; }
+.center, div.center, p.center, blockquote.center > * { text-align: center; text-indent: 0; margin-left: auto; margin-right: auto; padding-left: 0; }
 .center p { text-align: inherit; text-indent: 0; }
 span.center { display: block; }
 .clear { clear: both; }
