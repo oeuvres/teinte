@@ -891,22 +891,13 @@ résoudre les césures, ou les alternatives éditoriales.
         <xsl:apply-templates select="tei:div[1]" mode="title"/>
       </xsl:when>
       -->
-      <xsl:when test="@n and @type">
-        <xsl:text>[</xsl:text>
-        <xsl:value-of select="@type"/>
-        <xsl:text> </xsl:text>
-        <xsl:value-of select="@n"/>
-        <xsl:text>]</xsl:text>
-      </xsl:when>
       <xsl:when test="@n">
-        <xsl:text>[</xsl:text>
         <xsl:value-of select="@n"/>
-        <xsl:text>]</xsl:text>
       </xsl:when>
       <xsl:when test="@type">
-        <xsl:text>[</xsl:text>
-        <xsl:value-of select="@type"/>
-        <xsl:text>]</xsl:text>
+        <xsl:call-template name="message">
+          <xsl:with-param name="id" select="@type"/>
+        </xsl:call-template>
       </xsl:when>
       <xsl:when test="self::tei:div and parent::tei:body">
         <xsl:text>[</xsl:text>
@@ -1115,6 +1106,7 @@ résoudre les césures, ou les alternatives éditoriales.
         <xsl:text>#</xsl:text>
         <xsl:value-of select="$id"/>
       </xsl:when>
+      <!-- For a deported page of notes (site or epub) -->
       <xsl:when test="$class = 'noteref' and $fnpage != ''">
         <xsl:value-of select="$base"/>
         <xsl:value-of select="$fnpage"/>

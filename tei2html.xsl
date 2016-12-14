@@ -2432,7 +2432,7 @@ Call that in
           </xsl:choose>
         </xsl:variable>
         <!-- FBRreader -->
-        <a class="{$class}" href="#{$id}" id="{$id}_">
+        <a class="{$class}" href="{$target}" id="{$id}_">
           <xsl:if test="$format = $epub3">
             <xsl:attribute name="epub:type">noteref</xsl:attribute>
           </xsl:if>
@@ -2496,15 +2496,12 @@ Call that in
             <xsl:value-of select="substring-before(concat(@target, ' '), ' ')"/>
           </xsl:when>
           <xsl:otherwise>
-            <!-- ??
+            <!-- Call a centralized note href template, for epub deported notes -->
             <xsl:call-template name="href">
               <xsl:with-param name="class">
                 <xsl:value-of select="$class"/>
               </xsl:with-param>
             </xsl:call-template>
-            -->
-            <xsl:text>#</xsl:text>
-            <xsl:value-of select="$id"/>
             <xsl:text>_</xsl:text>
           </xsl:otherwise>
         </xsl:choose>

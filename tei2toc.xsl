@@ -85,6 +85,16 @@ sont officiellement ditribuées par le consortium TEI, cependant ce développeme
     </xsl:choose>
   </xsl:template>
 
+  <!-- Générer une navigation dans les sections -->
+  <xsl:template name="toc">
+    <ol class="tree">
+      <xsl:apply-templates select="/*/tei:text/tei:front" mode="li"/>
+      <xsl:apply-templates select="/*/tei:text/tei:body" mode="li"/>
+      <xsl:apply-templates select="/*/tei:text/tei:group" mode="li"/>
+      <xsl:apply-templates select="/*/tei:text/tei:back" mode="li"/>
+    </ol>
+  </xsl:template>
+  
   <xsl:template name="toc-header">
     <header>
       <a>
@@ -345,15 +355,6 @@ mais aussi pour le liage dans l'apparat critique. Ce mode fait usage des modes 
             <xsl:call-template name="a"/>
           </xsl:when>
       -->
-  </xsl:template>
-  <!-- Générer une navigation dans les sections -->
-  <xsl:template name="toc">
-    <ol class="tree">
-      <xsl:apply-templates select="/*/tei:text/tei:front" mode="li"/>
-      <xsl:apply-templates select="/*/tei:text/tei:body" mode="li"/>
-      <xsl:apply-templates select="/*/tei:text/tei:group" mode="li"/>
-      <xsl:apply-templates select="/*/tei:text/tei:back" mode="li"/>
-    </ol>
   </xsl:template>
   <xsl:template name="toc-front">
     <xsl:for-each select="/*/tei:text/tei:front">

@@ -76,6 +76,10 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
     <rdfs:label xml:lang="fr">Couverture</rdfs:label>
     <rdfs:label xml:lang="en">Cover</rdfs:label>
   </rdf:Property>
+  <rdf:Property xml:id="dedication">
+    <rdfs:label xml:lang="fr">Dédicace</rdfs:label>
+    <rdfs:label xml:lang="en">Dedication</rdfs:label>
+  </rdf:Property>
   <rdf:Property xml:id="editionStmt">
     <rdfs:label xml:lang="fr">Ont participé à cette édition électronique : </rdfs:label>
   </rdf:Property>
