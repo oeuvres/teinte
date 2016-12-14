@@ -1924,19 +1924,21 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
           <oneOrMore>
             <choice>
               <text/>
-              <ref name="listPerson"/>
               <ref name="hi"/>
+              <ref name="listPerson"/>
               <ref name="note"/>
+              <ref name="pb"/>
               <ref name="ref"/>
             </choice>
           </oneOrMore>
           <oneOrMore>
             <choice>
-              <ref name="listPerson"/>
-              <ref name="p"/>
-              <ref name="quote-p"/>
-              <ref name="lg"/>
               <ref name="l"/>
+              <ref name="listPerson"/>
+              <ref name="lg"/>
+              <ref name="p"/>
+              <ref name="pb"/>
+              <ref name="quote-p"/>
             </choice>
           </oneOrMore>
         </choice>
@@ -2687,25 +2689,28 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
       <a:documentation>Information de rendu pour un bloc, combine des rendus de niveau caractère et de niveau bloc avec possibilité de classe personnalisé comme une liste de tokens séparés d'espaces.</a:documentation>
       <optional>
         <attribute name="rend">
-          <!-- list ? -->
-          <choice>
-            <ref name="rend.font"/>
-            <ref name="rend.align"/>
-            <value>argument</value>
-            <a:documentation>Valeur sémantique d’un élément argument, mais qui autorise à placer un élément &lt;stage&gt; avant (édition de théâtre)</a:documentation>
-            <value>indent</value>
-            <a:documentation>Indentation de première ligne (lorsque pas d’indentation par défaut)</a:documentation>
-            <value>lg</value>
-            <a:documentation>Utile provisoirement, mais lg/l est préférable.</a:documentation>
-            <value>noindent</value>
-            <a:documentation>Pas d’indentation de première ligne (lorsque indentation par défaut)</a:documentation>
-            <!-- Essayer de bloquer ? Et laisser rendition pour personnaliser
-            <data type="token"/>
-            -->
-            <!--  -->
-            <value>pre</value>
-            <a:documentation>Bloc préformaté, conserver les espaces et sauts de ligne, police à chasse fixe. Pour des exemples de codes, préférer @lt;eg>. @rend='pre' peut servir à rendre des formules mathématiques.</a:documentation>
-          </choice>
+          <list>
+            <oneOrMore>
+              <choice>
+                <ref name="rend.font"/>
+                <ref name="rend.align"/>
+                <value>argument</value>
+                <a:documentation>Valeur sémantique d’un élément argument, mais qui autorise à placer un élément &lt;stage&gt; avant (édition de théâtre)</a:documentation>
+                <value>indent</value>
+                <a:documentation>Indentation de première ligne (lorsque pas d’indentation par défaut)</a:documentation>
+                <value>lg</value>
+                <a:documentation>Utile provisoirement, mais lg/l est préférable.</a:documentation>
+                <value>noindent</value>
+                <a:documentation>Pas d’indentation de première ligne (lorsque indentation par défaut)</a:documentation>
+                <!-- Essayer de bloquer ? Et laisser rendition pour personnaliser
+              <data type="token"/>
+              -->
+                <!--  -->
+                <value>pre</value>
+                <a:documentation>Bloc préformaté, conserver les espaces et sauts de ligne, police à chasse fixe. Pour des exemples de codes, préférer @lt;eg>. @rend='pre' peut servir à rendre des formules mathématiques.</a:documentation>
+              </choice>
+            </oneOrMore>
+          </list>
         </attribute>
       </optional>
       <optional>
