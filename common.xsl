@@ -948,7 +948,24 @@ résoudre les césures, ou les alternatives éditoriales.
   </xsl:template>
   <!-- no notes in title mode -->
   <xsl:template match="tei:note | tei:index" mode="title"/>
-  <xsl:template match="tei:lb | tei:pb" mode="title">
+  <xsl:template match="tei:pb" mode="title">
+    <xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="tei:lb" mode="title">
+    <xsl:variable name="prev" select="preceding-sibling::node()"/>
+    <xsl:variable name="norm" select="normalize-space( $prev )"/>
+    <xsl:variable name="lastchar" select="substring($norm, string-length($norm))"/>
+    <xsl:choose>
+      <xsl:when test="contains(',.;:—–-', $lastchar)">
+        <xsl:text> </xsl:text>
+      </xsl:when>
+      <xsl:when test="string-length($prev) = string-length($norm)">
+        <xsl:text>. </xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text> – </xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:text> </xsl:text>
   </xsl:template>
   <xsl:template match="tei:choice" mode="title">

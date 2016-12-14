@@ -235,7 +235,10 @@ mais aussi pour le liage dans l'apparat critique. Ce mode fait usage des modes 
     <xsl:param name="less" select="0"/>
     <!-- limit depth -->
     <xsl:param name="depth"/>
+    <xsl:variable name="children" select="tei:group | tei:text | tei:div[tei:head] 
+      | tei:div0[tei:head] | tei:div1[tei:head] | tei:div2[tei:head] | tei:div3[tei:head] | tei:div4[tei:head] | tei:div5[tei:head] | tei:div6[tei:head] | tei:div7[tei:head] "/>
     <xsl:choose>
+      <xsl:when test="count($children) &lt; 2"/>
       <!-- simple content ? -->
       <xsl:when test="not(tei:castList | tei:div | tei:div1 | tei:titlePage)">
         <li>
@@ -243,7 +246,7 @@ mais aussi pour le liage dans l'apparat critique. Ce mode fait usage des modes 
         </li>
       </xsl:when>
       <xsl:when test="self::tei:front or self::tei:back">
-        <li class="more">
+        <li class="more {local-name()}">
           <span>
             <xsl:call-template name="title"/>
           </span>
@@ -292,10 +295,13 @@ mais aussi pour le liage dans l'apparat critique. Ce mode fait usage des modes 
     <xsl:param name="less" select="0"/>
     <!-- limit depth -->
     <xsl:param name="depth"/>
+    <!-- enfants ? -->
+    <xsl:variable name="children" select="tei:group | tei:text | tei:div[tei:head] 
+      | tei:div0[tei:head] | tei:div1[tei:head] | tei:div2[tei:head] | tei:div3[tei:head] | tei:div4[tei:head] | tei:div5[tei:head] | tei:div6[tei:head] | tei:div7[tei:head] "/>
     <li>
       <xsl:choose>
         <!-- last level -->
-        <xsl:when test="count(tei:back | tei:body | tei:div | tei:div0 | tei:div1 | tei:div2 | tei:div3 | tei:div4 | tei:div5 | tei:div6 | tei:div7 | tei:front | tei:group | tei:text ) &lt; 1"/>
+        <xsl:when test="count($children) &lt; 1"/>
         <!-- let open -->
         <xsl:when test="number($depth) &lt; 2"/>
         <xsl:when test="number($less) &gt; 0">
@@ -309,8 +315,7 @@ mais aussi pour le liage dans l'apparat critique. Ce mode fait usage des modes 
       <xsl:choose>
         <!-- depth found, stop -->
         <xsl:when test="$depth = 0"/>
-        <xsl:when test="count(tei:group | tei:text | tei:div 
-        | tei:div0 | tei:div1 | tei:div2 | tei:div3 | tei:div4 | tei:div5 | tei:div6 | tei:div7 ) &gt; 0">
+        <xsl:when test="count($children) &gt; 1">
           <ol>
             <xsl:if test="$class">
               <xsl:attribute name="class">
@@ -320,7 +325,7 @@ mais aussi pour le liage dans l'apparat critique. Ce mode fait usage des modes 
             <xsl:for-each select="tei:back | tei:body | tei:castList | tei:div | tei:div0 | tei:div1 | tei:div2 | tei:div3 | tei:div4 | tei:div5 | tei:div6 | tei:div7 | tei:front | tei:group | tei:text">
               <xsl:choose>
                 <!-- ??? first section with no title, no forged title -->
-                <xsl:when test="self::div and position() = 1 and not(tei:head) and ../tei:head "/>
+                <xsl:when test="not(tei:head)"/>
                 <xsl:otherwise>
                   <xsl:apply-templates select="." mode="li">
                     <xsl:with-param name="less" select="number($less) - 1"/>

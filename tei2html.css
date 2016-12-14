@@ -103,7 +103,7 @@ h1 small { font-weight: normal; font-size: 14px; opacity: 1; letter-spacing: nor
 h1 a, h1 a:link, h1 a:visited, h2 a, h2 a:link, h2 a:visited, h3 a, h3 a:link, h3 a:visited { text-decoration: none; border-bottom-color: transparent; }
 h1 a:hover { border-bottom-color: inherit; }
 h2 { clear: both; font-size: 130%; margin: 1em 0 1em 0; padding-top: 1em; line-height: 200%; text-align: center; }
-h3 { clear: both; font-weight: bold; margin-top: 1em; margin-bottom: 1em; padding-top: 1em; margin-left: 1.5rem;}
+h3 { clear: both; font-weight: bold; margin-top: 1em; margin-bottom: 1em; padding-top: 1em; text-indent: 1.5rem;}
 h5, h6 { font-size: 100% }
 header { clear: both; padding: 1ex; border: dashed #CCC 1px; -webkit-border-radius: 1ex; -moz-border-radius: 1ex; border-radius: 1ex; }
 header ul { margin-top: 0; margin-bottom: 0; }
@@ -126,6 +126,8 @@ nav blockquote, nav dl { padding-left: 0; margin-left: 0; padding-right: 0; marg
 nav h1 { font-size: 15px; padding: 0.2ex; color: inherit; text-align: left; margin: 1em 1.3ex 1ex 0; letter-spacing: 0.7ex; }
 nav hr { margin: 1em 0 0 0; width: 100%; border-top-color: #FFF; border-bottom-color: #E2DED0; }
 nav li { text-align: left; }
+nav li.front { margin-bottom: 1ex; padding-bottom: 1ex; border-bottom: 1px #FFF solid; }
+nav li.back { margin-top: 1ex; padding-top: 1ex; border-top: 1px #FFF solid; }
 nav header { display: block; padding: 1px 1ex; margin-bottom: 1ex; margin-top: 1ex; font-weight: bold; font-size: 120%; border: 1px #FFF solid; border-right: none; line-height: 110%; -webkit-border-radius: 0; -moz-border-radius: 0; border-radius: 0; -webkit-border-top-left-radius: 1ex; -moz-border-top-left-radius: 1ex; border-top-left-radius: 1ex; -webkit-border-bottom-left-radius: 1ex; -moz-border-bottom-left-radius: 1ex; border-bottom-left-radius: 1ex; }
 nav menu, nav ul { margin-left: 1em; padding-left: 0; }
 optgroup { font-weight: bold; }
@@ -237,7 +239,7 @@ hr.footnotes { width: 15%; text-align: left; text-align: -moz-left; margin-right
 .form { font-weight: bold; }
 div.l dfn.gloss { display: block; position: absolute; padding: 5px 5px 5px 5px; border-radius: 10px; line-height: 110%; text-align: left; float: right; margin-left: 25em; width: 250px; font-size: small; background-color: #F3F3F3; text-indent: 0; }
 p dfn.gloss , div.gloss { padding: 5px 5px 5px 5px; border-radius: 10px; line-height: 110%; text-align: left; font-size: small; background-color: #F3F3F3; text-indent: 0; }
-.l { text-align: left; text-indent: -2rem; padding-left: 2rem; }
+div.l { text-align: left; text-indent: -2rem; padding-left: 2rem; }
 .l:target { background-color: #FFFFEE; border-top: 1px solid #E2DED0; }
 .l:target:before { content: "☞"; position: absolute; margin: 0 1ex 0 -7.5ex; font-size: 16px; }
 .l1 { padding-left: 13rem; } /* metric */

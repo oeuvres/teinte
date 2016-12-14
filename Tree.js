@@ -104,7 +104,7 @@ ol.tree, ul.tree, menu.tree { padding: 0; margin: 1em 0 1em 0; list-style: none;
 .tree li.more, .tree li.less { cursor: default }\
 .tree li:before { font-family: Arial, 'Liberation Sans', 'DejaVu Sans', 'FreeSans', 'Lucida Sans Unicode', sans-serif;  color: #666; margin-left: -2ex; float: left; }\
 .tree li.more:before { content: '▶'; } /* ► */\
-.tree li.less:before { content: '◿'; } /*  */\
+.tree li.less:before { content: '▽'; } /*  */\
 .tree li:before { content: '○'; font-weight: 900; color: #999; } /* '○' */\
 /* treejs is a class set by Tree.js to ensure that hidden blocks could be seen with no js, this order is important */\
 @media screen {\
