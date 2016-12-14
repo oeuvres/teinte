@@ -325,6 +325,7 @@ class Teinte_Doc {
         $destname = pathinfo($srcfile, PATHINFO_FILENAME).self::$ext[$format];
         if (isset($destdir)) $destfile = $destdir.$destname;
         else $destfile=dirname($srcfile).'/'.$destname;
+        if ( file_exists($destfile) && filemtime( $srcfile ) < filemtime( $destfile ) ) continue;
         if (STDERR) fwrite(STDERR, "$count. $srcfile > $destfile\n");
         $doc=new Teinte_Doc($srcfile);
         $doc->export($format, $destfile);
