@@ -1998,6 +1998,17 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </div>
         <ref name="index-atts"/>
         <ref name="rendering.char"/>
+        <optional>
+          <ref name="resp-att"/>
+        </optional>
+        <optional>
+          <attribute name="role">
+            <choice>
+              <value>translator</value>
+              <text/>
+            </choice>
+          </attribute>
+        </optional>
         <zeroOrMore>
           <choice>
             <text/>
@@ -2361,6 +2372,21 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </choice>
       </element>
     </define>
+    <define name="resp-att">
+      <attribute name="resp">
+        <choice>
+          <value>author</value>
+          <a:documentation>note de l’auteur</a:documentation>
+          <value>editor</value>
+          <a:documentation>note de l’éditeur</a:documentation>
+          <value>translator</value>
+          <a:documentation>note du traducteur</a:documentation>
+          <value>©</value>
+          <a:documentation>note protégée par le droit d’auteur au moment de l’écriture du fichier</a:documentation>
+          <text/>
+        </choice>
+      </attribute>
+    </define>
     <define name="note">
       <element name="note">
         <a:documentation>Une note, encodée dans le flux du texte, au point de l’appel.</a:documentation>
@@ -2373,19 +2399,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
           <ref name="n-att"/>
         </optional>
         <optional>
-          <attribute name="resp">
-            <choice>
-              <value>author</value>
-              <a:documentation>note de l’auteur</a:documentation>
-              <value>editor</value>
-              <a:documentation>note de l’éditeur</a:documentation>
-              <value>translator</value>
-              <a:documentation>note du traducteur</a:documentation>
-              <value>©</value>
-              <a:documentation>note protégée par le droit d’auteur au moment de l’écriture du fichier</a:documentation>
-              <text/>
-            </choice>
-          </attribute>
+          <ref name="resp-att"/>
         </optional>
         <!-- Quel genre de rendu attendu ?
         <ref name="rendering-atts"/>
