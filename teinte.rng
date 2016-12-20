@@ -392,6 +392,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
       <optional>
         <ref name="base-att"/>
       </optional>
+      <ref name="rendering.block"/>
       <ref name="xml-atts"/>
     </define>
     <define name="div">
@@ -578,6 +579,9 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <optional>
           <ref name="n-att"/>
         </optional>
+        <optional>
+          <ref name="part-att"/>
+        </optional>
         <ref name="rendering.block"/>
         <choice>
           <oneOrMore>
@@ -610,13 +614,32 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <ref name="xml-atts"/>
         <oneOrMore>
           <choice>
-            <ref name="l"/>
-            <ref name="pb"/>
+            <ref name="ab"/>
             <ref name="cb"/>
+            <ref name="l"/>
             <ref name="lg"/>
+            <ref name="pb"/>
           </choice>
         </oneOrMore>
       </element>
+    </define>
+    <define name="part-att">
+      <attribute name="part">
+        <choice>
+          <!--
+              <value>Y</value>
+              <a:documentation>“Yes” (oui), fragment de vers</a:documentation>
+              <value>N</value>
+              <a:documentation>“No” (non), vers entier</a:documentation>
+              -->
+          <value>I</value>
+          <a:documentation>“Initial”, début de vers</a:documentation>
+          <value>M</value>
+          <a:documentation>“Medial”, milieu de vers</a:documentation>
+          <value>F</value>
+          <a:documentation>“Final”, fin de vers</a:documentation>
+        </choice>
+      </attribute>
     </define>
     <define name="l">
       <element name="l">
@@ -627,22 +650,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
           <ref name="n-att"/>
         </optional>
         <optional>
-          <attribute name="part">
-            <choice>
-              <!--
-              <value>Y</value>
-              <a:documentation>“Yes” (oui), fragment de vers</a:documentation>
-              <value>N</value>
-              <a:documentation>“No” (non), vers entier</a:documentation>
-              -->
-              <value>I</value>
-              <a:documentation>“Initial”, début de vers</a:documentation>
-              <value>M</value>
-              <a:documentation>“Medial”, milieu de vers</a:documentation>
-              <value>F</value>
-              <a:documentation>“Final”, fin de vers</a:documentation>
-            </choice>
-          </attribute>
+          <ref name="part-att"/>
         </optional>
         <optional>
           <attribute name="rend">
@@ -796,6 +804,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
           </oneOrMore>
           <oneOrMore>
             <choice>
+              <ref name="ab"/>
               <ref name="bibl"/>
               <ref name="cb"/>
               <ref name="l"/>
@@ -1956,6 +1965,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <choice>
           <text/>
           <ref name="corr"/>
+          <ref name="emph"/>
           <element name="hi">
             <attribute name="rend">
               <choice>
@@ -1968,9 +1978,9 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
             </attribute>
             <ref name="textual"/>
           </element>
-          <ref name="ref"/>
           <ref name="num"/>
           <ref name="point"/>
+          <ref name="ref"/>
         </choice>
       </zeroOrMore>
     </define>
