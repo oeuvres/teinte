@@ -691,8 +691,12 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <optional>
           <attribute name="type">
             <choice>
+              <value>dateline</value>
+              <a:documentation>Ligne de date qui n'est pas en fin de section (par exemple dans une citation)</a:documentation>
               <value>head</value>
               <a:documentation>Intertitre indépendant de la hiérarchie du document (pas un titre de partie ou de section)</a:documentation>
+              <value>salute</value>
+              <a:documentation>Salutation ou dédicace qui n'est pas en tête d'une section (par exemple dans une citation)</a:documentation>
               <value>speaker</value>
               <a:documentation>Théâtre, intertitre avant une tirade contenant généralement au moins un nom de personnage &lt;name>, et parfois des didascalies &lt;stage></a:documentation>
             </choice>
