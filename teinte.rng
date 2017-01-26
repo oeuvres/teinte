@@ -387,6 +387,9 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </attribute>
       </optional>
       <optional>
+        <attribute name="resp"/>
+      </optional>
+      <optional>
         <ref name="n-att"/>
       </optional>
       <optional>
