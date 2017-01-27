@@ -20,6 +20,8 @@ class Teinte_Doc {
   private $_filename;
   /** file freshness */
   private $_filemtime;
+  /** file size */
+  private $_filesize;
   /** XSLTProcessor */
   private $_trans;
   /** XSL DOM document */
@@ -38,13 +40,14 @@ class Teinte_Doc {
    * Constructor, load file and prepare work
    */
   public function __construct($tei) {
-    if (is_a($tei, 'DOMDocument') ) {
+    if (is_a( $tei, 'DOMDocument' ) ) {
       $this->_dom = $tei;
     }
     else if( is_string( $tei ) ) { // maybe file or url
       $this->_file = $tei;
-      $this->_filemtime = filemtime($tei);
-      $this->_filename = pathinfo($tei, PATHINFO_FILENAME);
+      $this->_filemtime = filemtime( $tei );
+      $this->_filesize = filesize( $tei ); // ?? URL ?
+      $this->_filename = pathinfo( $tei, PATHINFO_FILENAME );
       $this->_dom( $tei );
     }
     else {
@@ -61,7 +64,7 @@ class Teinte_Doc {
   {
     if ($this->_xpath) return $this->_xpath;
     $this->_xpath = new DOMXpath($this->_dom);
-    $this->_xpath->registerNamespace('tei', "http://www.tei-c.org/ns/1.0");
+    $this->_xpath->registerNamespace( 'tei', "http://www.tei-c.org/ns/1.0" );
     return $this->_xpath;
   }
   /**
@@ -72,29 +75,41 @@ class Teinte_Doc {
      if ( $filename ) $this->_filename = $filename;
      return $this->_filename;
    }
-   /**
-    * Read a readonly property
-    */
-    public function filemtime( $filemtime=null )
-    {
-      if ( $filemtime ) $this->_filemtime = $filemtime;
-      return $this->_filemtime;
-    }
+  /**
+   * Read a readonly property
+   */
+  public function filemtime( $filemtime=null )
+  {
+    if ( $filemtime ) $this->_filemtime = $filemtime;
+    return $this->_filemtime;
+  }
+  /**
+   * For a readonly property
+   */
+  public function filesize( $filesize=null )
+  {
+    if ( $filesize ) $this->_filesize = $filesize;
+    return $this->_filesize;
+  }
   /**
    * Book metadata
    */
   public function meta() {
     $meta = array();
     $meta['code'] = pathinfo($this->_file, PATHINFO_FILENAME);
-
-    $nl = $this->_xpath->query("/*/tei:teiHeader//tei:author");
-    if (!$nl->length)
-      $meta['creator'] = null;
-    else if ($nl->item(0)->hasAttribute("key"))
-      $meta['creator'] = $nl->item(0)->getAttribute("key");
-    else
-      $meta['creator'] = $nl->item(0)->textContent;
-    if (($pos = strpos($meta['creator'], '('))) $meta['creator'] = trim(substr($meta['creator'], 0, $pos));
+    $nl = $this->_xpath->query("/*/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author");
+    $meta['creator'] = array();
+    $meta['byline'] = null;
+    $first = true;
+    foreach ($nl as $node) {
+      $value = $node->getAttribute("key");
+      if ( !$value ) $value = $node->textContent;
+      if (($pos = strpos($value, '('))) $value = trim( substr( $value, 0, $pos ) );
+      $meta['creator'][] = $value;
+      if ( $first ) $first = false;
+      else $meta['byline'] .= " ; ";
+      $meta['byline'] .= $value;
+    }
     // title
     $nl = $this->_xpath->query("/*/tei:teiHeader//tei:title");
     if ($nl->length) $meta['title'] = $nl->item(0)->textContent;
@@ -129,6 +144,7 @@ class Teinte_Doc {
     $meta['source'] = null;
     $meta['filename'] = $this->filename();
     $meta['filemtime'] = $this->filemtime();
+    $meta['filesize'] = $this->filesize();
 
 
     return $meta;
@@ -143,20 +159,20 @@ class Teinte_Doc {
   /**
    * Output toc
    */
-   public function toc($root) {
-     return $this->transform(
-       dirname(__FILE__).'/tei2toc.xsl',
-       null,
-       array(
-         'root'=> $root,
-       )
-     );
-   }
+  public function toc( $destfile=null, $root = "nav") {
+    return $this->transform(
+      dirname(__FILE__).'/tei2toc.xsl',
+      $destfile,
+      array(
+        'root'=> $root,
+      )
+    );
+  }
 
   /**
    * Output an html fragment
    */
-  public function article($destfile=null) {
+  public function article( $destfile=null ) {
     return $this->transform(
       dirname(__FILE__).'/tei2html.xsl',
       $destfile,
@@ -221,10 +237,115 @@ class Teinte_Doc {
     return $destfile;
   }
   /**
+   * Output a split version of book
+   */
+  public function site( $destdir=null )
+  {
+    // create dest folder
+    // if none given, use filename
+    // collect images pointed by xml file and copy them in the folder
+  }
+  /**
+   * Extract <graphic> elements from a DOM doc, copy linked images in a flat destdir
+   * $href : a href prefix to redirest generated links
+   * $destdir : a folder if images should be copied
+   * return : a doc with updated links to image
+   */
+  private function images( $href=null, $destdir=null) {
+    if ($destdir) $destdir=rtrim($destdir, '/\\').'/';
+    // copy linked images in an images folder, and modify relative link
+    // clone the original doc, links to picture will be modified
+    $doc=$doc->cloneNode(true);
+    foreach ($doc->getElementsByTagNameNS('http://www.tei-c.org/ns/1.0', 'graphic') as $el) {
+      $this->img($el->getAttributeNode("url"), $href, $destdir);
+    }
+    /*
+    do not store images of pages, especially in tif
+    foreach ($doc->getElementsByTagNameNS('http://www.tei-c.org/ns/1.0', 'pb') as $el) {
+      $this->img($el->getAttributeNode("facs"), $hrefTei, $destdir, $hrefSqlite);
+    }
+    */
+    return $doc;
+  }
+  /**
+   * Process one image
+   */
+  public function img($att, $hrefdir="", $destdir=null) {
+    if (!isset($att) || !$att || !$att->value) return;
+    $src=$att->value;
+    // return if data image
+    if (strpos($src, 'data:image') === 0) return;
+
+    // test if relative file path
+    if (file_exists($test=dirname($this->_srcfile).'/'.$src)) $src=$test;
+    // vendor specific etc/filename.jpg
+    else if (isset(self::$_pars['srcdir']) && file_exists($test=self::$_pars['srcdir'].self::$_pars['filename'].'/'.substr($src, strpos($src, '/')+1))) $src=$test;
+    // if not file exists, escape and alert (?)
+    else if (!file_exists($src)) {
+      $this->log("Image not found: ".$src);
+      return;
+    }
+    $srcParts=pathinfo($src);
+    // test first if dst dir (example, epub for sqlite)
+    if (isset($destdir)) {
+      // create images folder only if images detected
+      if (!file_exists($destdir)) self::dirclean($destdir);
+      // destination
+      $i=2;
+      // avoid duplicated files
+      while (file_exists($destdir.$srcParts['basename'])) {
+        $srcParts['basename']=$srcParts['filename'].'-'.$i.'.'.$srcParts['extension'];
+        $i++;
+      }
+      copy( $src, $destdir.$srcParts['basename']);
+    }
+    // changes links in TEI so that straight transform will point on the right files
+    $att->value=$hrefdir.$srcParts['basename'];
+    // resize ?
+    // NO delete of <graphic> element if broken link
+  }
+
+  /**
    * Preprocess TEI with a transformation
    */
-   public function pre($xslfile, $pars=null) {
+   public function pre( $xslfile, $pars=null )
+   {
      $this->dom = $this->transform($xslfile, new DOMDocument(), $pars);
+   }
+
+   /**
+    * Replace tags of html file by spaces, to get text with same offset index of words
+    * allowing indexation and highlighting. Keep line breaks for line numbers.
+    * Support of some html5 tag to strip not indexable content.
+    * TODO, test performances of a char parser
+    */
+   static public function detag($html) {
+     // preg_replace_callback is safer and 2x faster than the /e modifier
+     $html=preg_replace_callback(
+       array(
+         // s flag so that '.' could match \n
+         // .*? ungreedy
+         // exclude some html5 content
+         // [ >] to get complete tag name
+         '@<!.*?>@s', // exclude doctype and comments
+         '@<\?.*?\?>@s', // exclude PI
+         '@<(head|header|footer|nav|aside|noindex)[ >].*?</\1>@s', // suppress nav
+         '@<(small|tt|a)[^>]*>[0-9]+</\1>@' ,// line or note of number
+         '@<a class="noteref".*?</a>@', // suppress footnote call
+         '@<[^>]+>@' // wash tags
+       ),
+       array(__CLASS__, 'blank'),
+       $html
+     );
+     return $html;
+   }
+   /**
+    * blanking a string, keeping new lines
+    */
+   static public function blank($string) {
+     if(is_array($string)) $string=$string[0];
+     // if (strpos($string, '<tt class="num')===0) return "_NUM_".str_repeat(" ", strlen($string) - 5);
+     return preg_replace("/[^\n]/", " ", $string);
    }
 
   /**
@@ -233,12 +354,22 @@ class Teinte_Doc {
    */
   public function transform($xslfile, $dest=null, $pars=null)
   {
+    if ( !$this->_trans ) {
+      // renew the processor
+      $this->_trans = new XSLTProcessor();
+      $this->_trans->registerPHPFunctions();
+      // allow generation of <xsl:document>
+      if ( defined( 'XSL_SECPREFS_NONE' ) ) $prefs = XSL_SECPREFS_NONE;
+      else if ( defined( 'XSL_SECPREF_NONE' ) ) $prefs = XSL_SECPREF_NONE;
+      else $prefs = 0;
+      if( method_exists( $this->_trans, 'setSecurityPreferences' ) ) $oldval = $this->_trans->setSecurityPreferences( $prefs );
+      else if( method_exists( $this->_trans, 'setSecurityPrefs' ) ) $oldval = $this->_trans->setSecurityPrefs( $prefs );
+      else ini_set( "xsl.security_prefs",  $prefs );
+    }
     // allow reuse of same xsl for performances
     if ( $this->_xslfile != $xslfile ) {
       // load xsl file
       $this->_xsldom->load( $xslfile );
-      // renew the processor
-      $this->_trans = new XSLTProcessor();
       $this->_trans->importStyleSheet( $this->_xsldom );
     }
     // add params
@@ -297,7 +428,7 @@ class Teinte_Doc {
     usage     : php -f Doc.php ('.$formats.')? destdir/? "*.xml"
     format?   : optional dest format, default is html
     destdir/? : optional destdir
-    *.xml     : glob patterns are allowed, with or without quotes, to not be expanded by shell
+    *.xml     : glob patterns are allowed, with or without quotes, win or nix
 
 ');
 

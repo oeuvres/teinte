@@ -1,6 +1,6 @@
 <?php
 /**
-Génère les formats détachés et le site statique basique sur Œuvres
+ * Pilot to generate different formats
  */
 // cli usage
 Teinte_Build::deps();
@@ -15,8 +15,8 @@ else if (php_sapi_name() == "cli") {
 }
 class Teinte_Build
 {
-  static $kindlegen;
-  static $formats = array(
+  static private $_kindlegen;
+  static private $_formats = array(
     'tei' => '.xml',
     'epub' => '.epub',
     'kindle' => '.mobi',
@@ -24,99 +24,106 @@ class Teinte_Build
     'iramuteq' => '.txt',
     'html' => '.html',
     'article' => '.html',
+    'toc' => '.html',
     // 'docx' => '.docx',
   );
-  /** petite persistance sqlite pour conserver la mémoire des doublons etc */
+  /** Sqlite persistency */
   static $create = "
 PRAGMA encoding = 'UTF-8';
 PRAGMA page_size = 8192;
 
-CREATE TABLE oeuvre (
-  -- un texte
-  id         INTEGER, -- rowid auto
-  code       TEXT,    -- nom de fichier sans extension
-  filemtime  INTEGER, -- date de dernière modification du fichier pour update
-  creator    TEXT,    -- auteur
-  date       INTEGER, -- année de publication
-  title      TEXT,    -- titre
-  identifier TEXT,    -- uri chez le publisher
-  publisher  TEXT,    -- nom de l’institution qui publie
-  source     TEXT,    -- XML TEI source URL
+CREATE table doc (
+  -- an indexed HTML document
+  id          INTEGER, -- rowid auto
+  code        TEXT UNIQUE NOT NULL,   -- source filename without extension, unique for base
+  filemtime   INTEGER NOT NULL, -- ! modified time
+  filesize    INTEGER, -- ! filesize
+  deps        TEXT,    -- ? generated files, useful for deletion
+  title       TEXT NOT NULL,    -- ! html, for a structured short result
+  byline      TEXT,    -- ? authors… text, searchable
+  date        INTEGER, -- ? favorite date for chronological sort
+  start       INTEGER, -- ? creation, start year, when chronological queries are relevant
+  end         INTEGER, -- ? creation, end year, when chronological queries are relevant
+  issued      INTEGER, -- ? publication year of the text
+  bibl        TEXT,    -- ? publication year of the text
+  source      TEXT,    -- ? URL of source file (ex: XML/TEI)
+  publisher   TEXT,    -- ? Name of the original publisher of the file in case of compilation
+  identifier  TEXT,    -- ? URL of the orginal publication in case of compilation
   PRIMARY KEY(id ASC)
 );
-CREATE UNIQUE INDEX oeuvre_code ON oeuvre(code);
-CREATE INDEX oeuvre_creator_date ON oeuvre(creator, date, title);
-CREATE INDEX oeuvre_date_creator ON oeuvre(date, creator, title);
+CREATE UNIQUE INDEX IF NOT EXISTS doc_code ON doc(code);
+CREATE INDEX IF NOT EXISTS doc_byline_date ON doc(byline, date, title);
+CREATE INDEX IF NOT EXISTS doc_date_byline ON doc(date, byline, title);
+
+CREATE VIRTUAL TABLE search USING FTS3 (
+  -- table of searchable articles, with same rowid as in article
+  text        TEXT  -- exact text
+);
+
+CREATE TRIGGER IF NOT EXISTS docDel
+  -- on book deletion, delete full text index
+  BEFORE DELETE ON doc
+  FOR EACH ROW BEGIN
+    DELETE FROM search WHERE search.docid=OLD.id;
+END;
 
   ";
   /** SQLite link, maybe useful outside */
   public $pdo;
-  /** Insert query for a file */
-  private $_insert;
-  /** Test de date d’une pièce */
-  private $_sqlmtime;
+  /** Stored queries */
+  private $_q = array();
   /** Processeur xslt */
   private $_xslt;
+  /** A logger, maybe a stream or a callable, used by $this->log() */
+  private $_logger;
   /** Vrai si dépendances vérifiées et chargées */
   private static $_deps;
-  /** A logger, maybe a stream or a callable, used by self::log() */
-  private static $_logger;
   /** Log level */
-  public static $debug = true;
+  public $loglevel = E_ALL;
+
   /**
    * Constructeur de la base
    */
-  public function __construct($sqlitefile, $logger="php://output") {
+  public function __construct($sqlite, $logger="php://output")
+  {
     if (is_string($logger)) $logger = fopen($logger, 'w');
-    self::$_logger = $logger;
-    $this->connect($sqlitefile);
-    // create needed folders
-    /*
-    foreach (self::$formats as $format => $extension) {
-      if (!file_exists($dir = dirname(__FILE__).'/'.$format)) {
-        mkdir($dir, 0775, true);
-        @chmod($dir, 0775);  // let @, if www-data is not owner but allowed to write
-      }
-    }
-    */
+    $this->_logger = $logger;
+    $this->connect( $sqlite );
   }
+
   /**
    * Produire les exports depuis le fichier XML
    */
-  public function export($srcfile, $setcode=null, $force=false) {
-    $srcname = pathinfo($srcfile, PATHINFO_FILENAME);
-    $srcmtime = filemtime($srcfile);
-    $this->_sqlmtime->execute(array($srcname));
-    list($basemtime) = $this->_sqlmtime->fetch();
-    $teinte = null;
-    if ($basemtime < $srcmtime) {
-      $teinte = new Teinte_Doc($srcfile);
-      $this->insert($teinte, $setcode);
-    }
+  public function export( $teinte, $formats=array( "article", "toc" ), $basedir="", $force=false)
+  {
     $echo = "";
-    foreach (self::$formats as $format => $extension) {
-      $destfile = dirname(__FILE__).'/'.$format.'/'.$srcname.$extension;
-      if (!$force && file_exists($destfile) && $srcmtime < filemtime($destfile)) continue;
-      if (!$teinte) $teinte = new Teinte_Doc($srcfile);
-      // delete destfile if exists ?
+    foreach ( $formats as $format ) {
+      if ( !isset( self::$_formats[$format] ) ) {
+        $this->log( E_USER_WARNING, $format." format non supporté" );
+        continue;
+      }
+      $extension = self::$_formats[$format];
+      $destfile = $basedir.'/'.$format.'/'.$teinte->filename().$extension;
+      // delete destfile if exists
       if (file_exists($destfile)) unlink($destfile);
       $echo .= " ".$format;
       // TODO git $destfile
       if ($format == 'html') $teinte->html($destfile, 'http://oeuvres.github.io/Teinte/');
-      if ($format == 'article') $teinte->article($destfile);
+      else if ($format == 'article') $teinte->article($destfile);
+      else if ($format == 'toc') $teinte->toc($destfile);
       else if ($format == 'markdown') $teinte->markdown($destfile);
       else if ($format == 'iramuteq') $teinte->iramuteq($destfile);
       else if ($format == 'epub') {
         $livre = new Livrable_Tei2epub($srcfile, self::$_logger);
         $livre->epub($destfile);
         // transformation auto en kindle si binaire présent
-        if (self::$kindlegen) {
-          $cmd = self::$kindlegen.' '.$destfile;
+        if (self::$_kindlegen) {
+          $cmd = self::$_kindlegen.' '.$destfile;
           $last = exec ($cmd, $output, $status);
           $mobi = dirname(__FILE__).'/'.$format.'/'.$teinte->filename.".mobi";
           // error ?
           if (!file_exists($mobi)) {
-            self::log(E_USER_ERROR, "\n".$status."\n".join("\n", $output)."\n".$last."\n");
+            $this->log(E_USER_ERROR, "\n".$status."\n".join("\n", $output)."\n".$last."\n");
           }
           else {
             rename( $mobi, dirname(__FILE__).'/kindle/'.$teinte->filename.".mobi");
@@ -129,40 +136,130 @@ CREATE INDEX oeuvre_date_creator ON oeuvre(date, creator, title);
         Toff_Tei2docx::docx($srcfile, $destfile);
       }
     }
-    if ($echo) self::log(E_USER_NOTICE, $srcfile.$echo);
+    if ($echo) $this->log( E_USER_NOTICE, $echo );
   }
+
   /**
-   * Insertion de la pièce
+   * Insert a record in the database about a Teinte document
+   * Return rowid inserted
    */
-  private function insert($srcfile, $setcode=null) {
-    $teinte = new Teinte_Doc($srcfile);
-    // supprimer la pièce, des triggers doivent normalement supprimer la cascade.
-    $this->pdo->exec("DELETE FROM oeuvre WHERE code = ".$this->pdo->quote( $teinte->filename() ) );
+  private function record( $teinte, $props=null )
+  {
+    $cols = array("code", "filemtime", "filesize", "deps", "title", "byline", "date", "source", "identifier", "publisher" );
+    if ( !isset( $this->_q['record'] ) ) {
+      $sql = "INSERT INTO doc (".implode( $cols, ", " ).") VALUES ( ?".str_repeat(", ?", count( $cols ) -1 )." );";
+      $this->_q['record'] = $this->pdo->prepare($sql);
+      $this->_q['del'] = $this->pdo->prepare("DELETE FROM doc WHERE code = ?");
+    }
     $meta = $teinte->meta();
-    // métadonnées de pièces
-    if (isset(self::$sets)) {
-      if(isset(self::$sets[$setcode]['publisher'])) $meta['publisher'] = self::$sets[$setcode]['publisher'];
-      if(isset(self::$sets[$setcode]['identifier'])) $meta['identifier'] = sprintf (self::$sets[$setcode]['identifier'], $teinte->filename);
-      if (isset(self::$sets[$setcode]['source'])) $meta['source'] = sprintf (self::$sets[$setcode]['source'], $teinte->filename);
+    // supprimer la pièce, des triggers doivent normalement supprimer la cascade.
+    $this->_q['del']->execute( array( $meta['code'] ) );
+    $values = array_fill_keys( $cols, null );
+    // replace in values, but do not add new keys from meta (intersect)
+    $values = array_replace( $values, array_intersect_key($meta, $values) );
+    // replace in values, but do not add keys, and change their order
+    if ( is_array( $props ) ) $values = array_replace( $values, array_intersect_key( $props, $values ) );
+    $this->_q['record']->execute( array_values( $values ) ); // no keys for values
+    return $this->pdo->lastInsertId() ;
+  }
+
+  /**
+   * Add a full text row, with the rowid given by record()
+   */
+  private function ft ( $docid, $text )
+  {
+    if ( !isset( $this->_q['record'] ) ) {
+      $this->_q['record'] = $this->pdo->prepare("
+INSERT INTO doc (".implode( $cols, ", " ).") VALUES (?.".str_repeat(", ?", count( $cols ) ).");
+      ");
+      $this->_q['del'] = $this->pdo->prepare("DELETE FROM oeuvre WHERE code = ?");
     }
 
-    $this->_insert->execute(array(
-      $teinte->filename(),
-      $teinte->filemtime(),
-      $meta['creator'],
-      $meta['date'],
-      $meta['title'],
-      $meta['identifier'],
-      $meta['publisher'],
-      $meta['source'],
+    /*
+    self::$stmt['insSearch']=self::$pdo->prepare("
+      INSERT INTO search (docid, text, omni) VALUES (?, ?, ?);
+    ");
+
+    // do not (?) search for notes
+    if ($pos=strpos($body, '<section class="footnotes">')) {
+      $body = substr($body, 0, $pos - 1);
+    }
+    // wash html from tags
+    $body=self::detag($body);
+    // one sentence by line, clean unbreakable space
+    $body=preg_replace(self::$re['sSearch'], self::$re['sReplace'], $body);
+    // echo $body; // debug sentences ?
+    if (self::$debug) echo "\n$href";
+    // do not index non significant nav
+    self::$stmt['insSearch']->execute(array(
+      self::$pars['articleId'],
+      $body,
+      '€€€',
     ));
-    return $teinte;
+    if (self::$debug && self::$logStream) fwrite(self::$logStream, "\n".$name.round(microtime(true) - self::$time, 4)." s. ");
+
+    */
+
+  }
+
+  /**
+   * Build a site from a list of TEI files
+   */
+  public function site( $srclist, $destdir, $sep=";" )
+  {
+    $this->_q['mtime'] = $this->pdo->prepare("SELECT filemtime FROM doc WHERE code = ?");
+    $oldlog = $this->loglevel;
+    $this->loglevel = $this->loglevel|E_USER_NOTICE;
+    $this->log( E_USER_NOTICE, $srclist." lecture de la liste de fichiers à publier" );
+    $cods = array(); // store the codes of each file in the srclist to delete some files
+    $handle = fopen( $srclist, "r" );
+    $keys = fgetcsv( $handle, 0, $sep ); // first line, column names
+    $srcdir = dirname( $srclist );
+    if ( $srcdir == "." ) $srcdir = "";
+    else $srcdir .= "/";
+    $line = 1;
+    $this->pdo->beginTransaction();
+    while ( ($values = fgetcsv( $handle, 0, $sep )) !== FALSE) {
+      $line++;
+      if ( count( $values ) < 1 ) continue;
+      if ( !$values[0] ) continue;
+      if ( substr ( trim( $values[0] ), 0) == '#'  ) continue;
+      if ( count( $keys ) > count( $values ) ) // less values than keys, fill for a good combine
+        $values = array_merge( $values, array_fill( 0, count( $keys ) - count( $values ), null ) ) ;
+      $row = array_combine($keys, $values);
+      $srcfile = $srcdir.current($row);
+      $code = pathinfo( $srcfile, PATHINFO_FILENAME );
+      $cods[] = $code;
+      if ( !file_exists( $srcfile ) ) {
+        $this->log( E_USER_NOTICE, $srcfile." fichier non trouvé (".$srclist." l. ".$line.")" );
+        continue;
+      }
+      $srcmtime = filemtime( $srcfile );
+      $this->_q['mtime']->execute( array( $code) );
+      list( $basemtime ) = $this->_q['mtime']->fetch();
+      if ( $basemtime >= $srcmtime ) continue;
+      $this->log( E_USER_NOTICE, $srcfile );
+      $teinte = new Teinte_Doc( $srcfile );
+      $this->record( $teinte );
+      $this->export( $teinte, array( "article", "toc" ), $destdir );
+    }
+    fclose($handle);
+    $this->pdo->commit();
+    // Check for deteleted files
+    $q = $this->pdo->query("SELECT * FROM doc WHERE code NOT IN ( '".implode( "', '", $cods )."' )");
+    foreach (  $q as $row) {
+      $this->log( E_USER_NOTICE, "\nSUPPRESSION ".$row['code'] );
+    }
+    // $this->pdo->exec( "VACUUM" );
+    $this->pdo->exec( "INSERT INTO  search(search) VALUES( 'optimize' ); -- optimize fulltext index " );
+    $this->loglevel = $oldlog;
   }
 
   /**
    * Sortir le catalogue en table html
    */
-  public function table($cols=array("no", "publisher", "creator", "date", "title", "downloads")) {
+  public function table($cols=array("no", "publisher", "creator", "date", "title", "downloads"))
+  {
     $labels = array(
       "no"=>"N°",
       "publisher" => "Éditeur",
@@ -220,10 +317,12 @@ CREATE INDEX oeuvre_date_creator ON oeuvre(date, creator, title);
     echo "\n</table>\n";
   }
 
+
   /**
    * Connexion à la base
    */
-  private function connect($sqlite) {
+  private function connect($sqlite)
+  {
     $dsn = "sqlite:" . $sqlite;
     // si la base n’existe pas, la créer
     if (!file_exists($sqlite)) {
@@ -242,13 +341,22 @@ CREATE INDEX oeuvre_date_creator ON oeuvre(date, creator, title);
     }
     // table temporaire en mémoire
     $this->pdo->exec("PRAGMA temp_store = 2;");
-    $this->_insert = $this->pdo->prepare("
-    INSERT INTO oeuvre (code, filemtime, creator, date, title, identifier, publisher, source)
-                VALUES (?,    ?,         ?,       ?,    ?,     ?,          ?,         ?);
-    ");
-    $this->_sqlmtime = $this->pdo->prepare("SELECT filemtime FROM oeuvre WHERE code = ?");
   }
-  static function deps() {
+  /**
+   * Efficient truncate table
+   */
+  public function clean()
+  {
+    // TODO, delete created files
+    $this->pdo->exec("DROP TABLE doc; DROP TABLE search; ");
+    $this->pdo->exec(self::$create);
+  }
+
+  /**
+   * Check dependencies
+   */
+  static function deps()
+  {
     if(self::$_deps) return;
     // Deps
     $inc = dirname(__FILE__).'/../Livrable/Tei2epub.php';
@@ -267,12 +375,12 @@ CREATE INDEX oeuvre_date_creator ON oeuvre(date, creator, title);
       le programme kindlegen pour votre système http://www.amazon.fr/gp/feature.html?ie=UTF8&docId=1000570853
       à placer dans le dossier Livrable : ".dirname($inc);
     }
-    if (file_exists($inc)) self::$kindlegen = realpath($inc);
+    if (file_exists($inc)) self::$_kindlegen = realpath($inc);
 
 
-    $inc = dirname(__FILE__).'/../Teinte/Doc.php';
+    $inc = dirname(__FILE__).'/Doc.php';
     if (!file_exists($inc)) {
-      echo "Impossible de trouver ".realpath(dirname(__FILE__).'/../')."/Teinte/
+      echo "Impossible de trouver ".dirname(__FILE__)."/Teinte/Doc.php
     Vous pouvez le télécharger sur https://github.com/oeuvres/Teinte\n";
       exit();
     }
@@ -292,26 +400,32 @@ CREATE INDEX oeuvre_date_creator ON oeuvre(date, creator, title);
     */
     self::$_deps=true;
   }
+
   /**
    * Custom error handler
    * May be used for xsl:message coming from transform()
    * To avoid Apache time limit, php could output some bytes during long transformations
    */
-  static function log( $errno, $errstr=null, $errfile=null, $errline=null, $errcontext=null) {
+  function log( $errno, $errstr, $errfile=null, $errline=null, $errcontext=null)
+  {
+    if ( !$this->loglevel & $errno ) return false;
     $errstr=preg_replace("/XSLTProcessor::transform[^:]*:/", "", $errstr, -1, $count);
-    if ($count) { // is an XSLT error or an XSLT message, reformat here
-      if(strpos($errstr, 'error')!== false) return false;
-      else if ($errno == E_WARNING) $errno = E_USER_WARNING;
+    /* ?
+    if ( $count ) { // is an XSLT error or an XSLT message, reformat here
+      if ( strpos($errstr, 'error') !== false ) return false;
+      else if ( $errno == E_WARNING ) $errno = E_USER_WARNING;
     }
-    // not a user message, let work default handler
-    else if ($errno != E_USER_ERROR && $errno != E_USER_WARNING && $errno != E_USER_NOTICE ) return false;
-    // a debug message in normal mode, do nothing
-    if ($errno == E_USER_NOTICE && !self::$debug) return true;
-    if (!self::$_logger);
-    else if (is_resource(self::$_logger)) fwrite(self::$_logger, $errstr."\n");
-    else if ( is_string(self::$_logger) && function_exists(self::$_logger)) call_user_func(self::$_logger, $errstr);
+    */
+    if ( !$this->_logger );
+    else if ( is_resource($this->_logger) ) fwrite( $this->_logger, $errstr."\n");
+    else if ( is_string($this->_logger) && function_exists( $this->_logger ) ) call_user_func( $this->_logger, $errstr );
   }
-  static function epubcheck($glob) {
+
+  /**
+   * Check epub
+   */
+  static function epubcheck($glob)
+  {
     echo "epubcheck epub/*.epub\n";
     foreach(glob($glob) as $file) {
       echo $file;
@@ -322,10 +436,12 @@ CREATE INDEX oeuvre_date_creator ON oeuvre(date, creator, title);
       if ($status) rename($file, dirname($file).'/_'.basename($file));
     }
   }
+
   /**
    * Command line API
    */
-  static function cli() {
+  static function cli()
+  {
     $timeStart = microtime(true);
     $usage = "\nusage    : php -f ".basename(__FILE__).' base.sqlite action "dir/*.xml"'."\n\n";
     array_shift($_SERVER['argv']); // shift first arg, the script filepath
@@ -344,34 +460,11 @@ CREATE INDEX oeuvre_date_creator ON oeuvre(date, creator, title);
         fwrite(STDERR, "\n");
       }
     }
-    if ("insert" == $action) $base->table(array("no", "creator", "date", "tei"));
     /*
-    array_shift($_SERVER['argv']); // shift first arg, the script filepath
-    $sqlite = 'oeuvres.sqlite';
-    // pas d’argument, on démarre sur les valeurs par défaut
-    if (!count($_SERVER['argv'])) {
-      $base = new Oeuvres($sqlite, STDERR);
-      foreach(self::$sets as $setcode=>$setrow) {
-        $glob = $setrow['glob'];
-        foreach(glob($glob) as $file) {
-          $base->add($file, $setcode);
-        }
-      }
-      exit();
-    }
-    if ($_SERVER['argv'][0] == 'epubcheck') {
-      Oeuvres::epubcheck('epub/*.epub');
-      exit();
-    }
-    // des arguments, on joue plus fin
-    $base = new Oeuvres($sqlite,  STDERR);
-    if (!count($_SERVER['argv'])) exit("\n    Quel set insérer ?\n");
-    $setcode = array_shift($_SERVER['argv']);
-    foreach(glob(self::$sets[$setcode]['glob']) as $file) {
-      $base->add($file, $setcode);
-    }
+    $ext = pathinfo ($file, PATHINFO_EXTENSION);
+    // seems a list of uri
+    if ($ext == 'csv' || $ext == "txt") { // ? }
     */
-
   }
 }
 ?>

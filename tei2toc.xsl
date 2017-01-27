@@ -4,11 +4,11 @@
 <h1>TEI » HTML (tei2html.xsl)</h1>
 
 LGPL  http://www.gnu.org/licenses/lgpl.html
-© 2005 ajlsm.com et Cybertheses
-© 2007 Frederic.Glorieux@fictif.org
-© 2010 Frederic.Glorieux@fictif.org et École nationale des chartes
-© 2012 Frederic.Glorieux@fictif.org 
 © 2013 Frederic.Glorieux@fictif.org et LABEX OBVIL
+© 2012 Frederic.Glorieux@fictif.org 
+© 2010 Frederic.Glorieux@fictif.org et École nationale des chartes
+© 2007 Frederic.Glorieux@fictif.org
+© 2005 ajlsm.com et Cybertheses
 
 <p>
 Cette transformation XSLT 1.0 (compatible navigateurs, PHP, Python, Java…) 
@@ -39,7 +39,7 @@ sont officiellement ditribuées par le consortium TEI, cependant ce développeme
   <xsl:param name="this">tei2toc.xsl</xsl:param>
   <!-- No XML declaration for html fragments -->
   <xsl:output encoding="UTF-8" indent="yes" method="xml" omit-xml-declaration="yes"/>
-  <!-- What kind of root element to output ? html, nav, only front toc, or back or body -->
+  <!-- What kind of root element to output ? html, nav… -->
   <xsl:param name="root" select="$html"/>
   <!-- Racine -->
   <xsl:template match="/*">
@@ -52,7 +52,7 @@ sont officiellement ditribuées par le consortium TEI, cependant ce développeme
       </xsl:when>      
       <!-- HTML fragment -->
       <xsl:when test="$root=$nav">
-        <nav>
+        <nav class="toc">
           <xsl:call-template name="att-lang"/>
           <xsl:call-template name="toc-header"/>
           <xsl:call-template name="toc"/>

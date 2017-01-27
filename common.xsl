@@ -1096,13 +1096,8 @@ résoudre les césures, ou les alternatives éditoriales.
       <xsl:call-template name="id"/>
     </xsl:param>
     <xsl:choose>
-      <!-- When there is a mode and it is not site, let anchors -->
-      <xsl:when test="$mode != '' and  $mode != 'site'">
-        <xsl:text>#</xsl:text>
-        <xsl:value-of select="$id"/>
-      </xsl:when>
       <!-- When transform is called from monopage  -->
-      <xsl:when test="$this = 'tei2html.xsl'">
+      <xsl:when test="$this = 'tei2html.xsl' or $this = 'tei2toc.xsl'">
         <xsl:text>#</xsl:text>
         <xsl:value-of select="$id"/>
       </xsl:when>
