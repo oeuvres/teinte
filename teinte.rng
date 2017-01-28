@@ -375,6 +375,8 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
             <a:documentation>Prologue, par exemple dans une pièce de théâtre, préférer une division typée à l’élément prologue de la TEI qui n’est autorisé que dans l’avant-texte <a:el>front</a:el>.</a:documentation>
             <value>scene</value>
             <a:documentation>Théâtre, scène.</a:documentation>
+            <value>section</value>
+            <a:documentation>Section non sémantisée</a:documentation>
             <value>set</value>
             <a:documentation>Théâtre, pages liminaires.</a:documentation>
             <value>toc</value>
