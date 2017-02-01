@@ -74,8 +74,19 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
     <a:documentation>Structure générale</a:documentation>
     <start>
       <a:documentation>Elément racine</a:documentation>
-      <ref name="TEI"/>
+      <choice>
+        <ref name="TEI"/>
+        <ref name="teiCorpus"/>
+      </choice>
     </start>
+    <define name="teiCorpus">
+      <element name="teiCorpus">
+        <ref name="teiHeader"/>
+        <oneOrMore>
+          <ref name="TEI"/>
+        </oneOrMore>
+      </element>
+    </define>
     <define name="TEI">
       <element name="TEI">
         <a:documentation>Structure générale d’un document TEI</a:documentation>
@@ -724,6 +735,9 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
             <value>embed</value>
           </attribute>
         </optional>
+        <optional>
+          <ref name="source-att"/>
+        </optional>
         <oneOrMore>
           <choice>
             <text/>
@@ -1020,14 +1034,26 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
               <ref name="typo"/>
               <ref name="function"/>
               <ref name="indexable"/>
+              <ref name="bibl"/>
             </choice>
             <optional>
               <ref name="point"/>
             </optional>
           </oneOrMore>
           <oneOrMore>
-            <!-- list is already in block, good idea ? -->
             <ref name="block"/>
+          </oneOrMore>
+          <oneOrMore>
+            <zeroOrMore>
+              <choice>
+                <text/>
+                <ref name="bibl"/>
+                <ref name="num"/>
+                <ref name="persName"/>
+                <ref name="title"/>
+              </choice>
+            </zeroOrMore>
+            <ref name="list"/>
           </oneOrMore>
         </choice>
       </element>
@@ -1825,6 +1851,15 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
     <define name="add">
       <element name="add">
         <a:documentation>Segment de texte inséré, &lt;html5:ins&gt;</a:documentation>
+        <optional>
+          <attribute name="resp"/>
+        </optional>
+        <zeroOrMore>
+          <choice>
+            <text/>
+            <ref name="title"/>
+          </choice>
+        </zeroOrMore>
         <text/>
         <!-- TODO: macro {text}, hi, num ? -->
       </element>
@@ -2681,6 +2716,12 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
     <define name="ref-att">
       <attribute name="ref">
         <a:documentation>URI de référence pour un terme indexable : auteur, titre, personne, lieu…</a:documentation>
+        <data type="anyURI"/>
+      </attribute>
+    </define>
+    <define name="source-att">
+      <attribute name="source">
+        <a:documentation>URI dont est tiré l’information</a:documentation>
         <data type="anyURI"/>
       </attribute>
     </define>

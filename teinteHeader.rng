@@ -1067,6 +1067,9 @@
           <li>&lt;<a href="http://purl.org/dc/terms/source" target="dc">dc:source</a>&gt;</li>
         </ul>
         <optional>
+          <attribute name="source"/>
+        </optional>
+        <optional>
           <element name="abbr">
             <a:documentation>Forme courte de la référence bibliographique, par ex. pour l'inscription répétée de la foliotation.</a:documentation>
             <text/>
