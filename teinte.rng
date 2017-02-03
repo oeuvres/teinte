@@ -392,6 +392,8 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
             <a:documentation>Théâtre, pages liminaires.</a:documentation>
             <value>toc</value>
             <a:documentation>Table des matières, synonyme de “contents”, paratexte dans &lt;front> ou &lt;back></a:documentation>
+            <value>tome</value>
+            <a:documentation>Tome, dans certaines grosses tables des matières</a:documentation>
             <!--
             <data type="Name"/>
             <a:documentation>Mot clé libre lorsqu’aucune des valeurs définies semble adaptée</a:documentation>
@@ -633,6 +635,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
             <ref name="ab"/>
             <ref name="cb"/>
             <ref name="l"/>
+            <ref name="label"/>
             <ref name="lg"/>
             <ref name="pb"/>
           </choice>
@@ -839,6 +842,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
               <ref name="note"/>
               <ref name="p"/>
               <ref name="pb"/>
+              <ref name="quote-p"/>
               <ref name="sp"/>
               <ref name="stage"/>
               <ref name="table"/>
