@@ -367,6 +367,7 @@ h1.main { margin-top: 1.5em; }
 .noindent { text-indent: 0; } /* automatic */
 .indent { text-indent: 2em; }
 div.ornament { line-height: 95%; letter-spacing: 0.6em; margin: 1em 5em; text-align: center; }
+.lg div.ornament { text-align: left; }
 .page-break-before { page-break-before: always; margin-top: 6em; height: 5em; border-top: 1px #CCCCCC solid; }
 .page-break-after { page-break-after: always; }
 .page-spacer { margin-top: 6em; height: 5em; border-top: 1px #CCCCCC solid; }
