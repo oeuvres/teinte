@@ -470,6 +470,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
           <ref name="listPerson"/>
           <ref name="milestone"/>
           <ref name="pb"/>
+          <ref name="opener"/>
           <ref name="salute"/>
         </choice>
       </oneOrMore>
@@ -496,6 +497,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
           <group>
             <choice>
               <ref name="byline"/>
+              <ref name="closer"/>
               <ref name="dateline"/>
               <ref name="note"/>
               <ref name="postscript"/>
@@ -533,6 +535,33 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </zeroOrMore>
       </choice>
     </define>
+    <define name="closer">
+      <element name="closer">
+        <zeroOrMore>
+          <choice>
+            <ref name="dateline"/>
+            <ref name="salute"/>
+            <ref name="signed"/>
+            <ref name="flow"/>
+          </choice>
+        </zeroOrMore>
+      </element>
+    </define>
+    <define name="opener">
+      <element name="opener">
+        <zeroOrMore>
+          <choice>
+            <ref name="argument"/>
+            <ref name="byline"/>
+            <ref name="dateline"/>
+            <ref name="epigraph"/>
+            <ref name="salute"/>
+            <ref name="signed"/>
+            <ref name="flow"/>
+          </choice>
+        </zeroOrMore>
+      </element>
+    </define>
   </div>
   <div xml:id="block">
     <a:documentation>Blocs</a:documentation>
@@ -553,6 +582,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <ref name="listBibl"/>
         <ref name="lg"/>
         <ref name="p"/>
+        <ref name="q-p"/>
         <ref name="quote-p"/>
         <ref name="stage"/>
         <ref name="sp"/>
@@ -804,6 +834,64 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
             <ref name="lb"/>
           </choice>
         </oneOrMore>
+      </element>
+    </define>
+    <!-- blocs conteneurs de blocs -->
+    <define name="q-p">
+      <element name="q">
+        <a:documentation>Bloc ou suite de blocs distingués du flux sémantique principal</a:documentation>
+        <div xmlns="http://www.w3.org/1999/xhtml">
+          <p>Bloc de texte inséré dans un texte qui interrompt le fil sémantique principal, généralement séparé du texte environnant par un dispositif typographique spécifique (italique, blanc typographique, passage guillemeté). Contrairement à <a:el>quote</a:el>, le contenu de &lt;q&gt; ne peut pas être attribué à une origine extérieure au texte (origine fictionnelle ou non identifiable). Exemples : récit enchâssé, lettre insérée, article de presse, acte notarié, poème…</p>
+        </div>
+        
+        <ref name="xml-atts"/>
+        <optional>
+          <attribute name="type">
+            <choice>
+              <value>legal</value>
+              <value>letter</value>
+              <value>narrative</value>
+              <value>poem</value>
+              <value>press</value>
+              <text/>
+            </choice>
+          </attribute>
+        </optional>
+        <!-- Maybe in italic and not in quotes -->
+        <ref name="rendering.block"/>
+        <choice>
+          <!-- bloc simple -->
+          <oneOrMore>
+            <choice>
+              <text/>
+              <ref name="typo"/>
+              <ref name="function"/>
+              <ref name="indexable"/>
+              <ref name="point"/>
+            </choice>
+          </oneOrMore>
+          <!-- ou conteneur de blocs -->
+          <oneOrMore>
+            <choice>
+              <ref name="closer"/>
+              <ref name="dateline"/>
+              <ref name="label"/>
+              <ref name="l"/>
+              <ref name="lg"/>
+              <ref name="note"/>
+              <ref name="p"/>
+              <ref name="pb"/>
+              <ref name="opener"/>
+              <ref name="postscript"/>
+              <ref name="quote-p"/>
+              <ref name="salute"/>
+              <ref name="signed"/>
+            </choice>
+          </oneOrMore>
+        </choice>
+        <optional>
+          <ref name="bibl"/>
+        </optional>
       </element>
     </define>
     <!-- blocs conteneurs de blocs -->
@@ -2125,7 +2213,9 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
           <ul>
             <li><b>Mise en forme typographique</b> : si l’objectif est la mise en petites capitales des noms de famille, utiliser <a:el>surname</a:el>, afin que <a:el>persName</a:el> encadre la totalité d’un nom de personne, nom, prénom, et autres composantes compris.</li>
             <li><b>Traitements linguistiques</b> : le but sera d’inclure tous les noms propres. Il doit être possible de remplacer <a:el>persName</a:el> par "il" ou "elle" sans rompre la signification de la phrase. Pour un tel objectif, il convient de baliser aussi les noms abrégés ("K.", "Joseph K.").</li>
-            <li><b>Indexation</b> : il est nécessaire d'ajouter l’attribut utile (index-atts()) à l’identification de la personne, notamment pour les pronoms, et permettre les regroupements.<br/> <a:example><persName key="dieu">Il</persName></a:example> L’attribut <a:att>type</a:att> permet, grâce à la valeur "author", d’indexer les <em>auteurs mentionnés</em> au fil du texte. De manière complémentaire, l’élement <a:el>author</a:el>, autorisé uniquement dans <a:el>bibl</a:el>, permet d’indexer les <em>auteurs référencés</em>, c’est-à-dire ceux dont les citations sont explicitement référencées par un auteur ou un éditeur scientifique. Pour établir l’index des auteurs cités dans un texte, il convient donc de regrouper les clés (<a:att>key</a:att>, <a:att>corresp</a:att> ou <a:att>ref</a:att>, cf index-atts()) renseignées pour les éléments <a:el>persName @type="author"]</a:el> et <a:el>author</a:el>.<br/> Auteur mentionné : <a:example>Je veux parler du drame d’amour qui mit aux prises, voici soixante ans passé, deux des beaux génies de notre âge : <persName ref="http://www.idref.fr/027043339" type="author">Alfred de Musset</persName> et <persName ref="http://www.idref.fr/027121577" type="author">George Sand</persName>.</a:example> Auteur référencé : <a:example><note>Le merveilleux <bibl><title>Cyrano</title> de <author ref="http://www.idref.fr/027109860">M. Edmond Rostand</author></bibl> est venu confirmer cette hypothèse. (NdA)</note></a:example> </li>
+            <li><b>Indexation</b> : il est nécessaire d'ajouter l’attribut utile (index-atts()) à l’identification de la personne, notamment pour les pronoms, et permettre les regroupements.<br/> <a:example><persName key="dieu">Il</persName></a:example> L’attribut <a:att>type</a:att> permet, grâce à la valeur "author", d’indexer les <em>auteurs mentionnés</em> au fil du texte. De manière complémentaire, l’élement <a:el>author</a:el>, autorisé uniquement dans <a:el>bibl</a:el>, permet d’indexer les <em>auteurs référencés</em>, c’est-à-dire ceux dont les citations sont explicitement référencées par un auteur ou un éditeur scientifique. Pour établir l’index des auteurs cités dans un texte, il convient donc de regrouper les clés (<a:att>key</a:att>, <a:att>corresp</a:att> ou <a:att>ref</a:att>, cf index-atts()) renseignées pour les éléments <a:el>persName @type="author"]</a:el> et <a:el>author</a:el>.<br/> Auteur mentionné : <a:example>Je veux parler du drame d’amour qui mit aux prises, voici soixante ans passé, deux des beaux génies de notre âge : <persName ref="http://www.idref.fr/027043339" type="author">Alfred de Musset</persName> et <persName ref="http://www.idref.fr/027121577" type="author">George Sand</persName>.</a:example> Auteur référencé : <a:example><note>Le merveilleux
+              <bibl><title>Cyrano</title> de <author ref="http://www.idref.fr/027109860">M. Edmond Rostand</author></bibl>
+               est venu confirmer cette hypothèse. (NdA)</note></a:example> </li>
           </ul>
         </div>
         <ref name="xml-atts"/>
@@ -2342,35 +2432,33 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <ref name="cert-att"/>
       </optional>
     </define>
-    <div xml:id="index_odt">
-      <a:documentation>Conversion ODT</a:documentation>
-      <define name="term">
-        <element name="term">
-          <a:documentation>Terme (mot ou expression), &lt;html5:dfn> (terme défini, “defining instance of a term”)</a:documentation>
-          <div xmlns="http://www.w3.org/1999/xhtml">
-            <p>Il est très utile de pouvoir récupérer l’indexation saisie par un chercheur dans un fichier de traitement de texte. Une chaîne de caractères indexée dans un index lexical se caractérise par une "entrée" normalisée (qui peut différer de la chaîne de caractères sélectionnée) et deux clés optionnelles ("clé1" et "clé2") qui permettent de regrouper hiérarchiquement les entrées. Un tel index lexical est généré grâce au regroupement automatique des entrées insérées dans le fichier. L’interprétation sémantique faite ici de l’élément <a:el>term</a:el> est un peu limite au regard des <i>Guidelines</i> mais se justifie par sa simplicité (pas d’élément parent <a:el>index</a:el>) et la disponibilité du jeu d’attribut <a href="http://www.tei-c.org/release/doc/tei-p5-doc/fr/html/ref-att.typed.html">att.typed</a> utile à l’expression des clés 1 et 2.</p>
-            <p>Cet usage de <a:el>term</a:el> est conçu pour la conversion automatique d’un index lexical ODT. Il serait à rapporter au 3<sup>e</sup> niveau d’encodage défini par les <i><a href="http://purl.oclc.org/NET/teiinlibraries">Best Practices for TEI in Libraries</a></i>, à savoir un fichier XML/TEI issu d’une conversion OCR. Un tel encodage doit ensuite être précisé de manière à désambiguïser les entités indexées (<a:el>persName</a:el>, <a:el>placeName</a:el>, etc.).</p>
-            <p><a:el>term</a:el> sert aussi au repérage sémantique de notions au fil du texte, parfois mises en valeur par l’auteur lui-même. Cette mise en valeur typographique est inscrite en valeur de <a:att>rend</a:att>.</p>
-          </div>
-          <ref name="index-atts">
-            <a:documentation>Contraindre @key pour l’entrée d’index ODT</a:documentation>
-          </ref>
-          <optional>
-            <attribute name="type">
-              <a:documentation>Clé1 de regroupement</a:documentation>
-            </attribute>
-          </optional>
-          <optional>
-            <attribute name="subtype">
-              <a:documentation>Clé2 de regroupement</a:documentation>
-            </attribute>
-          </optional>
-          <!-- attributs plus générique, inutiles pour la représentation d’un index lexical ODT -->
-          <ref name="xml-atts"/>
-          <optional>
-            <ref name="rend-att"/>
-          </optional>
-          <!--
+    <define name="term">
+      <element name="term">
+        <a:documentation>Terme (mot ou expression), &lt;html5:dfn> (terme défini, “defining instance of a term”)</a:documentation>
+        <div xmlns="http://www.w3.org/1999/xhtml">
+          <p>Il est très utile de pouvoir récupérer l’indexation saisie par un chercheur dans un fichier de traitement de texte. Une chaîne de caractères indexée dans un index lexical se caractérise par une "entrée" normalisée (qui peut différer de la chaîne de caractères sélectionnée) et deux clés optionnelles ("clé1" et "clé2") qui permettent de regrouper hiérarchiquement les entrées. Un tel index lexical est généré grâce au regroupement automatique des entrées insérées dans le fichier. L’interprétation sémantique faite ici de l’élément <a:el>term</a:el> est un peu limite au regard des <i>Guidelines</i> mais se justifie par sa simplicité (pas d’élément parent <a:el>index</a:el>) et la disponibilité du jeu d’attribut <a href="http://www.tei-c.org/release/doc/tei-p5-doc/fr/html/ref-att.typed.html">att.typed</a> utile à l’expression des clés 1 et 2.</p>
+          <p>Cet usage de <a:el>term</a:el> est conçu pour la conversion automatique d’un index lexical ODT. Il serait à rapporter au 3<sup>e</sup> niveau d’encodage défini par les <i><a href="http://purl.oclc.org/NET/teiinlibraries">Best Practices for TEI in Libraries</a></i>, à savoir un fichier XML/TEI issu d’une conversion OCR. Un tel encodage doit ensuite être précisé de manière à désambiguïser les entités indexées (<a:el>persName</a:el>, <a:el>placeName</a:el>, etc.).</p>
+          <p><a:el>term</a:el> sert aussi au repérage sémantique de notions au fil du texte, parfois mises en valeur par l’auteur lui-même. Cette mise en valeur typographique est inscrite en valeur de <a:att>rend</a:att>.</p>
+        </div>
+        <ref name="index-atts">
+          <a:documentation>Contraindre @key pour l’entrée d’index ODT</a:documentation>
+        </ref>
+        <optional>
+          <attribute name="type">
+            <a:documentation>Clé1 de regroupement</a:documentation>
+          </attribute>
+        </optional>
+        <optional>
+          <attribute name="subtype">
+            <a:documentation>Clé2 de regroupement</a:documentation>
+          </attribute>
+        </optional>
+        <!-- attributs plus générique, inutiles pour la représentation d’un index lexical ODT -->
+        <ref name="xml-atts"/>
+        <optional>
+          <ref name="rend-att"/>
+        </optional>
+        <!--
           <optional>
             <attribute name="rend">
               <choice>
@@ -2380,10 +2468,9 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
             </attribute>
           </optional>
           -->
-          <ref name="textual"/>
-        </element>
-      </define>
-    </div>
+        <ref name="textual"/>
+      </element>
+    </define>
   </div>
   <div xml:id="point">
     <a:documentation>Points</a:documentation>
@@ -2556,7 +2643,10 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
     <define name="lb">
       <element name="lb">
         <a:documentation>Saut de ligne “line break” &lt;html5:br/></a:documentation>
-        <div xmlns="http://www.w3.org/1999/xhtml"> (<i>line break</i>) <p><a:el>lb</a:el> peut être utilisé pour forcer un saut de ligne, par exemple dans un titre.</p> <p>Dans le cas d’un texte avec lignes numérotées qui ne sont pas des vers inclus dans un élément <a:el>l</a:el>, les numéros sont utiles au référencement des citations des notes d’apparat critique. Il est donc nécessaire de conserver tous les sauts de lignes dans le flux du texte, et d’inscrire le numéro — quand il est imprimé — dans l’attribut <a:att>n</a:att>. <b>Attention</b> : certaines éditions alternent l’emplacement du numéro de ligne selon les pages paires ou impaires (marges intérieures ou extérieures). Conformément à la spécification TEI, le numéro inscrit doit toujours se rapporter à ce qui suit. Les césures sont traitées comme pour le reste du texte. Une édition électronique de référence doit proposer une exploitation de ces sauts de ligne pour garantir une citabilité de qualité égale à la version imprimée. Si plusieurs numérotations concurrentes des lignes sont conservées, elles sont distinguées par l’attribut <a:att>ed</a:att>.</p> <a:example href="teibook.xml#lb"/> </div>
+        <div xmlns="http://www.w3.org/1999/xhtml"> (<i>line break</i>)
+          <p><a:el>lb</a:el> peut être utilisé pour forcer un saut de ligne, par exemple dans un titre.</p>
+          <p>Dans le cas d’un texte avec lignes numérotées qui ne sont pas des vers inclus dans un élément <a:el>l</a:el>, les numéros sont utiles au référencement des citations des notes d’apparat critique. Il est donc nécessaire de conserver tous les sauts de lignes dans le flux du texte, et d’inscrire le numéro — quand il est imprimé — dans l’attribut <a:att>n</a:att>. <b>Attention</b> : certaines éditions alternent l’emplacement du numéro de ligne selon les pages paires ou impaires (marges intérieures ou extérieures). Conformément à la spécification TEI, le numéro inscrit doit toujours se rapporter à ce qui suit. Les césures sont traitées comme pour le reste du texte. Une édition électronique de référence doit proposer une exploitation de ces sauts de ligne pour garantir une citabilité de qualité égale à la version imprimée. Si plusieurs numérotations concurrentes des lignes sont conservées, elles sont distinguées par l’attribut <a:att>ed</a:att>.</p>
+          <a:example href="teibook.xml#lb"/> </div>
         <optional>
           <ref name="n-att"/>
         </optional>
