@@ -27,6 +27,8 @@ class Teinte_Build
     'toc' => '.html',
     // 'docx' => '.docx',
   );
+  /** Columns reference to build queries */
+  static $coldoc = array("code", "filemtime", "filesize", "deps", "title", "byline", "date", "source", "identifier", "publisher" );
   /** Sqlite persistency */
   static $create = "
 PRAGMA encoding = 'UTF-8';
@@ -51,9 +53,9 @@ CREATE table doc (
   identifier  TEXT,    -- ? URL of the orginal publication in case of compilation
   PRIMARY KEY(id ASC)
 );
-CREATE UNIQUE INDEX IF NOT EXISTS doc_code ON doc(code);
-CREATE INDEX IF NOT EXISTS doc_byline_date ON doc(byline, date, title);
-CREATE INDEX IF NOT EXISTS doc_date_byline ON doc(date, byline, title);
+CREATE UNIQUE INDEX IF NOT EXISTS doc_code ON doc( code );
+CREATE INDEX IF NOT EXISTS doc_byline_date ON doc( byline, date, title );
+CREATE INDEX IF NOT EXISTS doc_date_byline ON doc( date, byline, title );
 
 CREATE VIRTUAL TABLE search USING FTS3 (
   -- table of searchable articles, with same rowid as in article
@@ -90,11 +92,38 @@ END;
     $this->_logger = $logger;
     $this->connect( $sqlite );
   }
+  /**
+   * Efficient truncate table
+   */
+  public function clean()
+  {
+    // TODO, delete created folders
+    $this->pdo->exec("DROP TABLE doc; DROP TABLE search; ");
+    $this->pdo->exec(self::$create);
+  }
+
+  /**
+   * Delete exports of a file
+   */
+  public function delete( $code, $basedir="", $formats=null )
+  {
+    if ( !$formats ) $formats=array_keys( self::$_formats );
+    $echo = "";
+    $this->_q['del']->execute( array( $code ) );
+    foreach ( $formats as $format ) {
+      $extension = self::$_formats[$format];
+      $destfile = $basedir.'/'.$format.'/'.$code.$extension;
+      if ( !file_exists($destfile)) continue;
+      unlink($destfile);
+      $echo .= " ".basename( $destfile );
+    }
+    if ( $echo ) $this->log( E_USER_NOTICE, $echo );
+  }
 
   /**
    * Produire les exports depuis le fichier XML
    */
-  public function export( $teinte, $formats=array( "article", "toc" ), $basedir="", $force=false)
+  public function export( $teinte, $basedir="", $formats=array( "article", "toc" ), $force=false)
   {
     $echo = "";
     foreach ( $formats as $format ) {
@@ -116,7 +145,7 @@ END;
       else if ($format == 'epub') {
         $livre = new Livrable_Tei2epub($srcfile, self::$_logger);
         $livre->epub($destfile);
-        // transformation auto en kindle si binaire présent
+        // transform for kindle if cmd present
         if (self::$_kindlegen) {
           $cmd = self::$_kindlegen.' '.$destfile;
           $last = exec ($cmd, $output, $status);
@@ -145,16 +174,10 @@ END;
    */
   private function record( $teinte, $props=null )
   {
-    $cols = array("code", "filemtime", "filesize", "deps", "title", "byline", "date", "source", "identifier", "publisher" );
-    if ( !isset( $this->_q['record'] ) ) {
-      $sql = "INSERT INTO doc (".implode( $cols, ", " ).") VALUES ( ?".str_repeat(", ?", count( $cols ) -1 )." );";
-      $this->_q['record'] = $this->pdo->prepare($sql);
-      $this->_q['del'] = $this->pdo->prepare("DELETE FROM doc WHERE code = ?");
-    }
     $meta = $teinte->meta();
     // supprimer la pièce, des triggers doivent normalement supprimer la cascade.
     $this->_q['del']->execute( array( $meta['code'] ) );
-    $values = array_fill_keys( $cols, null );
+    $values = array_fill_keys( self::$coldoc, null );
     // replace in values, but do not add new keys from meta (intersect)
     $values = array_replace( $values, array_intersect_key($meta, $values) );
     // replace in values, but do not add keys, and change their order
@@ -168,12 +191,7 @@ END;
    */
   private function ft ( $docid, $text )
   {
-    if ( !isset( $this->_q['record'] ) ) {
-      $this->_q['record'] = $this->pdo->prepare("
-INSERT INTO doc (".implode( $cols, ", " ).") VALUES (?.".str_repeat(", ?", count( $cols ) ).");
-      ");
-      $this->_q['del'] = $this->pdo->prepare("DELETE FROM oeuvre WHERE code = ?");
-    }
+
 
     /*
     self::$stmt['insSearch']=self::$pdo->prepare("
@@ -241,14 +259,16 @@ INSERT INTO doc (".implode( $cols, ", " ).") VALUES (?.".str_repeat(", ?", count
       $this->log( E_USER_NOTICE, $srcfile );
       $teinte = new Teinte_Doc( $srcfile );
       $this->record( $teinte );
-      $this->export( $teinte, array( "article", "toc" ), $destdir );
+      $this->export( $teinte, $destdir, array( "article", "toc" ) );
     }
     fclose($handle);
     $this->pdo->commit();
     // Check for deteleted files
     $q = $this->pdo->query("SELECT * FROM doc WHERE code NOT IN ( '".implode( "', '", $cods )."' )");
-    foreach (  $q as $row) {
+    $del = array();
+    foreach (  $q as $row ) {
       $this->log( E_USER_NOTICE, "\nSUPPRESSION ".$row['code'] );
+      $this->delete( $row['code'], $destdir );
     }
     // $this->pdo->exec( "VACUUM" );
     $this->pdo->exec( "INSERT INTO  search(search) VALUES( 'optimize' ); -- optimize fulltext index " );
@@ -271,14 +291,14 @@ INSERT INTO doc (".implode( $cols, ", " ).") VALUES (?.".str_repeat(", ?", count
       "relation" => "Téléchargements",
     );
     echo '<table class="sortable">'."\n  <tr>\n";
-    foreach ($cols as $code) {
+    foreach ( $cols as $code ) {
       echo '    <th>'.$labels[$code]."</th>\n";
     }
     echo "  </tr>\n";
     $i = 1;
     foreach ($this->pdo->query("SELECT * FROM oeuvre ORDER BY code") as $oeuvre) {
       echo "  <tr>\n";
-      foreach ($cols as $code) {
+      foreach ( $cols as $code ) {
         if (!isset($labels[$code])) continue;
         echo "    <td>";
         if ("no" == $code) {
@@ -341,15 +361,9 @@ INSERT INTO doc (".implode( $cols, ", " ).") VALUES (?.".str_repeat(", ?", count
     }
     // table temporaire en mémoire
     $this->pdo->exec("PRAGMA temp_store = 2;");
-  }
-  /**
-   * Efficient truncate table
-   */
-  public function clean()
-  {
-    // TODO, delete created files
-    $this->pdo->exec("DROP TABLE doc; DROP TABLE search; ");
-    $this->pdo->exec(self::$create);
+    $sql = "INSERT INTO doc (".implode( self::$coldoc, ", " ).") VALUES ( ?".str_repeat(", ?", count( self::$coldoc ) -1 )." );";
+    $this->_q['record'] = $this->pdo->prepare($sql);
+    $this->_q['del'] = $this->pdo->prepare("DELETE FROM doc WHERE code = ?");
   }
 
   /**
