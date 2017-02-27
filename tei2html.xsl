@@ -459,10 +459,10 @@ et -1 pour chaque niveau ensuite, d'où le paramètre $level qui peut
   </xsl:template>
   <!-- Autres titres -->
   <xsl:template match="tei:titlePart">
-    <h1>
+    <div>
       <xsl:call-template name="atts"/>
       <xsl:apply-templates/>
-    </h1>
+    </div>
   </xsl:template>
   <!--
 <h3>Paragraphs</h3>

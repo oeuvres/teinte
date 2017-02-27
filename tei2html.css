@@ -212,13 +212,11 @@ h1.collection, h1.collection-sub { font-weight: normal; padding: 0; margin: 0; }
 h1.collection { text-transform: uppercase; }
 .dateline { margin: 2em 0; text-indent: 4em; }
 section.div { padding-top: 3em; }
-h1.desc { font-weight: normal; padding: 0; margin: 0; font-size: 117%; } /* <titlePart type="desc"> */
 @media screen { .body > .div { border-bottom: 1px #CCCCCC solid; padding-bottom: 3em; } }
 div.docAuthor { text-align: center; font-variant: small-caps; font-size: 150%; }
 div.docDate { text-align: center;}
 div.docImprint { text-align: center; }
 .docTitle { margin: 1em 1em 4em 1em; }
-.docTitle h1.desc { font-size: 60%; }
 aside .docDate { float: right; }
 .editionStmt {  }
 .entry > * { margin-left: 2em; }
@@ -226,6 +224,8 @@ aside .docDate { float: right; }
 .fileDesc, .fileDesc > p { text-align: center; text-indent: 0; }
 .fileDesc label { font-weight: bold; }
 .fileDesc  > .titleStmt { text-align: center; margin: 0 0 5em 0; }
+.titlePart { font-size: 200%; margin-top: 1em;}
+.titlePart.sub { font-style: italic; margin-top: 0em; }
 .titleStmt > p { text-align: center; text-indent: 0; }
 .titleStmt h1 { padding-top: 0; padding-bottom: 0; margin-top: 1em; margin-bottom: 1em; }
 .titleStmt div { margin-top: 0.5em; margin-bottom: 0.5em; }
@@ -309,8 +309,7 @@ div.stage.sc { font-style: normal; text-align: center; font-size: 105%; margin-b
 .sp div.stage.right { margin-top: 0; margin-bottom: 0; text-indent: 0; text-align: right; }
 blockquote > div.stage.sc { text-align: left; }
 div.stage .i, div.stage i, div.stage em { font-style: normal; }
-hi.i, h2.sub, h2.i, h3.sub ,h4.sub,h5.sub,h6.sub { font-style: italic; font-weight: normal; border: none; margin-top: 0; padding-top: 0; }
-.titlePage h1.sub { font-weight: normal; margin-top: 0; padding-top: 0; }
+h1.i, h2.sub, h2.i, h3.sub ,h4.sub, h5.sub, h6.sub { font-style: italic; font-weight: normal; border: none; margin-top: 0; padding-top: 0; }
 .scene h2, .scene h3 { font-weight: normal; font-style: italic; text-align: center; margin-left: auto; margin-right: auto; text-transform: uppercase;}
 h2.verse.scene, h3.verse.scene { text-align: left; margin-left: 5em; }
 .sourceDesc { }
@@ -322,6 +321,7 @@ section section .subtitle { font-size: 150%; }
 .title em, .title i, .title .title { font-style: normal; }
 i .title, .i .title { font-style: normal; }
 .titlePage { text-align: center }
+.titlePage h1.sub { font-weight: normal; margin-top: 0; padding-top: 0; }
 .titlePage .argument { font-style: normal; }
 .titlePage .byline { margin-top: 4em; margin-top: 4em; margin-left: auto; margin-right: auto; text-align: center; }
 .titlePage .docAuthor { font-size: 150%; font-variant: small-caps; margin: 1em 0; }
