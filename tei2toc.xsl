@@ -49,7 +49,11 @@ sont officiellement ditribuées par le consortium TEI, cependant ce développeme
       </xsl:when>      
       <xsl:when test="$root=$back">
         <xsl:call-template name="toc-back"/>
-      </xsl:when>      
+      </xsl:when>
+      <!-- HTML fragment -->
+      <xsl:when test="$root=$ul or $root=$ol">
+        <xsl:call-template name="toc"/>
+      </xsl:when>
       <!-- HTML fragment -->
       <xsl:when test="$root=$nav">
         <nav class="toc">
@@ -87,12 +91,17 @@ sont officiellement ditribuées par le consortium TEI, cependant ce développeme
 
   <!-- Générer une navigation dans les sections -->
   <xsl:template name="toc">
-    <ol class="tree">
+    <xsl:variable name="html">
       <xsl:apply-templates select="/*/tei:text/tei:front" mode="li"/>
       <xsl:apply-templates select="/*/tei:text/tei:body" mode="li"/>
       <xsl:apply-templates select="/*/tei:text/tei:group" mode="li"/>
       <xsl:apply-templates select="/*/tei:text/tei:back" mode="li"/>
-    </ol>
+    </xsl:variable>
+    <xsl:if test="$html != ''">
+      <ol class="tree">
+        <xsl:copy-of select="$html"/>
+      </ol>
+    </xsl:if>
   </xsl:template>
   
   <xsl:template name="toc-header">

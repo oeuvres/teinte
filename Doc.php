@@ -30,11 +30,12 @@ class Teinte_Doc {
   private $_xslfile;
   /** formats */
   public static $ext = array(
-    'article' => '.html',
+    'article' => '-art.html',
     'html' => '.html',
-    'markdown' => '.txt',
     'iramuteq' => '.txt',
+    'markdown' => '.txt',
     'naked' => '.txt',
+    'toc' => '-toc.html',
   );
   /**
    * Constructor, load file and prepare work
@@ -159,7 +160,7 @@ class Teinte_Doc {
   /**
    * Output toc
    */
-  public function toc( $destfile=null, $root = "nav") {
+  public function toc( $destfile=null, $root = "ol") {
     return $this->transform(
       dirname(__FILE__).'/tei2toc.xsl',
       $destfile,
@@ -447,6 +448,7 @@ class Teinte_Doc {
         @chmod($dir, 0775);  // let @, if www-data is not owner but allowed to write
       }
     }
+    $destdir = ""; // default is transform here
 
 
     $count = 0;

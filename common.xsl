@@ -306,6 +306,8 @@ Gobal TEI parameters and variables are divided in different categories
   <xsl:variable name="html">html</xsl:variable>
   <xsl:variable name="article">article</xsl:variable>
   <xsl:variable name="nav">nav</xsl:variable>
+  <xsl:variable name="ul">ul</xsl:variable>
+  <xsl:variable name="ol">ol</xsl:variable>
   <xsl:variable name="front">front</xsl:variable>
   <xsl:variable name="back">back</xsl:variable>
   <!-- Upper case letters with diactitics, for translate() -->
