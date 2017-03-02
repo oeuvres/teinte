@@ -1008,6 +1008,9 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <optional>
           <ref name="n-att"/>
         </optional>
+        <optional>
+          <ref name="part-att"/>
+        </optional>
         <ref name="rendering.block"/>
         <ref name="xml-atts"/>
         <oneOrMore>
