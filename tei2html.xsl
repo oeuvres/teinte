@@ -499,10 +499,10 @@ et -1 pour chaque niveau ensuite, d'où le paramètre $level qui peut
   <!-- To think, rendering ? -->
   <xsl:template match="tei:sp">
     <div>
-      <xsl:call-template name="atts"/>
       <xsl:attribute name="id">
         <xsl:call-template name="id"/>
       </xsl:attribute>
+      <xsl:call-template name="atts"/>
       <xsl:apply-templates/>
     </div>
   </xsl:template>
@@ -908,15 +908,17 @@ Tables
     </xsl:element>
   </xsl:template>
   <!-- vers, strophe -->
-  <xsl:template match="tei:lg[tei:lg]">
-    <div>
-      <xsl:call-template name="atts"/>
-      <xsl:apply-templates/>
-    </div>
-  </xsl:template>
+
   <xsl:template match="tei:lg">
     <div>
-      <xsl:call-template name="atts"/>
+      <xsl:call-template name="atts">
+        <xsl:with-param name="class">
+          <xsl:if test="@part">
+            <xsl:text>part-</xsl:text>
+            <xsl:value-of select="translate(@part, 'fimy', 'FIMY')"/>
+          </xsl:if>
+        </xsl:with-param>
+      </xsl:call-template>
       <xsl:apply-templates/>
     </div>
   </xsl:template>
@@ -942,6 +944,9 @@ Tables
       </xsl:when>
       <xsl:otherwise>
         <div>
+          <xsl:variable name="pos">
+            <xsl:number/>
+          </xsl:variable>
           <xsl:call-template name="atts">
             <xsl:with-param name="class">
               <xsl:if test="@part">
@@ -952,6 +957,32 @@ Tables
                 <xsl:text> </xsl:text>
                 <xsl:value-of select="@met"/>
               </xsl:if>
+              <!-- first verse in stanza -->
+              <xsl:choose>
+                <!-- Not in a stanza -->
+                <xsl:when test="not(parent::tei:lg)"/>
+                <!-- Is it a broken verse to align ? -->
+                <xsl:when test="@part and @part != 'I'">
+                  <!-- search if previous verse should be aligned -->
+                  <xsl:for-each select="preceding::tei:l[@part='I'][1]">
+                    <xsl:variable name="first">
+                      <xsl:number/>
+                    </xsl:variable>
+                    <xsl:choose>
+                      <xsl:when test="$first != 1"/>
+                      <xsl:when test="not(parent::tei:lg)"/>
+                      <xsl:when test="not(parent::tei:lg/@part) or parent::tei:lg/@part = 'I'"> first</xsl:when>
+                    </xsl:choose>
+                  </xsl:for-each>
+                </xsl:when>
+                <xsl:when test="$pos != 1"/>
+                <!-- first but in a stanza fragment-->
+                <xsl:when test="parent::tei:lg/@part and parent::tei:lg/@part != 'I'"/>
+                <!-- first verse in a stanza -->
+                <xsl:when test="$pos = 1">
+                  <xsl:text> first</xsl:text>
+                </xsl:when>
+              </xsl:choose>
             </xsl:with-param>
           </xsl:call-template>
           <xsl:choose>
