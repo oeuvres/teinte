@@ -90,7 +90,42 @@ END;
   {
     if (is_string($logger)) $logger = fopen($logger, 'w');
     $this->_logger = $logger;
-    $this->connect( $sqlite );
+    $this->_connect( $sqlite );
+    $this->_prepare();
+  }
+  /**
+   * Connexion à la base
+   */
+  private function _connect($sqlite)
+  {
+    $dsn = "sqlite:" . $sqlite;
+    // si la base n’existe pas, la créer
+    if (!file_exists($sqlite)) {
+      if (!file_exists($dir = dirname($sqlite))) {
+        mkdir($dir, 0775, true);
+        @chmod($dir, 0775);  // let @, if www-data is not owner but allowed to write
+      }
+      $this->pdo = new PDO($dsn);
+      $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
+      @chmod($sqlite, 0775);
+      $this->pdo->exec(self::$create);
+    }
+    else {
+      $this->pdo = new PDO($dsn);
+      $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
+    }
+    // table temporaire en mémoire
+    $this->pdo->exec("PRAGMA temp_store = 2;");
+  }
+  /**
+   * Prepare queries;
+   */
+  private function _prepare()
+  {
+    $this->_q['mtime'] = $this->pdo->prepare("SELECT filemtime FROM doc WHERE code = ?");
+    $sql = "INSERT INTO doc (".implode( self::$coldoc, ", " ).") VALUES ( ?".str_repeat(", ?", count( self::$coldoc ) -1 )." );";
+    $this->_q['record'] = $this->pdo->prepare($sql);
+    $this->_q['del'] = $this->pdo->prepare("DELETE FROM doc WHERE code = ?");
   }
   /**
    * Efficient truncate table
@@ -100,6 +135,7 @@ END;
     // TODO, delete created folders
     $this->pdo->exec("DROP TABLE doc; DROP TABLE search; ");
     $this->pdo->exec(self::$create);
+    $this->prepare();
   }
 
   /**
@@ -225,7 +261,6 @@ END;
    */
   public function site( $srclist, $destdir, $sep=";" )
   {
-    $this->_q['mtime'] = $this->pdo->prepare("SELECT filemtime FROM doc WHERE code = ?");
     $oldlog = $this->loglevel;
     $this->loglevel = $this->loglevel|E_USER_NOTICE;
     $this->log( E_USER_NOTICE, $srclist." lecture de la liste de fichiers à publier" );
@@ -236,7 +271,8 @@ END;
     if ( $srcdir == "." ) $srcdir = "";
     else $srcdir .= "/";
     $line = 1;
-    $this->pdo->beginTransaction();
+    // no transaction for XML errors
+    // $this->pdo->beginTransaction();
     while ( ($values = fgetcsv( $handle, 0, $sep )) !== FALSE) {
       $line++;
       if ( count( $values ) < 1 ) continue;
@@ -257,12 +293,19 @@ END;
       list( $basemtime ) = $this->_q['mtime']->fetch();
       if ( $basemtime >= $srcmtime ) continue;
       $this->log( E_USER_NOTICE, $srcfile );
-      $teinte = new Teinte_Doc( $srcfile );
+      // here possible XML error
+      try  {
+        $teinte = new Teinte_Doc( $srcfile );
+      }
+      catch ( Exception $e ) {
+        $this->log( E_USER_ERROR, $srcfile." XML mal formé" );
+        continue;
+      }
       $this->record( $teinte );
       $this->export( $teinte, $destdir, array( "article", "toc" ) );
     }
     fclose($handle);
-    $this->pdo->commit();
+    // $this->pdo->commit();
     // Check for deteleted files
     $q = $this->pdo->query("SELECT * FROM doc WHERE code NOT IN ( '".implode( "', '", $cods )."' )");
     $del = array();
@@ -338,33 +381,6 @@ END;
   }
 
 
-  /**
-   * Connexion à la base
-   */
-  private function connect($sqlite)
-  {
-    $dsn = "sqlite:" . $sqlite;
-    // si la base n’existe pas, la créer
-    if (!file_exists($sqlite)) {
-      if (!file_exists($dir = dirname($sqlite))) {
-        mkdir($dir, 0775, true);
-        @chmod($dir, 0775);  // let @, if www-data is not owner but allowed to write
-      }
-      $this->pdo = new PDO($dsn);
-      $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
-      @chmod($sqlite, 0775);
-      $this->pdo->exec(self::$create);
-    }
-    else {
-      $this->pdo = new PDO($dsn);
-      $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
-    }
-    // table temporaire en mémoire
-    $this->pdo->exec("PRAGMA temp_store = 2;");
-    $sql = "INSERT INTO doc (".implode( self::$coldoc, ", " ).") VALUES ( ?".str_repeat(", ?", count( self::$coldoc ) -1 )." );";
-    $this->_q['record'] = $this->pdo->prepare($sql);
-    $this->_q['del'] = $this->pdo->prepare("DELETE FROM doc WHERE code = ?");
-  }
 
   /**
    * Check dependencies

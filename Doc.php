@@ -30,12 +30,12 @@ class Teinte_Doc {
   private $_xslfile;
   /** formats */
   public static $ext = array(
-    'article' => '-art.html',
+    'article' => '_art.html',
     'html' => '.html',
     'iramuteq' => '.txt',
     'markdown' => '.txt',
     'naked' => '.txt',
-    'toc' => '-toc.html',
+    'toc' => '_toc.html',
   );
   /**
    * Constructor, load file and prepare work
@@ -49,13 +49,19 @@ class Teinte_Doc {
       $this->_filemtime = filemtime( $tei );
       $this->_filesize = filesize( $tei ); // ?? URL ?
       $this->_filename = pathinfo( $tei, PATHINFO_FILENAME );
-      $this->_dom( $tei );
+      // loading error, do something ?
+      if ( !$this->_dom( $tei ) ) throw new Exception("BAD XML");
     }
     else {
       throw new Exception('Teinte, what is it? '.print_r($tei, true));
     }
     $this->_xsldom = new DOMDocument();
     $this->xpath();
+  }
+
+  public function isEmpty()
+  {
+    return !$this->_dom;
   }
 
  /**
@@ -409,8 +415,8 @@ class Teinte_Doc {
     $this->_dom->preserveWhiteSpace = false;
     $this->_dom->formatOutput=true;
     $this->_dom->substituteEntities=true;
-    $this->_dom->load($xmlfile, LIBXML_NOENT | LIBXML_NONET | LIBXML_NSCLEAN | LIBXML_NOCDATA | LIBXML_COMPACT | LIBXML_PARSEHUGE | LIBXML_NOWARNING);
-    return $this->_dom;
+    $ret = $this->_dom->load($xmlfile, LIBXML_NOENT | LIBXML_NONET | LIBXML_NSCLEAN | LIBXML_NOCDATA | LIBXML_NOWARNING);
+    return $ret;
   }
   /**
    * Get the dom
