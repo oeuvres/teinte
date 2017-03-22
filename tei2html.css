@@ -89,7 +89,7 @@ figcaption { display: block; padding: 6px 8px;  }
 figcaption.head { background: #dddddd; text-align: center; }
 figcaption a:hover { background-color: #FFFFFF; }
 figcaption img { float: right; display: block; padding-left: 6px; margin-right: -10px; margin-top: -8px; }
-figure { display: block;  position: relative; padding: 6px 0; line-height: 105%; background: white; margin: 0; text-align: left; margin-top: 1em; margin-bottom: 1em; }
+figure { display: block; position: relative; line-height: 105%; margin: 0; text-align: left; margin-top: 1em; margin-bottom: 1em; }
 figure.left { float: left; margin: 15px 15px 8px 0; }
 figure.right { float: right; margin: 15px 0 8px 15px; }
 figure img {  }
