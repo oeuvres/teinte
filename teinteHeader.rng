@@ -546,6 +546,12 @@
         </element>
         <ref name="teiHeader.num"/>
         <element name="title">
+          <zeroOrMore>
+            <choice>
+              <text/>
+              <ref name="teiHeader.hi"/>
+            </choice>
+          </zeroOrMore>
           <ref name="pers.cont"/>
         </element>
       </choice>

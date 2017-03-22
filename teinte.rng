@@ -1055,9 +1055,9 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
     
     <define name="q-p">
       <element name="q">
-        <a:documentation>Bloc ou suite de blocs distingués du flux sémantique principal</a:documentation>
+        <a:documentation>Bloc ou suite de blocs distingués du flux textuel principal</a:documentation>
         <div xmlns="http://www.w3.org/1999/xhtml">
-          <p>Bloc de texte inséré dans un texte qui interrompt le fil sémantique principal, généralement séparé du texte environnant par un dispositif typographique spécifique (italique, blanc typographique, passage guillemeté). Contrairement à <a:el>quote</a:el>, le contenu de &lt;q&gt; ne peut pas être attribué à une origine extérieure au texte (origine fictionnelle ou non identifiable). Exemples : récit enchâssé, lettre insérée, article de presse, acte notarié, poème…</p>
+          <p>Bloc de texte inséré dans un texte qui interrompt le fil textuel principal, généralement séparé du texte environnant par un dispositif typographique spécifique (italique, blanc typographique, passage guillemeté). Contrairement à <a:el>quote</a:el>, le contenu de &lt;q&gt; ne peut pas être attribué à une origine extérieure au texte (origine fictionnelle ou non identifiable). Exemples : récit enchâssé, lettre insérée, article de presse, acte notarié, poème…</p>
         </div>
         
         <ref name="xml-atts"/>

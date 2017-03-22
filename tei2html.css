@@ -40,7 +40,7 @@ body, html { min-height: 100%; margin: 0; padding: 0; }
 body { font: 16px Georgia, "Bitstream Vera Serif", Times, serif; }
 .serif, .subtitle, textarea.readonly, .dialogue li, .titleStmt h1 { font-family: Georgia, "Bitstream Vera Serif", Times, serif; }
 .cb, .pb, .ed, small.l, small.l-n { font-family: "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif; }
-.sans-serif, .availability, figcaption, li.bibl, div.bibl, .editionStmt, .footnotes, .marginalia, .note, #noterefover, .publicationStmt, .sourceDesc, .speaker, .stage { font-size: 14px;  font-family: "Lucida Grande", Verdana, sans-serif; }
+.sans-serif, .availability, figcaption, li.bibl, div.bibl, .editionStmt, .footnotes, figure .label, .marginalia, .note, #noterefover, .publicationStmt, .sourceDesc, .speaker, .stage { font-size: 14px;  font-family: "Lucida Grande", Verdana, sans-serif; }
 .interface, aside, .breadcrumb, .but, caption, .cb, form label, nav, .pb, .tabs { font-family: "Droid Sans", "Lucida Grande", Verdana, sans-serif; font-size: 12px; line-height: 1.1em; }
 tt, pre { font-family: "Andale Mono", "Lucida Console", Courier, "MS Courier New", monospace; }
 .dingbat { font-family: "FreeSans", "DejaVu Sans", "Lucida Sans Unicode", "Arial Unicode MS", sans-serif }
@@ -133,7 +133,7 @@ nav menu, nav ul { margin-left: 1em; padding-left: 0; }
 optgroup { font-weight: bold; }
 p { margin: 0; text-align: justify; }
 pre { overflow: auto; white-space: pre; font-size: 13px; }
-pre label { font-family: inherit; }
+pre .label { font-family: inherit; }
 pre { width: 95%; line-height: 1em; border-left: 1px dotted #808080; padding-left: 10px; overflow: auto; overflow-y: hidden !important; }
 q { quotes: '' ''; }
 q q { font-style: italic; }
@@ -182,7 +182,7 @@ h1.act, h2.act, h1.castList, h2.castList { text-transform: uppercase; }
 p.argument { font-style: normal; line-height: 140%; text-indent: 2em; }
 .argument p { text-indent: 0; }
 .argument i, .argument em, .argument .i, .argument .italic, .argument .title { font-style: normal; }
-div.author, p.author { font-variant: small-caps; }
+div.author, p.author, .bibl .author { font-variant: small-caps; }
 .availability { margin: 2em 0; text-align: justify;  }
 /* .back p, .front p { text-indent: 0; } no indent in paratext */
 div.bibl {  }
@@ -190,7 +190,8 @@ section > div.bibl, article > div.bibl, figcaption.bibl { text-indent: -2rem; pa
 figcaption.bibl { font-style: normal; text-align: left; padding: 0 0 0 2rem; }
 figure.bibl { margin: 0; padding: 0; border: none; }
 li.bibl { list-style: circle; font-size: 90%; } /* like li.witness */
-blockquote .bibl { text-align: right; margin-top: 1ex; }
+blockquote .bibl { text-align: right; margin-top: 1ex; line-height: 110%; }
+.quote.l .bibl { margin-left: 4rem; text-align: left; margin-right: 15%;}
 .byline { text-align: right; margin-left: 45%; margin-top: 4ex; text-indent: 0; }
 aside .byline { margin-top: 0; text-align: left; margin: 0 20% 0 0; }
 .byline .docAuthor { font-variant: small-caps; }
@@ -211,8 +212,9 @@ small.ed { color: grey; font-size: 11px; }
 h1.collection, h1.collection-sub { font-weight: normal; padding: 0; margin: 0; }
 h1.collection { text-transform: uppercase; }
 .dateline { margin: 2em 0; text-indent: 4em; }
-section.div { padding-top: 3em; }
-@media screen { .body > .div { border-bottom: 1px #CCCCCC solid; padding-bottom: 3em; } }
+section
+ { padding-top: 3em; }
+@media screen { .body > .div { padding-bottom: 3em; } }
 div.docAuthor { text-align: center; font-variant: small-caps; font-size: 150%; }
 div.docDate { text-align: center;}
 div.docImprint { text-align: center; }
@@ -260,6 +262,7 @@ div.l { text-align: left; text-indent: -2rem; padding-left: 2rem; }
 label.label { font-weight: bold; }
 p.label, div.label { margin: 1.4em 0 0.7em 0; line-height: 105%; text-align: center; text-indent: 0; padding-left: 0; }
 blockquote .label { margin: 1ex 0 0.5ex 2em; text-align: left; }
+figure .label { text-align: right; margin-top: 0; }
 div.lg { margin-top: 1em; margin-bottom: 1em; }
 .sp .lg { margin-top: 0; margin-bottom: 0; }
 .lg .l.first { text-indent: -1rem; }

@@ -78,17 +78,17 @@ END;
   private $_xslt;
   /** A logger, maybe a stream or a callable, used by $this->log() */
   private $_logger;
-  /** Vrai si dépendances vérifiées et chargées */
-  private static $_deps;
   /** Log level */
   public $loglevel = E_ALL;
+  /** Vrai si dépendances vérifiées et chargées */
+  private static $_deps;
 
   /**
    * Constructeur de la base
    */
-  public function __construct($sqlite, $logger="php://output")
+  public function __construct( $sqlite, $logger="php://output" )
   {
-    if (is_string($logger)) $logger = fopen($logger, 'w');
+    if ( is_string($logger) ) $logger = fopen($logger, 'w');
     $this->_logger = $logger;
     $this->_connect( $sqlite );
     $this->_prepare();

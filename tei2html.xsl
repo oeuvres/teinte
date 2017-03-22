@@ -510,8 +510,12 @@ et -1 pour chaque niveau ensuite, d'où le paramètre $level qui peut
   <xsl:template match="tei:p">
     <p>
       <xsl:variable name="prev" select="preceding-sibling::*[not(self::tei:pb)][1]"/>
+      <xsl:variable name="char1" select="substring(normalize-space(.), 0, 1)"/>
       <xsl:choose>
-        <xsl:when test="contains(concat(' ', @rend, ' '), 'indent')">
+        <xsl:when test="contains( '-–—0123456789', $char1 )">
+          <xsl:call-template name="atts"/>
+        </xsl:when>
+        <xsl:when test="contains(concat(' ', @rend, ' '), ' indent ')">
           <xsl:call-template name="atts"/>
         </xsl:when>
         <xsl:when test="$prev and contains('-–—', substring(normalize-space($prev), 1, 1))">
@@ -569,6 +573,13 @@ et -1 pour chaque niveau ensuite, d'où le paramètre $level qui peut
     <xsl:choose>
       <xsl:when test="@type='hr'">
         <hr align="center" width="30%"/>
+      </xsl:when>
+      <xsl:when test="normalize-space(.) = ''">
+        <div>
+          <xsl:call-template name="atts"/>
+          <xsl:text> </xsl:text>
+          <xsl:apply-templates/>
+        </div>
       </xsl:when>
       <xsl:otherwise>
         <div>
@@ -2112,6 +2123,7 @@ Elements block or inline level
       <xsl:otherwise>
         <xsl:variable name="el">
           <xsl:choose>
+            <xsl:when test="self::tei:label and parent::tei:figure">div</xsl:when>
             <xsl:when test="self::tei:label">p</xsl:when>
             <xsl:when test="self::tei:quote">blockquote</xsl:when>
             <xsl:otherwise>div</xsl:otherwise>
