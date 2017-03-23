@@ -583,7 +583,11 @@ et -1 pour chaque niveau ensuite, d'où le paramètre $level qui peut
       </xsl:when>
       <xsl:otherwise>
         <div>
-          <xsl:call-template name="atts"/>
+          <xsl:call-template name="atts">
+            <xsl:with-param name="class">
+              <xsl:if test="substring(normalize-space(.), 1, 1) = '*'">star</xsl:if>
+            </xsl:with-param>
+          </xsl:call-template>
           <xsl:apply-templates/>
         </div>
       </xsl:otherwise>

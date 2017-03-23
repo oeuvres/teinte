@@ -373,7 +373,8 @@ h1.main { margin-top: 1.5em; }
 .normal, div.normal, .n { quotes: '' ''; color: #000; font-weight: normal; font-style: normal; text-decoration: none; border-bottom: none; font-variant: normal; text-transform: none; }
 .noindent { text-indent: 0; } /* automatic */
 .indent { text-indent: 2em; }
-div.ornament { line-height: 95%; letter-spacing: 0.6em; margin: 1em 5em; text-align: center; }
+div.ornament { line-height: 95%; margin: 1em 5em; text-align: center; }
+.ornament.star { letter-spacing: 0.6em; }
 .lg div.ornament { text-align: left; }
 .page-break-before { page-break-before: always; margin-top: 6em; height: 5em; border-top: 1px #CCCCCC solid; }
 .page-break-after { page-break-after: always; }
