@@ -2132,8 +2132,9 @@ Elements block or inline level
         <xsl:element name="{$el}" namespace="http://www.w3.org/1999/xhtml">
           <xsl:call-template name="atts">
             <xsl:with-param name="class">
+              <xsl:value-of select="local-name()"/>
               <!-- modify rendering when contain verses -->
-              <xsl:if test="tei:l">l</xsl:if>
+              <xsl:if test="tei:l"> l</xsl:if>
               <xsl:if test="tei:lg"> lg</xsl:if>
               <xsl:if test="@corresp"> corresp</xsl:if>
             </xsl:with-param>

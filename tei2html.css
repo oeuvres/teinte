@@ -292,6 +292,7 @@ a.noteback { font-size: 85%; }
 .num { font-family: inherit; line-height: 100%; font-variant: small-caps; }
 .num sup { font-variant: normal; }
 .opener { margin-bottom: 1em; }
+.questions { margin: 1em 0 1em 0; font-size: 90%; }
 /*
 div.part-Y { text-indent: 3em; }
 .l.part-M { margin-left: 3em; text-indent: 0; padding-left: 0; }
