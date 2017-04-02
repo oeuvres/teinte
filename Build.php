@@ -15,7 +15,11 @@ else if (php_sapi_name() == "cli") {
 }
 class Teinte_Build
 {
+  /** True if dependancies are verified and loaded */
+  private static $_deps;
+  /** Path of kindlegen binary */
   static private $_kindlegen;
+  /** Possible formats */
   static private $_formats = array(
     'tei' => '.xml',
     'epub' => '.epub',
@@ -23,12 +27,12 @@ class Teinte_Build
     'markdown' => '.md',
     'iramuteq' => '.txt',
     'html' => '.html',
-    'article' => '.html',
-    'toc' => '.html',
+    'article' => '_art.html',
+    'toc' => '_xtoc.html',
     // 'docx' => '.docx',
   );
   /** Columns reference to build queries */
-  static $coldoc = array("code", "filemtime", "filesize", "deps", "title", "byline", "date", "source", "identifier", "publisher" );
+  static $coldoc = array("code", "filemtime", "filesize", "deps", "title", "byline", "date", "source", "identifier", "publisher", "class" );
   /** Sqlite persistency */
   static $create = "
 PRAGMA encoding = 'UTF-8';
@@ -51,6 +55,7 @@ CREATE table doc (
   source      TEXT,    -- ? URL of source file (ex: XML/TEI)
   publisher   TEXT,    -- ? Name of the original publisher of the file in case of compilation
   identifier  TEXT,    -- ? URL of the orginal publication in case of compilation
+  class       TEXT, -- a classname
   PRIMARY KEY(id ASC)
 );
 CREATE UNIQUE INDEX IF NOT EXISTS doc_code ON doc( code );
@@ -80,42 +85,68 @@ END;
   private $_logger;
   /** Log level */
   public $loglevel = E_ALL;
-  /** Vrai si dépendances vérifiées et chargées */
-  private static $_deps;
+  /** Shared list of code in a loop of files */
+  private $_cods;
+  /** valeur par défaut de la configuration */
+  public $conf = array(
+    "destdir" => "",
+    "formats" => "site, epub, kindle",
+    "cmdup" => "git pull",
+    "logger" => "php://output",
+  );
 
   /**
    * Constructeur de la base
    */
-  public function __construct( $sqlite, $logger="php://output" )
+  public function __construct( $conf )
   {
-    if ( is_string($logger) ) $logger = fopen($logger, 'w');
-    $this->_logger = $logger;
-    $this->_connect( $sqlite );
+    $this->conf = array_merge( $this->conf, $conf );
+    if ( !$this->conf['formats'] ) $this->conf['formats']=array_keys( self::$_formats );
+    else if ( is_string( $this->conf['formats'] ) ) {
+      $this->conf['formats'] = preg_split( "@[\s,;]+@", $this->conf['formats'] );
+    }
+    if ( !$this->conf['destdir'] );
+    else if ( !$this->conf['destdir'] == "." ) $this->conf['destdir']="";
+    else $this->conf['destdir'] = rtrim($this->conf['destdir'], '\\/')."/";
+    // verify output dirs for generated files
+    foreach ( $this->conf['formats'] as $type ) {
+      if ( !isset( self::$_formats[$type] ) ) {
+        $this->log( E_USER_WARNING, $type." format non supporté" );
+        continue;
+      }
+      $dir = $this->conf['destdir'].'/'.$type.'/';
+      if ( !file_exists( $dir ) ) {
+        mkdir( $dir, 0775, true );
+        @chmod( $dir, 0775 );  // let @, if www-data is not owner but allowed to write
+      }
+    }
+    if ( is_string( $this->conf['logger'] ) ) $this->_logger = fopen( $this->conf['logger'], 'w');
+    $this->_connect( $this->conf['sqlite'] );
     $this->_prepare();
   }
   /**
    * Connexion à la base
    */
-  private function _connect($sqlite)
+  private function _connect( $sqlite )
   {
-    $dsn = "sqlite:" . $sqlite;
+    $dsn = "sqlite:".$sqlite;
     // si la base n’existe pas, la créer
-    if (!file_exists($sqlite)) {
-      if (!file_exists($dir = dirname($sqlite))) {
-        mkdir($dir, 0775, true);
-        @chmod($dir, 0775);  // let @, if www-data is not owner but allowed to write
+    if ( !file_exists($sqlite) ) {
+      if ( !file_exists($dir = dirname($sqlite)) ) {
+        mkdir( $dir, 0775, true );
+        @chmod( $dir, 0775 );  // let @, if www-data is not owner but allowed to write
       }
-      $this->pdo = new PDO($dsn);
-      $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
-      @chmod($sqlite, 0775);
-      $this->pdo->exec(self::$create);
+      $this->pdo = new PDO( $dsn );
+      $this->pdo->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
+      @chmod( $sqlite, 0775 );
+      $this->pdo->exec( self::$create );
     }
     else {
-      $this->pdo = new PDO($dsn);
-      $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
+      $this->pdo = new PDO( $dsn );
+      $this->pdo->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
     }
     // table temporaire en mémoire
-    $this->pdo->exec("PRAGMA temp_store = 2;");
+    $this->pdo->exec( "PRAGMA temp_store = 2;" );
   }
   /**
    * Prepare queries;
@@ -125,6 +156,7 @@ END;
     $this->_q['mtime'] = $this->pdo->prepare("SELECT filemtime FROM doc WHERE code = ?");
     $sql = "INSERT INTO doc (".implode( self::$coldoc, ", " ).") VALUES ( ?".str_repeat(", ?", count( self::$coldoc ) -1 )." );";
     $this->_q['record'] = $this->pdo->prepare($sql);
+    $this->_q['search'] = $this->pdo->prepare( "INSERT INTO search ( docid, text ) VALUES ( ?, ? );" );
     $this->_q['del'] = $this->pdo->prepare("DELETE FROM doc WHERE code = ?");
   }
   /**
@@ -141,15 +173,15 @@ END;
   /**
    * Delete exports of a file
    */
-  public function delete( $code, $basedir="", $formats=null )
+  public function delete( $code, $destdir="" )
   {
-    if ( !$formats ) $formats=array_keys( self::$_formats );
     $echo = "";
     $this->_q['del']->execute( array( $code ) );
-    foreach ( $formats as $format ) {
-      $extension = self::$_formats[$format];
-      $destfile = $basedir.'/'.$format.'/'.$code.$extension;
-      if ( !file_exists($destfile)) continue;
+    foreach ( $this->conf['formats'] as $type ) {
+      if ( !isset(self::$_formats[$type]) ) continue;
+      $extension = self::$_formats[$type];
+      $destfile = $destdir.'/'.$type.'/'.$code.$extension;
+      if ( !file_exists( $destfile )) continue;
       unlink($destfile);
       $echo .= " ".basename( $destfile );
     }
@@ -159,46 +191,45 @@ END;
   /**
    * Produire les exports depuis le fichier XML
    */
-  public function export( $teinte, $basedir="", $formats=array( "article", "toc" ), $force=false)
+  public function export( $teinte, $destdir="" )
   {
     $echo = "";
-    foreach ( $formats as $format ) {
-      if ( !isset( self::$_formats[$format] ) ) {
-        $this->log( E_USER_WARNING, $format." format non supporté" );
+    foreach ( $this->conf['formats'] as $type ) {
+      if ( !isset( self::$_formats[$type] ) ) {
+        // already said upper
+        // $this->log( E_USER_WARNING, $type." format non supporté" );
         continue;
       }
-      $extension = self::$_formats[$format];
-      $destfile = $basedir.'/'.$format.'/'.$teinte->filename().$extension;
+      $ext = self::$_formats[$type];
+      $destfile = $destdir.'/'.$type.'/'.$teinte->filename().$ext;
       // delete destfile if exists
-      if (file_exists($destfile)) unlink($destfile);
-      $echo .= " ".$format;
-      // TODO git $destfile
-      if ($format == 'html') $teinte->html($destfile, 'http://oeuvres.github.io/Teinte/');
-      else if ($format == 'article') $teinte->article($destfile);
-      else if ($format == 'toc') $teinte->toc($destfile);
-      else if ($format == 'markdown') $teinte->markdown($destfile);
-      else if ($format == 'iramuteq') $teinte->iramuteq($destfile);
-      else if ($format == 'epub') {
-        $livre = new Livrable_Tei2epub($srcfile, self::$_logger);
-        $livre->epub($destfile);
-        // transform for kindle if cmd present
-        if (self::$_kindlegen) {
-          $cmd = self::$_kindlegen.' '.$destfile;
-          $last = exec ($cmd, $output, $status);
-          $mobi = dirname(__FILE__).'/'.$format.'/'.$teinte->filename.".mobi";
-          // error ?
-          if (!file_exists($mobi)) {
-            $this->log(E_USER_ERROR, "\n".$status."\n".join("\n", $output)."\n".$last."\n");
-          }
-          else {
-            rename( $mobi, dirname(__FILE__).'/kindle/'.$teinte->filename.".mobi");
-            $echo .= " kindle";
-          }
-        }
+      if ( file_exists( $destfile ) ) unlink( $destfile );
+      $echo .= " ".$type;
+           if ( $type == 'html' ) $teinte->html( $destfile, 'http://oeuvres.github.io/Teinte/' );
+      else if ( $type == 'article' ) $teinte->article( $destfile );
+      else if ( $type == 'toc' ) $teinte->toc( $destfile );
+      else if ( $type == 'markdown' ) $teinte->markdown( $destfile );
+      else if ( $type == 'iramuteq' ) $teinte->iramuteq( $destfile );
+      else if ( $type == 'docx' ) Toff_Tei2docx::docx( $teinte->file(), $destfile );
+      else if ( $type == 'epub' ) {
+        $livre = new Livrable_Tei2epub( $teinte->file(), $this->_logger );
+        $livre->epub( $destfile );
       }
-      else if ($format == 'docx') {
-        $echo .= " docx";
-        Toff_Tei2docx::docx($srcfile, $destfile);
+      // Attention, do kindle after epub
+      else if ( $type == 'kindle' ) {
+        $epubfile =  $destdir.'/epub/'.$teinte->filename().".epub";
+        // generated file
+        $mobifile = $destdir.'/epub/'.$teinte->filename().".mobi";
+        $cmd = self::$_kindlegen.' '.$epubfile;
+        $last = exec ($cmd, $output, $status);
+        // error ?
+        if (!file_exists( $mobifile )) {
+          $this->log(E_USER_ERROR, "\n".$status."\n".htmlspecialchars( join( "\n", $output ) )."\n".$last."\n");
+        }
+        // move
+        else {
+          rename( $mobifile, $destfile );
+        }
       }
     }
     if ($echo) $this->log( E_USER_NOTICE, $echo );
@@ -211,60 +242,102 @@ END;
   private function record( $teinte, $props=null )
   {
     $meta = $teinte->meta();
+    // hack to get some class info
+    if ( isset( $meta['class'] ) && $meta['class'] ) $meta['class'] .= basename( dirname( $teinte->file() ) );
+    else $meta['class'] = basename( dirname( $teinte->file() ) );
     // supprimer la pièce, des triggers doivent normalement supprimer la cascade.
     $this->_q['del']->execute( array( $meta['code'] ) );
     $values = array_fill_keys( self::$coldoc, null );
     // replace in values, but do not add new keys from meta (intersect)
-    $values = array_replace( $values, array_intersect_key($meta, $values) );
+    $values = array_replace( $values, array_intersect_key( $meta, $values ) );
     // replace in values, but do not add keys, and change their order
     if ( is_array( $props ) ) $values = array_replace( $values, array_intersect_key( $props, $values ) );
-    $this->_q['record']->execute( array_values( $values ) ); // no keys for values
-    return $this->pdo->lastInsertId() ;
+    $values = array_values( $values );
+    $this->_q['record']->execute( $values ); // no keys for values
+    $lastid = $this->pdo->lastInsertId();
+    $this->_q['search']->execute( array( $lastid, $teinte->ft() ) );
+    return $lastid;
+  }
+  /**
+   * Explore some folders
+   */
+  public function glob( $glob=null, $force=false )
+  {
+    $this->_cods = array(); // store the codes of each file in the srclist to delete some files
+    if ( !$glob ) $glob = $this->conf['srcglob'];
+    $oldlog = $this->loglevel;
+    $this->loglevel = $this->loglevel|E_USER_NOTICE;
+    if ( !is_array( $glob ) ) $glob = array( $glob );
+    foreach ( $glob as $path ) {
+      foreach( glob( $path ) as $srcfile) {
+        $this->_file( $srcfile, $force );
+      }
+    }
+    $this->_post();
+    $this->loglevel = $oldlog;
   }
 
-  /**
-   * Add a full text row, with the rowid given by record()
-   */
-  private function ft ( $docid, $text )
+  private function _file( $srcfile, $force=false )
   {
-
-
-    /*
-    self::$stmt['insSearch']=self::$pdo->prepare("
-      INSERT INTO search (docid, text, omni) VALUES (?, ?, ?);
-    ");
-
-    // do not (?) search for notes
-    if ($pos=strpos($body, '<section class="footnotes">')) {
-      $body = substr($body, 0, $pos - 1);
+    $code = pathinfo( $srcfile, PATHINFO_FILENAME );
+    $this->_cods[] = $code;
+    if ( !file_exists( $srcfile ) ) {
+      $this->log( E_USER_NOTICE, $srcfile." fichier non trouvé (".$srclist." l. ".$line.")" );
+      return false;
     }
-    // wash html from tags
-    $body=self::detag($body);
-    // one sentence by line, clean unbreakable space
-    $body=preg_replace(self::$re['sSearch'], self::$re['sReplace'], $body);
-    // echo $body; // debug sentences ?
-    if (self::$debug) echo "\n$href";
-    // do not index non significant nav
-    self::$stmt['insSearch']->execute(array(
-      self::$pars['articleId'],
-      $body,
-      '€€€',
-    ));
-    if (self::$debug && self::$logStream) fwrite(self::$logStream, "\n".$name.round(microtime(true) - self::$time, 4)." s. ");
+    $srcmtime = filemtime( $srcfile );
+    $this->_q['mtime']->execute( array( $code) );
+    list( $basemtime ) = $this->_q['mtime']->fetch();
+    if ( $basemtime <= $srcmtime ) $force = true; // source is newer than record, work
+    // is there missing generated files ?
+    foreach ( $this->conf['formats'] as $type ) {
+      if ( !isset(self::$_formats[$type]) ) continue;
+      // toc mays be null
+      if ( $type == "toc" ) continue;
+      $extension = self::$_formats[$type];
+      $destfile = $this->conf["destdir"].'/'.$type.'/'.$code.$extension;
+      if ( !file_exists( $destfile )) {
+        $force = true;
+        // echo( $destfile."\n");
+      }
+    }
+    if ( !$force ) return $force;
+    $this->log( E_USER_NOTICE, $srcfile );
+    // here possible XML error
+    try  {
+      $teinte = new Teinte_Doc( $srcfile );
+    }
+    catch ( Exception $e ) {
+      $this->log( E_USER_ERROR, $srcfile." XML mal formé" );
+      return false;
+    }
+    $this->record( $teinte );
+    $this->export( $teinte, $this->conf["destdir"] );
+    flush();
+  }
 
-    */
-
+  private function _post()
+  {
+    // Check for deteleted files
+    $q = $this->pdo->query("SELECT * FROM doc WHERE code NOT IN ( '".implode( "', '", $this->_cods )."' )");
+    $del = array();
+    foreach (  $q as $row ) {
+      $this->log( E_USER_NOTICE, "\nSUPPRESSION ".$row['code'] );
+      $this->delete( $row['code'], $this->conf["destdir"] );
+    }
+    // $this->pdo->exec( "VACUUM" );
+    $this->pdo->exec( "INSERT INTO  search(search) VALUES( 'optimize' ); -- optimize fulltext index " );
   }
 
   /**
    * Build a site from a list of TEI files
    */
-  public function site( $srclist, $destdir, $sep=";" )
+  public function csv( $srclist, $sep=";" )
   {
     $oldlog = $this->loglevel;
     $this->loglevel = $this->loglevel|E_USER_NOTICE;
     $this->log( E_USER_NOTICE, $srclist." lecture de la liste de fichiers à publier" );
-    $cods = array(); // store the codes of each file in the srclist to delete some files
+    $this->_cods = array(); // store the codes of each file in the srclist to delete some files
     $handle = fopen( $srclist, "r" );
     $keys = fgetcsv( $handle, 0, $sep ); // first line, column names
     $srcdir = dirname( $srclist );
@@ -282,39 +355,10 @@ END;
         $values = array_merge( $values, array_fill( 0, count( $keys ) - count( $values ), null ) ) ;
       $row = array_combine($keys, $values);
       $srcfile = $srcdir.current($row);
-      $code = pathinfo( $srcfile, PATHINFO_FILENAME );
-      $cods[] = $code;
-      if ( !file_exists( $srcfile ) ) {
-        $this->log( E_USER_NOTICE, $srcfile." fichier non trouvé (".$srclist." l. ".$line.")" );
-        continue;
-      }
-      $srcmtime = filemtime( $srcfile );
-      $this->_q['mtime']->execute( array( $code) );
-      list( $basemtime ) = $this->_q['mtime']->fetch();
-      if ( $basemtime >= $srcmtime ) continue;
-      $this->log( E_USER_NOTICE, $srcfile );
-      // here possible XML error
-      try  {
-        $teinte = new Teinte_Doc( $srcfile );
-      }
-      catch ( Exception $e ) {
-        $this->log( E_USER_ERROR, $srcfile." XML mal formé" );
-        continue;
-      }
-      $this->record( $teinte );
-      $this->export( $teinte, $destdir, array( "article", "toc" ) );
+      $this->_file( $srcfile );
     }
     fclose($handle);
     // $this->pdo->commit();
-    // Check for deteleted files
-    $q = $this->pdo->query("SELECT * FROM doc WHERE code NOT IN ( '".implode( "', '", $cods )."' )");
-    $del = array();
-    foreach (  $q as $row ) {
-      $this->log( E_USER_NOTICE, "\nSUPPRESSION ".$row['code'] );
-      $this->delete( $row['code'], $destdir );
-    }
-    // $this->pdo->exec( "VACUUM" );
-    $this->pdo->exec( "INSERT INTO  search(search) VALUES( 'optimize' ); -- optimize fulltext index " );
     $this->loglevel = $oldlog;
   }
 
@@ -436,7 +480,7 @@ END;
    * May be used for xsl:message coming from transform()
    * To avoid Apache time limit, php could output some bytes during long transformations
    */
-  function log( $errno, $errstr, $errfile=null, $errline=null, $errcontext=null)
+  function log( $errno, $errstr, $errfile=null, $errline=null, $errcontext=null )
   {
     if ( !$this->loglevel & $errno ) return false;
     $errstr=preg_replace("/XSLTProcessor::transform[^:]*:/", "", $errstr, -1, $count);
@@ -447,8 +491,8 @@ END;
     }
     */
     if ( !$this->_logger );
-    else if ( is_resource($this->_logger) ) fwrite( $this->_logger, $errstr."\n");
-    else if ( is_string($this->_logger) && function_exists( $this->_logger ) ) call_user_func( $this->_logger, $errstr );
+    else if ( is_resource( $this->_logger ) ) fwrite( $this->_logger, $errstr."\n");
+    else if ( is_string( $this->_logger ) && function_exists( $this->_logger ) ) call_user_func( $this->_logger, $errstr );
   }
 
   /**

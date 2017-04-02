@@ -14,7 +14,7 @@
  *
  */
 /**
-Tools to deal with PHP Http oddities
+ * Tools to deal with PHP Http oddities
  */
 if (get_magic_quotes_gpc()) {
   function stripslashes_gpc(&$value) {
@@ -25,7 +25,7 @@ if (get_magic_quotes_gpc()) {
   array_walk_recursive($_COOKIE, 'stripslashes_gpc');
   array_walk_recursive($_REQUEST, 'stripslashes_gpc');
 }
-class Phips_Web {
+class Teinte_Web {
   /** web parameters */
   static $pars;
   /** pathinfo, relative to base application */
@@ -49,8 +49,8 @@ class Phips_Web {
   );
   /** Langs */
   static $langs=array(
-    "en"=>"English",
-    "fr"=>"Français",
+    "en" => "English",
+    "fr" => "Français",
   );
   /** lang found */
   static $lang;
@@ -68,9 +68,10 @@ class Phips_Web {
    * — $_SERVER['PATH_ORIG_INFO'] found on the web
    *
    */
-  public static function pathinfo() {
+  public static function pathinfo()
+  {
     if (self::$pathinfo) return self::$pathinfo;
-    $pathinfo="";
+    $pathinfo = "";
     if (!isset($_SERVER['REQUEST_URI'])) return $pathinfo; // command line
     list($request) = explode('?', $_SERVER['REQUEST_URI']);
     if(strpos($request, '%') !== false) $request = urldecode($request);
@@ -94,7 +95,8 @@ class Phips_Web {
   /**
    * Relative path to context
    */
-  public static function basehref($path=null) {
+  public static function basehref( $path=null )
+  {
     if ($path) { // return a result, no store
       $path = preg_replace('@/+@', '/', ltrim($path, '/'));
       $path = str_repeat("../", substr_count($path, '/'));
@@ -117,13 +119,12 @@ class Phips_Web {
    *   "clé" => array("éé"),
    *   "param" => array("valeur1", "", "valeur2")
    * )
-   *
-   *
    */
-  public static function pars( $name = FALSE, $expire = 0, $pattern = null, $default = null, $query = FALSE ) {
+  public static function pars( $name = FALSE, $expire = 0, $pattern = null, $default = null, $query = FALSE )
+  {
     // store params array extracted from query
     if (!self::$pars) {
-      if (!$query) $query = Phips_Web::query();
+      if (!$query) $query = Htocc_Web::query();
       // populate an array
       self::$pars = array();
       $a = explode('&', $query);
@@ -181,7 +182,8 @@ class Phips_Web {
   /**
    * Search for a lang in an accpted list
    */
-  public static function lang($langs=null) {
+  public static function lang($langs=null)
+  {
     if (!$langs || !is_array($langs) || !count($langs)) $langs = self::$langs;
     // check browser request
     $lang=false;
@@ -228,7 +230,8 @@ class Phips_Web {
    * $keep=true : keep empty params -> ?A=1&A=2&A=&B=3
    * $exclude=array() : exclude some parameters
    */
-  public static function query($keep = false, $exclude = array(), $query = null) {
+  public static function query($keep = false, $exclude = array(), $query = null)
+  {
     // query given as param
     if ($query) $query = preg_replace( '/&amp;/', '&', $p1);
     // POST
@@ -247,7 +250,8 @@ class Phips_Web {
   /**
    * Send the best headers for cache, according to the request and a timestamp
    */
-  public static function notModified($file, $expires = null, $force = false) {
+  public static function notModified($file, $expires = null, $force = false)
+  {
     if (!$file) return false;
     $filemtime = false;
     // seems already a filemtime
@@ -293,7 +297,8 @@ class Phips_Web {
   /**
    * If client ask a forced reload.
    */
-  public static function noCache() {
+  public static function noCache()
+  {
     // pas de cache en POST
     if ($_SERVER['REQUEST_METHOD'] == 'POST') return 'POST';
     if (isset ($_SERVER['HTTP_PRAGMA']) && stripos($_SERVER['HTTP_PRAGMA'], "no-cache") !== false) return "Pragma: no-cache";
@@ -307,7 +312,8 @@ class Phips_Web {
    * return a file record like ine $_FILES
    * http://php.net/manual/features.file-upload.post-method.php
    */
-   public static function upload($key=null) {
+   public static function upload($key=null)
+   {
     // no post, return nothing
     if ($_SERVER['REQUEST_METHOD'] != 'POST') return false;
     $lang = self::lang(array('en'=>'', 'fr'=>''));
@@ -341,12 +347,12 @@ class Phips_Web {
         'fr' => 'Erreur de configuration PHP, une extension a arrêté le téléchargement du fichier.',
       ),
       'nokey' => array(
-        'en' => "Phips_Web::upload(), no field $key in submitted form.",
-        'fr' => "Phips_Web::upload(), pas de champ $key dans le formulaire soumis.",
+        'en' => "Htocc_Web::upload(), no field $key in submitted form.",
+        'fr' => "Htocc_Web::upload(), pas de champ $key dans le formulaire soumis.",
       ),
       'nofile' => array(
-        'en' => 'Phips_Web::upload(), no file found. Too big ? Directives in php.ini: upload_max_filesize='.ini_get('upload_max_filesize').', post_max_size='.ini_get('post_max_size'),
-        'fr' => 'Phips_Web::upload(), pas de fichier trouvé. Trop gros ? Directives php.ini: upload_max_filesize='.ini_get('upload_max_filesize').', post_max_size='.ini_get('post_max_size'),
+        'en' => 'Htocc_Web::upload(), no file found. Too big ? Directives in php.ini: upload_max_filesize='.ini_get('upload_max_filesize').', post_max_size='.ini_get('post_max_size'),
+        'fr' => 'Htocc_Web::upload(), pas de fichier trouvé. Trop gros ? Directives php.ini: upload_max_filesize='.ini_get('upload_max_filesize').', post_max_size='.ini_get('post_max_size'),
       ),
     );
     if ($key && !isset($_FILES[$key])) throw new Exception($mess['nokey'][$lang]);

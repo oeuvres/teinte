@@ -78,7 +78,7 @@ Texte nu, par exemple pièce de théâtre sans didascalies, ou critique sans cit
   <xsl:template match="tei:list">
     <xsl:value-of select="$lf"/>
     <xsl:value-of select="$lf"/>
-    <xsl:apply-templates select="*" mode="md"/>
+    <xsl:apply-templates select="*" mode="naked"/>
     <xsl:value-of select="$lf"/>
   </xsl:template>
   <xsl:template match="tei:item" mode="naked">
@@ -374,6 +374,6 @@ Texte nu, par exemple pièce de théâtre sans didascalies, ou critique sans cit
 
   <!-- For text, give back hand to normal processing, so that it could be overrides (= translate for some device) -->
   <xsl:template match="text()" mode="naked">
-     <xsl:value-of select="translate(., '’*[]', concat( $apos, ''))"/>
+     <xsl:value-of select="translate(., '*[]', concat( ''))"/>
   </xsl:template>
 </xsl:transform>

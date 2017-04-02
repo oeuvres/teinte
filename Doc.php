@@ -6,6 +6,7 @@ else if (isset($_SERVER['ORIG_SCRIPT_FILENAME']) && realpath($_SERVER['ORIG_SCRI
 // direct command line call, work
 else if (php_sapi_name() == "cli") Teinte_Doc::cli();
 
+
 /**
  * Sample pilot for Teinte transformations of XML/TEI
  */
@@ -32,6 +33,7 @@ class Teinte_Doc
   /** formats */
   public static $ext = array(
     'article' => '_art.html',
+    'detag' => '.txt',
     'html' => '.html',
     'iramuteq' => '.txt',
     'markdown' => '.txt',
@@ -99,6 +101,13 @@ class Teinte_Doc
   {
     if ( $filesize ) $this->_filesize = $filesize;
     return $this->_filesize;
+  }
+  /**
+   * For a readonly property
+   */
+  public function file( )
+  {
+    return $this->_file;
   }
   /**
    * Book metadata
@@ -191,9 +200,22 @@ class Teinte_Doc
       $destfile,
       array(
         'root'=> 'article',
+        'folder' => basename( dirname( $this->_file) ),
       )
     );
   }
+
+  /**
+   * Output a txt fragment with no html tags for full-text searching
+   */
+  public function ft( $destfile=null )
+  {
+    $html = $this->article();
+    $html = self::detag( $html );
+    if ( $destfile ) file_put_contents( $destfile, $html );
+    return $html;
+  }
+
   /**
    * Output html
    */
@@ -205,6 +227,7 @@ class Teinte_Doc
       $destfile,
       array(
         'theme'=> $theme,
+        'folder' => basename( dirname( $this->_file) ),
       )
     );
   }
@@ -333,17 +356,15 @@ class Teinte_Doc
     * Replace tags of html file by spaces, to get text with same offset index of words
     * allowing indexation and highlighting. Keep line breaks for line numbers.
     * Support of some html5 tag to strip not indexable content.
-    * TODO, test performances of a char parser
+    * 2x faster than a char loop
     */
-   static public function detag($html)
+   static public function detag( $html )
    {
      // preg_replace_callback is safer and 2x faster than the /e modifier
      $html=preg_replace_callback(
        array(
          // s flag so that '.' could match \n
          // .*? ungreedy
-         // exclude some html5 content
-         // [ >] to get complete tag name
          '@<!.*?>@s', // exclude doctype and comments
          '@<\?.*?\?>@s', // exclude PI
          '@<(head|header|footer|nav|aside|noindex)[ >].*?</\1>@s', // suppress nav

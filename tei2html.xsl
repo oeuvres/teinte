@@ -35,6 +35,8 @@ sont officiellement ditribuées par le consortium TEI, cependant ce développeme
   <xsl:import href="common.xsl"/>
   -->
   <xsl:import href="tei2toc.xsl"/>
+  <!-- used as a body class -->
+  <xsl:param name="folder"/>
   <!-- included, so that priorities will not be flatten by import chain (ex: from tei2site.html) -->
   <xsl:include href="teiHeader2html.xsl"/>
   <!-- Name of this xsl, change link resolution  -->
@@ -64,11 +66,21 @@ absence de déclaration de DTD.
     <xsl:apply-templates select="." mode="html"/>
   </xsl:template>
   <xsl:template match="/*" mode="html">
+    <xsl:variable name="bodyclass">
+      <xsl:value-of select="$corpusid"/>
+      <xsl:text> </xsl:text>
+      <xsl:value-of select="$folder"/>
+    </xsl:variable>
     <xsl:choose>
       <!-- Just a div element -->
       <xsl:when test="$root= $article">
         <article>
           <xsl:call-template name="att-lang"/>
+          <xsl:if test="normalize-space($bodyclass)">
+            <xsl:attribute name="class">
+              <xsl:value-of select="normalize-space($bodyclass)"/>
+            </xsl:attribute>
+          </xsl:if>
           <xsl:apply-templates/>
         </article>
       </xsl:when>
@@ -91,7 +103,12 @@ absence de déclaration de DTD.
             <link rel="stylesheet" charset="utf-8" type="text/css" href="{$theme}tei2html.css"/>
             <script type="text/javascript" charset="utf-8" src="{$theme}Tree.js">//</script>
           </head>
-          <body class="{$corpusid}">
+          <body>
+            <xsl:if test="normalize-space($bodyclass)">
+              <xsl:attribute name="class">
+                <xsl:value-of select="normalize-space($bodyclass)"/>
+              </xsl:attribute>
+            </xsl:if>
             <div id="center">
               <div id="main">
                 <div id="article">
@@ -2436,11 +2453,11 @@ Call that in
   <xsl:template match="tei:note | tei:*[@rend='note']">
     <xsl:choose>
       <xsl:when test="@place = 'margin'">
-        <span>
+        <aside>
           <xsl:call-template name="atts"/>
           <xsl:attribute name="class">marginalia</xsl:attribute>
           <xsl:apply-templates/>
-        </span>
+        </aside>
       </xsl:when>
       <xsl:otherwise>
         <xsl:call-template name="noteref"/>

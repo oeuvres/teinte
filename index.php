@@ -27,19 +27,19 @@ include dirname(__FILE__).'/Doc.php';
 $format = "html";
 if ( isset( $_REQUEST['format'] ) ) $format = $_REQUEST['format'];
 // A file is submited, work
-$upload = Phips_Web::upload();
+$upload = Teinte_Web::upload();
 if ($upload) {
   $teinte = new Teinte_Doc( $upload['tmp_name'] );
   $teinte->filename( $upload['filename'] );
   $content = $teinte->export($format, null, array('theme'=>'../theme/'));
-  header( 'Content-Type: '.Phips_Web::$mime[$format] );
+  header( 'Content-Type: '.Teinte_Web::$mime[$format] );
   if ( isset( $_REQUEST['download'] ) ) {
     header('Content-Disposition: attachment; filename="'.$upload['filename'].Teinte_Doc::$ext[$format].'"');
   }
   echo $content;
   exit();
 }
-$lang = Phips_Web::lang();
+$lang = Teinte_Web::lang();
 
 
 ?><!DOCTYPE html>
@@ -47,7 +47,6 @@ $lang = Phips_Web::lang();
   <head>
     <meta charset="utf-8"/>
     <link rel="stylesheet" href="theme/html.css"/>
-    <link rel="stylesheet" type="text/css" href="http://svn.code.sf.net/p/obvil/code/theme/obvil.css" />
     <style>
 body { font-family: 'Source Sans Pro', "Lucida Sans Unicode", "Lucida Grande", sans-serif ; }
     </style>
