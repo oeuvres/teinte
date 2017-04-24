@@ -276,7 +276,7 @@ div.note, aside.note { line-height: 115%; margin: 1px 0 1em 0; clear: both; text
 .note:target:before { content: "☞"; position: absolute; margin: 0 1ex 0 -7.5ex; font-size: 16px; }
 .note blockquote { margin: 1ex 0em 1ex 2em; }
 .note p { margin: 0; text-indent: 1em; text-indent: 1rem; }
-.note p.noindent { text-indent: 0; }
+.note p.noindent, .note p.autofirst { text-indent: 0; }
 p.note { text-indent: 0; margin-top: 1ex; margin-bottom: 1ex; }
 .notes-abc, .notes-123, .notes-misc { margin-top: 1ex; }
 .note-page { font-size: 0.8em; }
@@ -371,7 +371,7 @@ h1.main { margin-top: 1.5em; }
 .noborder { border: none; }
 .noselect { -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
 .normal, div.normal, .n { quotes: '' ''; color: #000; font-weight: normal; font-style: normal; text-decoration: none; border-bottom: none; font-variant: normal; text-transform: none; }
-.noindent { text-indent: 0; } /* automatic */
+.noindent, .autofirst { text-indent: 0; } /* automatic */
 .indent { text-indent: 2em; }
 div.ornament { line-height: 95%; margin: 1em 5em; text-align: center; }
 .ornament.star { letter-spacing: 0.6em; }

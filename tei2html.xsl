@@ -544,7 +544,7 @@ et -1 pour chaque niveau ensuite, d'où le paramètre $level qui peut
         <!-- premier paragraphe d’une série ? -->
         <xsl:otherwise>
           <xsl:call-template name="atts">
-            <xsl:with-param name="class">noindent</xsl:with-param>
+            <xsl:with-param name="class">autofirst</xsl:with-param>
           </xsl:call-template>
         </xsl:otherwise>
       </xsl:choose>
