@@ -527,27 +527,21 @@ et -1 pour chaque niveau ensuite, d'où le paramètre $level qui peut
   <xsl:template match="tei:p">
     <p>
       <xsl:variable name="prev" select="preceding-sibling::*[not(self::tei:pb)][1]"/>
-      <xsl:variable name="char1" select="substring(normalize-space(.), 0, 1)"/>
-      <xsl:choose>
-        <xsl:when test="contains( '-–—0123456789', $char1 )">
-          <xsl:call-template name="atts"/>
-        </xsl:when>
-        <xsl:when test="contains(concat(' ', @rend, ' '), ' indent ')">
-          <xsl:call-template name="atts"/>
-        </xsl:when>
-        <xsl:when test="$prev and contains('-–—', substring(normalize-space($prev), 1, 1))">
-          <xsl:call-template name="atts"/>
-        </xsl:when>
-        <xsl:when test="local-name($prev) ='p' and translate($prev, '*∾  ','')!=''">
-          <xsl:call-template name="atts"/>
-        </xsl:when>
-        <!-- premier paragraphe d’une série ? -->
-        <xsl:otherwise>
-          <xsl:call-template name="atts">
-            <xsl:with-param name="class">autofirst</xsl:with-param>
-          </xsl:call-template>
-        </xsl:otherwise>
-      </xsl:choose>
+      <xsl:variable name="char1" select="substring( normalize-space(.), 1, 1)"/>
+      <xsl:variable name="class">
+        <xsl:choose>
+          <xsl:when test="contains( '-–—0123456789', $char1 )"/>
+          <xsl:when test="contains(concat(' ', @rend, ' '), ' indent ')"/>
+          <!--
+          <xsl:when test="$prev and contains('-–—', substring(normalize-space($prev), 1, 1))"/>
+          -->
+          <xsl:when test="local-name($prev) ='p' and translate($prev, '*∾  ','')!=''"/>
+          <xsl:otherwise>autofirst</xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>     
+      <xsl:call-template name="atts">
+        <xsl:with-param name="class" select="$class"/>
+      </xsl:call-template>
       <xsl:if test="@n">
         <small class="n">
           <xsl:text>[</xsl:text>

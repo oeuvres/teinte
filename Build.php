@@ -28,7 +28,7 @@ class Teinte_Build
     'iramuteq' => '.txt',
     'html' => '.html',
     'article' => '_art.html',
-    'toc' => '_xtoc.html',
+    'toc' => '_toc.html',
     // 'docx' => '.docx',
   );
   /** Columns reference to build queries */
@@ -167,7 +167,7 @@ END;
     // TODO, delete created folders
     $this->pdo->exec("DROP TABLE doc; DROP TABLE search; ");
     $this->pdo->exec(self::$create);
-    $this->prepare();
+    $this->_prepare();
   }
 
   /**
@@ -270,6 +270,7 @@ END;
     if ( !is_array( $glob ) ) $glob = array( $glob );
     foreach ( $glob as $path ) {
       foreach( glob( $path ) as $srcfile) {
+        // echo "\n".$srcfile." ".$force;
         $this->_file( $srcfile, $force );
       }
     }
@@ -288,7 +289,7 @@ END;
     $srcmtime = filemtime( $srcfile );
     $this->_q['mtime']->execute( array( $code) );
     list( $basemtime ) = $this->_q['mtime']->fetch();
-    if ( $basemtime <= $srcmtime ) $force = true; // source is newer than record, work
+    if ( $basemtime < $srcmtime ) $force = true; // source is newer than record, work
     // is there missing generated files ?
     foreach ( $this->conf['formats'] as $type ) {
       if ( !isset(self::$_formats[$type]) ) continue;
@@ -298,7 +299,7 @@ END;
       $destfile = $this->conf["destdir"].'/'.$type.'/'.$code.$extension;
       if ( !file_exists( $destfile )) {
         $force = true;
-        // echo( $destfile."\n");
+        echo( $destfile."\n");
       }
     }
     if ( !$force ) return $force;

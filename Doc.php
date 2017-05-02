@@ -149,9 +149,10 @@ class Teinte_Doc
     $meta['date'] = null;
     foreach ($nl as $date) {
       $value = $date->getAttribute ('when');
-      if (!$value) $value = $date->nodeValue;
+      if ( !$value ) $value = $date->getAttribute ('notAfter');
+      if ( !$value ) $value = $date->nodeValue;
       $value = substr(trim($value), 0, 4);
-      if (!is_numeric($value)) {
+      if ( !is_numeric($value) ) {
         $value = null;
         continue;
       }

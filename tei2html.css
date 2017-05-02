@@ -37,7 +37,7 @@ article:after { content: " "; display: block; height: 0; clear: both; visibilit
 body, html { min-height: 100%; margin: 0; padding: 0; }
 /* fonts */
 /* pas mûr -moz-hyphens: auto; -webkit-hyphens: auto; adobe-hyphenate: auto; hyphens: auto; */
-body { font: 16px Georgia, "Bitstream Vera Serif", Times, serif; }
+body { font: 16px/24px Georgia, "Bitstream Vera Serif", Times, serif; }
 .serif, .subtitle, textarea.readonly, .dialogue li, .titleStmt h1 { font-family: Georgia, "Bitstream Vera Serif", Times, serif; }
 .cb, .pb, .ed, small.l, small.l-n { font-family: "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif; }
 .sans-serif, .availability, figcaption, li.bibl, div.bibl, .editionStmt, .footnotes, figure .label, .marginalia, .note, #noterefover, .publicationStmt, .sourceDesc, .speaker, .stage { font-size: 14px;  font-family: "Lucida Grande", Verdana, sans-serif; }
@@ -47,7 +47,6 @@ tt, pre { font-family: "Andale Mono", "Lucida Console", Courier, "MS Courier New
 blockquote, dd , p.p, .argument, .availability, div.bibl, li.bibl, .dialogue li , .justify, .note, div.stage { text-align: justify; }
 @media screen {
   body { color: #161616; }
-  p , .dialogue li { text-indent: 1.5rem; }
   h1, h2, h3, h4, h5, h6 { font-family: "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif; }
 }
 
@@ -192,7 +191,7 @@ figure.bibl { margin: 0; padding: 0; border: none; }
 li.bibl { list-style: circle; font-size: 90%; } /* like li.witness */
 blockquote .bibl { text-align: right; margin-top: 1ex; line-height: 110%; }
 .quote.l .bibl { margin-left: 4rem; text-align: left; margin-right: 15%;}
-.byline { text-align: right; margin-left: 45%; margin-top: 4ex; text-indent: 0; }
+.byline { text-align: right; margin-left: 45%; margin-top: 2rem; margin-bottom: 1rem; text-indent: 0; }
 aside .byline { margin-top: 0; text-align: left; margin: 0 20% 0 0; }
 .byline .docAuthor { font-variant: small-caps; }
 .titlePage .byline { margin-left: 0; text-align: center; font-weight: bold; }
@@ -371,8 +370,8 @@ h1.main { margin-top: 1.5em; }
 .noborder { border: none; }
 .noselect { -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
 .normal, div.normal, .n { quotes: '' ''; color: #000; font-weight: normal; font-style: normal; text-decoration: none; border-bottom: none; font-variant: normal; text-transform: none; }
-.noindent, .autofirst { text-indent: 0; } /* automatic */
-.indent { text-indent: 2em; }
+p.p { text-indent: 1.5rem; }
+p.noindent, p.autofirst { text-indent: 0; } /* automatic */
 div.ornament { line-height: 95%; margin: 1em 5em; text-align: center; }
 .ornament.star { letter-spacing: 0.6em; }
 .lg div.ornament { text-align: left; }
@@ -545,32 +544,32 @@ div.tabs a.actif, div.tabs a:hover { color: #000000; background: #FFFFFF; text-d
 /* xml2html.xsl, documented XML source */
 
 .exemplum { background-color: #FFFFFF; background-image: -webkit-gradient(linear, left top, right top,from(#FFFFFF),to(#F8F8F8)); background-image: -webkit-linear-gradient(left, #FFFFFF, #F8F8F8); background-image: -moz-linear-gradient(left, #FFFFFF, #F8F8F8); background-image: -ms-linear-gradient(left, #FFFFFF, #F8F8F8); background-image: -o-linear-gradient(left, #FFFFFF, #F8F8F8); background-image: linear-gradient(left, #FFFFFF, #F8F8F8); border-left: 1px dotted #808080; padding: 1ex 1em; margin: 0; }
-.xml { line-height: 105%; text-align: left; }
-.xml  a { text-decoration: none; border-bottom: none; border: none; padding: 0; }
-.xml a.val { color: #0000FF; }
-.xml a.val:hover { text-decoration: underline; border: none; }
+pre.xml { line-height: 105%; text-align: left; }
+pre.xml  a { text-decoration: none; border-bottom: none; border: none; padding: 0; }
+pre.xml a.val { color: #0000FF; }
+pre.xml a.val:hover { text-decoration: underline; border: none; }
 a.xsl  { color: #669966; font-weight: 100; }
 a:hover.xsl, a:hover.rdf { background: #0000FF; color: white; }
-.xml a.html, .xml a.dc { color: #FF0000; font-weight: bold; }
+pre.xml a.html, pre.xml a.dc { color: #FF0000; font-weight: bold; }
 a.template { font-family: sans-serif; font-weight: bold; }
-.xml .el, .xml  a.el { font-weight: bold; font-family: "Lucida Console", Courier, "MS Courier New", monospace; text-decoration: none; color: #040; border: none; }
-.xml a:hover.el, .xml a:hover.att { background: #8080FF; color: #FFFFFF; }
-.xml .att { font-family: sans-serif; font-weight: 100; }
-.xml a.att { font-family: sans-serif; color: #444; }
-.xml .open, .xml .close, .xml .tag { margin: 0; font-family: monospace, sans-serif; color: #383; }
-.xml .fold { color: #666666; }
-.xml .pi { color: #008000; font-weight: bold; }
-.xml .val, .xml .cdata { font-weight: normal; margin: 0; padding: 0; }
-.xml .comment, .xml .comment code { font-size: 12px; line-height: 125%; background: #FFE; color: #666; }
-.xml  pre.comment { margin: 0; padding: 0 1em; }
-.xml .comment { font-family: monospace; color: #000; }
+pre.xml .el, pre.xml  a.el { font-weight: bold; font-family: "Lucida Console", Courier, "MS Courier New", monospace; text-decoration: none; color: #040; border: none; }
+pre.xml a:hover.el, pre.xml a:hover.att { background: #8080FF; color: #FFFFFF; }
+pre.xml .att { font-family: sans-serif; font-weight: 100; }
+pre.xml a.att { font-family: sans-serif; color: #444; }
+pre.xml .open, pre.xml .close, pre.xml .tag { margin: 0; font-family: monospace, sans-serif; color: #383; }
+pre.xml .fold { color: #666666; }
+pre.xml .pi { color: #008000; font-weight: bold; }
+pre.xml .val, pre.xml .cdata { font-weight: normal; margin: 0; padding: 0; }
+pre.xml .comment, pre.xml .comment code { font-size: 12px; line-height: 125%; background: #FFE; color: #666; }
+pre.xml  pre.comment { margin: 0; padding: 0 1em; }
+pre.xml .comment { font-family: monospace; color: #000; }
 fieldset.comment pre { color: #008; }
 div.comment { white-space: normal; }
 dd.code { margin: 0 !important; padding: 0 !important; padding-left: 1em !important; border-left: 1px dotted #808080; }
 .pre .text { background: #EEF; font-family: serif; color: #000; }
-.xml span.text, .xml .val, .xml .cdata { color: #444; }
-.xml .cdata { color: red }
-.xml .ns { color: #000080; font-weight: 100; }
+pre.xml span.text, pre.xml .val, pre.xml .cdata { color: #444; }
+pre.xml .cdata { color: red }
+pre.xml .ns { color: #000080; font-weight: 100; }
 dt { font-weight: bold; }
 dl.xml { margin: 0; padding: 0; }
 dl.xml dt { font-weight: normal; }

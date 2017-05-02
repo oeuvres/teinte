@@ -945,7 +945,7 @@ résoudre les césures, ou les alternatives éditoriales.
     <xsl:text> </xsl:text>
   </xsl:template>
   <xsl:template match="tei:lb" mode="title">
-    <xsl:variable name="prev" select="preceding-sibling::node()"/>
+    <xsl:variable name="prev" select="preceding-sibling::node()[1]"/>
     <xsl:variable name="norm" select="normalize-space( $prev )"/>
     <xsl:variable name="lastchar" select="substring($norm, string-length($norm))"/>
     <xsl:choose>
