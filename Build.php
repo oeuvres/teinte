@@ -299,7 +299,7 @@ END;
       $destfile = $this->conf["destdir"].'/'.$type.'/'.$code.$extension;
       if ( !file_exists( $destfile )) {
         $force = true;
-        echo( $destfile."\n");
+        // echo( $destfile."\n");
       }
     }
     if ( !$force ) return $force;
@@ -532,7 +532,7 @@ END;
         }
 
         // $base->add($file, $setcode);
-        fwrite(STDERR, "\n");
+        fwrite(STDERR, "\nFINI\n");
       }
     }
     /*
