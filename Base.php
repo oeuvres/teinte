@@ -38,7 +38,7 @@ class Teinte_Base
     }
     echo "  </tr>\n";
     $i = 1;
-    foreach ( $this->pdo->query("SELECT * FROM doc ORDER BY date") as $doc ) {
+    foreach ( $this->pdo->query("SELECT * FROM doc ORDER BY date, rowid") as $doc ) {
       echo '  <tr class="'.$doc['class'].'">'."\n";
       foreach ($cols as $code) {
         if (!isset($labels[$code])) continue;
