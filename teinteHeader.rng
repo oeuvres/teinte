@@ -1088,6 +1088,12 @@
             <element name="author">
               <text/>
             </element>
+            <element name="biblScope">
+              <optional>
+                <attribute name="unit"/>
+              </optional>
+              <text/>
+            </element>
             <element name="publisher">
               <text/>
             </element>

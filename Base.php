@@ -22,6 +22,66 @@ class Teinte_Base
     $this->pdo->sqliteCreateFunction('offsets2occ', 'Teinte_Base::offsets2occ', 1);
   }
 
+  public function search()
+  {
+    // lister les documents par les métadonnées, à mettre dans une table provisoire
+    $this->pdo->exec("CREATE TEMP TABLE found (rowid INTEGER PRIMARY KEY, occ INTEGER DEFAULT 0);");
+
+    // recherche par mot
+  }
+
+  /**
+   *
+   */
+  public function hilite( $docid, $q, $body )
+  {
+    // tag links of toc of
+    $search = array();
+    $replace = array();
+    // hilite (use a tricky indexation in teipub to get correct positions)
+    // this tricky query is the right one on some flavours of sqlite 3
+    $query = $this->pdo->prepare('SELECT offsets(search) AS offsets FROM search WHERE docid = ? AND text MATCH ?') ;
+    $query->execute(array( $docid, $q ));
+    // TODO, join quote expressions
+    $mark = 0;
+    $html = array();
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+      $offsets = explode(' ',$row['offsets']);
+      $count = count($offsets);
+      $pointer = 0;
+      $start = true;
+      for ($i = 0; $i<$count; $i = $i+4) {
+
+        $html[] = substr( $body, $pointer, $offsets[$i+2]-$pointer );
+
+        if ($start) {
+          $mark++; // increment only when a <mark> is openened
+          $html[] = '<b class="mark" id="mark'.$mark.'">';
+          $dest = $mark-1;
+          if($dest>0) $html[] = '<a href="#mark'.$dest.'" onclick="document.location.replace(this.href); return false;" class="prev">◀</a>';
+          $start = false;
+        }
+        $html[] = substr( $body, $offsets[$i+2], $offsets[$i+3] );
+        $pointer = $offsets[$i+2]+$offsets[$i+3];
+        // no letters before the next mark
+        if ($i+6 < $count) {
+          $length = $offsets[$i+6] - $pointer;
+          $inter = substr( $body, $pointer, $length );
+          if(!preg_match('/\pL/', $inter)) continue;
+        }
+        $dest = $mark+1;
+        if($i<$count-5) $html[] = '<a href="#mark'.$dest.'" onclick="document.location.replace(this.href); return false;" class="next">▶</a>';
+        $html[] = '</b>';
+        $start = true;
+      }
+      $html[] = substr( $body, $pointer );
+      // focus sur la première occurrence
+      $html[] = '<script type="text/javascript"> location.replace("#mark1"); </script>';
+      break;
+    }
+    return implode( "", $html );
+  }
+
   function biblio( $cols=array("no", "creator", "date", "title") ) {
     $labels = array(
       "no"=>"N°",

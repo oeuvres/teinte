@@ -845,13 +845,20 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
           <choice>
             <text/>
             <ref name="author"/>
-            <ref name="title"/>
+            <element name="biblScope">
+              <optional>
+                <attribute name="unit"/>
+              </optional>
+              <text/>
+            </element>
             <ref name="date"/>
             <ref name="hi"/>
             <ref name="num"/>
-            <ref name="point"/>
-            <ref name="ref"/>
             <!-- publisher avec les entités nommées ? pas nécessaire, dans la mesure où on ne souhaite pas les indexer pour l’instant -->
+            <ref name="point"/>
+            <element name="pubPlace">
+              <text/>
+            </element>
             <element name="publisher">
               <zeroOrMore>
                 <choice>
@@ -860,9 +867,8 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
                 </choice>
               </zeroOrMore>
             </element>
-            <element name="pubPlace">
-              <text/>
-            </element>
+            <ref name="ref"/>
+            <ref name="title"/>
           </choice>
         </oneOrMore>
       </element>
