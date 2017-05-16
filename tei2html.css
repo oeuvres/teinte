@@ -410,7 +410,7 @@ nav.breadcrumb { padding: 2px 2px;  }
 .breadcrumb a:hover { background-color: rgba(230, 230, 230, 0.5); color: #000000; }
 #gotop { font-size: 3em; border-bottom: none; position: fixed; color: rgba(150, 150, 150, 0.5); bottom: 1ex; right: 1ex; z-index: 10; }
 #gotop:hover { color: rgba(150, 150, 150, 1); }
-#ruloccs { position: fixed; top: 0; bottom: 0; width: 1rem; margin-left: -2rem; background-color: rgba(255, 255, 255, 0.5); }
+#ruloccs { position: fixed; top: 0; bottom: 0; width: 1rem; margin-left: -2rem; background-color: rgba(255, 255, 255, 0.8); }
 #ruloccs a { display: block; border-bottom: none; color: white; position: fixed; background-color: rgba(150, 150, 150, 0.5); width: 1rem; font-size:1px; height: 2px; }
 #ruloccs a:hover { height: 5px; background-color: rgba(150, 150, 150, 1);}
 
