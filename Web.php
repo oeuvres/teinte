@@ -16,14 +16,14 @@
 /**
  * Tools to deal with PHP Http oddities
  */
-if (get_magic_quotes_gpc()) {
-  function stripslashes_gpc(&$value) {
-    $value = stripslashes($value);
+if ( get_magic_quotes_gpc() ) {
+  function stripslashes_gpc( &$value ) {
+    $value = stripslashes( $value );
   }
-  array_walk_recursive($_GET, 'stripslashes_gpc');
-  array_walk_recursive($_POST, 'stripslashes_gpc');
-  array_walk_recursive($_COOKIE, 'stripslashes_gpc');
-  array_walk_recursive($_REQUEST, 'stripslashes_gpc');
+  array_walk_recursive( $_GET, 'stripslashes_gpc' );
+  array_walk_recursive( $_POST, 'stripslashes_gpc' );
+  array_walk_recursive( $_COOKIE, 'stripslashes_gpc' );
+  array_walk_recursive( $_REQUEST, 'stripslashes_gpc' );
 }
 class Teinte_Web {
   /** web parameters */
@@ -182,7 +182,7 @@ class Teinte_Web {
   /**
    * Search for a lang in an accpted list
    */
-  public static function lang($langs=null)
+  public static function lang( $langs=null )
   {
     if (!$langs || !is_array($langs) || !count($langs)) $langs = self::$langs;
     // check browser request
@@ -230,7 +230,7 @@ class Teinte_Web {
    * $keep=true : keep empty params -> ?A=1&A=2&A=&B=3
    * $exclude=array() : exclude some parameters
    */
-  public static function query($keep = false, $exclude = array(), $query = null)
+  public static function query( $keep = false, $exclude = array(), $query = null )
   {
     // query given as param
     if ($query) $query = preg_replace( '/&amp;/', '&', $p1);
@@ -250,7 +250,7 @@ class Teinte_Web {
   /**
    * Send the best headers for cache, according to the request and a timestamp
    */
-  public static function notModified($file, $expires = null, $force = false)
+  public static function notModified( $file, $expires = null, $force = false )
   {
     if (!$file) return false;
     $filemtime = false;
@@ -312,7 +312,7 @@ class Teinte_Web {
    * return a file record like ine $_FILES
    * http://php.net/manual/features.file-upload.post-method.php
    */
-   public static function upload($key=null)
+   public static function upload( $key=null )
    {
     // no post, return nothing
     if ($_SERVER['REQUEST_METHOD'] != 'POST') return false;

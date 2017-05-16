@@ -7,6 +7,16 @@ class Teinte_Base
   private $_text;
   /** Lien */
   public $pdo;
+  /** Query params for search */
+  public $p = array();
+  /** Is search done ? */
+  public $search;
+  /** Search results, total docs */
+  public $docsTotal;
+  /** Search results, docs selected */
+  public $docsFound;
+  /** Search results, occs found */
+  public $occsFound;
   /**
    * Constructor with a Sqlite base and a path
    */
@@ -16,18 +26,82 @@ class Teinte_Base
     $this->pdo = new PDO("sqlite:".$sqlitefile);
     $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING ); // get error as classical PHP warn
     $this->pdo->exec("PRAGMA temp_store = 2;"); // store temp table in memory (efficiency)
-    // matchinfo not available on centOs 5.5
-    // TODO test if matchinfo available
-    // $this->pdo->sqliteCreateFunction('matchinfo2occ', 'Sqlite::matchinfo2occ', 1);
-    $this->pdo->sqliteCreateFunction('offsets2occ', 'Teinte_Base::offsets2occ', 1);
+    $this->_p();
   }
 
-  public function search()
+  /**
+   * Populate parameters for search
+   */
+  private function _p()
   {
-    // lister les documents par les métadonnées, à mettre dans une table provisoire
-    $this->pdo->exec("CREATE TEMP TABLE found (rowid INTEGER PRIMARY KEY, occ INTEGER DEFAULT 0);");
+    if ( !isset( $_COOKIE['lastsearch'] ) ) $_COOKIE['lastsearch'] = null;
+    $search = false;
+    $lastsearch = "";
+    $this->p['q'] = "";
+    // set query params
+    if ( isset($_REQUEST['q']) && $_REQUEST['q'] ) {
+      $this->p['q'] = trim(
+        strtr(
+          $_REQUEST['q'],
+          array('’' => ' ', 'œ'=>'oe', "'"=>' ', '>' => ' ', '<' => ' ')
+         )
+      );
+      // ??? hack for negative query
+      // if ($this->q[0] == '-') $this->qmatch = "€€€ " . $this->q;
+      // else $this->qmatch =  $this->q;
+      $search = true;
+      $lastsearch .= "&q=".str_replace( '"', '&quot;', $this->p['q'] );
+    }
+    $this->p['start'] = "";
+    $this->p['end'] = "";
+    if ( isset($_REQUEST['start'] ) && is_numeric( $_REQUEST['start'] ) ) {
+      $this->p['start'] = intval( $_REQUEST['start'] );
+      if ( $this->p['start'] ) $lastsearch .= "&start=".$this->p['start'];
+      $search = true;
+    }
+    if ( isset($_REQUEST['end'] ) && $this->p['start'] && $_REQUEST['end'] > $this->p['start'] ) {
+      $this->p['end'] = intval( $_REQUEST['end'] );
+      if ( $this->p['end'] ) $lastsearch .= "&end=".$this->p['end'];
+    }
+    if ( $this->p['start'] && !$this->p['end'] ) $this->p['end'] = $this->p['start'];
+    // TODO, by and notby (authors) or file prefix ?
+    if ( $search ) {
+      $this->search();
+      $this->search = true;
+      setcookie ( "lastsearch", $lastsearch );
+    }
+  }
 
-    // recherche par mot
+  public function search( )
+  {
+    $timeStart = microtime(true);
+    $pars = array();
+    $where = "";
+    if ( $this->p['start'] ) {
+      $where.=" AND ( doc.date >= ? AND doc.date <= ?) ";
+      $pars = array_merge( $pars, array( $this->p['start'], $this->p['end'] ) );
+    }
+    if ( isset( $this->p['q'] ) ) {
+      // matchinfo not available on centOs 5.5
+      // TODO test if matchinfo available
+      // $this->pdo->sqliteCreateFunction('matchinfo2occs', 'Sqlite::matchinfo2occs', 1);
+      $this->pdo->sqliteCreateFunction( 'offsets2occs', 'Teinte_Base::offsets2occs', 1 );
+      $pars = array_merge( (array)$this->p['q'], $pars );
+      $sql="INSERT INTO found ( id, code, title, byline, date, class, occs ) SELECT id, code, title, byline, date, class, offsets2occs(offsets(search)) AS occs FROM doc, search WHERE search.docid=doc.id AND search MATCH ? ".$where;
+    }
+    else $sql="INSERT INTO found ( id, code, title, byline, date, class ) SELECT id, code, title, byline, date, class FROM doc WHERE 1 AND ".$where;
+
+    $this->pdo->beginTransaction();
+    // create a temp table with matche docs
+    $this->pdo->exec("CREATE TEMP TABLE found (id INTEGER, code STRING, title STRING, byline STRING, date INTEGER, class STRING, occs INTEGER DEFAULT 0, PRIMARY KEY(id ASC) );");
+    $req = $this->pdo->prepare($sql);
+    $req->execute($pars);
+    $this->pdo->exec("CREATE INDEX foundOccs ON found(occs);");
+    $this->docs = current($this->pdo->query("SELECT COUNT(*) FROM doc")->fetch());
+    $this->docsFound = current($this->pdo->query("SELECT COUNT(*) FROM found")->fetch());
+    $this->occsFound = current($this->pdo->query("SELECT SUM(occs) FROM found")->fetch());
+    $this->pdo->commit(); // temp tables only available now
+    // echo (microtime(true)-$timeStart).' s. ';
   }
 
   /**
@@ -40,13 +114,16 @@ class Teinte_Base
     $replace = array();
     // hilite (use a tricky indexation in teipub to get correct positions)
     // this tricky query is the right one on some flavours of sqlite 3
-    $query = $this->pdo->prepare('SELECT offsets(search) AS offsets FROM search WHERE docid = ? AND text MATCH ?') ;
-    $query->execute(array( $docid, $q ));
+    $query = $this->pdo->prepare('SELECT text, offsets(search) AS offsets FROM search WHERE docid = ? AND text MATCH ?') ;
+    $query->execute( array( $docid, $q ) );
     // TODO, join quote expressions
     $mark = 0;
     $html = array();
+    $rule = array();
+    $rule[] = '<div id="ruloccs">';
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-      $offsets = explode(' ',$row['offsets']);
+      $len = strlen( $row['text'] );
+      $offsets = explode( ' ',$row['offsets'] );
       $count = count($offsets);
       $pointer = 0;
       $start = true;
@@ -63,6 +140,7 @@ class Teinte_Base
         }
         $html[] = substr( $body, $offsets[$i+2], $offsets[$i+3] );
         $pointer = $offsets[$i+2]+$offsets[$i+3];
+        $rule[] = '<a href="#mark'.$mark.'" onclick="document.location.replace(this.href); return false;" style="top:'.number_format( 100.0*$pointer/$len, 1, '.', '').'%"> </a>';
         // no letters before the next mark
         if ($i+6 < $count) {
           $length = $offsets[$i+6] - $pointer;
@@ -77,43 +155,68 @@ class Teinte_Base
       $html[] = substr( $body, $pointer );
       // focus sur la première occurrence
       $html[] = '<script type="text/javascript"> location.replace("#mark1"); </script>';
-      break;
+      $rule[] = '</div>';
+      $html[] = implode( "\n", $rule );
+      return implode( "", $html ); // keep original spaces
     }
-    return implode( "", $html );
+    return $body;
   }
 
-  function biblio( $cols=array("no", "creator", "date", "title") ) {
+  function biblio( $cols=array("no", "creator", "date", "title", "occs"), $search=false ) {
+    $sql = "SELECT * FROM doc ORDER BY date, code";
+    if ( $search ) $sql = "SELECT * FROM found ORDER BY occs DESC, code";
     $labels = array(
-      "no"=>"N°",
-      "publisher" => "Éditeur",
       "creator" => "Auteur",
       "date" => "Date",
-      "title" => "Titre",
       "downloads" => "Téléchargements",
+      "no"=>"N°",
+      "publisher" => "Éditeur",
+      "occs" => "Occurrences",
       "relation" => "Téléchargements",
+      "title" => "Titre",
     );
-    echo '<table class="sortable">'."\n  <tr>\n";
+    echo '<table class="sortable">'."\n";
+    if ( $search ) {
+      echo "  <caption>";
+      if ( $this->occsFound ) {
+        echo $this->occsFound." occurrences trouvées dans ".$this->docsFound." document";
+        if ( $this->docsFound > 1 ) echo "s";
+        if ( $this->docsFound != $this->docsTotal ) echo "/".$this->docsTotal;
+        echo ".";
+      }
+      // no results
+      else if ( $this->p['q'] ) echo "Pas d’occurrence trouvée.";
+      else if ( $this->docsFound != $this->docsTotal ) echo $this->docsFound." documents filtrés (/".$this->docsTotal.").";
+      echo "  </caption>";
+    }
+    echo "  <tr>\n";
     foreach ($cols as $code) {
       echo '    <th>'.$labels[$code]."</th>\n";
     }
     echo "  </tr>\n";
     $i = 1;
-    foreach ( $this->pdo->query("SELECT * FROM doc ORDER BY date, code") as $doc ) {
-      echo '  <tr class="'.$doc['class'].'">'."\n";
+    foreach ( $this->pdo->query( $sql ) as $row ) {
+      echo '  <tr class="'.$row['class'].'">'."\n";
       foreach ($cols as $code) {
         if (!isset($labels[$code])) continue;
+        if ( $code == 'occs' && !$search && !$this->p['q'] ) continue;
         echo "    <td>";
         if ("no" == $code) {
           echo $i;
         }
         else if( "creator" == $code || "author" == $code || "byline" == $code ) {
-          echo $doc['byline'];
+          echo $row['byline'];
+        }
+        else if( "occs" == $code ) {
+          echo $row['occs'];
         }
         else if( "date" == $code || "year" == $code ) {
-          echo $doc['date'];
+          echo $row['date'];
         }
         else if( "title" == $code ) {
-          echo '<a href="'.$doc['code'].'">'.$doc['title']."</a>";
+          echo '<a href="'.$row['code'];
+          if ( $this->p['q'] ) echo "?q=".str_replace( '"', '&quot;', $this->p['q'] );
+          echo '">'.$row['title']."</a>";
         }
         echo "</td>\n";
       }
@@ -235,8 +338,8 @@ class Teinte_Base
    * Is a bit slower than offsets, unavailable in sqlite 3.6.20 (CentOS6)
    * but more precise with phrase query
    *
-   * $db->sqliteCreateFunction('matchinfo2occ', 'Sqlite::matchinfo2occ', 1);
-   * $res = $db->prepare("SELECT matchinfo2occ(matchinfo(search, 'x')) AS occ , text FROM search  WHERE text MATCH ? ");
+   * $db->sqliteCreateFunction('matchinfo2occs', 'Sqlite::matchinfo2occs', 1);
+   * $res = $db->prepare("SELECT matchinfo2occs(matchinfo(search, 'x')) AS occs , text FROM search  WHERE text MATCH ? ");
    * $res->execute(array('"Felix the cat"'));
    *
    * « Felix the cat, Felix the cat »
@@ -251,23 +354,23 @@ class Teinte_Base
    * 2) The total number of times the phrase appears in the column in all rows in the FTS table.
    * 3) The total number of rows in the FTS table for which the column contains at least one instance of the phrase.
   */
-  static function matchinfo2occ($matchinfo)
+  static function matchinfo2occs($matchinfo)
   {
     $ints = unpack('L*', $matchinfo);
-    $occ = 0;
+    $occs = 0;
     $max = count($ints)+1;
     for($a = 1; $a <$max; $a = $a+3 ) {
-      $occ += $ints[$a];
+      $occs += $ints[$a];
     }
-    return $occ;
+    return $occs;
   }
   /**
    * Infer occurrences count from an offsets() result
    * A bit faster than matchinfo, available in sqlite 3.6.20 (CentOS6)
    * but less precise for phrase query,
    *
-   * $db->sqliteCreateFunction('offsets2occ', 'Sqlite::offsets2occ', 1);
-   * $res = $db->prepare("SELECT offsets2occ(offsets(search))AS occ , text FROM search  WHERE text MATCH ? ");
+   * $db->sqliteCreateFunction('offsets2occs', 'Sqlite::offsets2occs', 1);
+   * $res = $db->prepare("SELECT offsets2occs(offsets(search))AS occs , text FROM search  WHERE text MATCH ? ");
    * $res->execute(array('"Felix the cat"'));
    *
    * « Felix the cat, Felix the cat »
@@ -282,12 +385,12 @@ class Teinte_Base
    * 2   The byte offset of the matching term within the column.
    * 3   The size of the matching term in bytes.
    */
-  static function offsets2occ($offsets)
+  static function offsets2occs($offsets)
   {
-    $occ = (1+substr_count($offsets, ' '))/4 ;
+    $occs = (1+substr_count($offsets, ' '))/4 ;
     // result from hidden field
-    if ($occ == 1 && $offsets[0] == 1) return 0;
-    return $occ;
+    if ($occs == 1 && $offsets[0] == 1) return 0;
+    return $occs;
   }
   /**
    * TODO, Repack a matchinfo array to hilite properly phrase query

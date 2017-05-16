@@ -55,7 +55,7 @@ CREATE table doc (
   source      TEXT,    -- ? URL of source file (ex: XML/TEI)
   publisher   TEXT,    -- ? Name of the original publisher of the file in case of compilation
   identifier  TEXT,    -- ? URL of the orginal publication in case of compilation
-  class       TEXT, -- a classname
+  class       TEXT,    -- ? a classname
   PRIMARY KEY(id ASC)
 );
 CREATE UNIQUE INDEX IF NOT EXISTS doc_code ON doc( code );
