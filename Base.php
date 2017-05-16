@@ -97,7 +97,7 @@ class Teinte_Base
     $req = $this->pdo->prepare($sql);
     $req->execute($pars);
     $this->pdo->exec("CREATE INDEX foundOccs ON found(occs);");
-    $this->docs = current($this->pdo->query("SELECT COUNT(*) FROM doc")->fetch());
+    $this->docsTotal = current($this->pdo->query("SELECT COUNT(*) FROM doc")->fetch());
     $this->docsFound = current($this->pdo->query("SELECT COUNT(*) FROM found")->fetch());
     $this->occsFound = current($this->pdo->query("SELECT SUM(occs) FROM found")->fetch());
     $this->pdo->commit(); // temp tables only available now
