@@ -114,7 +114,7 @@ class Teinte_Base
     $replace = array();
     // hilite (use a tricky indexation in teipub to get correct positions)
     // this tricky query is the right one on some flavours of sqlite 3
-    $query = $this->pdo->prepare('SELECT text, offsets(search) AS offsets FROM search WHERE docid = ? AND text MATCH ?') ;
+    $query = $this->pdo->prepare('SELECT text, offsets(search) AS offsets FROM search, doc WHERE doc.id=search.docid AND doc.id=? AND text MATCH ?') ;
     $query->execute( array( $docid, $q ) );
     // TODO, join quote expressions
     $mark = 0;

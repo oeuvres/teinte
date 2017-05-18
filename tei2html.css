@@ -154,7 +154,8 @@ tfoot { border-top: solid 1px #000000; }
 button, input, optgroup, select, textarea { font-size: inherit; margin: 0; }
 button { overflow: visible; }
 button, select { text-transform: none; }
-button, html input[type="button"], input[type="reset"], input[type="submit"], .but, .button { -webkit-appearance: button; cursor: pointer; font-family: sans-serif; display: inline; cursor: pointer; border: 1px solid #AAA !important; background-color: #E2DED0; padding: 2px 5px 0 5px; margin: 1px; text-shadow: 1px 1px #FFFFFF; white-space: nowrap; text-decoration: none !important;  -webkit-border-radius: 0.5ex; -moz-border-radius: 0.5ex; border-radius: 0.5ex; }
+button, html input[type="button"], input[type="reset"], input[type="submit"], .but, .button { -webkit-appearance: button; cursor: pointer; display: inline; cursor: pointer; border: 1px solid #AAA !important; background-color: #E2DED0; padding: 2px 5px 0 5px; margin: 1px; text-shadow: 1px 1px #FFFFFF; white-space: nowrap; text-decoration: none !important;  -webkit-border-radius: 0.5ex; -moz-border-radius: 0.5ex; border-radius: 0.5ex; }
+.but { font-family: sans-serif; font-weight: bold; }
 button[disabled], html input[disabled] { cursor: default; }
 button::-moz-focus-inner, input::-moz-focus-inner { border: 0; padding: 0; }
 button:hover, html input[type="button"]:hover, input[type="reset"]:hover, input[type="submit"]:hover, .but:hover, .button:hover { background-color: #FFFFFF; }
