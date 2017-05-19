@@ -129,6 +129,18 @@ class Teinte_Doc
       else $meta['byline'] .= " ; ";
       $meta['byline'] .= $value;
     }
+    // editors
+    $meta['editby'] = null;
+    $nl = $this->_xpath->query("/*/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:editor");
+    $first = true;
+    foreach ($nl as $node) {
+      $value = $node->getAttribute("key");
+      if ( !$value ) $value = $node->textContent;
+      if (($pos = strpos($value, '('))) $value = trim( substr( $value, 0, $pos ) );
+      if ( $first ) $first = false;
+      else $meta['editby'] .= " ; ";
+      $meta['editby'] .= $value;
+    }
     // title
     $nl = $this->_xpath->query("/*/tei:teiHeader//tei:title");
     if ($nl->length) $meta['title'] = $nl->item(0)->textContent;
@@ -392,7 +404,7 @@ class Teinte_Doc
    * An xslt transformer
    * TOTHINK : deal with errors
    */
-  public function transform($xslfile, $dest=null, $pars=null)
+  public function transform( $xslfile, $dest=null, $pars=null )
   {
     if ( !$this->_trans ) {
       // renew the processor
@@ -424,7 +436,7 @@ class Teinte_Doc
     }
     else if ($dest) {
       if (!is_dir(dirname($dest))) {
-        mkdir(dirname($dest), 0775, true);
+        if ( !@mkdir(dirname($dest), 0775, true) ) exit( dirname($dest)." impossible à créer.\n");
         @chmod(dirname($dest), 0775);  // let @, if www-data is not owner but allowed to write
       }
       $this->_trans->transformToURI( $this->_dom, $dest );

@@ -22,6 +22,7 @@ class Teinte_Base
    */
   public function __construct( $sqlitefile = null, $lang = null, $path="", $pars = array() )
   {
+    if ( !file_exists( $sqlitefile ) ) return false;
     $this->_sqlitefile = $sqlitefile;
     $this->pdo = new PDO("sqlite:".$sqlitefile);
     $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING ); // get error as classical PHP warn
@@ -163,16 +164,23 @@ class Teinte_Base
   }
 
   function biblio( $cols=array("no", "creator", "date", "title", "occs"), $search=false ) {
-    $sql = "SELECT * FROM doc ORDER BY date, code";
+
+
     if ( $search ) $sql = "SELECT * FROM found ORDER BY occs DESC, code";
+    else if ( in_array( "creator", $cols ) || in_array( "author", $cols ) || in_array( "byline", $cols ) )  $sql = "SELECT * FROM doc ORDER BY byline, date, code";
+    else $sql = "SELECT * FROM doc ORDER BY date, code";
     $labels = array(
+      "author" => "Auteur",
+      "authors" => "Auteurs",
+      "byline" => "Auteur(s)",
       "creator" => "Auteur",
+      "editor" => "Éditeur",
+      "editby" => "Éditeur(s)",
       "date" => "Date",
       "downloads" => "Téléchargements",
       "no"=>"N°",
       "publisher" => "Éditeur",
       "occs" => "Occurrences",
-      "relation" => "Téléchargements",
       "title" => "Titre",
     );
     echo '<table class="sortable">'."\n";
@@ -204,14 +212,21 @@ class Teinte_Base
         if ("no" == $code) {
           echo $i;
         }
-        else if( "creator" == $code || "author" == $code || "byline" == $code ) {
+        else if( "creator" == $code || "author" == $code || "authors" == $code || "byline" == $code ) {
           echo $row['byline'];
         }
         else if( "occs" == $code ) {
           echo $row['occs'];
         }
+        else if( "editby" == $code || "editor" == $code ) {
+          echo $row['editby'];
+        }
         else if( "date" == $code || "year" == $code ) {
           echo $row['date'];
+        }
+        else if( "downloads" == $code ) {
+          // caller should implement global function to list downloads, according to its policy
+          echo @downloads( $row['code'] );
         }
         else if( "title" == $code ) {
           echo '<a href="'.$row['code'];

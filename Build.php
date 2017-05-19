@@ -32,7 +32,7 @@ class Teinte_Build
     // 'docx' => '.docx',
   );
   /** Columns reference to build queries */
-  static $coldoc = array("code", "filemtime", "filesize", "deps", "title", "byline", "date", "source", "identifier", "publisher", "class" );
+  static $coldoc = array("code", "filemtime", "filesize", "deps", "title", "byline", "editby", "date", "source", "identifier", "publisher", "class" );
   /** Sqlite persistency */
   static $create = "
 PRAGMA encoding = 'UTF-8';
@@ -53,14 +53,15 @@ CREATE table doc (
   issued      INTEGER, -- ? publication year of the text
   bibl        TEXT,    -- ? publication year of the text
   source      TEXT,    -- ? URL of source file (ex: XML/TEI)
+  editby      TEXT,    -- ? editors
   publisher   TEXT,    -- ? Name of the original publisher of the file in case of compilation
   identifier  TEXT,    -- ? URL of the orginal publication in case of compilation
   class       TEXT,    -- ? a classname
   PRIMARY KEY(id ASC)
 );
 CREATE UNIQUE INDEX IF NOT EXISTS doc_code ON doc( code );
-CREATE INDEX IF NOT EXISTS doc_byline_date ON doc( byline, date, title );
-CREATE INDEX IF NOT EXISTS doc_date_byline ON doc( date, byline, title );
+CREATE INDEX IF NOT EXISTS doc_byline_date ON doc( byline, date, code );
+CREATE INDEX IF NOT EXISTS doc_date_byline ON doc( date, byline, code );
 
 CREATE VIRTUAL TABLE search USING FTS3 (
   -- table of searchable articles, with same rowid as in article
@@ -91,8 +92,9 @@ END;
   public $conf = array(
     "destdir" => "",
     "formats" => "site, epub, kindle",
-    "cmdup" => "git pull",
+    "cmdup" => "git pull 2>&1",
     "logger" => "php://output",
+    "logfile" => null,
   );
 
   /**
@@ -106,7 +108,7 @@ END;
       $this->conf['formats'] = preg_split( "@[\s,;]+@", $this->conf['formats'] );
     }
     if ( !$this->conf['destdir'] );
-    else if ( !$this->conf['destdir'] == "." ) $this->conf['destdir']="";
+    else if ( $this->conf['destdir'] == "." ) $this->conf['destdir']="";
     else $this->conf['destdir'] = rtrim($this->conf['destdir'], '\\/')."/";
     // verify output dirs for generated files
     foreach ( $this->conf['formats'] as $type ) {
@@ -114,9 +116,9 @@ END;
         $this->log( E_USER_WARNING, $type." format non supporté" );
         continue;
       }
-      $dir = $this->conf['destdir'].'/'.$type.'/';
+      $dir = $this->conf['destdir'].$type.'/';
       if ( !file_exists( $dir ) ) {
-        mkdir( $dir, 0775, true );
+        if ( !@mkdir( $dir, 0775, true ) ) exit( $dir." impossible à créer.\n");
         @chmod( $dir, 0775 );  // let @, if www-data is not owner but allowed to write
       }
     }
@@ -180,7 +182,7 @@ END;
     foreach ( $this->conf['formats'] as $type ) {
       if ( !isset(self::$_formats[$type]) ) continue;
       $extension = self::$_formats[$type];
-      $destfile = $destdir.'/'.$type.'/'.$code.$extension;
+      $destfile = $destdir.$type.'/'.$code.$extension;
       if ( !file_exists( $destfile )) continue;
       unlink($destfile);
       $echo .= " ".basename( $destfile );
@@ -201,7 +203,7 @@ END;
         continue;
       }
       $ext = self::$_formats[$type];
-      $destfile = $destdir.'/'.$type.'/'.$teinte->filename().$ext;
+      $destfile = $destdir.$type.'/'.$teinte->filename().$ext;
       // delete destfile if exists
       if ( file_exists( $destfile ) ) unlink( $destfile );
       $echo .= " ".$type;
@@ -217,9 +219,9 @@ END;
       }
       // Attention, do kindle after epub
       else if ( $type == 'kindle' ) {
-        $epubfile =  $destdir.'/epub/'.$teinte->filename().".epub";
+        $epubfile =  $destdir.'epub/'.$teinte->filename().".epub";
         // generated file
-        $mobifile = $destdir.'/epub/'.$teinte->filename().".mobi";
+        $mobifile = $destdir.'epub/'.$teinte->filename().".mobi";
         $cmd = self::$_kindlegen.' '.$epubfile;
         $last = exec ($cmd, $output, $status);
         // error ?
@@ -296,7 +298,7 @@ END;
       // toc mays be null
       if ( $type == "toc" ) continue;
       $extension = self::$_formats[$type];
-      $destfile = $this->conf["destdir"].'/'.$type.'/'.$code.$extension;
+      $destfile = $this->conf["destdir"].$type.'/'.$code.$extension;
       if ( !file_exists( $destfile )) {
         $force = true;
         // echo( $destfile."\n");
@@ -312,8 +314,9 @@ END;
       $this->log( E_USER_ERROR, $srcfile." XML mal formé" );
       return false;
     }
-    $this->record( $teinte );
     $this->export( $teinte, $this->conf["destdir"] );
+    // record in base after generation of file
+    $this->record( $teinte );
     flush();
   }
 
@@ -483,6 +486,14 @@ END;
    */
   function log( $errno, $errstr, $errfile=null, $errline=null, $errcontext=null )
   {
+    if ( $this->conf['logfile'] ) {
+      $line = date(DateTime::ISO8601);
+      if ( E_ERROR == $errno || E_USER_ERROR == $errno ) $line .= " ERROR";
+      else if ( E_WARNING == $errno || E_USER_WARNING == $errno ) $line .= " WARNING";
+      $line .= " ".$errstr;
+      $line .= "\n";
+      error_log( $line, 3, $this->conf['logfile'] );
+    }
     if ( !$this->loglevel & $errno ) return false;
     $errstr=preg_replace("/XSLTProcessor::transform[^:]*:/", "", $errstr, -1, $count);
     /* ?
@@ -518,8 +529,19 @@ END;
   static function cli()
   {
     $timeStart = microtime(true);
-    $usage = "\nusage    : php -f ".basename(__FILE__).' base.sqlite action "dir/*.xml"'."\n\n";
+    $usage = "\nusage    : php -f ".basename(__FILE__).' conf.php
+usage    : php -f '.basename(__FILE__).' base.sqlite action "dir/*.xml"'."\n\n";
     array_shift($_SERVER['argv']); // shift first arg, the script filepath
+    if ( count($_SERVER['argv']) == 1 ) {
+      $path = $_SERVER['argv'][0];
+      if ( !file_exists( $path ) ) exit( $path+" — ce fichier n’existe pas." );
+      $conf = include( $path );
+      $build = new Teinte_Build( $conf );
+      $build->glob();
+      exit();
+    }
+
+
     if (count($_SERVER['argv']) < 2) exit($usage);
     $sqlite = array_shift($_SERVER['argv']);
     $action = array_shift($_SERVER['argv']);
