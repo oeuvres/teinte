@@ -124,7 +124,7 @@ class Teinte_Web {
   {
     // store params array extracted from query
     if (!self::$pars) {
-      if (!$query) $query = Htocc_Web::query();
+      if (!$query) $query = Teinte_Web::query();
       // populate an array
       self::$pars = array();
       $a = explode('&', $query);
@@ -315,7 +315,7 @@ class Teinte_Web {
    public static function upload( $key=null )
    {
     // no post, return nothing
-    if ($_SERVER['REQUEST_METHOD'] != 'POST') return false;
+    if ( $_SERVER['REQUEST_METHOD'] != 'POST' ) return false;
     $lang = self::lang(array('en'=>'', 'fr'=>''));
     $mess = array(
       UPLOAD_ERR_INI_SIZE => array(
@@ -347,12 +347,12 @@ class Teinte_Web {
         'fr' => 'Erreur de configuration PHP, une extension a arrêté le téléchargement du fichier.',
       ),
       'nokey' => array(
-        'en' => "Htocc_Web::upload(), no field $key in submitted form.",
-        'fr' => "Htocc_Web::upload(), pas de champ $key dans le formulaire soumis.",
+        'en' => "Teinte_Web::upload(), no field $key in submitted form.",
+        'fr' => "Teinte_Web::upload(), pas de champ $key dans le formulaire soumis.",
       ),
       'nofile' => array(
-        'en' => 'Htocc_Web::upload(), no file found. Too big ? Directives in php.ini: upload_max_filesize='.ini_get('upload_max_filesize').', post_max_size='.ini_get('post_max_size'),
-        'fr' => 'Htocc_Web::upload(), pas de fichier trouvé. Trop gros ? Directives php.ini: upload_max_filesize='.ini_get('upload_max_filesize').', post_max_size='.ini_get('post_max_size'),
+        'en' => 'Teinte_Web::upload(), no file found. Too big ? Directives in php.ini: upload_max_filesize='.ini_get('upload_max_filesize').', post_max_size='.ini_get('post_max_size'),
+        'fr' => 'Teinte_Web::upload(), pas de fichier trouvé. Trop gros ? Directives php.ini: upload_max_filesize='.ini_get('upload_max_filesize').', post_max_size='.ini_get('post_max_size'),
       ),
     );
     if ($key && !isset($_FILES[$key])) throw new Exception($mess['nokey'][$lang]);

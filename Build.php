@@ -487,10 +487,10 @@ END;
   function log( $errno, $errstr, $errfile=null, $errline=null, $errcontext=null )
   {
     if ( $this->conf['logfile'] ) {
-      $line = date(DateTime::ISO8601);
-      if ( E_ERROR == $errno || E_USER_ERROR == $errno ) $line .= " ERROR";
-      else if ( E_WARNING == $errno || E_USER_WARNING == $errno ) $line .= " WARNING";
-      $line .= " ".$errstr;
+      $line = date( "Y-m-d H:i:s   " );
+      if ( E_ERROR == $errno || E_USER_ERROR == $errno ) $line .= "ERROR ";
+      else if ( E_WARNING == $errno || E_USER_WARNING == $errno ) $line .= "WARNING ";
+      $line .= $errstr;
       $line .= "\n";
       error_log( $line, 3, $this->conf['logfile'] );
     }

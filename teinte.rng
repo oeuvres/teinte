@@ -458,6 +458,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <ref name="div.cont"/>
       </element>
     </define>
+    <!-- Div content  -->
     <define name="div.cont">
       <oneOrMore>
         <choice>
@@ -745,6 +746,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <ref name="cit"/>
         <ref name="desc"/>
         <ref name="eg"/>
+        <ref name="dateline"/>
         <ref name="entryFree"/>
         <ref name="epigraph"/>
         <ref name="figure"/>
@@ -756,6 +758,8 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <ref name="p"/>
         <ref name="q-p"/>
         <ref name="quote-p"/>
+        <ref name="salute"/>
+        <ref name="signed"/>
         <ref name="stage"/>
         <ref name="sp"/>
         <ref name="table"/>
@@ -2514,6 +2518,9 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </optional>
         <optional>
           <attribute name="n"/>
+        </optional>
+        <optional>
+          <attribute name="resp"/>
         </optional>
         <zeroOrMore>
           <ref name="term"/>
