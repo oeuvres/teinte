@@ -514,8 +514,13 @@ class Teinte_Doc
         else $destfile=dirname($srcfile).'/'.$destname;
         if ( file_exists($destfile) && filemtime( $srcfile ) < filemtime( $destfile ) ) continue;
         if (STDERR) fwrite(STDERR, "$count. $srcfile > $destfile\n");
-        $doc=new Teinte_Doc($srcfile);
-        $doc->export($format, $destfile);
+        try {
+          $doc=new Teinte_Doc($srcfile);
+          $doc->export($format, $destfile);
+        }
+        catch ( Exception $e ) {
+          if (STDERR) fwrite(STDERR, $e );
+        }
       }
     }
   }
