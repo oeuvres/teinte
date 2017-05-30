@@ -2050,6 +2050,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
               <ref name="hi"/>
               <ref name="listPerson"/>
               <ref name="note"/>
+              <ref name="num"/>
               <ref name="pb"/>
               <ref name="ref"/>
             </choice>

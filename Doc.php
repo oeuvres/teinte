@@ -493,6 +493,7 @@ class Teinte_Doc
       $format = trim($format, '- ');
     }
 
+    $destdir = ""; // default is transform here
     $lastc = substr($_SERVER['argv'][0], -1);
     if ('/' == $lastc || '\\' == $lastc) {
       $destdir = array_shift($_SERVER['argv']);
@@ -502,7 +503,6 @@ class Teinte_Doc
         @chmod($dir, 0775);  // let @, if www-data is not owner but allowed to write
       }
     }
-    $destdir = ""; // default is transform here
 
 
     $count = 0;
