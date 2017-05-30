@@ -505,18 +505,21 @@ class Teinte_Doc
     }
 
 
-    $count = 0;
+    $count = 1;
+    echo "code\tbyline\tdate\ttitle\n";
     foreach ($_SERVER['argv'] as $glob) {
       foreach(glob($glob) as $srcfile) {
-        $count++;
         $destname = pathinfo($srcfile, PATHINFO_FILENAME).self::$ext[$format];
         if (isset($destdir)) $destfile = $destdir.$destname;
         else $destfile=dirname($srcfile).'/'.$destname;
         if ( file_exists($destfile) && filemtime( $srcfile ) < filemtime( $destfile ) ) continue;
         if (STDERR) fwrite(STDERR, "$count. $srcfile > $destfile\n");
+        $count++;
         try {
           $doc=new Teinte_Doc($srcfile);
+          $meta = $doc->meta();
           $doc->export($format, $destfile);
+          echo $meta['code']."\t".$meta['byline']."\t".$meta['date']."\t".$meta['title']."\n";
         }
         catch ( Exception $e ) {
           if (STDERR) fwrite(STDERR, $e );
