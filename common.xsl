@@ -482,6 +482,9 @@ notamment pour établir cible et source de liens.
         <xsl:value-of select="translate(@id, $id0, '')"/>
       </xsl:when>
       <xsl:when test="/tei:TEI/tei:text/tei:front and count(.|/tei:TEI/tei:text/tei:front)=1">front</xsl:when>
+      <xsl:when test="@type = 'act'">
+        <xsl:number format="I" count="tei:*[@type='act']"/>
+      </xsl:when>
       <xsl:when test="@type = 'scene'">
         <xsl:for-each select="parent::*[1]">
           <xsl:call-template name="id"/>

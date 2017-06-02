@@ -2643,6 +2643,9 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
     <define name="corresp-att">
       <attribute name="corresp">
         <a:documentation>Pointeur vers une liste d’autorité</a:documentation>
+        <list>
+          <data type="anyURI"/>
+        </list>
       </attribute>
     </define>
     <define name="id-att">

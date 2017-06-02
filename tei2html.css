@@ -34,7 +34,7 @@ audio:not([controls]) { display: none; height: 0; }
 table, td, code, dd { font-size: 100%; }
 * { -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -ms-box-sizing: border-box; box-sizing: border-box; }
 article:after { content: " "; display: block; height: 0; clear: both; visibility: hidden; }
-body, html { min-height: 100%; margin: 0; padding: 0; }
+body, html { height: 100%; margin: 0; padding: 0; }
 /* fonts */
 /* pas mûr -moz-hyphens: auto; -webkit-hyphens: auto; adobe-hyphenate: auto; hyphens: auto; */
 body { font: 16px/24px Georgia, "Bitstream Vera Serif", Times, serif; }
