@@ -76,16 +76,17 @@ var Sortable = {
     css.innerHTML = "\
 table.sortable { font-family: sans-serif; font-size: 12px; line-height: 105%; border: 1px solid; border-color: #CCCCCC; margin-top: 1rem; margin-bottom: 2em; border-collapse: collapse; } \
 table.sortable caption { background-color: #F5F3EB; padding: 2px 1ex 2px 1ex } \
-table.sortable td { vertical-align: top; border: #CCCCCC 1px solid; padding: 2px 1ex; } \
+table.sortable td { vertical-align: top; border-left: #BBD 1px solid; border-right: #BBD 1px solid; padding: 2px 1ex; color: #666; } \
+table.sortable b { color: black; }\
 table.sortable td.string { text-align: left; } \
-table.sortable tr td { border-bottom: none; border-top: none; } \
 tr.even { background-color: #FFFFFF; } \
-tr.odd { background-color: #F5F3EB; } \
-table.sortable th { text-align: center; vertical-align: middle; text-align: left; padding: 5px 1ex 5px 1ex; background-color: #FFFFFF; border-top: 2px solid #CCCCCC; border-bottom: 2px solid #CCCCCC; } \
+tr.odd { background: -moz-linear-gradient( left, #FDFDFF, #DDE, #EEF ); background: -webkit-linear-gradient( left, #FDFDFF, #DDE, #EEF ); background: -ms-linear-gradient( left, #FDFDFF, #DDE, #EEF ); background: -o-linear-gradient( left, #FDFDFF, #DDE, #EEF ); background: linear-gradient( to right, #FDFDFF, #DDE, #EEF ); } /* #F5F3EB; */ \
+tr.odd td { border-bottom: 1px solid #EEF; border-top: 1px solid #EEF } \
+table.sortable th { text-align: center; vertical-align: middle; text-align: left; padding: 5px 1ex 5px 1ex; background-color: #FFFFFF; border-top: 2px solid #CCCCCC; border-bottom: 1px solid #666; box-shadow: 0 4px 2px -2px #99C; } \
 table.sortable th.head, table.sortable td.head { vertical-align: bottom; } \
 tr.even th, tr.odd th { text-align: right; } \
 table.sortable tr.mod5 td { border-bottom: solid 1px #888; } \
-table.sortable tr.mod10 td {  } \
+table.sortable tr.mod10 td { border-bottom: solid 2px #99C; box-shadow: 0 4px 2px -2px #99C; } \
 table.sortable tr:hover { background: #FFFFEE; color: black; } \
 table.sortable tr:hover a { color: black; } \
 table.sortable a { text-decoration: none; } \
