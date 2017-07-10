@@ -405,6 +405,9 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </attribute>
       </optional>
       <optional>
+        <ref name="copyOf-att"/>
+      </optional>
+      <optional>
         <attribute name="resp"/>
       </optional>
       <optional>
@@ -473,7 +476,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
           <ref name="index"/>
           <ref name="listPerson"/>
           <ref name="milestone"/>
-          <ref name="p"></ref>
+          <ref name="p"/>
           <ref name="pb"/>
           <ref name="opener"/>
           <ref name="salute"/>
@@ -1063,14 +1066,12 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </choice>
       </element>
     </define>
-    
     <define name="q-p">
       <element name="q">
         <a:documentation>Bloc ou suite de blocs distingués du flux principal</a:documentation>
         <div xmlns="http://www.w3.org/1999/xhtml">
           <p>Bloc de texte inséré dans un texte qui interrompt le texte principal, généralement séparé du texte environnant par un dispositif typographique spécifique (italique, blanc typographique, passage guillemeté). Contrairement à <a:el>quote</a:el>, le contenu de &lt;q&gt; ne peut pas être attribué à une origine extérieure au texte (origine fictionnelle ou non identifiable). Exemples : récit enchâssé, lettre insérée, article de presse, acte notarié, poème, traité, axiomes…</p>
         </div>
-        
         <ref name="xml-atts"/>
         <optional>
           <attribute name="type">
@@ -1122,7 +1123,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </optional>
       </element>
     </define>
-    
     <define name="quote-p">
       <element name="quote">
         <a:documentation>Citation, notamment les paragraphes en retrait ou/et en italique, &lt;html5:blockquote></a:documentation>
@@ -1159,7 +1159,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
               <ref name="p"/>
               <ref name="pb"/>
               <ref name="quote-p"/>
-              <ref name="sp"/>
+              <ref name="quote-sp"/>
               <ref name="stage"/>
               <ref name="table"/>
             </choice>
@@ -1189,32 +1189,52 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
           <data type="IDREFS"/>
         </attribute>
         <ref name="xml-atts"/>
+        <ref name="speaker"/>
+        <oneOrMore>
+          <choice>
+            <ref name="pb"/>
+            <ref name="p"/>
+            <ref name="lg"/>
+            <ref name="l"/>
+            <ref name="stage"/>
+            <ref name="quote-p"/>
+            <ref name="label"/>
+            <ref name="figure"/>
+            <ref name="note"/>
+          </choice>
+        </oneOrMore>
+      </element>
+    </define>
+    <define name="quote-sp">
+      <element name="sp">
+        <a:documentation>Citation de théâtre : tirade, tour de parole</a:documentation>
         <optional>
-          <element name="speaker">
-            <zeroOrMore>
-              <choice>
-                <text/>
-                <ref name="hi"/>
-                <ref name="listPerson"/>
-                <ref name="note"/>
-                <ref name="ref"/>
-              </choice>
-            </zeroOrMore>
-          </element>
-          <oneOrMore>
-            <choice>
-              <ref name="pb"/>
-              <ref name="p"/>
-              <ref name="lg"/>
-              <ref name="l"/>
-              <ref name="stage"/>
-              <ref name="quote-p"/>
-              <ref name="label"/>
-              <ref name="figure"/>
-              <ref name="note"/>
-            </choice>
-          </oneOrMore>
+          <ref name="speaker"/>
         </optional>
+        <oneOrMore>
+          <choice>
+            <ref name="pb"/>
+            <ref name="p"/>
+            <ref name="lg"/>
+            <ref name="l"/>
+            <ref name="stage"/>
+            <ref name="note"/>
+          </choice>
+        </oneOrMore>
+      </element>
+    </define>
+    <define name="speaker">
+      <element name="speaker">
+        <zeroOrMore>
+          <choice>
+            <text/>
+            <ref name="hi"/>
+            <ref name="listPerson"/>
+            <ref name="note"/>
+            <ref name="pb"/>
+            <ref name="ref"/>
+          </choice>
+        </zeroOrMore>
       </element>
     </define>
   </div>
@@ -2637,12 +2657,19 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
       </element>
     </define>
   </div>
-  
   <div xml:id="atts">
     <a:documentation>Attributs</a:documentation>
     <define name="corresp-att">
       <attribute name="corresp">
-        <a:documentation>Pointeur vers une liste d’autorité</a:documentation>
+        <a:documentation>Pointeur vers une ressource liée</a:documentation>
+        <list>
+          <data type="anyURI"/>
+        </list>
+      </attribute>
+    </define>
+    <define name="copyOf-att">
+      <attribute name="copyOf">
+        <a:documentation>Lien de copie (non directionnel) entre l’élément porteur de l’attribut et un fichier ou un fragment de fichier pointé par une url.</a:documentation>
         <list>
           <data type="anyURI"/>
         </list>
