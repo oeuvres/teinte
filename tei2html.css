@@ -177,7 +177,8 @@ input:-ms-input-placeholder { color: #AAA !important; font-style: italic !import
 textarea { overflow: auto; width: 100%; height: 20em; display: block; }
 textarea[readonly], textarea.readonly {  font-size: 20px; padding: 1em; height: 10em; width: 90%; border: 1px #CCC solid; }
 
-/** TEI elements, in TEI element name order, before type modifier in next block */
+/** TEI classes, in TEI element name order */
+
 h1.act, h2.act, h1.castList, h2.castList { text-transform: uppercase; }
 .actor { font-variant: small-caps; }
 .argument { margin: 2em 0 3em 0; line-height: 140%; text-indent: 0; font-size: 85%; font-style: italic; text-align: justify }
@@ -203,7 +204,7 @@ p.caption { font-weight: bold; }
 ul.castList { list-style: none; }
 /* numbering */
 .cb, .pb, .ed, small.l, small.l-n { font-weight: normal; font-style: normal; color: grey; margin-top: 0; margin-bottom: 0; text-indent: 0; text-decoration: none; border: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
-.cb, .pb, .ed  { float: right; margin-top: 0.1rem; margin-right: -5rem; max-width: 10rem; background-color: #FFFFFF; padding:1px 1ex 1px 0; }
+.cb, .pb, .ed { background-color: #FFFFFF; padding: 1px 1ex 1px 0; position: absolute; left: 0.3rem; /* float: right; problèmes dans les tableaux */ }
 a.pb:hover { background-color: #FFFFFF; }
 .lb { color: grey; font-size: 11px; }
 .l-n { position:absolute; margin-left: -3em; margin-left: -2.5rem; }
@@ -345,6 +346,8 @@ li.witness { list-style: square; font-size: 90%; font-family: sans-serif; }
 /* @rend, @type useful classes, in alphabetic order */
 
 .alert { color: #971716; font-size: 120%; }
+section.article { border-bottom: 2px white solid; margin-top: 0; padding-top: 2rem; }
+section.article h2  { margin-top: 0; }
 .attention { color: red; }
 .b, .bold { font-weight: bold; }
 .border { border: 1px solid #808080; padding: 1ex; }
