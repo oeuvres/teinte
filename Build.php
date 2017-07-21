@@ -244,11 +244,22 @@ END;
   private function record( $teinte, $props=null )
   {
     $meta = $teinte->meta();
-    // hack to get some class info
-    if ( isset( $meta['class'] ) && $meta['class'] ) $meta['class'] .= basename( dirname( $teinte->file() ) );
-    else $meta['class'] = basename( dirname( $teinte->file() ) );
-    // supprimer la pièce, des triggers doivent normalement supprimer la cascade.
+    // URLs with string replcaements
+    if ( is_array ( $props ) ) {
+      if ( isset( $props['source'] )  && strpos( $props['source'], '%s' ) !== false ) {
+        $props['source'] = sprintf ( $props['source'], $meta['code'] );
+      }
+      if ( $props && isset( $props['identifier'] )  && strpos( $props['identifier'], '%s' ) !== false ) {
+        $props['identifier'] = sprintf ( $props['identifier'], $meta['code'] );
+      }
+    }
+    // space separated list of classnames
+    if ( !isset( $meta['class'] ) ) $meta['class'] = "";
+    $meta['class'] .= " ".basename( dirname( $teinte->file() ) );
+    if ( isset( $props['set'] ) ) $meta['class'] .= " ".$props['set'];
+    // del file, trigger should work for cascades
     $this->_q['del']->execute( array( $meta['code'] ) );
+
     $values = array_fill_keys( self::$coldoc, null );
     // replace in values, but do not add new keys from meta (intersect)
     $values = array_replace( $values, array_intersect_key( $meta, $values ) );
@@ -260,6 +271,28 @@ END;
     $this->_q['search']->execute( array( $lastid, $teinte->ft() ) );
     return $lastid;
   }
+  /**
+   * Explore conf as sets
+   */
+  public function sets()
+  {
+    if ( !isset($this->conf['sets']) ) continue;
+    // for deletions, store the codes of existingfiles
+    $this->_cods = array();
+    $oldlog = $this->loglevel;
+    $this->loglevel = $this->loglevel|E_USER_NOTICE;
+    foreach ( $this->conf['sets'] as $set => $props ) {
+      $props['set'] = $set;
+      // resolve relative path ?
+      foreach( glob( $props['glob'] ) as $srcfile) {
+        $this->_file( $srcfile, null, $props );
+      }
+    }
+    $this->loglevel = $oldlog;
+    // delete record of delete files
+    $this->_post();
+  }
+
   /**
    * Explore some folders
    */
@@ -273,14 +306,14 @@ END;
     foreach ( $glob as $path ) {
       foreach( glob( $path ) as $srcfile) {
         // echo "\n".$srcfile." ".$force;
-        $this->_file( $srcfile, $force );
+        $this->_file( $srcfile, $force, $props );
       }
     }
     $this->_post();
     $this->loglevel = $oldlog;
   }
 
-  private function _file( $srcfile, $force=false )
+  private function _file( $srcfile, $force=false, $props=array() )
   {
     $code = pathinfo( $srcfile, PATHINFO_FILENAME );
     $this->_cods[] = $code;
@@ -301,7 +334,6 @@ END;
       $destfile = $this->conf["destdir"].$type.'/'.$code.$extension;
       if ( !file_exists( $destfile )) {
         $force = true;
-        // echo( $destfile."\n");
       }
     }
     if ( !$force ) return $force;
@@ -316,7 +348,7 @@ END;
     }
     $this->export( $teinte, $this->conf["destdir"] );
     // record in base after generation of file
-    $this->record( $teinte );
+    $this->record( $teinte, $props );
     flush();
   }
 
@@ -387,7 +419,7 @@ END;
     }
     echo "  </tr>\n";
     $i = 1;
-    foreach ($this->pdo->query("SELECT * FROM oeuvre ORDER BY code") as $oeuvre) {
+    foreach ($this->pdo->query("SELECT * FROM doc ORDER BY code") as $oeuvre) {
       echo "  <tr>\n";
       foreach ( $cols as $code ) {
         if (!isset($labels[$code])) continue;
@@ -400,10 +432,10 @@ END;
           else echo $oeuvre['publisher'];
         }
         else if("creator" == $code || "author" == $code) {
-          echo $oeuvre['author'];
+          echo $oeuvre['byline'];
         }
         else if("date" == $code || "year" == $code) {
-          echo $oeuvre['year'];
+          echo $oeuvre['date'];
         }
         else if("title" == $code) {
           if ($oeuvre['identifier']) echo '<a href="'.$oeuvre['identifier'].'">'.$oeuvre['title']."</a>";
@@ -415,9 +447,8 @@ END;
         else if("relation" == $code || "downloads" == $code) {
           if ($oeuvre['source']) echo '<a href="'.$oeuvre['source'].'">TEI</a>';
           $sep = ", ";
-          foreach ( self::$formats as $label=>$extension) {
-            if ($label == 'article') continue;
-            echo $sep.'<a href="'.$label.'/'.$oeuvre['code'].$extension.'">'.$label.'</a>';
+          foreach ( $this->conf['formats'] as $type ) {
+            echo $sep.'<a href="'.$type.'/'.$oeuvre['code'].self::$_formats[$type].'">'.$type.'</a>';
           }
         }
         echo "</td>\n";
@@ -510,7 +541,7 @@ END;
   /**
    * Check epub
    */
-  static function epubcheck($glob)
+  static function epubcheck( $glob )
   {
     echo "epubcheck epub/*.epub\n";
     foreach(glob($glob) as $file) {
@@ -550,7 +581,7 @@ usage    : php -f '.basename(__FILE__).' base.sqlite action "dir/*.xml"'."\n\n";
       foreach(glob($glob) as $srcfile) {
         fwrite (STDERR, $srcfile);
         if ("insert" == $action) {
-          $base->insert($srcfile);
+          $base->insert( $srcfile );
         }
 
         // $base->add($file, $setcode);

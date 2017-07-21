@@ -1,10 +1,10 @@
 @charset "utf-8";
 /**
- * © 2002, frederic.glorieux@fictif.org et AJLSM
- * © 2006, frederic.glorieux@fictif.org
- * © 2007, frederic.glorieux@fictif.org et École nationale des chartes
- * © 2012, frederic.glorieux@fictif.org
  * © 2013, frederic.glorieux@fictif.org et LABEX OBVIL
+ * © 2012, frederic.glorieux@fictif.org
+ * © 2007, frederic.glorieux@fictif.org et École nationale des chartes
+ * © 2006, frederic.glorieux@fictif.org
+ * © 2002, frederic.glorieux@fictif.org et AJLSM
  *
  * This program is a free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License
@@ -20,7 +20,6 @@ Neutral HTML
 * Tailles : variations relatives (%, em)
 * Couleurs : impersonnel, tout au plus variations de gris
 * Polices : quelques suggestion de familles
-* Positionnement : rien Doit aussi servir de répertoire de hack.
 
 refs https://github.com/necolas/normalize.css/blob/master/normalize.css
 */
