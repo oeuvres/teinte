@@ -1076,6 +1076,8 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <optional>
           <attribute name="type">
             <choice>
+              <value>diary</value>
+              <value>drama</value>
               <value>legal</value>
               <value>letter</value>
               <value>narrative</value>
@@ -1115,6 +1117,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
               <ref name="quote-p"/>
               <ref name="salute"/>
               <ref name="signed"/>
+              <ref name="quote-sp"/>
             </choice>
           </oneOrMore>
         </choice>
@@ -1185,25 +1188,29 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
     <define name="sp">
       <element name="sp">
         <a:documentation>Théâtre : tirade, tour de parole</a:documentation>
-        <attribute name="who">
-          <data type="IDREFS"/>
-        </attribute>
         <ref name="xml-atts"/>
+        <ref name="who"/>
         <ref name="speaker"/>
         <oneOrMore>
           <choice>
-            <ref name="pb"/>
-            <ref name="p"/>
-            <ref name="lg"/>
-            <ref name="l"/>
-            <ref name="stage"/>
-            <ref name="quote-p"/>
-            <ref name="label"/>
             <ref name="figure"/>
+            <ref name="l"/>
+            <ref name="label"/>
+            <ref name="lg"/>
             <ref name="note"/>
+            <ref name="p"/>
+            <ref name="pb"/>
+            <ref name="q-p"/>
+            <ref name="quote-p"/>
+            <ref name="stage"/>
           </choice>
         </oneOrMore>
       </element>
+    </define>
+    <define name="who">
+      <attribute name="who">
+        <data type="IDREFS"/>
+      </attribute>
     </define>
     <define name="quote-sp">
       <element name="sp">
@@ -1211,14 +1218,19 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <optional>
           <ref name="speaker"/>
         </optional>
+        <optional>
+          <ref name="who"/>
+        </optional>
         <oneOrMore>
           <choice>
-            <ref name="pb"/>
-            <ref name="p"/>
-            <ref name="lg"/>
             <ref name="l"/>
-            <ref name="stage"/>
+            <ref name="lg"/>
             <ref name="note"/>
+            <ref name="p"/>
+            <ref name="pb"/>
+            <ref name="q-p"/>
+            <ref name="quote-p"/>
+            <ref name="stage"/>
           </choice>
         </oneOrMore>
       </element>
@@ -1233,6 +1245,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
             <ref name="note"/>
             <ref name="pb"/>
             <ref name="ref"/>
+            <ref name="stage"/>
           </choice>
         </zeroOrMore>
       </element>
