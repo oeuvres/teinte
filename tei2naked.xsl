@@ -374,6 +374,6 @@ Texte nu, par exemple pièce de théâtre sans didascalies, ou critique sans cit
 
   <!-- For text, give back hand to normal processing, so that it could be overrides (= translate for some device) -->
   <xsl:template match="text()" mode="naked">
-     <xsl:value-of select="translate(., '*[]', concat( ''))"/>
+     <xsl:value-of select="translate(., '*[]', '')"/>
   </xsl:template>
 </xsl:transform>

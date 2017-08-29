@@ -237,7 +237,7 @@ th.num, table.sortable th.num { text-align: right; font-weight: 100; font-size: 
     // return text.substring(0, 10) ;
     text=Sortable.trim(text);
     // num
-    n=parseFloat(text.replace(/,/g, '.').replace(/[  ]/g, ''));
+    n=parseFloat(text.replace(/,/g, '.').replace(/[  x×/]/g, ''));
     // text
     if (isNaN(n)) {
       text=text.toLowerCase().replace(/œ/g, 'oe').replace(/æ/g, 'ae').replace(/ç/g, 'c').replace(/ñ/g, 'n').replace(/[éèêë]/g, 'e').replace(/[áàâä]/g, 'a').replace(/[íìîï]/g, 'i').replace(/úùûü/, 'u').replace(/\W/g, '') ;
