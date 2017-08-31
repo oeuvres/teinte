@@ -850,12 +850,14 @@ résoudre les césures, ou les alternatives éditoriales.
           </xsl:choose>
         </xsl:variable>
         <xsl:choose>
+          <!-- Juste title, no author ?
           <xsl:when test="$author != ''">
             <xsl:copy-of select="$author"/>
             <i>
               <xsl:copy-of select="$title"/>
             </i>
           </xsl:when>
+          -->
           <xsl:when test="$title">
             <xsl:copy-of select="$title"/>
           </xsl:when>
@@ -886,16 +888,6 @@ résoudre les césures, ou les alternatives éditoriales.
       <xsl:when test="tei:dateline">
         <xsl:apply-templates mode="title" select="tei:dateline"/>
       </xsl:when>
-      <!-- Groupement de sections dont le titre est porté par la première ?? -->
-      <!-- ex: body/div0 -->
-      <xsl:when test="count(*) =1 and tei:div">
-        <xsl:apply-templates mode="title" select="*"/>
-      </xsl:when>
-      <!--
-      <xsl:when test="tei:div[1]/tei:head">
-        <xsl:apply-templates select="tei:div[1]" mode="title"/>
-      </xsl:when>
-      -->
       <xsl:when test="@n">
         <xsl:value-of select="@n"/>
       </xsl:when>

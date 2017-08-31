@@ -143,7 +143,17 @@ mais aussi pour le liage dans l'apparat critique. Ce mode fait usage des modes 
 </ul>
   -->
   <xsl:template name="a">
-    <xsl:apply-templates select="." mode="a"/>
+    <xsl:param name="title"/>
+    <xsl:choose>
+      <xsl:when test="$title ">
+        <xsl:apply-templates select="." mode="a">
+          <xsl:with-param name="title" select="$title"/>
+        </xsl:apply-templates>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates select="." mode="a"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   <!-- Par défaut, le mode lien ne produit rien et alerte d'un manque dans la sortie. -->
   <xsl:template match="node()" mode="a">
@@ -178,6 +188,10 @@ mais aussi pour le liage dans l'apparat critique. Ce mode fait usage des modes 
   <!-- section, liées sur leur titres  -->
   <xsl:template match="tei:body | tei:back | tei:castList | tei:div | tei:div0 | tei:div1 | tei:div2 | tei:div3 | tei:div4 | tei:div5 | tei:div6 | tei:div7 | tei:front | tei:group | tei:text" mode="a">
     <xsl:param name="class"/>
+    <!-- titre long -->
+    <xsl:param name="title">
+      <xsl:call-template name="title"/>
+    </xsl:param>
     <a>
       <xsl:attribute name="href">
         <xsl:call-template name="href"/>
@@ -187,10 +201,6 @@ mais aussi pour le liage dans l'apparat critique. Ce mode fait usage des modes 
           <xsl:value-of select="$class"/>
         </xsl:attribute>
       </xsl:if>
-      <!-- titre long -->
-      <xsl:variable name="title">
-        <xsl:call-template name="title"/>
-      </xsl:variable>
       <!-- Spec titre court ? <index> ? -->
       <xsl:copy-of select="$title"/>
       <!-- compte d'items -->
@@ -254,10 +264,29 @@ mais aussi pour le liage dans l'apparat critique. Ce mode fait usage des modes 
     <xsl:param name="less" select="0"/>
     <!-- limit depth -->
     <xsl:param name="depth"/>
-    <xsl:variable name="children" select="tei:group | tei:text | tei:div[tei:head] 
-      | tei:div0[tei:head] | tei:div1[tei:head] | tei:div2[tei:head] | tei:div3[tei:head] | tei:div4[tei:head] | tei:div5[tei:head] | tei:div6[tei:head] | tei:div7[tei:head] "/>
+    <xsl:variable name="children" select="tei:group | tei:text | tei:div 
+      | tei:div0 | tei:div1 | tei:div2 | tei:div3 | tei:div4 | tei:div5 | tei:div6 | tei:div7 "/>
     <xsl:choose>
-      <xsl:when test="count($children) &lt; 2"/>
+      <xsl:when test="count($children) &lt; 1"/>
+      <xsl:when test="count($children) = 1">
+        <li>
+          <xsl:variable name="title">
+            <xsl:call-template name="title"/>
+          </xsl:variable>
+          <xsl:for-each select="$children">
+            <xsl:choose>
+              <xsl:when test="tei:head | @type = 'dedication' ">
+                <xsl:call-template name="a"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:call-template name="a">
+                  <xsl:with-param name="title" select="$title"/>
+                </xsl:call-template>
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:for-each>
+        </li>
+      </xsl:when>
       <!-- simple content ? -->
       <xsl:when test="not(tei:castList | tei:div | tei:div1 | tei:titlePage)">
         <li>
@@ -315,8 +344,11 @@ mais aussi pour le liage dans l'apparat critique. Ce mode fait usage des modes 
     <!-- limit depth -->
     <xsl:param name="depth"/>
     <!-- enfants ? -->
-    <xsl:variable name="children" select="tei:group | tei:text | tei:div[tei:head] 
-      | tei:div0[tei:head] | tei:div1[tei:head] | tei:div2[tei:head] | tei:div3[tei:head] | tei:div4[tei:head] | tei:div5[tei:head] | tei:div6[tei:head] | tei:div7[tei:head] "/>
+    <xsl:variable name="children" select="tei:group | tei:text | tei:div 
+      | tei:div0 | tei:div1 | tei:div2 | tei:div3 | tei:div4 | tei:div5 | tei:div6 | tei:div7 "/>
+    <xsl:comment>
+      <xsl:value-of select="count($children)"/>
+    </xsl:comment>
     <li>
       <xsl:choose>
         <!-- last level -->
@@ -330,11 +362,13 @@ mais aussi pour le liage dans l'apparat critique. Ce mode fait usage des modes 
           <xsl:attribute name="class">more</xsl:attribute>
         </xsl:otherwise>
       </xsl:choose>
-      <xsl:call-template name="a"/>
       <xsl:choose>
         <!-- depth found, stop -->
-        <xsl:when test="$depth = 0"/>
+        <xsl:when test="$depth = 0">
+          <xsl:call-template name="a"/>
+        </xsl:when>
         <xsl:when test="count($children) &gt; 1">
+          <xsl:call-template name="a"/>
           <ol>
             <xsl:if test="$class">
               <xsl:attribute name="class">

@@ -75,18 +75,19 @@ var Sortable = {
     css.type = "text/css";
     css.innerHTML = "\
 table.sortable { font-family: sans-serif; font-size: 12px; line-height: 105%; border: 1px solid; border-color: #CCCCCC; margin-top: 1rem; margin-bottom: 2em; border-collapse: collapse; } \
-table.sortable caption { background-color: #F5F3EB; padding: 2px 1ex 2px 1ex } \
-table.sortable td { vertical-align: top; border-left: #BBD 1px solid; border-right: #BBD 1px solid; padding: 2px 1ex; color: #666; } \
+table.sortable caption { background-color: #F5F3EB; padding: 7px 1ex 5px 1ex; font-size: 16px; border-top: #FFFFFF 1px solid; border-left: #FFFFFF 1px solid; border-right: #FFFFFF 1px solid; color: #666; font-weight: bold; line-height: 1.2em; } \
+table.sortable td { vertical-align: top; border-left: #BBD 1px solid; border-right: #BBD 1px solid; padding: 2px 1ex; color: #333; } \
 table.sortable b { color: black; }\
 table.sortable td.string { text-align: left; } \
 tr.even { background-color: #FFFFFF; } \
 tr.odd { background: -moz-linear-gradient( left, #FDFDFF, #DDE, #EEF ); background: -webkit-linear-gradient( left, #FDFDFF, #DDE, #EEF ); background: -ms-linear-gradient( left, #FDFDFF, #DDE, #EEF ); background: -o-linear-gradient( left, #FDFDFF, #DDE, #EEF ); background: linear-gradient( to right, #FDFDFF, #DDE, #EEF ); } /* #F5F3EB; */ \
 tr.odd td { border-bottom: 1px solid #EEF; border-top: 1px solid #EEF } \
 table.sortable th { text-align: center; vertical-align: middle; text-align: left; padding: 5px 1ex 5px 1ex; background-color: #FFFFFF; border-top: 2px solid #CCCCCC; border-bottom: 1px solid #666; box-shadow: 0 4px 2px -2px #99C; } \
+table.sortable thead th { border-left: #BBD 1px solid; } \
 table.sortable th.head, table.sortable td.head { vertical-align: bottom; } \
 tr.even th, tr.odd th { text-align: right; } \
-table.sortable tr.mod5 td { border-bottom: solid 1px #888; } \
-table.sortable tr.mod10 td { border-bottom: solid 2px #99C; box-shadow: 0 4px 2px -2px #99C; } \
+table.sortable tr.mod5 td { border-bottom: solid 1px rgba( 171, 170, 164, 0.8); } \
+table.sortable tr.mod10 td { border-bottom: solid 2px rgba( 171, 170, 164, 0.5); box-shadow: 0 4px 2px -2px rgba( 171, 170, 164, 0.8); } \
 table.sortable tr:hover { background: #FFFFEE; color: black; } \
 table.sortable tr:hover a { color: black; } \
 table.sortable a { text-decoration: none; } \
@@ -133,7 +134,7 @@ th.num, table.sortable th.num { text-align: right; font-weight: 100; font-size: 
    * so that we can give what we want for table row <tr>, especially a prepared sort key
    * for the requested row. row[key] is a 10 chars string prepared with this.key().
    */
-  sort: function(table, key, reverse) {
+  sort: function( table, key, reverse ) {
     // waited object not found, go out
     if (!table.lines) return;
     // get the first non empty value of the column
@@ -184,13 +185,13 @@ th.num, table.sortable th.num { text-align: right; font-weight: 100; font-size: 
   /**
    * normalize table, add events to top cells, take a copy of the table as an array of string
    */
-  create: function(table) {
+  create: function( table ) {
     // already done
     if (table.sortable) return false;
     // not enough rows, go away
-    if (table.rows.length < 2) return false;
+    if ( table.rows.length < 2 ) return false;
     // if no tHead, create it with first row
-    if (!table.tHead) {
+    if ( !table.tHead ) {
       table.createTHead().appendChild(table.rows[0]);
     }
     firstRow = table.tHead.rows[0];
@@ -209,13 +210,15 @@ th.num, table.sortable th.num { text-align: right; font-weight: 100; font-size: 
       for (i=1; i < table.rows.length; i++) tbody.appendChild(table.rows[i]);
     }
     else tbody = table.tBodies[0];
+
+
     var row, s;
     table.lines=new Array();
-    for (i=tbody.rows.length-1; i >=0; i--) {
+    for ( i = tbody.rows.length-1; i >=0; i-- ) {
       row = tbody.rows[i];
       Sortable.paint(row, i+1);
       // get the <tr> html as a String object
-      s=new String(row.outerHTML || new XMLSerializer().serializeToString(row).replace(' xmlns="http://www.w3.org/1999/xhtml"', ''));
+      s=new String( row.outerHTML || new XMLSerializer().serializeToString(row).replace( ' xmlns="http://www.w3.org/1999/xhtml"', '' ) );
       for (k=row.cells.length -1; k>-1; k--) s['key'+k]=Sortable.key(row.cells[k]);
       table.lines[i]=s;
     }
