@@ -344,11 +344,8 @@ mais aussi pour le liage dans l'apparat critique. Ce mode fait usage des modes 
     <!-- limit depth -->
     <xsl:param name="depth"/>
     <!-- enfants ? -->
-    <xsl:variable name="children" select="tei:group | tei:text | tei:div 
-      | tei:div0 | tei:div1 | tei:div2 | tei:div3 | tei:div4 | tei:div5 | tei:div6 | tei:div7 "/>
-    <xsl:comment>
-      <xsl:value-of select="count($children)"/>
-    </xsl:comment>
+    <xsl:variable name="children" select="tei:group | tei:text | tei:div[tei:head] 
+      | tei:div0[tei:head] | tei:div1[tei:head] | tei:div2[tei:head] | tei:div3[tei:head] | tei:div4[tei:head] | tei:div5[tei:head] | tei:div6[tei:head] | tei:div7[tei:head] "/>
     <li>
       <xsl:choose>
         <!-- last level -->
@@ -363,11 +360,7 @@ mais aussi pour le liage dans l'apparat critique. Ce mode fait usage des modes 
         </xsl:otherwise>
       </xsl:choose>
       <xsl:choose>
-        <!-- depth found, stop -->
-        <xsl:when test="$depth = 0">
-          <xsl:call-template name="a"/>
-        </xsl:when>
-        <xsl:when test="count($children) &gt; 1">
+        <xsl:when test="count($children) &gt; 0">
           <xsl:call-template name="a"/>
           <ol>
             <xsl:if test="$class">
@@ -390,6 +383,9 @@ mais aussi pour le liage dans l'apparat critique. Ce mode fait usage des modes 
             </xsl:for-each>
           </ol>
         </xsl:when>
+        <xsl:otherwise>
+          <xsl:call-template name="a"/>
+        </xsl:otherwise>
       </xsl:choose>
     </li>
     <!-- ??
