@@ -301,7 +301,7 @@ END;
   /**
    * Explore some folders
    */
-  public function glob( $glob=null, $force=false )
+  public function glob( $glob=null, $force=false, $props=null )
   {
     $this->_cods = array(); // store the codes of each file in the srclist to delete some files
     if ( !$glob ) $glob = $this->conf['srcglob'];
