@@ -1135,6 +1135,12 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </optional>
         <!-- Maybe in italic and not in quotes -->
         <ref name="rendering.block"/>
+        <optional>
+          <choice>
+            <ref name="bibl"/>
+            <ref name="persName"/>
+          </choice>
+        </optional>
         <choice>
           <!-- Attention au déterminisme xsd pour <figure>, ne pas autoriser note dans note, ainsi que saut de page (ex: note de fin, ou note sur plus d'une page) -->
           <oneOrMore>
@@ -1169,7 +1175,10 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
           </oneOrMore>
         </choice>
         <optional>
-          <ref name="bibl"/>
+          <choice>
+            <ref name="bibl"/>
+            <ref name="persName"/>
+          </choice>
         </optional>
       </element>
     </define>
@@ -2412,6 +2421,15 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
       <optional>
         <ref name="cert-att"/>
       </optional>
+      <optional>
+        <ref name="precision-att"/>
+      </optional>
+      <optional>
+        <ref name="unit-att"/>
+      </optional>
+      <optional>
+        <ref name="quantity-att"/>
+      </optional>
     </define>
     <define name="term">
       <element name="term">
@@ -2707,6 +2725,21 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
     <define name="cert-att">
       <attribute name="cert">
         <a:documentation>Degré de certitude d'une information</a:documentation>
+      </attribute>
+    </define>
+    <define name="precision-att">
+      <attribute name="precision">
+        <a:documentation>Degré de précision d'une information</a:documentation>
+      </attribute>
+    </define>
+    <define name="unit-att">
+      <attribute name="unit">
+        <a:documentation>Unité d'une information</a:documentation>
+      </attribute>
+    </define>
+    <define name="quantity-att">
+      <attribute name="quantity">
+        <a:documentation>Quantité en chiffre décimaux se rapportant à une information</a:documentation>
       </attribute>
     </define>
     <define name="evidence-att">

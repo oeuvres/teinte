@@ -208,7 +208,7 @@ a.pb:hover { background-color: #FFFFFF; }
 .lb { color: grey; font-size: 11px; }
 .l-n { position:absolute; margin-left: -3em; margin-left: -2.5rem; }
 a.ed, a.pb {}
-a.facs { float: left; margin-right: 0; margin-left: -4.7em; }
+a.facs { float: left; margin-right: 0; margin-left: -1em; z-index: 2; }
 small.ed { color: grey; font-size: 11px; }
 .choice { background-color: #EEEEEE }
 h1.collection, h1.collection-sub { font-weight: normal; padding: 0; margin: 0; }
