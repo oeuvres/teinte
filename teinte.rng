@@ -416,6 +416,9 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
       <optional>
         <ref name="base-att"/>
       </optional>
+      <optional>
+        <attribute name="subtype"/>
+      </optional>
       <ref name="rendering.block"/>
       <ref name="xml-atts"/>
     </define>
@@ -675,6 +678,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <oneOrMore>
           <choice>
             <text/>
+            <ref name="date"/>
             <ref name="emph"/>
             <ref name="hi"/>
             <ref name="lb"/>
@@ -961,7 +965,16 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
             </choice>
           </attribute>
         </optional>
-        <ref name="flow"/>
+        <oneOrMore>
+          <choice>
+            <text/>
+            <ref name="typo"/>
+            <ref name="point"/>
+            <element name="caesura">
+              <empty/>
+            </element>
+          </choice>
+        </oneOrMore>
       </element>
     </define>
     <define name="label">
