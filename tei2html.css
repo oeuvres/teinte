@@ -143,10 +143,6 @@ sup, sub { font-size: 75%; line-height: 0; position: relative; vertical-align: b
 sup { top: -0.5em; }
 sub { bottom: -0.25em; }
 svg:not(:root) { overflow: hidden; }
-table a { border: none; }
-table a:hover { border-width: 0; }
-thead { background-color: #E2DED0; }
-tfoot { border-top: solid 1px #000000; }
 
 /** Forms */
 .but:hover { background-color: white; color: #000; text-decoration: none !important; }
@@ -432,9 +428,16 @@ ul.none, ol.none, ul.simple, ol.simple { list-style-type: none; }
 .upper-roman > li { margin-top: 1em; margin-bottom: 1em; }
 
 /* Tables */
+table a { border: none; }
+table a:hover { border-width: 0; }
+thead { background-color: #E2DED0; }
+tfoot { border-top: solid 1px #000000; }
+
 table.data, table.table, table.search { font-family: sans-serif; border: 1px solid; border-color: #CCCCCC; margin-top: 1em; margin-bottom: 2em; border-collapse: collapse; }
+table.data { font-size: 14px; line-height: 110%; }
 caption { font-size: 1.1em; color: #000000; font-weight: bold; text-align: center; padding: 4px 2px 2px 2px; }
 th { padding: 1px 1ex; }
+td.data p { text-align: left; text-indent: 0; }
 th.border, td.border { border: #CCCCCC 1px solid !important; padding: 2px 1ex; }
 td.left, th.left { text-align: left !important; }
 td.center, th.center { text-align: center !important; }

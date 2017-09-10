@@ -80,7 +80,7 @@ table.sortable td { vertical-align: top; border-left: #BBD 1px solid; border-rig
 table.sortable b { color: black; }\
 table.sortable td.string { text-align: left; } \
 tr.even { background-color: #FFFFFF; } \
-tr.odd { background: -moz-linear-gradient( left, #FDFDFF, #DDE, #EEF ); background: -webkit-linear-gradient( left, #FDFDFF, #DDE, #EEF ); background: -ms-linear-gradient( left, #FDFDFF, #DDE, #EEF ); background: -o-linear-gradient( left, #FDFDFF, #DDE, #EEF ); background: linear-gradient( to right, #FDFDFF, #DDE, #EEF ); } /* #F5F3EB; */ \
+tr.odd { background: -moz-linear-gradient( left, #EEE, #FFF 30%, #F5F3EB ); background: -webkit-linear-gradient( left, #EEE, #FFF 30%, #F5F3EB ); background: -ms-linear-gradient( left, #EEE, #FFF 30%, #F5F3EB ); background: -o-linear-gradient( left, #EEE, #FFF 30%, #F5F3EB ); background: linear-gradient( to right, #EEE, #FFF 30%, #F5F3EB ); } /* #F5F3EB; */ \
 tr.odd td { border-bottom: 1px solid #EEF; border-top: 1px solid #EEF } \
 table.sortable th { text-align: center; vertical-align: middle; text-align: left; padding: 5px 1ex 5px 1ex; background-color: #FFFFFF; border-top: 2px solid #CCCCCC; border-bottom: 1px solid #666; box-shadow: 0 4px 2px -2px #99C; } \
 table.sortable thead th { border-left: #BBD 1px solid; } \

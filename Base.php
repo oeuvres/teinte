@@ -165,9 +165,10 @@ class Teinte_Base
 
   function biblio( $cols=array("no", "creator", "date", "title", "occs"), $search=false ) {
 
-
+    $order = $cols;
+    if ( $order[0] == "no" ) array_shift( $order );
     if ( $search ) $sql = "SELECT * FROM found ORDER BY occs DESC, code";
-    else if ( in_array( "creator", $cols ) || in_array( "author", $cols ) || in_array( "byline", $cols ) )  $sql = "SELECT * FROM doc ORDER BY byline, date, code";
+    else if ( $order[0] == "creator" || $order[0] == "author" || $order[0] == "byline" )  $sql = "SELECT * FROM doc ORDER BY byline, date, code";
     else $sql = "SELECT * FROM doc ORDER BY date, code";
     $labels = array(
       "author" => "Auteur",
