@@ -91,8 +91,7 @@ END;
   /** valeur par défaut de la configuration */
   public $conf = array(
     "destdir" => "",
-    "formats" => "site, epub, kindle",
-    "cmdup" => "git pull 2>&1",
+    "formats" => "article, toc, epub, kindle",
     "logger" => "php://output",
     "logfile" => null,
   );
