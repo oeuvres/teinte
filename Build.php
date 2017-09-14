@@ -567,8 +567,9 @@ END;
     $usage = "\nusage    : php -f ".basename(__FILE__).' conf.php
 usage    : php -f '.basename(__FILE__).' base.sqlite action "dir/*.xml"'."\n\n";
     array_shift($_SERVER['argv']); // shift first arg, the script filepath
-    if ( count($_SERVER['argv']) == 1 ) {
-      $path = $_SERVER['argv'][0];
+    if ( count($_SERVER['argv']) < 2 ) {
+      if ( count($_SERVER['argv']) ) $path = $_SERVER['argv'][0];
+      else $path = "conf.php";
       if ( !file_exists( $path ) ) exit( $path+" — ce fichier n’existe pas." );
       $conf = include( $path );
       $build = new Teinte_Build( $conf );
