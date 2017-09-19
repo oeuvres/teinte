@@ -380,7 +380,7 @@ class Teinte_Doc
          // .*? ungreedy
          '@<!.*?>@s', // exclude doctype and comments
          '@<\?.*?\?>@s', // exclude PI
-         '@<(head|header|footer|nav|aside|noindex)[ >].*?</\1>@s', // suppress nav
+         '@<(head|header|footer|nav|noindex)[ >].*?</\1>@s', // suppress nav, let <aside> for notes
          '@<(small|tt|a)[^>]*>[0-9]+</\1>@' ,// line or note of number
          '@<a class="noteref".*?</a>@', // suppress footnote call
          '@<[^>]+>@' // wash tags
