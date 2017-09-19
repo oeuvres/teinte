@@ -1921,7 +1921,7 @@ Tables
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-  <xsl:template match="tei:author | tei:biblScope | tei:collation | tei:collection | tei:dim | tei:docAuthor | tei:editor | tei:edition | tei:extent | tei:funder | tei:publisher | tei:stamp | tei:biblFull/tei:titleStmt/tei:title">
+  <xsl:template match="tei:biblScope | tei:collation | tei:collection | tei:dim | tei:docAuthor | tei:editor | tei:edition | tei:extent | tei:funder | tei:publisher | tei:stamp | tei:biblFull/tei:titleStmt/tei:title">
     <xsl:variable name="element">
       <xsl:choose>
         <xsl:when test="parent::tei:titlePage">p</xsl:when>
@@ -2105,6 +2105,9 @@ Elements block or inline level
   <xsl:template match="tei:bibl | tei:gloss | tei:label | tei:q | tei:quote | tei:said | tei:stage">
     <xsl:variable name="mixed" select="../text()[normalize-space(.) != '']"/>
     <xsl:choose>
+      <xsl:when test="normalize-space(.) = ''">
+        <xsl:apply-templates/>
+      </xsl:when>
       <!-- inside mixed content, or line formatted text (? or tei:lb or ../tei:lb), should be inline -->
       <xsl:when test="$mixed or parent::tei:p or parent::tei:s  or parent::tei:label">
         <xsl:call-template name="span">
@@ -2196,8 +2199,25 @@ Elements block or inline level
   <!-- Default, content from <index> is supposed to not be displayed -->
   <xsl:template match="tei:index"/>
   <!-- Termes with possible normal form -->
-  <xsl:template match="tei:addName | tei:affiliation | tei:authority | tei:country | tei:foreign | tei:forename | tei:genName | tei:geogFeat | tei:geogName | tei:name | tei:origPlace | tei:orgName | tei:persName | tei:placeName | tei:repository | tei:roleName | tei:rs | tei:settlement | tei:surname">
+  <xsl:template match="tei:addName | tei:affiliation | tei:author | tei:authority | tei:country | tei:foreign | tei:forename | tei:genName | tei:geogFeat | tei:geogName | tei:name | tei:origPlace | tei:orgName | tei:persName | tei:placeName | tei:repository | tei:roleName | tei:rs | tei:settlement | tei:surname">
     <xsl:choose>
+      <xsl:when test="@rend = 'margin'">
+        <aside class="marginalia">
+          <xsl:if test=". = '' and @key">
+            <xsl:if test="@role != ''">
+              <xsl:call-template name="message">
+                <xsl:with-param name="id" select="@role"/>
+              </xsl:call-template>
+              <xsl:text> : </xsl:text>
+            </xsl:if>
+            <xsl:value-of select="@key"/>
+          </xsl:if>
+          <xsl:apply-templates/>
+        </aside>
+      </xsl:when>
+      <xsl:when test="normalize-space(.) = ''">
+        <xsl:apply-templates/>
+      </xsl:when>
       <xsl:when test="@ref or @xml:base">
         <a>
           <!-- linking policy will be resolved from the "linking" template, matched by @ref attribute -->

@@ -232,6 +232,10 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
     <rdfs:label xml:lang="fr">Table des matières</rdfs:label>
     <rdfs:label xml:lang="en">Contents</rdfs:label>
   </rdf:Property>
+  <rdf:Property xml:id="translator">
+    <rdfs:label xml:lang="fr">Traducteur</rdfs:label>
+    <rdfs:label xml:lang="en">Translator</rdfs:label>
+  </rdf:Property>
   <rdf:Property xml:id="vol">
     <rdfs:label xml:lang="fr">volume</rdfs:label>
   </rdf:Property>

@@ -5,6 +5,9 @@
 // cli usage
 Teinte_Build::deps();
 set_time_limit(-1);
+error_reporting(-1);
+set_time_limit(0);
+header( 'content-type: text/html; charset=utf-8' );
 
 
 if (realpath($_SERVER['SCRIPT_FILENAME']) != realpath(__FILE__)) {
@@ -309,7 +312,6 @@ END;
     if ( !is_array( $glob ) ) $glob = array( $glob );
     foreach ( $glob as $path ) {
       foreach( glob( $path ) as $srcfile) {
-        // echo "\n".$srcfile." ".$force;
         $this->_file( $srcfile, $force, $props );
       }
     }
