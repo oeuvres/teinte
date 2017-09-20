@@ -7,17 +7,8 @@
   <div xmlns="http://www.w3.org/1999/xhtml">
     <ul class="auteurs">
       <li>[FG] <a href="#" onmouseover="this.href='mailto'+'\x3A'+'glorieux'+'\x40'+'fictif.org'">Frédéric Glorieux</a> (2013-…) création initiale et structuration</li>
-      <li>[VJ] <a href="#" onmouseover="this.href='mailto'+'\x3A'+'jolivet'+'\x40'+'algone.net'">Vincent Jolivet</a> (2013-2014) contributions</li>
     </ul>
-    <p>Ce schéma est une restriction de la recommandation <a href="http://www.tei-c.org/release/doc/tei-p5-doc/en/html/REF-ELEMENTS.html">TEI P5</a> adaptée à la structuration de livres imprimés. Cette simplification est un socle qui n'interdit pas les extensions mais au contraire précise le générique pour mieux repérer le spécifique. Ce profil TEI peut être comparé aux recommandations <a href="http://www.tei-c.org/Vault/P5//2.3.0/doc/tei-p5-exemplars/html/tei_tite.doc.html">TEI Tite</a> et <a href="http://www.tei-c.org/SIG/Libraries/teiinlibraries/main-driver.html">Best Practices for TEI in Libraries</a>, conçues pour faire référence dans les projets de numérisation de masse. Ce profil profite de l'expérience acquise et la perfectionne en insistant sur quelques autres aspects : explications en français, exemples tirés de la tradition éditoriale francophone, numérisation avec un logiciel d’OCR par du personnel non entraîné, utilisation du traitement de textes. Ce profil a été conçu en référence continuelle à <a href="http://www.w3.org/TR/html5/">HTML 5</a>, afin d'au moins garantir la conservation de la sémantique html en TEI. Il permet d'encoder tout ce que peut produire un traitement de textes, notamment issu de la transformation <a href="https://github.com/oeuvres/Odette">Odette</a>. Il vise à produire au moins une édition électronique de qualité (ePub avec table des matières, site en ligne), tout en permettant des enrichissements sémantiques ultérieurs. </p>
-    <ul>
-      <li>
-        <a href="teibook.rng">Le schéma</a>
-      </li>
-      <li>
-        <a href="teibook.xml">Document de test (dont sont tirés les exemples)</a>
-      </li>
-    </ul>
+    <p>Ce <a href="teinte.rng">schéma</a> est une restriction de la recommandation <a href="http://www.tei-c.org/release/doc/tei-p5-doc/en/html/REF-ELEMENTS.html">TEI P5</a> adaptée à la structuration de livres imprimés. Cette simplification est un socle qui n'interdit pas les extensions mais au contraire précise le générique pour mieux repérer le spécifique. Ce profil TEI peut être comparé aux recommandations <a href="http://www.tei-c.org/Vault/P5//2.3.0/doc/tei-p5-exemplars/html/tei_tite.doc.html">TEI Tite</a> et <a href="http://www.tei-c.org/SIG/Libraries/teiinlibraries/main-driver.html">Best Practices for TEI in Libraries</a>, conçues pour faire référence dans les projets de numérisation de masse. Ce profil profite de l'expérience acquise et la perfectionne en insistant sur quelques autres aspects : explications en français, exemples tirés de la tradition éditoriale francophone, numérisation avec un logiciel d’OCR par du personnel non entraîné, utilisation du traitement de textes. Ce profil a été conçu en référence continuelle à <a href="http://www.w3.org/TR/html5/">HTML 5</a>, afin d'au moins garantir la conservation de la sémantique html en TEI. Il permet d'encoder tout ce que peut produire un traitement de textes, notamment issu de la transformation <a href="https://github.com/oeuvres/Odette">Odette</a>. Il vise à produire au moins une édition électronique de qualité (ePub avec table des matières, site en ligne), tout en permettant des enrichissements sémantiques ultérieurs. </p>
     <p>Plan de ce document</p>
     <ul>
       <li>
@@ -962,6 +953,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
             <choice>
               <ref name="rend.font"/>
               <value>refrain</value>
+              <value>indent</value>
             </choice>
           </attribute>
         </optional>
