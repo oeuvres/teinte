@@ -1,8 +1,87 @@
-# Teinte
+# Utiliser Teinte pour publier ligne
 
-Teinte should give all tools to work XML/TEI files efficiently (validation, transformation).
+Teinte peut être utilisé pour la publication en ligne de fichiers XML-TEI. Le principe est de générer à l’avance différents formats (sous forme de fichiers), avec une petite base de données SQLite pour les métadonnées et la recherche plein texte. Les éléments sont agrégés par une simple page PHP, sans contraintes de *framework*.
 
-## Local install for TEI work
+Sur un serveur, une installation pour plusieurs corpus peut se présenter de cette manière (où corpus est le code d’un corpus XML-TEI).
+
+* www/
+  * Livrable/ (pour epub, lecture seule, git clone https://github.com/oeuvres/Livrable.git)
+  * Teinte/ (publication web, lecture seule, git clone https://github.com/oeuvres/Teinte)
+  * corpus/ (le corpus, accessible en écriture au serveur apache, ex: https://github.com/OBVIL/mythographie)
+    * .htaccess (redirections Apache pour URL propres)
+    * _conf.php (source du fichier de configuration)
+    * conf.php (fichier de configuration modifié, avec le mot de passe)
+    * index.php (page de publication agrégeant les éléments textuels)
+    * pull.php (page d’administration)
+    * (dossiers générés par pull.php et agrégés par index.php)
+    * article/ (les textes affichés)
+    * toc/ (dossier généré, les tables des matières)
+    * epub/ (livres électroniques ouvert, epub)
+    * kindle/ (livres électroniques kindle, mobi)
+    * xml/ (sources XML/TEI des textes)
+   
+# Installation web avec accès SSH
+   
+```sh
+# Dans le dossier web de votre serveur hhtp.
+# Créer à l’avance le dossier de destination avec les bons droits
+mkdir corpus
+# assurez-vous que le dossier appartient à un groupe où vous êtes
+# donnez-vous les droits d’y écrire
+# l’option +s permet de propager le nom du groupe dans le dossier
+# plus facile à faire maintenant qu’après
+chmod g+sw corpus
+# Aller chercher les sources de cet entrepôt
+git clone https://github.com/obvil/corpus
+# rentrer dans le dossier
+cd corpus
+# donner des droits d’écriture à votre serveur sur ce dossier, ici, l’utilisateur apache
+# . permet de toucher les fichiers cachés, et notamment, ce qui est dans .git
+sudo chown -R apache .
+# copier la conf par défaut 
+cp _conf.php conf.php
+# modifier le mot de passe 
+vi conf.php
+```
+
+Dans la ligne<br/>
+"pass" => ""<br/>
+remplacer null par une chaîne entre guillemets<br/>
+"pass" => "MonMotDePasseQueJeNeRetiensJamais"
+
+Aller voir votre site dans un navigateur, ex:
+<br/>http://obvil.paris-sorbonne.fr/corpus/corpus
+<br/>Si aucun texte apparaît, c’est normal, vous êtes invité à visiter la page d’administration
+<br/>http://obvil.paris-sorbonne.fr/corpus/corpus/pull.php
+
+
+## Erreurs rencontrées
+
+Dans l’interface web de mise à jour
+
+error: cannot open .git/FETCH_HEAD: Permission denied
+<br/>Problème de droits, Apache ne peut pas écrire dans le dossier git
+<br/>solution, dans le dossier :
+<br/>sudo chown -R apache .
+
+article/ impossible à créer.
+<br/>Problème de droits, Apache ne peut pas écrire dans le dossier git
+<br/>solution, dans le dossier
+<br/>sudo chown -R apache .
+
+```
+From https://github.com/OBVIL/corpus
+   3d04adf..be29dad  gh-pages   -> origin/gh-pages
+error: Your local changes to the following files would be overwritten by merge:
+	.htaccess
+Please, commit your changes or stash them before you can merge.
+Aborting
+Updating 3d04adf..be29dad
+```
+Vous avez changé vous même un fichier sur votre serveur, par FTP ou SSH, il n’est plus synchrone avec le Git, le supprimer du serveur et l’établir comme vous le souhaitez dans le git.
+
+
+# Utiliser Teinte pour travailler sur son poste
 
 Get last version of the Teinte folder
 <br/>`oeuvres$ git clone https://github.com/oeuvres/Teinte.git`
