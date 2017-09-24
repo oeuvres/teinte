@@ -25,7 +25,6 @@ refs https://github.com/necolas/normalize.css/blob/master/normalize.css
 */
 /* Reset CSS */
 html { -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; }
-article, aside, details, figcaption, figure, footer, header, hgroup, main, menu, nav, section, summary { display: block; }
 audio, canvas, progress, video { display: inline-block; vertical-align: baseline; }
 audio:not([controls]) { display: none; height: 0; }
 [hidden], template { display: none; }
@@ -40,7 +39,7 @@ body { font: 16px/24px Georgia, "Bitstream Vera Serif", Times, serif; }
 .serif, .subtitle, textarea.readonly, .dialogue li, .titleStmt h1 { font-family: Georgia, "Bitstream Vera Serif", Times, serif; }
 .cb, .pb, .ed, small.l, small.l-n { font-family: "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif; }
 .sans-serif, .availability, figcaption, li.bibl, div.bibl, .editionStmt, .footnotes, figure .label, .marginalia, .note, #noterefover, .publicationStmt, .sourceDesc, .speaker, .stage { font-size: 14px;  font-family: "Lucida Grande", Verdana, sans-serif; }
-.interface, aside, .breadcrumb, .but, caption, .cb, form label, nav, .pb, .tabs { font-family: "Droid Sans", "Lucida Grande", Verdana, sans-serif; font-size: 12px; line-height: 1.1em; }
+.interface, aside, .breadcrumb, .but, caption, .cb, details, form label, nav, .pb, .tabs { font-family: "Droid Sans", "Lucida Grande", Verdana, sans-serif; font-size: 13px; line-height: 1.1em; }
 tt, pre { font-family: "Andale Mono", "Lucida Console", Courier, "MS Courier New", monospace; }
 .dingbat { font-family: "FreeSans", "DejaVu Sans", "Lucida Sans Unicode", "Arial Unicode MS", sans-serif }
 blockquote, dd , p.p, .argument, .availability, div.bibl, li.bibl, .dialogue li , .justify, .note, div.stage { text-align: justify; }
@@ -72,10 +71,10 @@ blockquote p { text-indent: 2em; }
 cite { font-style: normal; }
 code { font-size: 13px; }
 dd { text-align: justify }
-details { display: block; }
-details > * { display: none; }
-details.minus > * { display: inherit; }
-details summary { display: inherit; }
+details { font-size: 14px; margin: 1em 0 }
+details[open] summary { margin-bottom: 1ex; }
+summary { font-weight: bold; cursor: pointer; }
+summary i { font-weight: 100; font-size: 12px; }
 dfn { font-style: normal; }
 dl.dl dt { font-weight: 900; }
 dl.dl dd { text-align: justify; color: #333; margin-top: 0em; margin-bottom: 0.5em; }
@@ -203,7 +202,7 @@ ul.castList { list-style: none; }
 .cb, .pb, .ed { background-color: #FFFFFF; padding: 1px 1ex 1px 0; position: absolute; left: 0.3rem; /* float: right; problèmes dans les tableaux */ }
 a.pb:hover { background-color: #FFFFFF; }
 .lb { color: grey; font-size: 11px; }
-.l-n { position:absolute; margin-left: -3em; margin-left: -2.5rem; }
+.l-n { position:absolute; left: 0.7rem; background-color: rgba(255, 255, 255, 0.7); }
 a.ed, a.pb {}
 a.facs { float: left; margin-right: 0; margin-left: -1em; z-index: 2; }
 small.ed { color: grey; font-size: 11px; }
@@ -241,6 +240,7 @@ hr.footnotes { width: 15%; text-align: left; text-align: -moz-left; margin-right
 div.l dfn.gloss { display: block; position: absolute; padding: 5px 5px 5px 5px; border-radius: 10px; line-height: 110%; text-align: left; float: right; margin-left: 25em; width: 250px; font-size: small; background-color: #F3F3F3; text-indent: 0; }
 p dfn.gloss , div.gloss { padding: 5px 5px 5px 5px; border-radius: 10px; line-height: 110%; text-align: left; font-size: small; background-color: #F3F3F3; text-indent: 0; }
 div.l { text-align: left; text-indent: -2rem; padding-left: 2rem; }
+.l.indent { text-indent: -1rem; }
 .l:target { background-color: #FFFFEE; border-top: 1px solid #E2DED0; }
 .l:target:before { content: "☞"; position: absolute; margin: 0 1ex 0 -7.5ex; font-size: 16px; }
 .l1 { padding-left: 13rem; } /* metric */
@@ -581,10 +581,6 @@ pre.xml .ns { color: #000080; font-weight: 100; }
 dt { font-weight: bold; }
 dl.xml { margin: 0; padding: 0; }
 dl.xml dt { font-weight: normal; }
-details.source { margin-left: 1em; float: right; max-width: 60%; background: #FFFFFF; }
-details.source summary { float: right; display: inline; text-align: right; }
-details > * { display: none; }
-details.minus > * { display: block; }
 
 @media print {
   body , #article { margin: 0; padding: 0; }
@@ -598,6 +594,7 @@ details.minus > * { display: block; }
   blockquote { margin-left: 1rem; margin-right: 0; }
   ul, ol { padding-left: 1rem; margin-left: 0;}
   div.l { text-indent: -1rem; padding-left: 1rem; }
+  .l.indent { text-indent: 0; }
   li { padding-left: 0; margin-left: 0; }
   p , .dialogue li , h3, h4 { text-indent: 2em; text-indent: 2rem; }
   h2 { line-height: 1.2em; }
