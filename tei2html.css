@@ -202,7 +202,7 @@ ul.castList { list-style: none; }
 .cb, .pb, .ed { background-color: #FFFFFF; padding: 1px 1ex 1px 0; position: absolute; left: 0.3rem; /* float: right; problèmes dans les tableaux */ }
 a.pb:hover { background-color: #FFFFFF; }
 .lb { color: grey; font-size: 11px; }
-.l-n { position:absolute; left: 0.7rem; background-color: rgba(255, 255, 255, 0.7); }
+.l-n { position:absolute; left: 0.7rem; color: rgba(128, 128, 128, 0.5); font-size: 10px; }
 a.ed, a.pb {}
 a.facs { float: left; margin-right: 0; margin-left: -1em; z-index: 2; }
 small.ed { color: grey; font-size: 11px; }
@@ -488,7 +488,7 @@ figcaption.less:before { float: left; margin-left: -2em; content: '◿'; } /*  *
 #main, #aside { zoom:1; clear:both; position: relative; }
 #main {background-color: #FFFFFF; }
 #center, #cont, #contenu, #main, #article { min-height: 100%; }
-#article {  }
+#article { position: relative; }
 
 /** specific wide screen, not for print or phone */
 @media screen {
