@@ -125,7 +125,7 @@ lb:first-child { content:"(l. "attr(n)")  "; color:#666666; }
 pb[n]:after { content: " [p. " attr(n) "] "; background:#CCCCCC; }
 pb[xml|id]:after { content: " [" attr(xml|id) "] "; background:#CCCCCC; }
 note:before { counter-increment:note; content: "NOTE (" attr(xml|id)attr(n) ") : "; color:#000000; }
-note { font-family:verdana; display:inline; font-size:12px; font-style:normal; color:#000000; padding-left:5px; padding-right:5px; background-color: #efefef; display: block; border: 1px solid blue; }
+note { font-family:verdana; display:inline; font-size:12px; font-style:normal; color:#000000; padding: 5px; margin: 0.5rem 0; background-color: #efefef; display: block; float: right; }
 note[place="left"] { float: left; }
 note[place="right"] { float: right; }
 note[place="margin"] { margin-left: 10em; background-color: #FFFFEE;  }
