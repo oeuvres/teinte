@@ -962,6 +962,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
             <text/>
             <ref name="typo"/>
             <ref name="point"/>
+            <ref name="function"/>
             <element name="caesura">
               <empty/>
             </element>
