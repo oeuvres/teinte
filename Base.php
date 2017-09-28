@@ -73,6 +73,7 @@ class Teinte_Base
     if ( $search ) {
       $this->search();
       $this->search = true;
+      $lastsearch = trim( $lastsearch, '&' );
       setcookie ( "lastsearch", $lastsearch );
     }
   }
