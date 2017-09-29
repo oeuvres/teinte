@@ -60,7 +60,7 @@ find . -type d -exec chmod g+s {} \;
 # Attribuer récursivement tous les fichiers à ce groupe
 chown -R :apache .
 # Donner le droit d’écrire au groupe
-chown -R g+w .
+chmod -R g+w .
 ```
 
 ## Erreurs possibles
