@@ -56,7 +56,7 @@ absence de déclaration de DTD.
   <xsl:param name="root" select="$html"/>
   <xsl:key name="split" match="/" use="'root'"/>
   <!-- key for notes by page, keep the tricky @use expression in this order, when there are other parallel pages number -->
-  <xsl:key name="note-pb" match="tei:note" use="generate-id(  preceding::*[self::tei:pb[not(@ed)][@n] ][1] ) "/>
+  <xsl:key name="note-pb" match="tei:note" use="generate-id(  preceding::*[self::tei:pb[not(@ed)][@n] ][1]|/ ) "/>
   <!-- test if there are code examples to js prettyprint -->
   <xsl:key name="prettify" match="eg:egXML|tei:tag" use="1"/>
   <!-- mainly in verse -->
@@ -2288,9 +2288,10 @@ Call that in
       </xsl:for-each>
       -->
       <xsl:choose>
+        <!-- Trop long ? $pb -->
         <xsl:when test=" $pb ">
-          <!-- first notes before the first pb, slow ? -->
-          <xsl:variable name="notes1" select=".//tei:note[following::tei:pb[generate-id(.) = generate-id($pb[1])]]"/>
+          <!-- first notes before the first pb, a preceding:: axis was very slow  -->
+          <xsl:variable name="notes1" select="key('note-pb', generate-id(/))"/>
           <xsl:if test="$notes1">
             <div class="page">
               <xsl:for-each select="$notes1[@resp = 'author'][not(@place = 'margin')]">
