@@ -165,6 +165,9 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
     </define>
     <define name="group">
       <element name="group">
+        <optional>
+          <ref name="head"/>
+        </optional>
         <choice>
           <oneOrMore>
             <ref name="text"/>
@@ -950,11 +953,12 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </optional>
         <optional>
           <attribute name="rend">
-            <choice>
-              <ref name="rend.font"/>
-              <value>refrain</value>
+          <choice>
+             <ref name="rend.font"/>
+              <ref name="rend.align"/>
+             <value>refrain</value>
               <value>indent</value>
-            </choice>
+           </choice>
           </attribute>
         </optional>
         <oneOrMore>
@@ -2100,7 +2104,9 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
               <ref name="note"/>
               <ref name="num"/>
               <ref name="pb"/>
+              <ref name="lb"/>
               <ref name="ref"/>
+              <ref name="space"/>
             </choice>
           </oneOrMore>
           <oneOrMore>
