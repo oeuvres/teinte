@@ -1039,6 +1039,9 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </optional>
         <ref name="rendering.block"/>
         <ref name="xml-atts"/>
+        <zeroOrMore>
+          <ref name="head"/>
+        </zeroOrMore>
         <oneOrMore>
           <choice>
             <ref name="ab"/>
