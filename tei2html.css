@@ -299,7 +299,7 @@ div.part-Y { text-indent: 3em; }
 div.salute, p.salute { margin: 1em 0 1em 4em; text-indent: 0em; font-style: italic; text-align: right; }
 .letter .salute { text-align: left; font-style: inherit; }
 .signed { margin-top: 2em; margin-bottom: 2em; text-indent: 0; text-align: right; }
-.sp p { text-indent: 0; line-height: 1.2em; margin-bottom: 0.6ex; }
+.sp p { text-indent: 0; margin-bottom: 0.6ex; }
 .sp blockquote { margin-left: 2rem; font-style: italic; }
 .sp { orphans: 2; widows: 2; }
 div.speaker, p.speaker { margin-top: 1em; margin-bottom: 0.5ex; font-weight: normal; text-transform: uppercase; font-size: 0.9em; text-indent: 3em; text-indent: 3rem; line-height: 120%; }

@@ -56,7 +56,7 @@ absence de déclaration de DTD.
   <xsl:param name="root" select="$html"/>
   <xsl:key name="split" match="/" use="'root'"/>
   <!-- key for notes by page, keep the tricky @use expression in this order, when there are other parallel pages number -->
-  <xsl:key name="note-pb" match="tei:note" use="generate-id(  preceding::*[self::tei:pb[not(@ed)][@n] ][1]|/ ) "/>
+  <xsl:key name="note-pb" match="tei:note[not(parent::tei:sp)][not(starts-with(local-name(..), 'div'))]" use="generate-id(  preceding::*[self::tei:pb[not(@ed)][@n] ][1]|/ ) "/>
   <!-- test if there are code examples to js prettyprint -->
   <xsl:key name="prettify" match="eg:egXML|tei:tag" use="1"/>
   <!-- mainly in verse -->
@@ -2728,7 +2728,7 @@ Call that in
         </xsl:apply-templates>
       </xsl:when>
       <!-- do not output block notes -->
-      <xsl:when test="parent::tei:div or parent::tei:front or parent::tei:back or parent::tei:app or parent::tei:notesStmt"/>
+      <xsl:when test="parent::tei:app or parent::tei:back or parent::tei:div or parent::tei:div1 or parent::tei:div2 or parent::tei:div3 or parent::tei:front or parent::tei:notesStmt or parent::tei:sp"/>
       <xsl:when test="$resp= '' and not(@resp)">
         <xsl:call-template name="note"/>
       </xsl:when>
@@ -2777,7 +2777,7 @@ Call that in
     </span>
   </xsl:template>
   <!-- Note sans appel -->
-  <xsl:template match="tei:back/tei:note | tei:div/tei:note | tei:div0/tei:note | tei:div1/tei:note | tei:div2/tei:note | tei:div3/tei:note | tei:div4/tei:note | tei:front/tei:note">
+  <xsl:template match="tei:back/tei:note | tei:div/tei:note | tei:div0/tei:note | tei:div1/tei:note | tei:div2/tei:note | tei:div3/tei:note | tei:div4/tei:note | tei:front/tei:note | tei:sp/tei:note">
     <xsl:choose>
       <xsl:when test="not(tei:p|tei:div)">
         <p>
