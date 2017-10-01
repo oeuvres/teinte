@@ -970,6 +970,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
               <empty/>
             </element>
             <ref name="point"/>
+            <ref name="stage"/>
             <ref name="typo"/>
           </choice>
         </oneOrMore>
