@@ -964,12 +964,13 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <oneOrMore>
           <choice>
             <text/>
-            <ref name="typo"/>
-            <ref name="point"/>
             <ref name="function"/>
+            <ref name="indexable"/>
             <element name="caesura">
               <empty/>
             </element>
+            <ref name="point"/>
+            <ref name="typo"/>
           </choice>
         </oneOrMore>
       </element>
