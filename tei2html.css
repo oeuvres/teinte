@@ -200,7 +200,8 @@ p.caption { font-weight: bold; }
 ul.castList { list-style: none; }
 /* numbering */
 .cb, .pb, .ed, small.l, small.l-n { font-weight: normal; font-style: normal; color: grey; margin-top: 0; margin-bottom: 0; text-indent: 0; text-decoration: none; border: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
-.cb, .pb, .ed { background-color: #FFFFFF; padding: 1px 1ex 1px 0; position: absolute; left: 0.3rem; /* float: right; problèmes dans les tableaux */ }
+.cb, .pb, .ed { background-color: rgba( 255, 255, 255, 0.6 ); padding: 1px 2px 1px 2px; position: absolute; left: -1rem; text-align: right; width: 3.5rem; /* float: right; problèmes dans les tableaux */ }
+a.pb { color: #888; }
 a.pb:hover { background-color: #FFFFFF; }
 .lb { color: grey; font-size: 11px; }
 .l-n { position:absolute; left: 0.7rem; color: rgba(128, 128, 128, 0.5); font-size: 10px; }
