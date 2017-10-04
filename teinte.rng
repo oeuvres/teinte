@@ -1121,6 +1121,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
             <choice>
               <ref name="closer"/>
               <ref name="dateline"/>
+              <ref name="fw"/>
               <ref name="label"/>
               <ref name="l"/>
               <ref name="lg"/>
