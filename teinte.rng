@@ -1133,6 +1133,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
               <ref name="quote-p"/>
               <ref name="salute"/>
               <ref name="signed"/>
+              <ref name="table"/>
               <ref name="quote-sp"/>
             </choice>
           </oneOrMore>
