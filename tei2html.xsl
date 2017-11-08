@@ -2202,7 +2202,8 @@ Elements block or inline level
   <xsl:template match="tei:addName | tei:affiliation | tei:author | tei:authority | tei:country | tei:foreign | tei:forename | tei:genName | tei:geogFeat | tei:geogName | tei:name | tei:origPlace | tei:orgName | tei:persName | tei:placeName | tei:repository | tei:roleName | tei:rs | tei:settlement | tei:surname">
     <xsl:choose>
       <xsl:when test="@rend = 'margin'">
-        <aside class="marginalia">
+        <!-- marginalia -->
+        <span class="marginalia">
           <xsl:if test=". = '' and @key">
             <xsl:if test="@role != ''">
               <xsl:call-template name="message">
@@ -2213,7 +2214,7 @@ Elements block or inline level
             <xsl:value-of select="@key"/>
           </xsl:if>
           <xsl:apply-templates/>
-        </aside>
+        </span>
       </xsl:when>
       <xsl:when test="normalize-space(.) = ''">
         <xsl:apply-templates/>
@@ -2468,11 +2469,12 @@ Call that in
   <xsl:template match="tei:note | tei:*[@rend='note']">
     <xsl:choose>
       <xsl:when test="@place = 'margin'">
-        <aside>
+        <!-- no aside, block tags not allowed in p -->
+        <span>
           <xsl:call-template name="atts"/>
           <xsl:attribute name="class">marginalia</xsl:attribute>
           <xsl:apply-templates/>
-        </aside>
+        </span>
       </xsl:when>
       <xsl:otherwise>
         <xsl:call-template name="noteref"/>
