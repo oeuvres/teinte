@@ -283,7 +283,7 @@ END;
    */
   public function sets()
   {
-    if ( !isset($this->conf['sets']) ) continue;
+    if ( !isset($this->conf['sets']) ) return;
     // for deletions, store the codes of existingfiles
     $this->_cods = array();
     $oldlog = $this->loglevel;
