@@ -259,6 +259,22 @@ div.l { text-align: left; text-indent: -2rem; padding-left: 2rem; line-height: 1
 .l12 { padding-left: 2rem; }
 .l13 { padding-left: 1rem; }
 .l14 { padding-left: 0rem; }
+.l.hendeca   { margin-left: 0.5em; text-indent: 0; padding-left: 0; }
+.l.deca      { margin-left: 1.0em; text-indent: 0; padding-left: 0; }
+.l.ennea     { margin-left: 1.5em; text-indent: 0; padding-left: 0; }
+.l.octo      { margin-left: 2.0em; text-indent: 0; padding-left: 0; }
+.l.hepta     { margin-left: 2.5em; text-indent: 0; padding-left: 0; }
+.l.hexa      { margin-left: 3.0em; text-indent: 0; padding-left: 0; }
+.l.penta     { margin-left: 3.5em; text-indent: 0; padding-left: 0; }
+.l.tetra     { margin-left: 4.0em; text-indent: 0; padding-left: 0; }
+.l.tri       { margin-left: 4.5em; text-indent: 0; padding-left: 0; }
+.l.dis       { margin-left: 5.0em; text-indent: 0; padding-left: 0; }
+.l.penta_el  { margin-left: 3.0em; text-indent: 0; padding-left: 0; }
+.l.promythium{ margin-bottom: 2.0ex; text-indent: 0; padding-left: 0; }
+.l.epimythium{ margin-top: 2.0ex; text-indent: 0; padding-left: 0; }
+.p.manuscrits{ font-size: 12px; margin-top: 20px; background-color: #FBFAF8; border-radius: 8px;}
+
+
 .l .vertical { font-size: 170%; font-weight: bold; display: inline-block; transform-origin: top right 0; margin-top: 1.35em; position: absolute; transform: rotate(90deg); }
 label.label { font-weight: bold; }
 p.label, div.label { margin: 1.4em 0 0.7em 0; line-height: 105%; text-align: center; text-indent: 0; padding-left: 0; }

@@ -468,6 +468,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
           <ref name="dateline"/>
           <ref name="docDate"/>
           <ref name="epigraph"/>
+          <ref name="figure"/>
           <ref name="fw"/>
           <ref name="head"/>
           <ref name="index"/>
@@ -952,13 +953,26 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
           <ref name="part-att"/>
         </optional>
         <optional>
+          <attribute name="met">
+            <choice>
+              <value>tri</value>
+              <value>hepta</value>
+              <value>octo</value>
+              <value>deca</value>
+              <value>alex</value>
+              <text/>
+            </choice>
+            
+          </attribute>
+        </optional>
+        <optional>
           <attribute name="rend">
-          <choice>
-             <ref name="rend.font"/>
+            <choice>
+              <ref name="rend.font"/>
               <ref name="rend.align"/>
-             <value>refrain</value>
+              <value>refrain</value>
               <value>indent</value>
-           </choice>
+             </choice>
           </attribute>
         </optional>
         <oneOrMore>
