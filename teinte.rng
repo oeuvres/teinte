@@ -1828,6 +1828,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
     <define name="function">
       <a:documentation>Balises de niveau caractère qui indiquent la fonction d’un segment de texte, sans préjuger de sa mise en valeur typographique.</a:documentation>
       <choice>
+        <ref name="abbr"/>
         <ref name="add"/>
         <ref name="app"/>
         <ref name="code"/>
@@ -1869,6 +1870,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
           <ref name="num"/>
           <ref name="point"/>
           <ref name="ref"/>
+          <ref name="abbr"/>
         </choice>
       </zeroOrMore>
     </define>
@@ -2135,6 +2137,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
     <define name="indexable">
       <a:documentation>Balises de niveau caractère utiles à l’indexation des entités nommées</a:documentation>
       <choice>
+        <ref name="abbr"/>
         <ref name="author"/>
         <ref name="name"/>
         <ref name="orgName"/>
@@ -2349,6 +2352,21 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <optional>
           <ref name="index-atts"/>
         </optional>
+        <ref name="xml-atts"/>
+        <ref name="rendering.char"/>
+        <zeroOrMore>
+          <choice>
+            <text/>
+            <ref name="point"/>
+            <ref name="hi"/>
+          </choice>
+        </zeroOrMore>
+      </element>
+    </define>
+    <define name="abbr">
+      <element name="abbr">
+        <a:documentation>Abréviation</a:documentation>
+        <ref name="index-atts"/>
         <ref name="xml-atts"/>
         <ref name="rendering.char"/>
         <zeroOrMore>
@@ -2610,6 +2628,18 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </optional>
         <optional>
           <ref name="ed"/>
+        </optional>
+        <optional>
+          <attribute name="rend">
+            <choice>
+              <value>hyphen</value>
+              <a:documentation>Césure</a:documentation>
+              <text/>
+            </choice>
+          </attribute>
+        </optional>
+        <optional>
+          <ref name="resp-att"/>
         </optional>
         <empty/>
       </element>
