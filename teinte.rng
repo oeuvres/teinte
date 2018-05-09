@@ -1139,6 +1139,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
               <ref name="label"/>
               <ref name="l"/>
               <ref name="lg"/>
+              <ref name="list"/>
               <ref name="note"/>
               <ref name="p"/>
               <ref name="pb"/>
@@ -2632,7 +2633,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
     </define>
     <define name="lb">
       <element name="lb">
-        <a:documentation>Saut de ligne “line break” &lt;html5:br/></a:documentation>
+        <a:documentation>Saut de ligne “line break” &lt;html5:br/&gt;</a:documentation>
         <div xmlns="http://www.w3.org/1999/xhtml"> (<i>line break</i>)
           <p><a:el>lb</a:el> peut être utilisé pour forcer un saut de ligne, par exemple dans un titre.</p>
           <p>Dans le cas d’un texte avec lignes numérotées qui ne sont pas des vers inclus dans un élément <a:el>l</a:el>, les numéros sont utiles au référencement des citations des notes d’apparat critique. Il est donc nécessaire de conserver tous les sauts de lignes dans le flux du texte, et d’inscrire le numéro — quand il est imprimé — dans l’attribut <a:att>n</a:att>. <b>Attention</b> : certaines éditions alternent l’emplacement du numéro de ligne selon les pages paires ou impaires (marges intérieures ou extérieures). Conformément à la spécification TEI, le numéro inscrit doit toujours se rapporter à ce qui suit. Les césures sont traitées comme pour le reste du texte. Une édition électronique de référence doit proposer une exploitation de ces sauts de ligne pour garantir une citabilité de qualité égale à la version imprimée. Si plusieurs numérotations concurrentes des lignes sont conservées, elles sont distinguées par l’attribut <a:att>ed</a:att>.</p>

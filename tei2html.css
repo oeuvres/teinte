@@ -355,7 +355,7 @@ i .title, .i .title { font-style: normal; }
 .trailer { font-style: italic; text-align: center; text-indent: 0; }
 li.witness { list-style: square; font-size: 90%; font-family: sans-serif; }
 .witness label, a.wit, i.wit, a.msDesc { font-style: italic; color: #000; font-family: serif; } /* witness letter */
-
+p[id^="note"]{ color: #1f258d; font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif; }
 
 /* @rend, @type useful classes, in alphabetic order */
 
@@ -370,6 +370,7 @@ a.bookmark { font-size: 60%; visibility: hidden; user-select: none; }
 h1:hover a.bookmark, h2:hover a.bookmark, h3:hover a.bookmark, h4:hover a.bookmark, h5:hover a.bookmark, h6:hover a.bookmark, a.bookmark:hover { color: #808080; visibility: visible; }
 .center, div.center, p.center, blockquote.center > * { text-align: center; text-indent: 0; margin-left: auto; margin-right: auto; padding-left: 0; }
 .center p { text-align: inherit; text-indent: 0; }
+.center l { text-align: inherit; text-indent: 0; }
 span.center { display: block; }
 .clear { clear: both; }
 .clear:after { content: " "; display: block; height: 0; clear: both; visibility: hidden; }
