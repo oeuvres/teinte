@@ -531,6 +531,7 @@ et -1 pour chaque niveau ensuite, d'où le paramètre $level qui peut
       <xsl:variable name="class">
         <xsl:choose>
           <xsl:when test="contains( '-–—0123456789', $char1 )"/>
+          <xsl:when test="descendant::tei:graphic">noindent</xsl:when>
           <xsl:when test="contains(concat(' ', @rend, ' '), ' indent ')"/>
           <!--
           <xsl:when test="$prev and contains('-–—', substring(normalize-space($prev), 1, 1))"/>
@@ -889,6 +890,7 @@ Tables
   -->
   <!-- table  -->
   <xsl:template match="tei:table">
+    <hr class="clear"/>
     <table>
       <xsl:call-template name="atts">
         <xsl:with-param name="class">table</xsl:with-param>
@@ -901,6 +903,16 @@ Tables
       <xsl:call-template name="atts"/>
       <xsl:apply-templates/>
     </caption>
+  </xsl:template>
+  <xsl:template match="tei:table/tei:spanGrp">
+    <colgroup>
+      <xsl:apply-templates/>
+    </colgroup>
+  </xsl:template>
+  <xsl:template match="tei:table/tei:spanGrp/tei:span">
+    <col>
+      <xsl:call-template name="atts"/>
+    </col>
   </xsl:template>
   <!-- ligne -->
   <xsl:template match="tei:row">
@@ -1684,9 +1696,22 @@ Tables
       <xsl:call-template name="id"/>
     </xsl:variable>
     <img src="{$images}{@url}" alt="{normalize-space(.)}" id="{$id}">
+      <xsl:if test="@style|@scale">
+        <xsl:variable name="style">
+          <xsl:if test="@scale &gt; 0 and @scale &lt; 1">
+            <xsl:text>width: </xsl:text>
+            <xsl:value-of select="floor(@scale * 100)"/>
+            <xsl:text>%; </xsl:text>
+          </xsl:if>
+          <xsl:value-of select="@style"/>
+        </xsl:variable>
+        <xsl:attribute name="style">
+          <xsl:value-of select="normalize-space($style)"/>
+        </xsl:attribute>
+      </xsl:if>
       <xsl:if test="@rend">
-        <xsl:attribute name="align">
-          <xsl:copy-of select="@rend"/>
+        <xsl:attribute name="class">
+          <xsl:value-of select="@rend"/>
         </xsl:attribute>
       </xsl:if>
     </img>
@@ -3156,16 +3181,22 @@ Call that in
   <xsl:template match="tei:space">
     <xsl:choose>
       <xsl:when test="text() != ''">
-        <span>
+        <samp>
           <xsl:call-template name="atts"/>
-          <xsl:value-of select="substring('                                 ', 1, string-length(.))"/>
-        </span>
+          <xsl:value-of select="substring('                                                                     ', 1, string-length(.))"/>
+        </samp>
       </xsl:when>
       <xsl:when test="@extent">
-        <span class="space" style="{@extent}"/>
+        <samp class="space" style="{@extent}"/>
+      </xsl:when>
+      <xsl:when test="@unit = 'chars'">
+        <samp>
+          <xsl:call-template name="atts"/>
+          <xsl:value-of select="substring('                                                                     ', 1, @quantity)"/>
+        </samp>
       </xsl:when>
       <xsl:otherwise>
-        <span style="width:2em;" class="space">    </span>
+        <samp style="width:2em;" class="space">    </samp>
       </xsl:otherwise>
     </xsl:choose>
     <xsl:apply-templates/>
@@ -3389,6 +3420,11 @@ Centralize some html attribute policy, especially for id, and class
     <xsl:variable name="id0"> '":,; </xsl:variable>
     <xsl:attribute name="{local-name(.)}">
       <xsl:value-of select="translate(., $id0, '')"/>
+    </xsl:attribute>
+  </xsl:template>
+  <xsl:template match="@style">
+    <xsl:attribute name="style">
+      <xsl:value-of select="."/>
     </xsl:attribute>
   </xsl:template>
   <!-- @xml:*, attributs à recopier à l'identique -->

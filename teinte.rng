@@ -12,9 +12,6 @@
     <p>Plan de ce document</p>
     <ul>
       <li>
-        <a href="#text">Texte, commentaires, instruction de traitement</a>
-      </li>
-      <li>
         <a href="#structure">Structure et sections</a>
       </li>
       <li>
@@ -33,35 +30,11 @@
         <a href="#function">Segments fonctionnels</a>
       </li>
       <li>
+        <a href="#text">Texte, commentaires, instruction de traitement</a>
+      </li>
+      <li>
         <a href="#point">Notes, sauts et autres points</a>
       </li>
-    </ul>
-    <h2 id="text">Texte</h2>
-    <p>Idéalement, tous les caractères du texte imprimé, de toutes les pages, doivent être inscrits comme des nœuds de texte. Cette attitude conservatoire évite de présumer des intérêts futurs de la recherche. La seule réserve concerne les navigations ajoutées par l’éditeur (table des matières, index) que l’on essaiera autant que possible de générer automatiquement par la structure XML.</p>
-    <p><b>Entités</b> — Flux de caractères UTF-8. Toujours préférer un caractère unicode UTF-8 lorsque possible. Pas d'entités, car soit elles sont en chiffres, et elles correspondent à un caractère unicode, soit elles sont en lettres, et elles ne sont pas supportées par xml sans déclaration DTD <s><code>&amp;nbsp;, &amp;thinsp;, &amp;eacute;…</code></s> Exemple : pour une espace insécable inscrire le caractère ' ' (U+00A0, &amp;#160;), visible ici comme une espace mais distinguable dans certains éditeurs, de même pour les espaces fines ' ' ( U+2009, &amp;#8201;). Si des caractères rencontrés ne correspondent pas de façon exacte à un code unicode standard, alors utiliser <a:el>g n="{code local pour le caractère}">{approximation unicode}&lt;/g</a:el></p>
-    <!-- p><b>Grec ancien</b> — lettres à pb</p -->
-    <p><b>Guillemets</b> — Autant que possible, on évitera les <s>"guillemets droits"</s>, afin de favoriser les guillemets orientés, qui s'ouvrent et se ferment pour délimiter un segment, en distinguant les « guillemets français » et les “guillemets anglais”. Les guillemets français encadrent généralement du texte cité ou rapporté, d'un autre auteur que le texte environnant, et sont susceptibles (sous contrôle humain) d'être encadrés pas la balise <a:el>quote</a:el>. Les guillemets anglais encadrent généralement des segments plus courts, qui pourraient aussi paraître en italique : terme technique <a:el>term</a:el>, langue étrangère <a:el>foreign</a:el>, mot en mention <a:el>mentionned</a:el>…</p>
-    <p><b>Apostrophes</b> — Autant que possible, éviter les <s>'apostrophes droites'</s>, pour privilégier l’apostrophe courbe et orientée.</p>
-    <!-- 
-Zero width space: x​x​x​x​x​x​x​x​x​x
-
-Word joiner (Zero width no-break space): x⁠x⁠x⁠x⁠x⁠x⁠x⁠x⁠x⁠x
-
-Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
--->
-    <p>Caractères mal supportés par certaines polices ou clients, que l'on peut cependant conserver tel quel dans la source XML, sans entité ni transcodage.</p>
-    <ul>
-      <li>espace normale &amp;#32; : x x x</li>
-      <li>espace insécable &amp;#160; (html:nbsp) : x x x</li>
-      <li>espace fine &amp;#8201; (html:thinsp) : x x x</li>
-      <li>espace large &amp;#8195; (html:emsp) : x x x</li>
-      <li>espace fine insécable &amp;#x202f;, &amp;#8239; : x x x</li>
-      <li>trait d’union, signe moins : x-x-x</li>
-      <li>trait d’union conditionnel &amp;#xad; (html:shy) : x-x-x</li>
-      <li>trait d’union &amp;#x2010; : x‐x‐x</li>
-      <li>trait d’union insécable &amp;#x2011; : x‑x‑x</li>
-      <li>tiret demi-quadratin &amp;#x2013; (html:ndash) : x–x–x</li>
-      <li>tiret quadratin &amp;#x2014; (html:mdash) : x—x—x</li>
     </ul>
   </div>
   <div xml:id="structure">
@@ -70,28 +43,19 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
       <a:documentation>Elément racine</a:documentation>
       <choice>
         <ref name="TEI"/>
-        <ref name="teiCorpus"/>
       </choice>
     </start>
-    <define name="teiCorpus">
-      <element name="teiCorpus">
-        <ref name="teiHeader"/>
-        <oneOrMore>
-          <ref name="TEI"/>
-        </oneOrMore>
-      </element>
-    </define>
     <define name="TEI">
       <element name="TEI">
         <a:documentation>Structure générale d’un document TEI</a:documentation>
         <div xmlns="http://www.w3.org/1999/xhtml">
           <ul>
             <li>L’entête TEI <a:el>teiHeader</a:el> : non destiné à être affiché, il contient les métadonnées.</li>
-            <li>Le texte préliminaire <a:el>front</a:el> : préface, introduction… Si l’édition source comprend plusieurs types de numérotation, alors on trouvera ici le romain tandis que le body contiendra le décimal.</li>
+            <li>Le texte préliminaire <a:el>front</a:el> : préface, introduction… Si l’édition source comprend plusieurs types de numérotation des pages, cette partie aura plutôt le numéro en chiffres romaina tandis que le body sera numéroté en décimal.</li>
             <li>Le texte principal <a:el>body</a:el> : chapitre du livre, source éditée, articles de colloque, etc.</li>
             <li>Le texte postliminaire <a:el>back</a:el> : annexes, bibliographie, index, etc.</li>
           </ul>
-          <p>Le paratexte éditorial – préliminaire (<a:el>front</a:el>) et postliminaire (<a:el>back</a:el>) – ainsi que les métadonnées (<a:el>teiHeader</a:el>) constituent la valeur ajoutée par l’éditeur. Ce paratexte éditorial peut aussi figurer parfois dans le <a:el>body</a:el> : dans le cas d’une édition de source par exemple, le texte édité est contenu dans le <a:el>body</a:el> ainsi que les notes (<a:el>note</a:el>, <a:el>app</a:el>) ajoutées par l’éditeur).</p>
+          <p>Le <a:el>body</a:el> peut parfois contenir du paratexte éditorial (préliminaire <a:el>front</a:el> ou postliminaire <a:el>back</a:el>) dans le cas d’une édition de source historique comportant du paratexte d'époque qui sera lui-même commenté et annoté par un éditeur.</p>
           <p>Le document comportera toujours un <a href="http://www.loc.gov/standards/iso639-2/php/French_list.php" target="_blank">code de langue iso</a> dans l’attribut <a:att>xml:lang</a:att> en racine, on privilégiera le code deux lettres lorsque possible (mieux supporté dans la chaîne éditoriale, par ex. epub).</p>
           <a:example>
             <TEI xml:lang="fr">
@@ -330,6 +294,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
           <oneOrMore>
             <ref name="div1"/>
           </oneOrMore>
+          <ref name="div.cont"/>
         </choice>
       </element>
     </define>
@@ -337,10 +302,14 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
       <optional>
         <attribute name="type">
           <choice>
+            <value>abstract</value>
+            <a:documentation>Résumé ou quatrième de couverture</a:documentation>
+            <value>ack</value>
+            <a:documentation>Remerciements, paratexte, généralement en &lt;front></a:documentation>
             <value>act</value>
             <a:documentation>Théâtre, acte.</a:documentation>
             <value>appendix</value>
-            <a:documentation>Appendice, paratexte, généralement dans &lt;back></a:documentation>
+            <a:documentation>Appendice, paratexte, généralement en &lt;back></a:documentation>
             <value>argument</value>
             <a:documentation>Argument, paratexte, généralement en entête, parfois entre deux actes</a:documentation>
             <value>article</value>
@@ -348,35 +317,37 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
             <value>book</value>
             <a:documentation>Division de haut niveau dans un gros texte</a:documentation>
             <value>bibliography</value>
-            <a:documentation>Bibliographie, paratexte, généralement dans &lt;back></a:documentation>
+            <a:documentation>Bibliographie, paratexte, généralement en &lt;back></a:documentation>
             <value>chapter</value>
             <a:documentation>Chapitre, niveau de référence équivalent à “article”, souvent la seule dans un roman.</a:documentation>
             <value>colophon</value>
-            <a:documentation>Colophon, paratexte, généralement dans &lt;back></a:documentation>
+            <a:documentation>Colophon, paratexte, généralement en &lt;back></a:documentation>
             <value>contents</value>
-            <a:documentation>Table des matières, paratexte dans &lt;front> ou &lt;back></a:documentation>
+            <a:documentation>Table des matières, paratexte en &lt;front> ou en &lt;back></a:documentation>
             <value>dedication</value>
-            <a:documentation>Dédicace, paratexte généralement dans &lt;front></a:documentation>
+            <a:documentation>Dédicace, paratexte généralement en &lt;front></a:documentation>
             <value>epigraph</value>
-            <a:documentation>Épigraphe, paratexte généralement dans &lt;front></a:documentation>
+            <a:documentation>Épigraphe, paratexte généralement en &lt;front></a:documentation>
+            <value>frontispiece</value>
+            <a:documentation>Frontispice, paratexte généralement en &lt;front></a:documentation>
             <value>glossary</value>
-            <a:documentation>Glossaire, paratexte, généralement dans &lt;back></a:documentation>
+            <a:documentation>Glossaire, paratexte, généralement en &lt;back></a:documentation>
             <value>index</value>
-            <a:documentation>Index, paratexte, généralement dans &lt;back></a:documentation>
+            <a:documentation>Index, paratexte, généralement en &lt;back></a:documentation>
             <value>interlude</value>
             <a:documentation>Dans une pièce de théâtre, intermède, par example dansé ou musical, le texte y a un statut différent des actes pleins.</a:documentation>
             <value>introduction</value>
-            <a:documentation>Introduction, paratexte, généralement dans &lt;front></a:documentation>
+            <a:documentation>Introduction, paratexte, généralement en &lt;front></a:documentation>
             <value>letter</value>
             <a:documentation>Lettre.</a:documentation>
             <value>notes</value>
-            <a:documentation>Notes de fin de volume, paratexte, généralement dans &lt;back></a:documentation>
+            <a:documentation>Notes de fin de volume, paratexte, généralement en &lt;back></a:documentation>
             <value>poem</value>
             <a:documentation>Un poème</a:documentation>
             <value>postface</value>
-            <a:documentation>Postface, paratexte, généralement dans &lt;back></a:documentation>
+            <a:documentation>Postface, paratexte, généralement en &lt;back></a:documentation>
             <value>preface</value>
-            <a:documentation>Préface, paratexte, généralement dans &lt;front></a:documentation>
+            <a:documentation>Préface, paratexte, généralement en &lt;front></a:documentation>
             <value>privilege</value>
             <a:documentation>Privilège d’imprimer, paratexte</a:documentation>
             <value>prologue</value>
@@ -388,7 +359,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
             <value>set</value>
             <a:documentation>Théâtre, pages liminaires.</a:documentation>
             <value>toc</value>
-            <a:documentation>Table des matières, synonyme de “contents”, paratexte dans &lt;front> ou &lt;back></a:documentation>
+            <a:documentation>Table des matières, synonyme de “contents”, paratexte en &lt;front> ou en &lt;back></a:documentation>
             <value>tome</value>
             <a:documentation>Tome, dans certaines grosses tables des matières</a:documentation>
             <!--
@@ -953,6 +924,9 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
           <ref name="part-att"/>
         </optional>
         <optional>
+          <attribute name="rhyme"/>
+        </optional>
+        <optional>
           <attribute name="met">
             <choice>
               <value>tri</value>
@@ -967,22 +941,34 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </optional>
         <optional>
           <attribute name="rend">
-            <choice>
-              <ref name="rend.font"/>
-              <ref name="rend.align"/>
-              <value>refrain</value>
-              <value>indent</value>
-             </choice>
+            <list>
+              <oneOrMore>
+                <choice>
+                  <ref name="rend.font"/>
+                  <ref name="rend.align"/>
+                  <ref name="rend.lmarg"/>
+                  <value>refrain</value>
+                  <value>indent</value>
+                </choice>
+              </oneOrMore>
+            </list>
           </attribute>
         </optional>
         <oneOrMore>
           <choice>
             <text/>
-            <ref name="function"/>
-            <ref name="indexable"/>
             <element name="caesura">
               <empty/>
             </element>
+            <element name="rhyme">
+              <attribute name="label"/>
+              <optional>
+                <attribute name="type"/>
+              </optional>
+              <text/>
+            </element>
+            <ref name="function"/>
+            <ref name="indexable"/>
             <ref name="point"/>
             <ref name="stage"/>
             <ref name="typo"/>
@@ -1053,6 +1039,9 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </optional>
         <ref name="rendering.block"/>
         <ref name="xml-atts"/>
+        <optional>
+          <attribute name="rhyme"/>
+        </optional>
         <zeroOrMore>
           <ref name="head"/>
         </zeroOrMore>
@@ -1346,22 +1335,8 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </optional>
         <oneOrMore>
           <choice>
-            <ref name="bibl"/>
-            <ref name="cb"/>
-            <ref name="dateline"/>
-            <ref name="desc"/>
-            <ref name="eg"/>
-            <ref name="formula"/>
-            <ref name="graphic"/>
-            <ref name="head"/>
-            <ref name="index"/>
-            <ref name="label"/>
-            <ref name="p"/>
-            <ref name="pb"/>
-            <ref name="quote-p"/>
-            <ref name="salute"/>
-            <ref name="signed"/>
-            <ref name="table"/>
+            <ref name="block"/>
+            <ref name="point"/>
           </choice>
         </oneOrMore>
       </element>
@@ -1577,6 +1552,26 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
             <ref name="index"/>
           </choice>
         </zeroOrMore>
+        <optional>
+          <element name="spanGrp">
+            <attribute name="type">
+              <value>colgroup</value>
+            </attribute>
+            <oneOrMore>
+              <element name="span">
+                <attribute name="type">
+                  <value>col</value>
+                </attribute>
+                <optional>
+                  <attribute name="rend"/>
+                </optional>
+                <optional>
+                  <attribute name="style"/>
+                </optional>
+              </element>
+            </oneOrMore>
+          </element>
+        </optional>
         <oneOrMore>
           <choice>
             <element name="row">
@@ -1611,7 +1606,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
                     <!-- TODO border ? -->
                     <attribute name="rend">
                       <list>
-                        <choice>
+                        <oneOrMore>
                           <choice>
                             <value>center</value>
                             <value>bottom</value>
@@ -1619,9 +1614,9 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
                             <value>top</value>
                             <value>left</value>
                             <value>right</value>
+                            <ref name="rend.font"/>
                           </choice>
-                          <ref name="rend.font"/>
-                        </choice>
+                        </oneOrMore>
                       </list>
                     </attribute>
                   </optional>
@@ -1821,16 +1816,30 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
       <element name="space">
         <a:documentation>Espace significatif. Dans le mesure du possible, éviter cet élément lorsque l’espace peut être représenté par une suite d’espaces insécables ' ' (caractère unicode équivalent à l’entité XML <![CDATA[&#160;]]>). </a:documentation>
         <optional>
-          <attribute name="extent">
-            <a:documentation>Renseigner avec une expression CSS : width:5ex /* 5 caractères de long */; width:50% /* une demi-ligne */; height:4em /* 4 ligne de haut */</a:documentation>
-          </attribute>
-        </optional>
-        <optional>
-          <attribute name="rend">
-            <choice>
-              <value>tab</value>
-            </choice>
-          </attribute>
+          <choice>
+            <attribute name="extent">
+              <a:documentation>Renseigner avec une expression CSS : width:5ex /* 5 caractères de long */; width:50% /* une demi-ligne */; height:4em /* 4 ligne de haut */</a:documentation>
+            </attribute>
+            <attribute name="rend">
+              <choice>
+                <value>tab</value>
+              </choice>
+            </attribute>
+            <group>
+              <attribute name="unit">
+                <choice>
+                  <value>cm</value>
+                  <value>mm</value>
+                  <value>in</value>
+                  <value>lines</value>
+                  <value>chars</value>
+                </choice>
+              </attribute>
+              <attribute name="quantity">
+                <data type="int"/>
+              </attribute>
+            </group>
+          </choice>
         </optional>
         <data type="token">
           <param name="pattern"> *</param>
@@ -2523,6 +2532,35 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
       </element>
     </define>
   </div>
+  <div id="text" xmlns="http://www.w3.org/1999/xhtml">
+    <h2>Texte</h2>
+    <p>Idéalement, tous les caractères du texte imprimé, de toutes les pages, doivent être inscrits comme des nœuds de texte. Cette attitude conservatoire évite de présumer des intérêts futurs de la recherche. La seule réserve concerne les navigations ajoutées par l’éditeur (table des matières, index) que l’on essaiera autant que possible de générer automatiquement par la structure XML.</p>
+    <p><b>Entités</b> — Flux de caractères UTF-8. Toujours préférer un caractère unicode UTF-8 lorsque possible. Pas d'entités, car soit elles sont en chiffres, et elles correspondent à un caractère unicode, soit elles sont en lettres, et elles ne sont pas supportées par xml sans déclaration DTD <s><code>&amp;nbsp;, &amp;thinsp;, &amp;eacute;…</code></s> Exemple : pour une espace insécable inscrire le caractère ' ' (U+00A0, &amp;#160;), visible ici comme une espace mais distinguable dans certains éditeurs, de même pour les espaces fines ' ' ( U+2009, &amp;#8201;). Si des caractères rencontrés ne correspondent pas de façon exacte à un code unicode standard, alors utiliser <a:el>g n="{code local pour le caractère}">{approximation unicode}&lt;/g</a:el></p>
+    <!-- p><b>Grec ancien</b> — lettres à pb</p -->
+    <p><b>Guillemets</b> — Autant que possible, on évitera les <s>"guillemets droits"</s>, afin de favoriser les guillemets orientés, qui s'ouvrent et se ferment pour délimiter un segment, en distinguant les « guillemets français » et les “guillemets anglais”. Les guillemets français encadrent généralement du texte cité ou rapporté, d'un autre auteur que le texte environnant, et sont susceptibles (sous contrôle humain) d'être encadrés pas la balise <a:el>quote</a:el>. Les guillemets anglais encadrent généralement des segments plus courts, qui pourraient aussi paraître en italique : terme technique <a:el>term</a:el>, langue étrangère <a:el>foreign</a:el>, mot en mention <a:el>mentionned</a:el>…</p>
+    <p><b>Apostrophes</b> — Autant que possible, éviter les <s>'apostrophes droites'</s>, pour privilégier l’apostrophe courbe et orientée.</p>
+    <!-- 
+Zero width space: x​x​x​x​x​x​x​x​x​x
+
+Word joiner (Zero width no-break space): x⁠x⁠x⁠x⁠x⁠x⁠x⁠x⁠x⁠x
+
+Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
+-->
+    <p>Caractères mal supportés par certaines polices ou clients, que l'on peut cependant conserver tel quel dans la source XML, sans entité ni transcodage.</p>
+    <ul>
+      <li>espace normale &amp;#32; : x x x</li>
+      <li>espace insécable &amp;#160; (html:nbsp) : x x x</li>
+      <li>espace fine &amp;#8201; (html:thinsp) : x x x</li>
+      <li>espace large &amp;#8195; (html:emsp) : x x x</li>
+      <li>espace fine insécable &amp;#x202f;, &amp;#8239; : x x x</li>
+      <li>trait d’union, signe moins : x-x-x</li>
+      <li>trait d’union conditionnel &amp;#xad; (html:shy) : x-x-x</li>
+      <li>trait d’union &amp;#x2010; : x‐x‐x</li>
+      <li>trait d’union insécable &amp;#x2011; : x‑x‑x</li>
+      <li>tiret demi-quadratin &amp;#x2013; (html:ndash) : x–x–x</li>
+      <li>tiret quadratin &amp;#x2014; (html:mdash) : x—x—x</li>
+    </ul>
+  </div>
   <div xml:id="point">
     <a:documentation>Points</a:documentation>
     <define name="point">
@@ -2609,6 +2647,16 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
       <element name="graphic">
         <a:documentation>Image &lt;html5:img src="{@url}"></a:documentation>
         <attribute name="url"/>
+        <optional>
+          <attribute name="rend">
+            <ref name="rend.align"/>
+          </attribute>
+        </optional>
+        <optional>
+          <attribute name="scale">
+            <data type="decimal"/>
+          </attribute>
+        </optional>
         <optional>
           <ref name="desc"/>
         </optional>
@@ -2713,10 +2761,13 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
               <ref name="indexable"/>
               <ref name="lb"/>
               <ref name="typo"/>
+              <ref name="note"/>
             </choice>
           </oneOrMore>
           <oneOrMore>
-            <ref name="block"/>
+            <choice>
+              <ref name="block"/>
+            </choice>
           </oneOrMore>
         </choice>
       </element>
@@ -2958,7 +3009,14 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
       <a:documentation>Information de rendu pour un conteneur de blocs, concerne notamment la possibilité d'encadrer plusieurs paragraphes.</a:documentation>
       <optional>
         <attribute name="rend">
-          <ref name="rend.border"/>
+          <list>
+            <oneOrMore>
+              <choice>
+                <ref name="rend.border"/>
+                <ref name="rend.align"/>
+              </choice>
+            </oneOrMore>
+          </list>
         </attribute>
       </optional>
       <optional>
@@ -2974,6 +3032,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
               <choice>
                 <ref name="rend.font"/>
                 <ref name="rend.align"/>
+                <ref name="rend.lmarg"/>
                 <value>argument</value>
                 <a:documentation>Valeur sémantique d’un élément argument, mais qui autorise à placer un élément &lt;stage&gt; avant (édition de théâtre)</a:documentation>
                 <value>indent</value>
@@ -3015,6 +3074,21 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <a:documentation>Lien à une déclaration locale de stylage (URI ancre, ex : #surtitre, vers une déclaration &lt;rendition xml:id="surtitre"> dans &lt;teiHeader>). L'attribut @rend est contraint dans ce schéma à une liste close de valeurs dont le traitement est garanti, @rendition permet d'ajouter d’autres classes</a:documentation>
         <data type="anyURI"/>
       </attribute>
+    </define>
+    <define name="rend.lmarg">
+      <a:documentation>Retrait gauche de bloc</a:documentation>
+      <choice>
+        <value>lmarg1</value>
+        <a:documentation>Retrait gauche de 1 graduation (cm ou in)</a:documentation>
+        <value>lmarg2</value>
+        <a:documentation>Retrait gauche de 2 graduation (cm ou in)</a:documentation>
+        <value>lmarg3</value>
+        <a:documentation>Retrait gauche de 3 graduation (cm ou in)</a:documentation>
+        <value>lmarg25</value>
+        <a:documentation>Retrait gauche de 25%</a:documentation>
+        <value>lmarg50</value>
+        <a:documentation>Retrait gauche de 50%</a:documentation>
+      </choice>
     </define>
     <define name="rend.font">
       <a:documentation>Styles de caractères, pour un segment de texte ou un bloc, valeurs reprises de html5 ou CSS</a:documentation>
