@@ -340,7 +340,7 @@ section section .subtitle {font-size: 150%;}
 .surname {font-variant: small-caps;}
 .title {font-style: italic;}
 .title abbr {font-variant: small-caps;}
-.title em, .title i, .title .title {font-style: normal;}
+.title em, .title i, .title .title, .title .sc {font-style: normal;}
 i .title, .i .title {font-style: normal;}
 .titlePage {text-align: center}
 .titlePage h1.sub {font-weight: normal; margin-top: 0; padding-top: 0;}

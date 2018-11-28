@@ -83,11 +83,11 @@
             </TEI>
           </a:example>
         </div>
-        <ref name="lang-att"/>
+        <ref name="xml.lang"/>
         <optional>
           <choice>
             <ref name="n-att"/>
-            <ref name="id-att"/>
+            <ref name="xml.id"/>
           </choice>
         </optional>
         <!-- attributs d'autres espaces de noms -->
@@ -169,17 +169,21 @@
         </div>
         <ref name="xml-atts"/>
         <zeroOrMore>
-          <ref name="pb"/>
-        </zeroOrMore>
-        <oneOrMore>
           <choice>
+            <ref name="pb"/>
             <ref name="titlePage"/>
             <ref name="argument"/>
             <ref name="castList"/>
-            <ref name="div"/>
-            <ref name="div1"/>
           </choice>
-        </oneOrMore>
+        </zeroOrMore>
+        <choice>
+          <zeroOrMore>
+            <ref name="div"/>
+          </zeroOrMore>
+          <zeroOrMore>
+            <ref name="div1"/>
+          </zeroOrMore>
+        </choice>
         <zeroOrMore>
           <ref name="pb"/>
         </zeroOrMore>
@@ -294,7 +298,7 @@
           <oneOrMore>
             <ref name="div1"/>
           </oneOrMore>
-          <ref name="div.cont"/>
+          <ref name="div.flow"/>
         </choice>
       </element>
     </define>
@@ -370,7 +374,7 @@
         </attribute>
       </optional>
       <optional>
-        <ref name="copyOf-att"/>
+        <ref name="copyOf"/>
       </optional>
       <optional>
         <attribute name="resp"/>
@@ -379,7 +383,7 @@
         <ref name="n-att"/>
       </optional>
       <optional>
-        <ref name="base-att"/>
+        <ref name="xml.base"/>
       </optional>
       <optional>
         <attribute name="subtype"/>
@@ -408,109 +412,151 @@
           </a:example>
         </div>
         <ref name="div.atts"/>
-        <ref name="div.cont"/>
+        <ref name="div.front"/>
+        <ref name="div.flow"/>
+        <zeroOrMore>
+          <ref name="div"/>
+          <ref name="div.inter"/>
+        </zeroOrMore>
+        <ref name="div.back"/>
       </element>
     </define>
     <define name="div1">
       <element name="div1">
         <ref name="div.atts"/>
-        <ref name="div.cont"/>
+        <ref name="div.front"/>
+        <ref name="div.flow"/>
+        <zeroOrMore>
+          <ref name="div2"/>
+          <ref name="div.inter"/>
+        </zeroOrMore>
+        <ref name="div.back"/>
       </element>
     </define>
     <define name="div2">
       <element name="div2">
         <ref name="div.atts"/>
-        <ref name="div.cont"/>
+        <ref name="div.front"/>
+        <ref name="div.flow"/>
+        <zeroOrMore>
+          <ref name="div3"/>
+          <ref name="div.inter"/>
+        </zeroOrMore>
+        <ref name="div.back"/>
       </element>
     </define>
     <define name="div3">
       <element name="div3">
         <ref name="div.atts"/>
-        <ref name="div.cont"/>
+        <ref name="div.front"/>
+        <ref name="div.flow"/>
+        <zeroOrMore>
+          <ref name="div4"/>
+          <ref name="div.inter"/>
+        </zeroOrMore>
+        <ref name="div.back"/>
       </element>
     </define>
-    <!-- Div content  -->
-    <define name="div.cont">
-      <oneOrMore>
+    <define name="div4">
+      <element name="div4">
+        <ref name="div.atts"/>
+        <ref name="div.front"/>
+        <ref name="div.flow"/>
+        <zeroOrMore>
+          <ref name="div5"/>
+          <ref name="div.inter"/>
+        </zeroOrMore>
+        <ref name="div.back"/>
+      </element>
+    </define>
+    <define name="div5">
+      <element name="div5">
+        <ref name="div.atts"/>
+        <ref name="div.front"/>
+        <ref name="div.flow"/>
+        <zeroOrMore>
+          <ref name="div6"/>
+          <ref name="div.inter"/>
+        </zeroOrMore>
+        <ref name="div.back"/>
+      </element>
+    </define>
+    <define name="div6">
+      <element name="div6">
+        <ref name="div.atts"/>
+        <ref name="div.front"/>
+        <ref name="div.flow"/>
+        <zeroOrMore>
+          <ref name="div7"/>
+          <ref name="div.inter"/>
+        </zeroOrMore>
+        <ref name="div.back"/>
+      </element>
+    </define>
+    <define name="div7">
+      <element name="div7">
+        <ref name="div.atts"/>
+        <ref name="div.front"/>
+        <ref name="div.flow"/>
+        <ref name="div.back"/>
+      </element>
+    </define>
+    <define name="div.flow">
+      <zeroOrMore>
+        <choice>
+          <ref name="block"/>
+          <ref name="point"/>
+        </choice>
+      </zeroOrMore>
+    </define>
+    <define name="div.inter">
+      <zeroOrMore>
+        <choice>
+          <ref name="point"/>
+          <ref name="figure"/>
+        </choice>
+      </zeroOrMore>
+    </define>
+    <define name="div.front">
+      <zeroOrMore>
+        <choice>
+          <!-- <ab> is not in TEI model.divTop -->
+          <ref name="ab"/>
+          <ref name="argument"/>
+          <ref name="byline"/>
+          <ref name="dateline"/>
+          <ref name="docAuthor"/>
+          <ref name="docDate"/>
+          <ref name="epigraph"/>
+          <ref name="head"/>
+          <ref name="index"/>
+          <ref name="milestone"/>
+          <ref name="opener"/>
+          <ref name="salute"/>
+          <ref name="signed"/>
+          <ref name="point"/>
+        </choice>
+      </zeroOrMore>
+    </define>
+    <define name="div.back">
+      <zeroOrMore>
         <choice>
           <ref name="argument"/>
           <ref name="byline"/>
-          <ref name="cb"/>
+          <ref name="closer"/>
           <ref name="dateline"/>
+          <ref name="docAuthor"/>
           <ref name="docDate"/>
           <ref name="epigraph"/>
-          <ref name="figure"/>
-          <ref name="fw"/>
-          <ref name="head"/>
           <ref name="index"/>
-          <ref name="listPerson"/>
           <ref name="milestone"/>
-          <ref name="p"/>
-          <ref name="pb"/>
-          <ref name="opener"/>
+          <ref name="postscript"/>
           <ref name="salute"/>
+          <ref name="signed"/>
+          <ref name="trailer"/>
+          <ref name="point"/>
         </choice>
-      </oneOrMore>
-      <zeroOrMore>
-        <group>
-          <choice>
-            <ref name="block"/>
-            <ref name="gap"/>
-            <ref name="note"/>
-          </choice>
-          <zeroOrMore>
-            <choice>
-              <ref name="fw"/>
-              <ref name="pb"/>
-              <ref name="cb"/>
-              <ref name="milestone"/>
-            </choice>
-          </zeroOrMore>
-        </group>
       </zeroOrMore>
-      <choice>
-        <!-- closer -->
-        <zeroOrMore>
-          <group>
-            <choice>
-              <ref name="byline"/>
-              <ref name="closer"/>
-              <ref name="dateline"/>
-              <ref name="note"/>
-              <ref name="postscript"/>
-              <ref name="salute"/>
-              <ref name="signed"/>
-              <ref name="trailer"/>
-            </choice>
-            <zeroOrMore>
-              <choice>
-                <ref name="fw"/>
-                <ref name="pb"/>
-                <ref name="cb"/>
-                <ref name="milestone"/>
-              </choice>
-            </zeroOrMore>
-          </group>
-        </zeroOrMore>
-        <!-- div -->
-        <zeroOrMore>
-          <group>
-            <choice>
-              <ref name="div"/>
-              <ref name="div2"/>
-              <ref name="div3"/>
-            </choice>
-            <zeroOrMore>
-              <choice>
-                <ref name="fw"/>
-                <ref name="pb"/>
-                <ref name="cb"/>
-                <ref name="milestone"/>
-              </choice>
-            </zeroOrMore>
-          </group>
-        </zeroOrMore>
-      </choice>
     </define>
   </div>
   <div xml:id="zone">
@@ -621,7 +667,7 @@
           <p>L'attribut @xml:id est volontairement non autorisé à ce niveau pour encourager l'identification de la section enveloppante.</p>
         </div>
         <optional>
-          <ref name="lang-att"/>
+          <ref name="xml.lang"/>
         </optional>
         <ref name="rendering.block"/>
         <optional>
@@ -808,7 +854,7 @@
         </optional>
         <optional>
           <a:documentation>Lier une référence bibliographique à une citation par exemple.</a:documentation>
-          <ref name="corresp-att"/>
+          <ref name="corresp"/>
         </optional>
         <optional>
           <attribute name="type">
@@ -864,7 +910,7 @@
         <a:documentation>Description , notamment dans les figures, &lt;html5:figcaption></a:documentation>
         <!-- identifiant et n° dans le conteneur, lang pour description multiple -->
         <optional>
-          <ref name="lang-att"/>
+          <ref name="xml.lang"/>
         </optional>
         <ref name="flow"/>
       </element>
@@ -985,6 +1031,7 @@
             <ref name="textual"/>
             <ref name="name"/>
             <ref name="foreign"/>
+            <ref name="stage"/>
             <ref name="term"/>
           </choice>
         </zeroOrMore>
@@ -1096,6 +1143,7 @@
             <choice>
               <value>diary</value>
               <value>drama</value>
+              <value>index</value>
               <value>legal</value>
               <value>letter</value>
               <value>narrative</value>
@@ -1120,27 +1168,13 @@
             </choice>
           </oneOrMore>
           <!-- ou conteneur de blocs -->
-          <oneOrMore>
-            <choice>
-              <ref name="closer"/>
-              <ref name="dateline"/>
-              <ref name="fw"/>
-              <ref name="label"/>
-              <ref name="l"/>
-              <ref name="lg"/>
-              <ref name="list"/>
-              <ref name="note"/>
-              <ref name="p"/>
-              <ref name="pb"/>
-              <ref name="opener"/>
-              <ref name="postscript"/>
-              <ref name="quote-p"/>
-              <ref name="salute"/>
-              <ref name="signed"/>
-              <ref name="table"/>
-              <ref name="quote-sp"/>
-            </choice>
-          </oneOrMore>
+          <group>
+            <ref name="div.front"/>
+            <zeroOrMore>
+              <ref name="block"/>
+            </zeroOrMore>
+            <ref name="div.back"/>
+          </group>
         </choice>
         <optional>
           <ref name="bibl"/>
@@ -1297,7 +1331,7 @@
                 <text/>
                 <element name="role">
                   <optional>
-                    <ref name="id-att"/>
+                    <ref name="xml.id"/>
                   </optional>
                   <optional>
                     <ref name="rend-role"/>
@@ -1309,7 +1343,7 @@
                 </element>
                 <element name="actor">
                   <optional>
-                    <ref name="id-att"/>
+                    <ref name="xml.id"/>
                   </optional>
                   <ref name="textual"/>
                 </element>
@@ -1336,6 +1370,7 @@
         <oneOrMore>
           <choice>
             <ref name="block"/>
+            <ref name="head"/>
             <ref name="point"/>
           </choice>
         </oneOrMore>
@@ -1449,7 +1484,7 @@
     <define name="listPerson">
       <element name="listPerson">
         <optional>
-          <ref name="id-att"/>
+          <ref name="xml.id"/>
         </optional>
         <optional>
           <ref name="n-att"/>
@@ -1490,10 +1525,10 @@
       <element name="person">
         <choice>
           <group>
-            <ref name="id-att"/>
+            <ref name="xml.id"/>
             <ref name="n-att"/>
             <optional>
-              <ref name="corresp-att"/>
+              <ref name="corresp"/>
             </optional>
             <optional>
               <attribute name="sex">
@@ -1515,7 +1550,7 @@
             </optional>
           </group>
           <group>
-            <ref name="corresp-att"/>
+            <ref name="corresp"/>
           </group>
         </choice>
         <optional>
@@ -1614,6 +1649,7 @@
                             <value>top</value>
                             <value>left</value>
                             <value>right</value>
+                            <value>border</value>
                             <ref name="rend.font"/>
                           </choice>
                         </oneOrMore>
@@ -1651,8 +1687,6 @@
           <ref name="emph"/>
           <ref name="hi"/>
           <ref name="g"/>
-          <ref name="space"/>
-          <ref name="gap"/>
         </choice>
       </zeroOrMore>
     </define>
@@ -1732,7 +1766,7 @@
         </optional>
         <!-- généré par traitement de texte -->
         <optional>
-          <ref name="lang-att"/>
+          <ref name="xml.lang"/>
         </optional>
         <!-- Pas de hi dans du hi ? -->
         <zeroOrMore>
@@ -1762,26 +1796,34 @@
     <define name="gap">
       <element name="gap">
         <a:documentation>Texte non transcrit. Indiquer obligatoirement une raison et un ordre de grandeur. Les unités de distance linéaire sont interprétées verticalement lorsque que l’élément est utilisé au niveau paragraphe, sinon elles sont interprétées horizontalement. Pour les manques horizontaux sur plus d'une ligne, préférer un ordre de grandeur en caractères.</a:documentation>
-        <attribute name="reason">
-          <choice>
-            <value>illisible</value>
-            <value>hors projet</value>
-            <text/>
-          </choice>
-        </attribute>
-        <attribute name="quantity"/>
-        <attribute name="unit">
-          <choice>
-            <value>lines</value>
-            <a:documentation>lignes de texte</a:documentation>
-            <value>chars</value>
-            <a:documentation>caractères</a:documentation>
-            <value>mm</value>
-            <a:documentation>millimètres</a:documentation>
-            <value>cm</value>
-            <a:documentation>centimètres</a:documentation>
-          </choice>
-        </attribute>
+        <optional>
+          <attribute name="reason">
+            <choice>
+              <value>omitted</value>
+              <value>illisible</value>
+              <value>hors projet</value>
+              <text/>
+            </choice>
+          </attribute>
+        </optional>
+        <optional>
+          <ref name="xml.lang"/>
+        </optional>
+        <optional>
+          <attribute name="quantity"/>
+          <attribute name="unit">
+            <choice>
+              <value>lines</value>
+              <a:documentation>lignes de texte</a:documentation>
+              <value>chars</value>
+              <a:documentation>caractères</a:documentation>
+              <value>mm</value>
+              <a:documentation>millimètres</a:documentation>
+              <value>cm</value>
+              <a:documentation>centimètres</a:documentation>
+            </choice>
+          </attribute>
+        </optional>
       </element>
     </define>
     <define name="seg">
@@ -1877,8 +1919,10 @@
       <zeroOrMore>
         <choice>
           <text/>
+          <ref name="abbr"/>
           <ref name="corr"/>
           <ref name="emph"/>
+          <ref name="foreign"/>
           <element name="hi">
             <attribute name="rend">
               <choice>
@@ -1894,7 +1938,6 @@
           <ref name="num"/>
           <ref name="point"/>
           <ref name="ref"/>
-          <ref name="abbr"/>
         </choice>
       </zeroOrMore>
     </define>
@@ -1990,7 +2033,7 @@
           <ref name="rend-att"/>
         </optional>
         <optional>
-          <ref name="id-att"/>
+          <ref name="xml.id"/>
         </optional>
         <zeroOrMore>
           <choice>
@@ -2474,7 +2517,7 @@
         <ref name="key-att"/>
       </optional>
       <optional>
-        <ref name="corresp-att"/>
+        <ref name="corresp"/>
       </optional>
       <optional>
         <ref name="ref-att"/>
@@ -2569,14 +2612,16 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <a:example href="teibook.xml#point"/>
       </div>
       <choice>
-        <ref name="index"/>
-        <ref name="pb"/>
-        <ref name="note"/>
-        <ref name="graphic"/>
-        <ref name="lb"/>
         <ref name="anchor"/>
         <ref name="cb"/>
+        <ref name="gap"/>
+        <ref name="graphic"/>
+        <ref name="index"/>
+        <ref name="lb"/>
+        <ref name="note"/>
         <ref name="milestone"/>
+        <ref name="pb"/>
+        <ref name="space"/>
       </choice>
     </define>
     <define name="anchor">
@@ -2711,15 +2756,26 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
       <element name="milestone">
         <a:documentation>Borne anonyme, vide, permet d’étiqueter des points qui n’entrent pas dans la hiérarchie éditoriale, et qui ne sont pas des sauts de page <a:el>pb</a:el>, de colonne <a:el>cb</a:el> ou de ligne <a:el>lb</a:el></a:documentation>
         <empty/>
-        <attribute name="unit">
+        <optional>
+          <attribute name="unit">
+            <choice>
+              <value>hr</value>
+              <a:documentation>Trait de séparation</a:documentation>
+              <value>rule</value>
+              <a:documentation>Trait de séparation</a:documentation>
+              <text/>
+            </choice>
+          </attribute>
+        </optional>
+        <optional>
           <choice>
-            <value>hr</value>
-            <a:documentation>Trait de séparation</a:documentation>
-            <value>rule</value>
-            <a:documentation>Trait de séparation</a:documentation>
-            <text/>
+            <ref name="corresp"/>
+            <ref name="xml.id"/>            
           </choice>
-        </attribute>
+        </optional>
+        <optional>
+          <attribute name="type"/>
+        </optional>
       </element>
     </define>
     <define name="note">
@@ -2736,28 +2792,23 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <optional>
           <ref name="resp-att"/>
         </optional>
-        <!-- Quel genre de rendu attendu ?
-        <ref name="rendering-atts"/>
-        -->
-        <optional>
-          <ref name="type-att"/>
-        </optional>
         <optional>
           <ref name="place-att"/>
         </optional>
         <ref name="rendering-atts"/>
         <choice>
-          <!-- Attention au déterminisme xsd pour <figure>, ne pas autoriser note dans note, ainsi que saut de page (ex: note de fin, ou note sur plus d'une page) -->
+          <!-- Attention au déterminisme xsd pour <figure>, ne pas autoriser saut de page (ex: note de fin, ou note sur plus d'une page) -->
           <oneOrMore>
             <choice>
               <text/>
               <!--
               <ref name="quote-c"/>
-              <ref name="bibl"/>
               XSD cos -->
               <ref name="anchor"/>
+              <ref name="bibl"/>
               <ref name="quote-c"/>
               <ref name="function"/>
+              <ref name="gap"/>
               <ref name="indexable"/>
               <ref name="lb"/>
               <ref name="typo"/>
@@ -2767,6 +2818,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
           <oneOrMore>
             <choice>
               <ref name="block"/>
+              <ref name="gap"/>
             </choice>
           </oneOrMore>
         </choice>
@@ -2805,7 +2857,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
   </div>
   <div xml:id="atts">
     <a:documentation>Attributs</a:documentation>
-    <define name="corresp-att">
+    <define name="corresp">
       <attribute name="corresp">
         <a:documentation>Pointeur vers une ressource liée</a:documentation>
         <list>
@@ -2813,7 +2865,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </list>
       </attribute>
     </define>
-    <define name="copyOf-att">
+    <define name="copyOf">
       <attribute name="copyOf">
         <a:documentation>Lien de copie (non directionnel) entre l’élément porteur de l’attribut et un fichier ou un fragment de fichier pointé par une url.</a:documentation>
         <list>
@@ -2821,7 +2873,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </list>
       </attribute>
     </define>
-    <define name="id-att">
+    <define name="xml.id">
       <attribute name="xml:id">
         <a:documentation>Identifiant, au moins unique pour le document.</a:documentation>
         <data type="ID"/>
@@ -2865,12 +2917,12 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <!-- NB: d’autres valeurs autorisées sont documentées -->
       </attribute>
     </define>
-    <define name="lang-att">
+    <define name="xml.lang">
       <attribute name="xml:lang">
         <a:documentation>Code normalisé de langue.</a:documentation>
       </attribute>
     </define>
-    <define name="base-att">
+    <define name="xml.base">
       <attribute name="xml:base">
         <a:documentation>Base de résolution des liens.</a:documentation>
       </attribute>
@@ -2955,10 +3007,10 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
     </define>
     <define name="xml-atts">
       <optional>
-        <ref name="lang-att"/>
+        <ref name="xml.lang"/>
       </optional>
       <optional>
-        <ref name="id-att"/>
+        <ref name="xml.id"/>
       </optional>
     </define>
     <define name="rend.list">
