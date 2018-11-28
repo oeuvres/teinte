@@ -288,9 +288,12 @@
     <define name="body">
       <element name="body">
         <a:documentation>Texte principal</a:documentation>
-        <optional>
-          <ref name="head"/>
-        </optional>
+        <zeroOrMore>
+          <choice>
+            <ref name="head"/>
+            <ref name="pb"/>
+          </choice>
+        </zeroOrMore>
         <choice>
           <oneOrMore>
             <ref name="div"/>
@@ -1912,6 +1915,7 @@
         <ref name="said"/>
         <ref name="seg"/>
         <ref name="surname"/>
+        <ref name="unclear"/>
       </choice>
     </define>
     <define name="textual">
@@ -1984,7 +1988,6 @@
           <a:documentation>Permet de retenir le mot corrigé</a:documentation>
         </optional>
         <text/>
-        <!-- TODO: macro {text}, hi, num ? -->
       </element>
     </define>
     <define name="date">
@@ -2196,6 +2199,12 @@
             </choice>
           </oneOrMore>
         </choice>
+      </element>
+    </define>
+    <define name="unclear">
+      <element name="unclear">
+        <a:documentation>Incertain, segment de texte transcrit sans certitude</a:documentation>
+        <text/>
       </element>
     </define>
   </div>
