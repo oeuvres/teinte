@@ -802,7 +802,7 @@
           <ref name="function"/>
           <ref name="indexable"/>
           <ref name="figure"/>
-          <ref name="quote-c"/>
+          <ref name="quote.c"/>
           <ref name="label"/>
           <ref name="bibl"/>
           <ref name="stage"/>
@@ -1226,7 +1226,7 @@
               <ref name="p"/>
               <ref name="pb"/>
               <ref name="quote-p"/>
-              <ref name="quote-sp"/>
+              <ref name="sp.quote"/>
               <ref name="stage"/>
               <ref name="table"/>
             </choice>
@@ -1240,9 +1240,9 @@
         </optional>
       </element>
     </define>
-    <define name="quote-c">
+    <define name="quote.c">
       <element name="quote">
-        <a:documentation>Citation dans un paragraphe</a:documentation>
+        <a:documentation>Citation insérée dans un paragraphe (niveau caractère)</a:documentation>
         <ref name="xml-atts"/>
         <optional>
           <ref name="type-att"/>
@@ -1252,113 +1252,9 @@
         <ref name="flow"/>
       </element>
     </define>
-    <define name="sp">
-      <element name="sp">
-        <a:documentation>Théâtre : tirade, tour de parole</a:documentation>
-        <ref name="xml-atts"/>
-        <ref name="who"/>
-        <ref name="speaker"/>
-        <oneOrMore>
-          <choice>
-            <ref name="figure"/>
-            <ref name="l"/>
-            <ref name="label"/>
-            <ref name="lg"/>
-            <ref name="note"/>
-            <ref name="p"/>
-            <ref name="pb"/>
-            <ref name="q-p"/>
-            <ref name="quote-p"/>
-            <ref name="stage"/>
-          </choice>
-        </oneOrMore>
-      </element>
-    </define>
-    <define name="who">
-      <attribute name="who">
-        <data type="IDREFS"/>
-      </attribute>
-    </define>
-    <define name="quote-sp">
-      <element name="sp">
-        <a:documentation>Citation de théâtre : tirade, tour de parole</a:documentation>
-        <optional>
-          <ref name="speaker"/>
-        </optional>
-        <optional>
-          <ref name="who"/>
-        </optional>
-        <oneOrMore>
-          <choice>
-            <ref name="l"/>
-            <ref name="lg"/>
-            <ref name="note"/>
-            <ref name="p"/>
-            <ref name="pb"/>
-            <ref name="q-p"/>
-            <ref name="quote-p"/>
-            <ref name="stage"/>
-          </choice>
-        </oneOrMore>
-      </element>
-    </define>
-    <define name="speaker">
-      <element name="speaker">
-        <zeroOrMore>
-          <choice>
-            <text/>
-            <ref name="hi"/>
-            <ref name="listPerson"/>
-            <ref name="note"/>
-            <ref name="pb"/>
-            <ref name="ref"/>
-            <ref name="stage"/>
-          </choice>
-        </zeroOrMore>
-      </element>
-    </define>
   </div>
   <div xml:id="lists">
     <a:documentation>Figures, tables et listes</a:documentation>
-    <define name="castList">
-      <element name="castList">
-        <a:documentation>Théâtre, distribution</a:documentation>
-        <optional>
-          <ref name="head"/>
-        </optional>
-        <oneOrMore>
-          <element name="castItem">
-            <ref name="xml-atts"/>
-            <zeroOrMore>
-              <choice>
-                <text/>
-                <element name="role">
-                  <optional>
-                    <ref name="xml.id"/>
-                  </optional>
-                  <optional>
-                    <ref name="rend-role"/>
-                  </optional>
-                  <optional>
-                    <ref name="n-att"/>
-                  </optional>
-                  <ref name="textual"/>
-                </element>
-                <element name="actor">
-                  <optional>
-                    <ref name="xml.id"/>
-                  </optional>
-                  <ref name="textual"/>
-                </element>
-                <element name="roleDesc">
-                  <ref name="flow"/>
-                </element>
-              </choice>
-            </zeroOrMore>
-          </element>
-        </oneOrMore>
-      </element>
-    </define>
     <define name="figure">
       <element name="figure">
         <a:documentation>Boîte hors du flux, parfois encadrée, pouvant contenir une image, une table, une formule, ou autre objet susceptible d’être référencé dans une table dédiée. Permet notamment d’envelopper une image avec sa légende. &lt;html5:figure></a:documentation>
@@ -1482,102 +1378,6 @@
             <ref name="listBibl"/>
           </choice>
         </oneOrMore>
-      </element>
-    </define>
-    <define name="listPerson">
-      <element name="listPerson">
-        <optional>
-          <ref name="xml.id"/>
-        </optional>
-        <optional>
-          <ref name="n-att"/>
-        </optional>
-        <optional>
-          <attribute name="type">
-            <value>configuration</value>
-          </attribute>
-        </optional>
-        <optional>
-          <attribute name="subtype">
-            <choice>
-              <value>break</value>
-              <value>escape</value>
-              <value>search</value>
-              <value>escape-search</value>
-            </choice>
-          </attribute>
-        </optional>
-        <choice>
-          <zeroOrMore>
-            <ref name="person"/>
-          </zeroOrMore>
-          <oneOrMore>
-            <element name="listPerson">
-              <attribute name="type">
-                <value>group</value>
-              </attribute>
-              <oneOrMore>
-                <ref name="person"/>
-              </oneOrMore>
-            </element>
-          </oneOrMore>
-        </choice>
-      </element>
-    </define>
-    <define name="person">
-      <element name="person">
-        <choice>
-          <group>
-            <ref name="xml.id"/>
-            <ref name="n-att"/>
-            <optional>
-              <ref name="corresp"/>
-            </optional>
-            <optional>
-              <attribute name="sex">
-                <choice>
-                  <value>1</value>
-                  <a:documentation>Homme</a:documentation>
-                  <value>2</value>
-                  <a:documentation>Femme</a:documentation>
-                  <value>O</value>
-                  <a:documentation>Inconnu</a:documentation>
-                  <value>9</value>
-                  <a:documentation>Non applicable</a:documentation>
-                  <value>rose</value>
-                </choice>
-              </attribute>
-            </optional>
-            <optional>
-              <ref name="rend-role"/>
-            </optional>
-          </group>
-          <group>
-            <ref name="corresp"/>
-          </group>
-        </choice>
-        <optional>
-          <optional>
-            <attribute name="role">
-              <list>
-                <choice>
-                  <ref name="val-status"/>
-                  <choice>
-                    <value>hidden</value>
-                    <value>offstage</value>
-                    <value>dead</value>
-                    <value>absent</value>
-                    <value>unconscious</value>
-                    <value>aside</value>
-                  </choice>
-                </choice>
-              </list>
-            </attribute>
-          </optional>
-        </optional>
-        <optional>
-          <attribute name="copyOf"/>
-        </optional>
       </element>
     </define>
     <define name="table">
@@ -1726,7 +1526,7 @@
     </define>
     <define name="emph">
       <element name="emph">
-        <a:documentation>Mise en valeur, &lt;html5:em></a:documentation>
+        <a:documentation>Mise en valeur, &lt;html5:em> (apparence italique)</a:documentation>
         <ref name="textual"/>
       </element>
     </define>
@@ -1735,7 +1535,7 @@
         <a:documentation>Mise en forme de niveau caractère, sans interprétation sémantique (ex : italique, gras, couleurs…)</a:documentation>
         <div xmlns="http://www.w3.org/1999/xhtml">
           <p>La liste des possibilités de mise en forme est volontairement close, afin de favoriser un balisage plus sémantique, ou alors de reporter les styles de caractères plus spécifiques vers l'élément <a:el>seg</a:el>.</p>
-          <p>L'attribut @n peut être utilisé pour conserver un code couleur, par exemple après conversion depuis un traitement de texte (surlignage, coloration), en attendant que la fonction sémantique voulue par l'auteur soit attribuée par une transformation ultérieure.</p>
+          <p>L'attribut @n peut être utilisé pour conserver un code couleur, par exemple après conversion depuis un traitement de texte (surlignage, coloration), en attendant que la fonction sémantique voulue par l'auteur soit attribuée par un remplacement ultérieur.</p>
           <p>Il est parfois nécessaire de préciser qu'à l'intérieur d'un segment mis en forme (ex : citation en italique), une expression apparaît en romain (ex : mot en mention dans une citation : <i>« J’appelle</i> typographie <i>la mise à plat d’une pensée »</i> ; titre d’ouvrage dans un titre en italique : <i>le</i> Quichotte <i>au XX<sup>e</sup> s.</i>). On recommande pour ces cas de redoubler la mise en forme (ex : italique dans l'italique), l'apparence peut ainsi être restaurée par stylage. Un balisage typographique doit pouvoir généralement résoudre tous ces cas.</p>
           <a:example>
             <!-- Balisage TEI respectant la continuité typographique -->
@@ -1891,6 +1691,339 @@
         </data>
       </element>
     </define>
+  </div>
+  <div xml:id="theatre">
+    <a:documentation>Théâtre</a:documentation>
+    <define name="sp">
+      <element name="sp">
+        <a:documentation>Théâtre : tirade, tour de parole</a:documentation>
+        <ref name="xml-atts"/>
+        <ref name="who"/>
+        <ref name="speaker"/>
+        <oneOrMore>
+          <choice>
+            <ref name="figure"/>
+            <ref name="l"/>
+            <ref name="label"/>
+            <ref name="lg"/>
+            <ref name="note"/>
+            <ref name="p"/>
+            <ref name="pb"/>
+            <ref name="q-p"/>
+            <ref name="quote-p"/>
+            <ref name="stage"/>
+          </choice>
+        </oneOrMore>
+      </element>
+    </define>
+    <define name="sp.quote">
+      <element name="sp">
+        <a:documentation>Citation de théâtre : tirade, tour de parole</a:documentation>
+        <optional>
+          <ref name="speaker"/>
+        </optional>
+        <optional>
+          <ref name="who"/>
+        </optional>
+        <oneOrMore>
+          <choice>
+            <ref name="l"/>
+            <ref name="lg"/>
+            <ref name="note"/>
+            <ref name="p"/>
+            <ref name="pb"/>
+            <ref name="q-p"/>
+            <ref name="quote-p"/>
+            <ref name="stage"/>
+          </choice>
+        </oneOrMore>
+      </element>
+    </define>
+    
+    <define name="who">
+      <attribute name="who">
+        <data type="IDREFS"/>
+      </attribute>
+    </define>
+    <define name="stage">
+      <element name="stage">
+        <a:documentation>Théâtre, indication scénique.</a:documentation>
+        <div xmlns="http://www.w3.org/1999/xhtml">
+          <p>La <b>didascalie</b> est une notion pouvant accepter plusieurs définitions. Un encodage en XML impose une grammaire stricte dans la désignation et l’imbrication des éléments. A priori, le balisage des didascalies concerne principalement l’élément <a:el>stage</a:el>. Il peut se trouver au niveau de la pièce (Le Cid : « La scène est à Séville »), de l’acte, de la scène, de la réplique, ou en cours de réplique (« Tartuffe : Le Ciel défend, de vrai, certains contentements ; <i>C’est un Scélérat qui parle.</i> Mais on trouve avec lui des accommodements. »). Tout semble théoriquement prévu, mais la machine se grippe rapidement, par exemple avec cette entête de réplique pourtant fréquente « SGANARELLE, à part ». En TEI, les noms de personnages sont enveloppées dans l’élément <a:el>speaker</a:el>. <a:el>speaker</a:el> n’a pas le droit de contenir l’élément  <a:el>stage</a:el>. Ce choix a été longtemps discuté et réfléchi dans la communauté TEI, il porte potentiellement une définition des didascalies.</p>
+          <p>On pourrait proposer cette première définition : « la didascalie est un discours de l’auteur et non d’un personnage ». Ceci recouvre très bien ce qui se met dans un <a:el>stage</a:el>, mais aussi, une grande partie du paratexte. La distribution des rôles <a:el>castList</a:el> est aussi un discours de l’auteur, ne serait-ce que par son ordre qui donne une indication scénique. Ainsi, Tartuffe est entre la famille et les valets, qualifié de « faux dévot ». Cette indication scénique donne une direction importante aux acteurs, la TEI la met généralement dans un jeu d’éléments pour encoder la distribution des rôles : <a:el>castList</a:el>, contenant des <a:el>castItem</a:el>, contenant principalement les notions de <a:el>role</a:el>, <a:el>actor</a:el> et <a:el>roleDesc</a:el> (description du rôle, qui contiendrait « faux dévot »). <a:el>stage</a:el> n’est pas autorisé dans <a:el>castItem</a:el>. Le « discours de l’auteur » s’avère donc une notion très imprécise à interpréter. D’ailleurs, ne serait-ce pas l’auteur, ou certains de ses aspects, qui parle à travers chaque personnage ?
+           </p>
+          <p>Nous avons préféré partir d’une analyse plus concrète de la situation de communication. Généralement, un texte imprimé de théâtre s’adresse d’abord à une troupe. Il en résulte une distinction forte : une didascalie est du texte écrit à destination des acteurs, et qui ne se prononce pas. Cette définition a des effets larges, qui expliquent assez bien les choix de la TEI.</p>
+          <ul>
+            <li>La distribution ou liste de personnages en tête de pièce <a:el>castList</a:el> est une didascalie à destination de la troupe pour annoncer les rôles, emplois, et relations. La dramaturgie automatique a besoin de cette information, de manière plus précise et plus structurée.</li>
+            <li>La distribution de scène, ex : « Phède, Hippolyte », relève de la didascalie. Le titre d’acte, de tableau ou de scène, aussi : « Scène 1 ». Il en résulte que l’on pourrait mettre titre de section et liste de personnages dans un même élément, un “titre” <a:el>head</a:el> : « Scène 1. Phèdre, Hippolyte. ». Ce n’est pas contradictoire avec la définition ci-dessus, mais <a:el>head</a:el> en TEI a le sens plus général de titres de section. Or, la liste des personnages peut être diversement longue et mêlée d’autres indications scéniques, ne relevant plus à proprement du titre. En conséquence, nous plaçons la distribution de scène dans un élément <a:el>stage</a:el>, juste après le <a:el>head</a:el>. Cette structure n’engage pas la présentation typographique (ex : tout peut paraître une ligne). La dramaturgie automatique aura besoin d’informations supplémentaires, cf. <a:el>listPerson</a:el>.</li>
+            <li>Les noms de personnages en tête de réplique <a:el>speaker</a:el> sont des didascalies, raison qui justifie TEI de ne pas y autoriser <a:el>stage</a:el> (comme on ne peut pas mettre un paragraphe dans un paragraphe). Il en résulte que les mots qui ne sont pas des noms de personnage ont le même statut de didascalie, les distinctions ne sont que typographiques. 
+              <a:example><speaker>Pipi <emph>et</emph> quatorze, <emph>riant</emph></speaker></a:example>
+            </li>
+          </ul>
+          <p>Selon cette définition, l'élément <a:el>stage</a:el> peut apparaître à de nombreux endroits :</p>
+          <ul>
+            <li><code>div[@type='act' or @type='prologue' or @type='interlude']/stage[1]</code> – didascalie d’acte (ou prologue ou intermède) lorsque la division de niveau 1 ne comporte pas de scènes</li>
+            <li><code>div[@type='scene']/stage[1]</code> – didascalie de scène listant les personnages</li>
+            <li><code>div/stage</code> – entre deux répliques <a:el>sp</a:el></li>
+            <li><code>sp/stage</code> – à l’intérieur d’une réplique, entre deux vers <a:el>l</a:el> ou deux paragraphes <a:el>p</a:el></li>
+            <li><code>sp/(l|p)/stage</code> – en cours de phrase</li>
+          </ul>
+          <p>Pour une étude scientifique des indications scéniques, on conseillera d'utiliser des procédés analytiques plus élaborés, permettant notamment de typer et reconstruire des formules compréhensibles lorsqu'elles sont extraites du contexte.</p>
+        </div>
+        <optional>
+          <attribute name="rend">
+            <choice>
+              <ref name="rend.align"/>
+              <value>sc</value>
+              <text/>
+            </choice>
+          </attribute>
+        </optional>
+        <optional>
+          <attribute name="type">
+            <choice>
+              <value>setting</value>
+              <value>entrance</value>
+              <value>exit</value>
+              <value>business</value>
+              <value>novelistic</value>
+              <value>delivery</value>
+              <value>modifier</value>
+              <value>location</value>
+              <value>mixed</value>
+              <value>didascalia</value>
+              <value>castList</value>
+              <text/>
+            </choice>
+          </attribute>
+        </optional>
+        <choice>
+          <oneOrMore>
+            <choice>
+              <text/>
+              <ref name="emph"/>
+              <ref name="hi"/>
+              <ref name="lb"/>
+              <ref name="listPerson"/>
+              <ref name="note"/>
+              <ref name="num"/>
+              <ref name="pb"/>
+              <ref name="ref"/>
+              <ref name="space"/>
+              <ref name="stage"/>
+            </choice>
+          </oneOrMore>
+          <oneOrMore>
+            <choice>
+              <ref name="l"/>
+              <ref name="listPerson"/>
+              <ref name="lg"/>
+              <ref name="p"/>
+              <ref name="pb"/>
+              <ref name="quote-p"/>
+            </choice>
+          </oneOrMore>
+        </choice>
+      </element>
+    </define>
+    <define name="speaker">
+      <element name="speaker">
+        <zeroOrMore>
+          <choice>
+            <text/>
+            <ref name="hi"/>
+            <ref name="listPerson"/>
+            <ref name="note"/>
+            <ref name="pb"/>
+            <ref name="ref"/>
+            <ref name="stage"/>
+          </choice>
+        </zeroOrMore>
+      </element>
+    </define>
+    <define name="castList">
+      <element name="castList">
+        <a:documentation>Théâtre, distribution</a:documentation>
+        <div xmlns="http://www.w3.org/1999/xhtml">
+          <p><a:el>castList</a:el> permet d'encoder la distribution d'un texte dramatique. La structuration sémantique, notamment l'élément <a:el>role</a:el>, permet de porter des informations, par exemple un identifiant qui sera rappelé avec un élément <a:el>person</a:el> dans une configuration scénique <a:el>listPerson</a:el>.</p>
+          <a:example>
+            <castList>
+              <castItem><role xml:id="madame-pernelle" rend="female veteran">Madame Pernelle</role>, <roleDesc>Mère d’Orgon</roleDesc>.</castItem>
+              <castItem><role xml:id="orgon" rend="male superior">Orgon</role>, <roleDesc>Mari d’Elmire</roleDesc>.</castItem>
+              <castItem><role xml:id="elmire" rend="female superior">Elmire</role>, <roleDesc>Femme d’Orgon</roleDesc>.</castItem>
+              <castItem><role xml:id="damis" rend="male junior">Damis</role>, <roleDesc>Fils d’Orgon</roleDesc>.</castItem>
+              <castItem><role xml:id="mariane" rend="female junior">Mariane</role>, <roleDesc>Fille d’Orgon, et Amante de Valère</roleDesc>.</castItem>
+              <castItem><role xml:id="valere" rend="male junior">Valère</role>, <roleDesc>Amant de Mariane</roleDesc>.</castItem>
+              <castItem><role xml:id="cleante" rend="male">Cléante</role>, <roleDesc>Beau-frère d’Orgon</roleDesc>.</castItem>
+              <castItem><role xml:id="tartuffe" rend="male">Tartuffe</role>, <roleDesc>Faux Dévot</roleDesc>.</castItem>
+              <castItem><role xml:id="dorine" rend="female inferior">Dorine</role>, <roleDesc>Suivante de Mariane</roleDesc>.</castItem>
+              <castItem><role xml:id="loyal">Monsieur Loyal</role>, <roleDesc>Sergent</roleDesc>.</castItem>
+              <castItem><role xml:id="exempt">Un exempt</role>.</castItem>
+              <castItem><role xml:id="flipote" rend="female inferior">Flipote</role>, Servante de Mme Pernelle.</castItem>
+            </castList>
+          </a:example>
+        </div>
+        <optional>
+          <ref name="head"/>
+        </optional>
+        <oneOrMore>
+          <element name="castItem">
+            <ref name="xml-atts"/>
+            <zeroOrMore>
+              <choice>
+                <text/>
+                <element name="role">
+                  <optional>
+                    <ref name="xml.id"/>
+                  </optional>
+                  <optional>
+                    <ref name="rend-role"/>
+                  </optional>
+                  <optional>
+                    <ref name="n-att"/>
+                  </optional>
+                  <ref name="textual"/>
+                </element>
+                <element name="actor">
+                  <optional>
+                    <ref name="xml.id"/>
+                  </optional>
+                  <ref name="textual"/>
+                </element>
+                <element name="roleDesc">
+                  <ref name="flow"/>
+                </element>
+              </choice>
+            </zeroOrMore>
+          </element>
+        </oneOrMore>
+      </element>
+    </define>
+    <define name="listPerson">
+      <element name="listPerson">
+        <a:documentation>Liste de personnes, théâtre : configuration scénique (dramaturgie automatique)</a:documentation>
+        <div xmlns="http://www.w3.org/1999/xhtml">
+          <p><a:el>listPerson</a:el> peut avoir de nombreux usages, ne sera documenté ici qu'un usage spécifique, pour le théâtre.</p>
+          <p>Un texte de théâtre encodé peut permettre des analyses automatiques, et notamment, suivre les <b>configurations</b> de personnages qui occupent la scène. Les didascalies permettent en général de donner des indications suffisantes à destination des humains pour reconstruire l'état de la scène, mais l'information doit être encodée pour qu'un automate puisse l'extraire avec précision.</p>
+          <p>Le théâtre classique français est divisé en scènes, avec en général la liste complète du personnel impliqué. En théorie, les entrées et les sorties définissent justement la division d'un acte en scènes. Ce n'est pas le cas dans toutes les traditions, par exemple le théâtre espagnol du grand siècle est souvent divisés en actes sur un même lieu où le personnel entre et sort. Par ailleurs, même dans le th'âtre français le plus classique, des entrées et des sorties peuvent inetrvenir entre des tirades, voire en plein milieu, ce qui fait généralement l'objet d'une indication scénique <a:el>stage</a:el>.</p>
+          <p>Une <b>configuration</b> est une partie d’un texte dramatique qui ne contient aucun mouvement d’entrée ou de sortie du plateau, et se définit par la liste des personnages qui sont présents durant cet intervalle. On peut distinguer les configurations successives en insérant un élément <a:el>listPerson</a:el> à chaque fois qu’un personnage entre ou sort, même si ce mouvement correspond à un changement de scène.</p>
+          <p>On peut également considérer qu'il y a une nouvelle configuration quand les mêmes personnages restent sur le plateau, mais que leurs relations changent (personnage caché qui apparaît, personnage endormi qui se réveille, ou inversement, etc.).</p>
+          <a:example>
+            <div type="scene" xml:id="IV05">
+              <head>Scène V</head>
+              <stage>Tartuffe, Elmire, Orgon
+                <listPerson type="configuration">
+                  <person corresp="#tartuffe"/>
+                  <person corresp="#elmire" />
+                  <!-- Orgon est caché sous la table -->
+                  <person corresp="#orgon" role="hidden"/>
+                </listPerson>
+              </stage>
+              <sp xml:id="IV05-1" who="tartuffe">
+                <speaker>Tartuffe</speaker>
+                <l n="1387" xml:id="l1387">On m’a dit qu’en ce lieu vous me vouliez parler.</l>
+              </sp>
+              <!-- ... -->
+            </div>
+          </a:example>
+          <p>La scène peut être vide, mais en général, une configuration comporte au moins un personnage (monologue) <a:el>person</a:el>, souvent plusieurs. Il est possible de regrouper les personnes d'une configuration dans un <a:el>listGroup</a:el>, ce qui permet de par exemple d'isoler les figurants des protagonistes.</p>
+        </div>
+        <optional>
+          <ref name="xml.id"/>
+        </optional>
+        <optional>
+          <attribute name="n">
+            <a:documentation>Chiffre arabe indiquant l'ordre de la configuration à l'intérieur de la scène, peut être généré automatiquement, notamment pour générer automatiquement un identifiant.</a:documentation>
+          </attribute>
+        </optional>
+        <optional>
+          <attribute name="type">
+            <choice>
+              <value>configuration</value>
+              <text/>
+            </choice>
+          </attribute>
+        </optional>
+        <optional>
+          <attribute name="subtype">
+            <choice>
+              <value>break</value>
+              <value>escape</value>
+              <value>search</value>
+              <value>escape-search</value>
+            </choice>
+          </attribute>
+        </optional>
+        <choice>
+          <zeroOrMore>
+            <ref name="person"/>
+          </zeroOrMore>
+          <oneOrMore>
+            <element name="listPerson">
+              <attribute name="type">
+                <value>group</value>
+              </attribute>
+              <oneOrMore>
+                <ref name="person"/>
+              </oneOrMore>
+            </element>
+          </oneOrMore>
+        </choice>
+      </element>
+    </define>
+    <define name="person">
+      <element name="person">
+        <a:documentation>Personne, théâtre : personnage dans une configuration scénique (dramaturgie automatique)</a:documentation>
+        <div xmlns="http://www.w3.org/1999/xhtml">
+          <p>Personnage de théâtre, soit en déclaration initiale (alternative plus formalisée à <a:el>role</a:el>) avec identifiant <a:att>xml:id</a:att> obligatoire, soit dans une configuration scénique, avec identifiant <a:att>corresp</a:att> obligatoire, pointant vers la déclaration initiale du personnage.</p>
+        </div>
+        <choice>
+          <group>
+            <ref name="corresp"/>
+            <optional>
+              <attribute name="role">
+                <list>
+                  <choice>
+                    <value>hidden</value>
+                    <value>offstage</value>
+                    <value>dead</value>
+                    <value>absent</value>
+                    <value>unconscious</value>
+                    <value>aside</value>
+                  </choice>
+                </list>
+              </attribute>
+            </optional>
+          </group>
+          <group>
+            <ref name="xml.id"/>
+            <optional>
+              <attribute name="sex">
+                <choice>
+                  <value>1</value>
+                  <a:documentation>Homme</a:documentation>
+                  <value>2</value>
+                  <a:documentation>Femme</a:documentation>
+                  <value>O</value>
+                  <a:documentation>Inconnu</a:documentation>
+                  <value>9</value>
+                  <a:documentation>Non applicable</a:documentation>
+                </choice>
+              </attribute>
+            </optional>
+            <optional>
+              <attribute name="role">
+                <ref name="val-status"/>
+              </attribute>
+            </optional>
+            <optional>
+              <ref name="rend-role"/>
+            </optional>
+          </group>
+        </choice>
+      </element>
+    </define>
+    
   </div>
   <div xml:id="function">
     <a:documentation>Fonctions</a:documentation>
@@ -2142,63 +2275,6 @@
         <a:documentation>Parole, par exemple dans un dialogue de roman</a:documentation>
         <ref name="xml-atts"/>
         <ref name="flow"/>
-      </element>
-    </define>
-    <define name="stage">
-      <element name="stage">
-        <a:documentation>Théâtre, didascalie, pouvant apparaître à différents niveaux du texte.</a:documentation>
-        <optional>
-          <attribute name="rend">
-            <choice>
-              <ref name="rend.align"/>
-              <value>sc</value>
-              <text/>
-            </choice>
-          </attribute>
-        </optional>
-        <optional>
-          <attribute name="type">
-            <choice>
-              <value>setting</value>
-              <value>entrance</value>
-              <value>exit</value>
-              <value>business</value>
-              <value>novelistic</value>
-              <value>delivery</value>
-              <value>modifier</value>
-              <value>location</value>
-              <value>mixed</value>
-              <value>didascalia</value>
-              <value>castList</value>
-              <text/>
-            </choice>
-          </attribute>
-        </optional>
-        <choice>
-          <oneOrMore>
-            <choice>
-              <text/>
-              <ref name="hi"/>
-              <ref name="listPerson"/>
-              <ref name="note"/>
-              <ref name="num"/>
-              <ref name="pb"/>
-              <ref name="lb"/>
-              <ref name="ref"/>
-              <ref name="space"/>
-            </choice>
-          </oneOrMore>
-          <oneOrMore>
-            <choice>
-              <ref name="l"/>
-              <ref name="listPerson"/>
-              <ref name="lg"/>
-              <ref name="p"/>
-              <ref name="pb"/>
-              <ref name="quote-p"/>
-            </choice>
-          </oneOrMore>
-        </choice>
       </element>
     </define>
     <define name="unclear">
@@ -2815,7 +2891,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
               XSD cos -->
               <ref name="anchor"/>
               <ref name="bibl"/>
-              <ref name="quote-c"/>
+              <ref name="quote.c"/>
               <ref name="function"/>
               <ref name="gap"/>
               <ref name="indexable"/>
