@@ -1,4 +1,5 @@
 <?php
+umask(0002);
 include_once( dirname(dirname(__FILE__))."/Teinte/Web.php" );
 class Teinte_Base
 {
