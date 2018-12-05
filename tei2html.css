@@ -530,7 +530,7 @@ figcaption.less:before {float: left; margin-left: -2em; content: '◿';} /*  */
 }
 /** wide screens */
 @media screen and (min-width : 1024px) {
-  #center {width: 1000px; min-height: 800px; margin: 0 auto;}
+  #center {width: 1000px; margin: 0 auto;}
   #main {width: 700px; float: right;}
   #aside {width: 300px; float:left; position: fixed; overflow: auto; top: 0; bottom: 0; margin: 0; padding: 70px 0 3em 1rem; border-right: #C9C6BB 1px solid;}
   #cont {}
