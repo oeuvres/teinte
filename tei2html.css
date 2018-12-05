@@ -436,7 +436,7 @@ nav.breadcrumb {padding: 2px 2px; }
 .breadcrumb a:hover {background-color: rgba(230, 230, 230, 0.5); color: #000000;}
 #gotop {font-size: 3em; border-bottom: none; position: fixed; color: rgba(150, 150, 150, 0.5); bottom: 1ex; right: 1ex; z-index: 10;}
 #gotop:hover {color: rgba(150, 150, 150, 1);}
-#ruloccs {position: fixed; top: 0; bottom: 0; width: 1rem; margin-left: -2rem; background-color: rgba(255, 255, 255, 0.8);}
+#ruloccs {position: absolute; top: -200px; bottom: 0; width: 1rem; right: -2rem; z-index: 10; background-color: rgba(255, 255, 255, 0.8);}
 #ruloccs a {display: block; border-bottom: none; color: white; position: fixed; background-color: rgba(150, 150, 150, 0.5); width: 1rem; font-size:1px; height: 2px;}
 #ruloccs a:hover {height: 5px; background-color: rgba(150, 150, 150, 1);}
 
@@ -515,7 +515,7 @@ figcaption.less:before {float: left; margin-left: -2em; content: '◿';} /*  */
 #main, #aside {zoom:1; clear:both; position: relative;}
 #main {background-color: #FFFFFF;}
 #center, #cont, #contenu, #main, #article {min-height: 100%;}
-#article {position: relative;}
+#article { }
 
 /** specific wide screen, not for print or phone */
 @media screen {
