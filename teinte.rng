@@ -814,13 +814,15 @@
       <element name="ab">
         <a:documentation>Un bloc “anonyme”. html5: &lt;hr></a:documentation>
         <div xmlns="http://www.w3.org/1999/xhtml">
-          <p>Usage très restrictif de <a:el>ab</a:el> dans Teibook où cet élement est utilisé en dernier recours pour représenter un ornement ou un séparateur typographique (couillard ou cul de lampe).</p>
+          <p>Cet élement est utilisé en dernier recours pour représenter un ornement ou un séparateur typographique (couillard ou cul de lampe) dont le contenu n'est pas du texte à indexer.</p>
         </div>
         <a:example href="teibook.xml#ab"/>
         <attribute name="type">
           <choice>
             <value>hr</value>
-            <a:documentation>Ligne horizontale</a:documentation>
+            <a:documentation>Filet (horizontal rule)</a:documentation>
+            <value>line</value>
+            <a:documentation>Ligne vide (pour séparer des alinéas)</a:documentation>
             <value>ornament</value>
             <a:documentation>Ornements, avec parfois le sens d'un séparateur entre deux sections, couillards et autres culs de lampe</a:documentation>
           </choice>
