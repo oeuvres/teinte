@@ -618,6 +618,7 @@
             <choice>
               <ref name="del"/>
               <ref name="docDate"/>
+              <ref name="emph"/>
               <ref name="indexable"/>
               <ref name="hi"/>
               <ref name="point"/>

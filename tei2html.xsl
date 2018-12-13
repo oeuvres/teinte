@@ -101,7 +101,6 @@ absence de déclaration de DTD.
             <xsl:apply-templates select="/*/tei:teiHeader/tei:encodingDesc/tei:tagsDecl"/>
             -->
             <link rel="stylesheet" charset="utf-8" type="text/css" href="{$theme}tei2html.css"/>
-            <script type="text/javascript" charset="utf-8" src="{$theme}Tree.js">//</script>
           </head>
           <body>
             <xsl:if test="normalize-space($bodyclass)">
@@ -146,6 +145,7 @@ absence de déclaration de DTD.
             <xsl:if test="count(key('prettify', 1))">
               <script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js">//</script>
             </xsl:if>
+            <script type="text/javascript" charset="utf-8" src="{$theme}Tree.js">//</script>
           </body>
         </html>
       </xsl:otherwise>

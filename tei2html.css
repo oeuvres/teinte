@@ -231,7 +231,6 @@ aside .docDate {float: right;}
 .titleStmt > p {text-align: center; text-indent: 0;}
 .titleStmt h1 {padding-top: 0; padding-bottom: 0; margin-top: 1em; margin-bottom: 1em;}
 .titleStmt div {margin-top: 0.5em; margin-bottom: 0.5em;}
-
 .fileDesc  > .editionStmt, .fileDesc  > .publicationStmt, .fileDesc  > .sourceDesc {text-align: left; line-height: 1.2em;}
 .floatingText {font-size: 12pt; line-height: 120%; padding: 0% 1% 1% 5%; background-color: #F8F7F4;}
 .footnotes {margin-top: 3em; margin-bottom: 1em;}
@@ -273,13 +272,12 @@ div.l {text-indent: -1.5rem; padding-left: 1.5rem; line-height: 150%;}
 .l.promythium{margin-bottom: 2.0ex; text-indent: 0; padding-left: 0;}
 .l.epimythium{margin-top: 2.0ex; text-indent: 0; padding-left: 0;}
 .p.manuscrits{font-size: 12px; margin-top: 20px; background-color: #FBFAF8; border-radius: 8px;}
-
-
 .l .vertical {font-size: 170%; font-weight: bold; display: inline-block; transform-origin: top right 0; margin-top: 1.35em; position: absolute; transform: rotate(90deg);}
 label.label {font-weight: bold;}
 p.label, div.label {margin: 1.4em 0 0.7em 0; line-height: 105%; text-align: center; text-indent: 0; padding-left: 0; font-weight: bold; font-size: 105%; }
 blockquote .label {margin: 1ex 0 0.5ex 2em; text-align: left;}
 figure .label {text-align: right; margin-top: 0;}
+.listBibl h4 {font-weight: normal; font-style: italic; }
 div.lg {margin-top: 1em; margin-bottom: 1em;}
 .sp .lg {margin-top: 0; margin-bottom: 0;}
 .marginalia {display:block; float: right; text-indent: 0; clear: both; margin: 1px -10em 1px 1em; border: 1px #C9C6BB solid; box-shadow: 10px 0px 10px #E2DED0; padding: 0.2ex 1ex !important; background: #FDFDFC; width: 15em; text-align:right; line-height: 120%;}
@@ -524,7 +522,7 @@ figcaption.less:before {float: left; margin-left: -2em; content: '◿';} /*  */
   #contenu {}
   #article  {padding: 3em 4em 3em 4em; border-bottom: 1px dotted #FFFFFF;} /* box-shadow: 10px 0px 50px #E2DED0; box shadow is not 100% for long doc */
   #aside  {padding: 1em 1em 2em 1em; padding: 1rem 1rem 2rem 1rem; }
-  #aside, .pannel  {background-color: #E2DED0; background-image: -webkit-gradient(linear, left top, right top, from(#E2DED0),to(#FFFFFF)); background-image: -webkit-linear-gradient(left #E2DED0, #FFFFFF,); background-image: -moz-linear-gradient(left, #E2DED0, #FFFFFF); background-image: -ms-linear-gradient(left, #E2DED0, #FFFFFF); background-image: -o-linear-gradient(right, #FFFFFF, #E2DED0); background-image: linear-gradient(left, #E2DED0, #FFFFFF);}
+  #aside, .pannel  {background-color: #E2DED0; background-image: -webkit-linear-gradient(left #E2DED0, #FFFFFF,); background-image: -moz-linear-gradient(left, #E2DED0, #FFFFFF); background-image: -ms-linear-gradient(left, #E2DED0, #FFFFFF); background-image: -o-linear-gradient(right, #FFFFFF, #E2DED0); background-image: linear-gradient(left, #E2DED0, #FFFFFF);}
   body.article {width: 100ex; margin: 3em auto 2em auto;  padding: 1em;}
   .marginalia {margin-right: -2.5em; width: 8em;}
 }

@@ -130,21 +130,27 @@ li.here mark { background: inherit; }\
   loaded:false,
   load: function(id, href) {
     if (Tree.loaded) return;
-    Tree.isfirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
     Tree.css(); // add css for Tree
     if (!id || id.stopPropagation) id = Tree.ASIDE; // id maybe an Event
     el = document.getElementById(id);
-    if (!el) {
-      id = null;
-      el = document;
+    if (el) Tree.aside = el;
+    if (Tree.aside) {
+      els = Tree.aside.getElementsByClassName(Tree.TREE);
+      for(var maxj = els.length, j=0; j < maxj ; j++) {
+        Tree.treeprep(els[j]);
+      }
     }
-    else { Tree.aside = el; }
+    // TODO
+    var embed = document.getElementsByTagName('figcaption');
+    for (var i = 0; i < embed.length; i++) Tree.embedprep(embed.item(i));
+
     Tree.main = document.getElementById(Tree.MAIN);
     if (!Tree.main) {
       var nl = document.getElementsByTagName('main');
       if (nl.count) Tree.main = nl[0];
     }
-    Tree.facsload();
+    Tree.loadFacs();
+
     // we have a scrolling pannel, try to record a scroll state
     if (Tree.aside && sessionStorage) {
       var asidescroll = sessionStorage.getItem("asidescroll");
@@ -158,16 +164,13 @@ li.here mark { background: inherit; }\
     // window.addEventListener("mouseup", function(){ window.ismousedown = false; }, false);
     Tree.winresize();
     window.addEventListener("resize", Tree.winresize, false);
-    // page address without ?query= or #hash
-    // if (!href) href=location.protocol + "//"+location.host+location.pathname;
-    if (!href) href=location.href;
-    if( (pos=href.indexOf('?'))>0) href=href.substr(0, pos);
-    Tree.scan();
+    Tree.loaded=true;
   },
+
   /**
    * Create events on image facs
    */
-  facsload: function() {
+  loadFacs: function() {
     // links for images
     if (!Tree.aside) return;
     var nl = document.querySelectorAll("a.facs");
@@ -205,33 +208,14 @@ li.here mark { background: inherit; }\
       // Tree.facsimg.onload = function() {if (this.parentNode.style.width) return; this.parentNode.style.width = this.width + 'px'; this.parentNode.style.height = '100%'; }
     }
   },
-  /**
-   * Scan for lists with a tree class (in all body ) ?
-   */
-  scan: function(id) {
-    if (!id || id.stopPropagation) el = document.getElementsByTagName("body")[0]; // id maybe an Event
-    else el = document.getElementById(id);
-    if (!el) return;
-    // take all possible trees, cast nodeset to array, so concat will work
-    var nsa = Array.prototype.slice.call(el.getElementsByTagName('ul')).concat(Array.prototype.slice.call(el.getElementsByTagName('menu'))).concat(Array.prototype.slice.call(el.getElementsByTagName('ol')));
-
-    // loop on candidate <ul>
-    // go down (increment) or you will have pb with # links
-    for(var i=0; i < nsa.length ; i++) {
-      Tree.treeprep(nsa[i]);
-    }
-    // TODO
-    var embed = document.getElementsByTagName('figcaption');
-    for (var i = 0; i < embed.length; i++) Tree.embedprep(embed.item(i));
-    Tree.loaded=true;
-  },
   asideresize: function() {
     if (this.lastWidth == this.offsetWidth) return;
     var diff = this.offsetWidth - this.lastWidth
     this.lastWidth = this.offsetWidth;
     var parent = Tree.aside.parentNode;
     var width = parent.offsetWidth + diff;
-    while (parent && parent.nodeName.toLowerCase() != 'body') {
+    while (parent) {
+      if(parent.nodeName.toLowerCase() == 'body') break;
       parent.style.width = (width) + 'px';
       parent = parent.parentNode;
     }
@@ -251,10 +235,12 @@ li.here mark { background: inherit; }\
       var asidewidth = sessionStorage.getItem("asidewidth");
       // no memory for short screen, chrome, impossible to reduce
       if (asidewidth && asidewidth < window.x && Tree.isfirefox) {
+        if (!Tree.aside.offsetWidth) return; // problem in painting
         diff = asidewidth - Tree.aside.offsetWidth;
         var parent = Tree.aside.parentNode;
         var width = parent.offsetWidth + diff;
-        while (parent && parent.nodeName.toLowerCase() != 'body') {
+        while (parent) {
+          if (parent.nodeName.toLowerCase() == 'body') break;
           parent.style.width = (width) + 'px';
           parent = parent.parentNode;
         }
@@ -269,7 +255,8 @@ li.here mark { background: inherit; }\
       Tree.aside.style.resize = 'none';
       Tree.aside.style.width = '';
       var parent = Tree.aside.parentNode;
-      while (parent && parent.nodeName.toLowerCase() != 'body') {
+      while (parent) {
+        if (parent.nodeName.toLowerCase() == 'body') break;
         parent.style.width = '';
         parent = parent.parentNode;
       }
@@ -714,12 +701,14 @@ var Notes = {
     Notes.div.innerHTML = '';
   }
 }
+Tree.isfirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+
 Tree.ini();
 
 // if loaded as bottom script, create trees ?
 if(window.document.body) {
-  Tree.load("aside");
   Notes.load();
+  Tree.load("aside");
 }
 else if (window.addEventListener) {
   window.addEventListener('load', Tree.load, false);
