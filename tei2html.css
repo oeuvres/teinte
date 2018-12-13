@@ -181,7 +181,6 @@ h1.act, h2.act, h1.castList, h2.castList {text-transform: uppercase;}
 .argument {margin: 2em 0 3em 0; line-height: 140%; text-indent: 0; font-size: 85%; text-align: justify}
 p.argument {font-style: normal; line-height: 140%; text-indent: 2em;}
 .argument p {text-indent: 0;}
-div.author, p.author, .bibl .author {font-variant: small-caps;}
 .availability {margin: 2em 0; text-align: justify; }
 /* .back p, .front p {text-indent: 0;} no indent in paratext */
 div.bibl {}
