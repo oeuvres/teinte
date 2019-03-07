@@ -531,6 +531,7 @@
           <ref name="docAuthor"/>
           <ref name="docDate"/>
           <ref name="epigraph"/>
+          <ref name="figure"/>
           <ref name="head"/>
           <ref name="index"/>
           <ref name="milestone"/>
@@ -567,9 +568,6 @@
     <define name="argument">
       <element name="argument">
         <a:documentation>Résumé d'une section, contient des blocs</a:documentation>
-        <optional>
-          <attribute name="ana"/>
-        </optional>
         <ref name="xml-atts"/>
         <ref name="rendering.figure"/>
         <optional>
@@ -1656,6 +1654,7 @@
             <text/>
             <ref name="typo"/>
             <ref name="point"/>
+            <ref name="indexable"/>
           </choice>
         </zeroOrMore>
       </element>
@@ -2602,25 +2601,25 @@
         <p>La maîtrise de l’attribution de ce jeu d’attributs aux justes éléments indexables est essentiel, de manière à éviter tout risque d’indexation redondante (par ex. persName > name|forname|surname, etc.).</p>
       </div>
       <optional>
-        <ref name="key-att"/>
+        <ref name="cert-att"/>
       </optional>
       <optional>
         <ref name="corresp"/>
       </optional>
       <optional>
-        <ref name="ref-att"/>
-      </optional>
-      <optional>
-        <ref name="cert-att"/>
+        <ref name="key-att"/>
       </optional>
       <optional>
         <ref name="precision-att"/>
       </optional>
       <optional>
-        <ref name="unit-att"/>
+        <ref name="quantity-att"/>
       </optional>
       <optional>
-        <ref name="quantity-att"/>
+        <ref name="ref-att"/>
+      </optional>
+      <optional>
+        <ref name="unit-att"/>
       </optional>
     </define>
     <define name="term">
@@ -2927,24 +2926,23 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
           <ref name="n-att"/>
         </optional>
         <ref name="xml-atts"/>
-        <choice>
-          <group>
-            <optional>
-              <ref name="facs-att"/>
-            </optional>
-            <optional>
-              <attribute name="ana">
-                <a:documentation xmlns="http://www.w3.org/1999/xhtml">Titre courant de la page imprimée. Si le titre courant comporte de la variation typographique, par exemple de l’italique ou des lettres en exposant, les chevrons des balises seront échappés avec les entités xml conventionnelles <![CDATA[< : &lt;, > : &gt;]]> afin de conserver un XML valide.</a:documentation>
-              </attribute>
-            </optional>
-          </group>
+        <optional>
+          <ref name="facs-att"/>
+        </optional>
+        <optional>
           <ref name="ed"/>
-        </choice>
+        </optional>
       </element>
     </define>
   </div>
   <div xml:id="atts">
     <a:documentation>Attributs</a:documentation>
+    <define name="ana-att">
+      <attribute name="ana">
+        <a:documentation>Mot clé indiquant une analyse, une interprétation.</a:documentation>
+      </attribute>
+    </define>
+    
     <define name="corresp">
       <attribute name="corresp">
         <a:documentation>Pointeur vers une ressource liée</a:documentation>
@@ -3099,6 +3097,9 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
       </optional>
       <optional>
         <ref name="xml.id"/>
+      </optional>
+      <optional>
+        <ref name="ana-att"/>
       </optional>
     </define>
     <define name="rend.list">
