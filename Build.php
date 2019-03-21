@@ -125,7 +125,7 @@ END;
       }
     }
     if (is_string($this->conf['logger'])) $this->_logger = fopen($this->conf['logger'], 'w');
-    $this->_connect($this->conf['sqlite']);
+    $this->_connect($this->conf['dstdir'].$this->conf['sqlite']);
     $this->_prepare();
   }
   /**
