@@ -93,7 +93,7 @@ END;
   private $_cods;
   /** valeur par défaut de la configuration */
   public $conf = array(
-    "destdir" => "",
+    "dstdir" => "",
     "formats" => "article, toc, epub, kindle",
     "logger" => "php://output",
     "logfile" => null,
@@ -109,16 +109,16 @@ END;
     else if (is_string($this->conf['formats'])) {
       $this->conf['formats'] = preg_split("@[\s,;]+@", $this->conf['formats']);
     }
-    if (!$this->conf['destdir']);
-    else if ($this->conf['destdir'] == ".") $this->conf['destdir']="";
-    else $this->conf['destdir'] = rtrim($this->conf['destdir'], '\\/')."/";
+    if (!$this->conf['dstdir']);
+    else if ($this->conf['dstdir'] == ".") $this->conf['dstdir']="";
+    else $this->conf['dstdir'] = rtrim($this->conf['dstdir'], '\\/')."/";
     // verify output dirs for generated files
     foreach ($this->conf['formats'] as $type) {
       if (!isset(self::$_formats[$type])) {
         $this->log(E_USER_WARNING, $type." format non supporté");
         continue;
       }
-      $dir = $this->conf['destdir'].$type.'/';
+      $dir = $this->conf['dstdir'].$type.'/';
       if (!file_exists($dir)) {
         if (!@mkdir($dir, 0775, true)) exit($dir." impossible à créer.\n");
         @chmod($dir, 0775);  // let @, if www-data is not owner but allowed to write
@@ -177,17 +177,17 @@ END;
   /**
    * Delete exports of a file
    */
-  public function delete($code, $destdir="")
+  public function delete($code, $dstdir="")
   {
     $echo = "";
     $this->_q['del']->execute(array($code));
     foreach ($this->conf['formats'] as $type) {
       if (!isset(self::$_formats[$type])) continue;
       $extension = self::$_formats[$type];
-      $destfile = $destdir.$type.'/'.$code.$extension;
-      if (!file_exists($destfile)) continue;
-      unlink($destfile);
-      $echo .= " ".basename($destfile);
+      $dstfile = $dstdir.$type.'/'.$code.$extension;
+      if (!file_exists($dstfile)) continue;
+      unlink($dstfile);
+      $echo .= " ".basename($dstfile);
     }
     if ($echo) $this->log(E_USER_NOTICE, $echo);
   }
@@ -195,7 +195,7 @@ END;
   /**
    * Produire les exports depuis le fichier XML
    */
-  public function export($teinte, $destdir="")
+  public function export($teinte, $dstdir="")
   {
     $echo = "";
     foreach ($this->conf['formats'] as $type) {
@@ -205,25 +205,25 @@ END;
         continue;
       }
       $ext = self::$_formats[$type];
-      $destfile = $destdir.$type.'/'.$teinte->filename().$ext;
-      // delete destfile if exists
-      if (file_exists($destfile)) unlink($destfile);
+      $dstfile = $dstdir.$type.'/'.$teinte->filename().$ext;
+      // delete dstfile if exists
+      if (file_exists($dstfile)) unlink($dstfile);
       $echo .= " ".$type;
-           if ($type == 'html') $teinte->html($destfile, 'http://oeuvres.github.io/Teinte/');
-      else if ($type == 'article') $teinte->article($destfile);
-      else if ($type == 'toc') $teinte->toc($destfile);
-      else if ($type == 'markdown') $teinte->markdown($destfile);
-      else if ($type == 'iramuteq') $teinte->iramuteq($destfile);
-      else if ($type == 'docx') Toff_Tei2docx::docx($teinte->file(), $destfile);
+           if ($type == 'html') $teinte->html($dstfile, 'http://oeuvres.github.io/Teinte/');
+      else if ($type == 'article') $teinte->article($dstfile);
+      else if ($type == 'toc') $teinte->toc($dstfile);
+      else if ($type == 'markdown') $teinte->markdown($dstfile);
+      else if ($type == 'iramuteq') $teinte->iramuteq($dstfile);
+      else if ($type == 'docx') Toff_Tei2docx::docx($teinte->file(), $dstfile);
       else if ($type == 'epub') {
         $livre = new Livrable_Tei2epub($teinte->file(), $this->_logger);
-        $livre->epub($destfile);
+        $livre->epub($dstfile);
       }
       // Warning, do kindle after epub
       else if ($type == 'kindle') {
-        $epubfile =  $destdir.'epub/'.$teinte->filename().".epub";
+        $epubfile =  $dstdir.'epub/'.$teinte->filename().".epub";
         // generated file
-        $mobifile = $destdir.'epub/'.$teinte->filename().".mobi";
+        $mobifile = $dstdir.'epub/'.$teinte->filename().".mobi";
         $cmd = self::$_kindlegen.' '.$epubfile;
         $last = exec ($cmd, $output, $status);
         // error ?
@@ -232,7 +232,7 @@ END;
         }
         // move
         else {
-          rename($mobifile, $destfile);
+          rename($mobifile, $dstfile);
         }
       }
     }
@@ -335,8 +335,8 @@ END;
       if (!isset(self::$_formats[$type])) continue;
       if ($type == "toc") continue;
       $extension = self::$_formats[$type];
-      $destfile = $this->conf["destdir"].$type.'/'.$code.$extension;
-      if (!file_exists($destfile)) {
+      $dstfile = $this->conf["dstdir"].$type.'/'.$code.$extension;
+      if (!file_exists($dstfile)) {
         $force = true;
       }
     }
@@ -350,7 +350,7 @@ END;
       $this->log(E_USER_ERROR, $srcfile." XML mal formé");
       return false;
     }
-    $this->export($teinte, $this->conf["destdir"]);
+    $this->export($teinte, $this->conf["dstdir"]);
     // record in base after generation of file
     $this->record($teinte, $props);
     flush();
@@ -363,7 +363,7 @@ END;
     $del = array();
     foreach ( $q as $row) {
       $this->log(E_USER_NOTICE, "\nSUPPRESSION ".$row['code']);
-      $this->delete($row['code'], $this->conf["destdir"]);
+      $this->delete($row['code'], $this->conf["dstdir"]);
     }
     // $this->pdo->exec("VACUUM");
     $this->pdo->exec("INSERT INTO  search(search) VALUES('optimize'); -- optimize fulltext index ");
