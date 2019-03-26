@@ -24,12 +24,10 @@ class Teinte_Doc
   private $_filemtime;
   /** file size */
   private $_filesize;
-  /** XSLTProcessor */
-  private $_trans;
-  /** XSL DOM document */
-  private $_xsldom;
-  /** Keep memory of last xsl, to optimize transformations */
-  private $_xslfile;
+  /** XSLTProcessors */
+  private static $_trans = array();
+  /** A file where  */
+  private $_logger;
   /** formats */
   public static $ext = array(
     'article' => '_art.html',
@@ -39,27 +37,27 @@ class Teinte_Doc
     'markdown' => '.txt',
     'naked' => '.txt',
     'toc' => '_toc.html',
-  );
+ );
   /**
    * Constructor, load file and prepare work
    */
-  public function __construct($tei)
+  public function __construct($tei, $logger=null)
   {
-    if (is_a( $tei, 'DOMDocument' ) ) {
+    if (is_a($tei, 'DOMDocument')) {
       $this->_dom = $tei;
     }
-    else if( is_string( $tei ) ) { // maybe file or url
+    else if(is_string($tei)) { // maybe file or url
       $this->_file = $tei;
-      $this->_filemtime = filemtime( $tei );
-      $this->_filesize = filesize( $tei ); // ?? URL ?
-      $this->_filename = pathinfo( $tei, PATHINFO_FILENAME );
+      $this->_filemtime = filemtime($tei);
+      $this->_filesize = filesize($tei); // ?? URL ?
+      $this->_filename = pathinfo($tei, PATHINFO_FILENAME);
       // loading error, do something ?
-      if ( !$this->_dom( $tei ) ) throw new Exception("BAD XML");
+      if (!$this->_dom($tei)) throw new Exception("BAD XML");
     }
     else {
       throw new Exception('Teinte, what is it? '.print_r($tei, true));
     }
-    $this->_xsldom = new DOMDocument();
+    $this->_logger = $logger;
     $this->xpath();
   }
 
@@ -75,37 +73,37 @@ class Teinte_Doc
   {
     if ($this->_xpath) return $this->_xpath;
     $this->_xpath = new DOMXpath($this->_dom);
-    $this->_xpath->registerNamespace( 'tei', "http://www.tei-c.org/ns/1.0" );
+    $this->_xpath->registerNamespace('tei', "http://www.tei-c.org/ns/1.0");
     return $this->_xpath;
   }
   /**
    * Get the filename (with no extention)
    */
-   public function filename( $filename=null )
+   public function filename($filename=null)
    {
-     if ( $filename ) $this->_filename = $filename;
+     if ($filename) $this->_filename = $filename;
      return $this->_filename;
    }
   /**
    * Read a readonly property
    */
-  public function filemtime( $filemtime=null )
+  public function filemtime($filemtime=null)
   {
-    if ( $filemtime ) $this->_filemtime = $filemtime;
+    if ($filemtime) $this->_filemtime = $filemtime;
     return $this->_filemtime;
   }
   /**
    * For a readonly property
    */
-  public function filesize( $filesize=null )
+  public function filesize($filesize=null)
   {
-    if ( $filesize ) $this->_filesize = $filesize;
+    if ($filesize) $this->_filesize = $filesize;
     return $this->_filesize;
   }
   /**
    * For a readonly property
    */
-  public function file( )
+  public function file()
   {
     return $this->_file;
   }
@@ -122,10 +120,10 @@ class Teinte_Doc
     $first = true;
     foreach ($nl as $node) {
       $value = $node->getAttribute("key");
-      if ( !$value ) $value = $node->textContent;
-      if (($pos = strpos($value, '('))) $value = trim( substr( $value, 0, $pos ) );
+      if (!$value) $value = $node->textContent;
+      if (($pos = strpos($value, '('))) $value = trim(substr($value, 0, $pos));
       $meta['creator'][] = $value;
-      if ( $first ) $first = false;
+      if ($first) $first = false;
       else $meta['byline'] .= " ; ";
       $meta['byline'] .= $value;
     }
@@ -135,9 +133,9 @@ class Teinte_Doc
     $first = true;
     foreach ($nl as $node) {
       $value = $node->getAttribute("key");
-      if ( !$value ) $value = $node->textContent;
-      if (($pos = strpos($value, '('))) $value = trim( substr( $value, 0, $pos ) );
-      if ( $first ) $first = false;
+      if (!$value) $value = $node->textContent;
+      if (($pos = strpos($value, '('))) $value = trim(substr($value, 0, $pos));
+      if ($first) $first = false;
       else $meta['editby'] .= " ; ";
       $meta['editby'] .= $value;
     }
@@ -161,10 +159,10 @@ class Teinte_Doc
     $meta['date'] = null;
     foreach ($nl as $date) {
       $value = $date->getAttribute ('when');
-      if ( !$value ) $value = $date->getAttribute ('notAfter');
-      if ( !$value ) $value = $date->nodeValue;
+      if (!$value) $value = $date->getAttribute ('notAfter');
+      if (!$value) $value = $date->nodeValue;
       $value = substr(trim($value), 0, 4);
-      if ( !is_numeric($value) ) {
+      if (!is_numeric($value)) {
         $value = null;
         continue;
       }
@@ -192,40 +190,40 @@ class Teinte_Doc
   /**
    * Output toc
    */
-  public function toc( $destfile=null, $root = "ol")
+  public function toc($destfile=null, $root = "ol")
   {
     return $this->transform(
       dirname(__FILE__).'/tei2toc.xsl',
       $destfile,
       array(
         'root'=> $root,
-      )
-    );
+     )
+   );
   }
 
   /**
    * Output an html fragment
    */
-  public function article( $destfile=null )
+  public function article($destfile=null)
   {
     return $this->transform(
       dirname(__FILE__).'/tei2html.xsl',
       $destfile,
       array(
         'root'=> 'article',
-        'folder' => basename( dirname( $this->_file) ),
-      )
-    );
+        'folder' => basename(dirname($this->_file)),
+     )
+   );
   }
 
   /**
    * Output a txt fragment with no html tags for full-text searching
    */
-  public function ft( $destfile=null )
+  public function ft($destfile=null)
   {
     $html = $this->article();
-    $html = self::detag( $html );
-    if ( $destfile ) file_put_contents( $destfile, $html );
+    $html = self::detag($html);
+    if ($destfile) file_put_contents($destfile, $html);
     return $html;
   }
 
@@ -234,102 +232,107 @@ class Teinte_Doc
    */
   public function html($destfile=null, $theme = null)
   {
-    if (!$theme) $theme = 'http://oeuvres.github.io/Teinte/'; // where to find web assets like css and js for html file
+    if (!$theme) $theme = 'http://oeuvres.github.io/Teinte/'; // where to find web assets like css and jslog for html file
     return $this->transform(
       dirname(__FILE__).'/tei2html.xsl',
       $destfile,
       array(
         'theme'=> $theme,
-        'folder' => basename( dirname( $this->_file) ),
-      )
-    );
+        'folder' => basename(dirname($this->_file)),
+     )
+   );
   }
   /**
    * Output markdown
    */
-  public function markdown( $destfile=null )
+  public function markdown($destfile=null)
   {
     return $this->transform(dirname(__FILE__).'/tei2md.xsl', $destfile, array('filename' => $this->_filename));
   }
   /**
    * Output iramuteq text
    */
-  public function iramuteq( $destfile=null )
+  public function iramuteq($destfile=null)
   {
     return $this->transform(dirname(__FILE__).'/tei2iramuteq.xsl', $destfile);
   }
   /**
    * Output txm XML
    */
-  public function txm( $destfile=null )
+  public function txm($destfile=null)
   {
     return $this->transform(dirname(__FILE__).'/tei4txm.xsl', $destfile);
   }
   /**
    * Output naked text
    */
-  public function naked( $destfile=null )
+  public function naked($destfile=null)
   {
-    $txt = $this->transform(dirname(__FILE__).'/tei2naked.xsl' );
+    $txt = $this->transform(dirname(__FILE__).'/tei2naked.xsl');
     /* TRÈS MAUVAISE IDÉE
     $txt = preg_replace(
       array(
         "@([\s\(\[])(c|C|d|D|j|J|usqu|Jusqu|l|L|lorsqu|m|M|n|N|puisqu|Puisqu|qu|Qu|quoiqu|Quoiqu|s|S|t|T)['’]@u",
-      ),
+     ),
       array(
         '$1$2e '
-      ),
+     ),
       $txt
-    );
+   );
     */
-    if ( !$destfile ) return $txt;
-    file_put_contents( $destfile, $txt );
+    if (!$destfile) return $txt;
+    file_put_contents($destfile, $txt);
     return $destfile;
   }
   /**
    * Output a split version of book
    */
-  public function site( $destdir=null )
+  public function site($dstdir=null)
   {
     // create dest folder
     // if none given, use filename
     // collect images pointed by xml file and copy them in the folder
   }
   /**
-   * Extract <graphic> elements from a DOM doc, copy linked images in a flat destdir
-   * $href : a href prefix to redirest generated links
-   * $destdir : a folder if images should be copied
+   * Extract <graphic> elements from a DOM doc, copy linked images in a flat dstdir
+   * copy linked images in an images folder $dstdir, and modify relative link
+   *
+   * $hrefdir : a href prefix to redirest generated links
+   * $dstdir : a folder if images should be copied
    * return : a doc with updated links to image
    */
-  private function images( $href=null, $destdir=null)
+  public function images($hrefdir=null, $dstdir=null)
   {
-    if ($destdir) $destdir=rtrim($destdir, '/\\').'/';
-    // copy linked images in an images folder, and modify relative link
-    // clone the original doc, links to picture will be modified
-    $doc=$doc->cloneNode(true);
-    foreach ($doc->getElementsByTagNameNS('http://www.tei-c.org/ns/1.0', 'graphic') as $el) {
-      $this->img($el->getAttributeNode("url"), $href, $destdir);
+    if ($dstdir) $dstdir=rtrim($dstdir, '/\\').'/';
+    // $dom = $this->_dom->cloneNode(true); // do not clone, keep the change of links
+    $dom = $this->_dom;
+    $count = 1;
+    $nl = $dom->getElementsByTagNameNS('http://www.tei-c.org/ns/1.0', 'graphic');
+    $pad = strlen(''.$nl->count());
+    foreach ($nl as $el) {
+      $this->img($el->getAttributeNode("url"), str_pad($count, $pad, '0', STR_PAD_LEFT), $hrefdir, $dstdir);
+      $count++;
     }
     /*
     do not store images of pages, especially in tif
     foreach ($doc->getElementsByTagNameNS('http://www.tei-c.org/ns/1.0', 'pb') as $el) {
-      $this->img($el->getAttributeNode("facs"), $hrefTei, $destdir, $hrefSqlite);
+      $this->img($el->getAttributeNode("facs"), $hrefTei, $dstdir, $hrefSqlite);
     }
     */
-    return $doc;
+    return $dom;
   }
   /**
    * Process one image
    */
-  public function img($att, $hrefdir="", $destdir=null)
+  public function img($att, $count, $hrefdir="", $dstdir=null)
   {
     if (!isset($att) || !$att || !$att->value) return;
     $src=$att->value;
-    // return if data image
+    // do not modify data image
     if (strpos($src, 'data:image') === 0) return;
 
     // test if relative file path
-    if (file_exists($test=dirname($this->_srcfile).'/'.$src)) $src=$test;
+    if (file_exists($test=dirname($this->_file).'/'.$src)) $src=$test;
     // vendor specific etc/filename.jpg
     else if (isset(self::$_pars['srcdir']) && file_exists($test=self::$_pars['srcdir'].self::$_pars['filename'].'/'.substr($src, strpos($src, '/')+1))) $src=$test;
     // if not file exists, escape and alert (?)
@@ -337,30 +340,28 @@ class Teinte_Doc
       $this->log("Image not found: ".$src);
       return;
     }
-    $srcParts=pathinfo($src);
-    // test first if dst dir (example, epub for sqlite)
-    if (isset($destdir)) {
-      // create images folder only if images detected
-      if (!file_exists($destdir)) self::dirclean($destdir);
-      // destination
-      $i=2;
-      // avoid duplicated files
-      while (file_exists($destdir.$srcParts['basename'])) {
-        $srcParts['basename']=$srcParts['filename'].'-'.$i.'.'.$srcParts['extension'];
-        $i++;
+    $srcparts=pathinfo($src);
+    // check if image name starts by filename, if not, force it
+    if (substr($srcparts['filename'], 0, strlen($this->_filename)) !== $this->_filename) $srcparts['filename'] = $this->_filename.'_'.$count;
+
+    // test first if dst dir provides for copy
+    if (isset($dstdir)) {
+      if (!file_exists($dstdir)) {
+        mkdir($dstdir, 0775, true);
+        @chmod($dstdir, 0775);
       }
-      copy( $src, $destdir.$srcParts['basename']);
+      copy($src, $dstdir.$srcparts['filename'].'.'.$srcparts['extension']);
     }
     // changes links in TEI so that straight transform will point on the right files
-    $att->value=$hrefdir.$srcParts['basename'];
-    // resize ?
+    $att->value=$hrefdir.$srcparts['filename'].'.'.$srcparts['extension'];
+    // resize image before copy ?
     // NO delete of <graphic> element if broken link
   }
 
   /**
    * Preprocess TEI with a transformation
    */
-   public function pre( $xslfile, $pars=null )
+   public function pre($xslfile, $pars=null)
    {
      $this->dom = $this->transform($xslfile, new DOMDocument(), $pars);
    }
@@ -371,7 +372,7 @@ class Teinte_Doc
     * Support of some html5 tag to strip not indexable content.
     * 2x faster than a char loop
     */
-   static public function detag( $html )
+   static public function detag($html)
    {
      // preg_replace_callback is safer and 2x faster than the /e modifier
      $html=preg_replace_callback(
@@ -384,10 +385,10 @@ class Teinte_Doc
          '@<(small|tt|a)[^>]*>[0-9]+</\1>@' ,// line or note of number
          '@<a class="noteref".*?</a>@', // suppress footnote call
          '@<[^>]+>@' // wash tags
-       ),
+      ),
        array(__CLASS__, 'blank'),
        $html
-     );
+    );
      return $html;
    }
    /**
@@ -404,58 +405,59 @@ class Teinte_Doc
    * An xslt transformer
    * TOTHINK : deal with errors
    */
-  public function transform( $xslfile, $dest=null, $pars=null )
+  public function transform($xslfile, $dest=null, $pars=null)
   {
-    if ( !$this->_trans ) {
+    $key = realpath($xslfile);
+    // cache compiled xsl
+    if (!isset(self::$_trans[$key])) {
       // renew the processor
-      $this->_trans = new XSLTProcessor();
-      $this->_trans->registerPHPFunctions();
+      self::$_trans[$key] = new XSLTProcessor();
+      $trans = self::$_trans[$key];
+      $trans->registerPHPFunctions();
       // allow generation of <xsl:document>
-      if ( defined( 'XSL_SECPREFS_NONE' ) ) $prefs = XSL_SECPREFS_NONE;
-      else if ( defined( 'XSL_SECPREF_NONE' ) ) $prefs = XSL_SECPREF_NONE;
+      if (defined('XSL_SECPREFS_NONE')) $prefs = XSL_SECPREFS_NONE;
+      else if (defined('XSL_SECPREF_NONE')) $prefs = XSL_SECPREF_NONE;
       else $prefs = 0;
-      if( method_exists( $this->_trans, 'setSecurityPreferences' ) ) $oldval = $this->_trans->setSecurityPreferences( $prefs );
-      else if( method_exists( $this->_trans, 'setSecurityPrefs' ) ) $oldval = $this->_trans->setSecurityPrefs( $prefs );
-      else ini_set( "xsl.security_prefs",  $prefs );
+      if(method_exists($trans, 'setSecurityPreferences')) $oldval = $trans->setSecurityPreferences($prefs);
+      else if(method_exists($trans, 'setSecurityPrefs')) $oldval = $trans->setSecurityPrefs($prefs);
+      else ini_set("xsl.security_prefs",  $prefs);
+      $dom = new DOMDocument();
+      $dom->load($xslfile);
+      $trans->importStyleSheet($dom);
     }
-    // allow reuse of same xsl for performances
-    if ( $this->_xslfile != $xslfile ) {
-      // load xsl file
-      $this->_xsldom->load( $xslfile );
-      $this->_trans->importStyleSheet( $this->_xsldom );
-    }
+    $trans = self::$_trans[$key];
     // add params
     if(isset($pars) && count($pars)) {
       foreach ($pars as $key => $value) {
-        $this->_trans->setParameter( null, $key, $value );
+        $trans->setParameter(null, $key, $value);
       }
     }
     // return a DOM document for efficient piping
-    if (is_a($dest, 'DOMDocument') ) {
-      $ret = $this->_trans->transformToDoc( $this->_dom );
+    if (is_a($dest, 'DOMDocument')) {
+      $ret = $trans->transformToDoc($this->_dom);
     }
     else if ($dest) {
       if (!is_dir(dirname($dest))) {
-        if ( !@mkdir(dirname($dest), 0775, true) ) exit( dirname($dest)." impossible à créer.\n");
+        if (!@mkdir(dirname($dest), 0775, true)) exit(dirname($dest)." impossible à créer.\n");
         @chmod(dirname($dest), 0775);  // let @, if www-data is not owner but allowed to write
       }
-      $this->_trans->transformToURI( $this->_dom, $dest );
+      $trans->transformToURI($this->_dom, $dest);
       $ret = $dest;
     }
     // no dst file, return String
     else {
-      $ret = $this->_trans->transformToXML( $this->_dom );
+      $ret =$trans->transformToXML($this->_dom);
     }
     // reset parameters ! or they will kept on next transform if transformer is reused
     if(isset($pars) && count($pars)) {
-      foreach ( $pars as $key => $value ) $this->_trans->removeParameter(null, $key);
+      foreach ($pars as $key => $value) $trans->removeParameter(null, $key);
     }
     return $ret;
   }
   /**
    * Set and build a dom privately
    */
-  private function _dom( $xmlfile )
+  private function _dom($xmlfile)
   {
     $this->_dom = new DOMDocument();
     $this->_dom->preserveWhiteSpace = false;
@@ -473,33 +475,41 @@ class Teinte_Doc
   }
 
   /**
+   *
+   */
+  public function log($errstr)
+  {
+    if (is_resource($this->_logger)) fwrite($this->_logger, htmlspecialchars($errstr)."\n");
+  }
+
+  /**
    * Command line transform
    */
   public static function cli()
   {
-    $formats=implode( '|', array_keys( self::$ext ) );
+    $formats=implode('|', array_keys(self::$ext));
     array_shift($_SERVER['argv']); // shift first arg, the script filepath
     if (!count($_SERVER['argv'])) exit('
-    usage     : php -f Doc.php ('.$formats.')? destdir/? "*.xml"
+    usage     : php -f Doc.php ('.$formats.')? dstdir/? "*.xml"
     format?   : optional dest format, default is html
-    destdir/? : optional destdir
+    dstdir/? : optional dstdir
     *.xml     : glob patterns are allowed, with or without quotes, win or nix
 
 ');
 
     $format="html";
-    if( preg_match( "/^($formats)\$/", trim($_SERVER['argv'][0], '- ') )) {
+    if(preg_match("/^($formats)\$/", trim($_SERVER['argv'][0], '- '))) {
       $format = array_shift($_SERVER['argv']);
       $format = trim($format, '- ');
     }
 
-    $destdir = ""; // default is transform here
+    $dstdir = ""; // default is transform here
     $lastc = substr($_SERVER['argv'][0], -1);
     if ('/' == $lastc || '\\' == $lastc) {
-      $destdir = array_shift($_SERVER['argv']);
-      $destdir = rtrim($destdir, '/\\').'/';
-      if (!file_exists($destdir)) {
-        mkdir($destdir, 0775, true);
+      $dstdir = array_shift($_SERVER['argv']);
+      $dstdir = rtrim($dstdir, '/\\').'/';
+      if (!file_exists($dstdir)) {
+        mkdir($dstdir, 0775, true);
         @chmod($dir, 0775);  // let @, if www-data is not owner but allowed to write
       }
     }
@@ -510,9 +520,9 @@ class Teinte_Doc
     foreach ($_SERVER['argv'] as $glob) {
       foreach(glob($glob) as $srcfile) {
         $destname = pathinfo($srcfile, PATHINFO_FILENAME).self::$ext[$format];
-        if (isset($destdir)) $destfile = $destdir.$destname;
+        if (isset($dstdir)) $destfile = $dstdir.$destname;
         else $destfile=dirname($srcfile).'/'.$destname;
-        if ( file_exists($destfile) && filemtime( $srcfile ) < filemtime( $destfile ) ) continue;
+        if (file_exists($destfile) && filemtime($srcfile) < filemtime($destfile)) continue;
         if (STDERR) fwrite(STDERR, "$count. $srcfile > $destfile\n");
         $count++;
         try {
@@ -521,8 +531,8 @@ class Teinte_Doc
           $doc->export($format, $destfile);
           echo $meta['code']."\t".$meta['byline']."\t".$meta['date']."\t".$meta['title']."\n";
         }
-        catch ( Exception $e ) {
-          if (STDERR) fwrite(STDERR, $e );
+        catch (Exception $e) {
+          if (STDERR) fwrite(STDERR, $e);
         }
       }
     }

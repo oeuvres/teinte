@@ -25,6 +25,7 @@ class Teinte_Build
   /** Possible formats */
   static private $_formats = array(
     'tei' => '.xml',
+    'xml' => '.xml',
     'epub' => '.epub',
     'kindle' => '.mobi',
     'markdown' => '.md',
@@ -215,6 +216,10 @@ END;
       else if ($type == 'markdown') $teinte->markdown($dstfile);
       else if ($type == 'iramuteq') $teinte->iramuteq($dstfile);
       else if ($type == 'docx') Toff_Tei2docx::docx($teinte->file(), $dstfile);
+      else if ($type == 'xml') {
+        $dom = $teinte->images('../images/', $dstdir.'/images/');
+        $dom->save($dstfile);
+      }
       else if ($type == 'epub') {
         $livre = new Livrable_Tei2epub($teinte->file(), $this->_logger);
         $livre->epub($dstfile);
@@ -344,7 +349,7 @@ END;
     $this->log(E_USER_NOTICE, $srcfile);
     // here possible XML error
     try  {
-      $teinte = new Teinte_Doc($srcfile);
+      $teinte = new Teinte_Doc($srcfile, $this->_logger);
     }
     catch (Exception $e) {
       $this->log(E_USER_ERROR, $srcfile." XML mal formé");
