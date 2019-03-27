@@ -94,10 +94,11 @@ END;
   private $_cods;
   /** valeur par défaut de la configuration */
   public $conf = array(
-    "dstdir" => "",
     "formats" => "article, toc, epub, kindle",
     "logger" => "php://output",
     "logfile" => null,
+    "srcdir" => ".",
+    "dstdir" => ".",
  );
 
   /**
@@ -110,9 +111,8 @@ END;
     else if (is_string($this->conf['formats'])) {
       $this->conf['formats'] = preg_split("@[\s,;]+@", $this->conf['formats']);
     }
-    if (!$this->conf['dstdir']);
-    else if ($this->conf['dstdir'] == ".") $this->conf['dstdir']="";
-    else $this->conf['dstdir'] = rtrim($this->conf['dstdir'], '\\/')."/";
+    $this->conf['dstdir'] = self::dirnorm($this->conf['dstdir']);
+    $this->conf['srcdir'] = self::dirnorm($this->conf['srcdir']);
     // verify output dirs for generated files
     foreach ($this->conf['formats'] as $type) {
       if (!isset(self::$_formats[$type])) {
@@ -128,6 +128,15 @@ END;
     if (is_string($this->conf['logger'])) $this->_logger = fopen($this->conf['logger'], 'w');
     $this->_connect($this->conf['dstdir'].$this->conf['sqlite']);
     $this->_prepare();
+  }
+  /**
+   * dir norm
+   */
+  public static function dirnorm($path)
+  {
+    if(!$path) return "";
+    if($path == '.') return "";
+    return rtrim($path, '\\/')."/";
   }
   /**
    * Connexion à la base
@@ -319,7 +328,8 @@ END;
     $oldlog = $this->loglevel;
     $this->loglevel = $this->loglevel|E_USER_NOTICE;
     if (!is_array($glob)) $glob = preg_split("/\s+/", $glob);
-    foreach ($glob as $path) {
+    foreach ($glob as $pattern) {
+      $path = $this->conf['srcdir'].$pattern;
       foreach(glob($path) as $srcfile) {
         $this->_file($srcfile, $force, $props);
       }

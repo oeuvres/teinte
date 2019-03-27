@@ -352,7 +352,8 @@ class Teinte_Doc
         mkdir($dstdir, 0775, true);
         @chmod($dstdir, 0775);
       }
-      copy($src, $dstdir.$srcparts['filename'].'.'.$srcparts['extension']);
+      $dst = $dstdir.$srcparts['filename'].'.'.$srcparts['extension'];
+      if (!copy($src, $dst)) return false; // bad copy
     }
     // changes links in TEI so that straight transform will point on the right files
     $att->value=$hrefdir.$srcparts['filename'].'.'.$srcparts['extension'];
