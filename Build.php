@@ -184,6 +184,11 @@ END;
     $this->_q['del']->execute(array($code));
     foreach ($this->conf['formats'] as $type) {
       if (!isset(self::$_formats[$type])) continue;
+      if ($type == 'xml') {
+        foreach (glob($dstdir.'images/'.$code.'*') as $filename) {
+          unlink($filename);
+        }
+      }
       $extension = self::$_formats[$type];
       $dstfile = $dstdir.$type.'/'.$code.$extension;
       if (!file_exists($dstfile)) continue;
@@ -313,7 +318,7 @@ END;
     if (!$glob) $glob = $this->conf['srcglob'];
     $oldlog = $this->loglevel;
     $this->loglevel = $this->loglevel|E_USER_NOTICE;
-    if (!is_array($glob)) $glob = array($glob);
+    if (!is_array($glob)) $glob = preg_split("/\s+/", $glob);
     foreach ($glob as $path) {
       foreach(glob($path) as $srcfile) {
         $this->_file($srcfile, $force, $props);

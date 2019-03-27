@@ -331,8 +331,10 @@ class Teinte_Doc
     // do not modify data image
     if (strpos($src, 'data:image') === 0) return;
 
+    // test if coming fron the internet
+    if (substr($src, 0, 4) == 'http');
     // test if relative file path
-    if (file_exists($test=dirname($this->_file).'/'.$src)) $src=$test;
+    else if (file_exists($test=dirname($this->_file).'/'.$src)) $src=$test;
     // vendor specific etc/filename.jpg
     else if (isset(self::$_pars['srcdir']) && file_exists($test=self::$_pars['srcdir'].self::$_pars['filename'].'/'.substr($src, strpos($src, '/')+1))) $src=$test;
     // if not file exists, escape and alert (?)
