@@ -193,7 +193,7 @@ class Teinte_Doc
   public function toc($destfile=null, $root = "ol")
   {
     return $this->transform(
-      dirname(__FILE__).'/tei2toc.xsl',
+      dirname(__FILE__).'/xsl/tei2toc.xsl',
       $destfile,
       array(
         'root'=> $root,
@@ -247,28 +247,28 @@ class Teinte_Doc
    */
   public function markdown($destfile=null)
   {
-    return $this->transform(dirname(__FILE__).'/tei2md.xsl', $destfile, array('filename' => $this->_filename));
+    return $this->transform(dirname(__FILE__).'/xsl/tei2md.xsl', $destfile, array('filename' => $this->_filename));
   }
   /**
    * Output iramuteq text
    */
   public function iramuteq($destfile=null)
   {
-    return $this->transform(dirname(__FILE__).'/tei2iramuteq.xsl', $destfile);
+    return $this->transform(dirname(__FILE__).'/xsl/tei2iramuteq.xsl', $destfile);
   }
   /**
    * Output txm XML
    */
   public function txm($destfile=null)
   {
-    return $this->transform(dirname(__FILE__).'/tei4txm.xsl', $destfile);
+    return $this->transform(dirname(__FILE__).'/xsl/tei4txm.xsl', $destfile);
   }
   /**
    * Output naked text
    */
   public function naked($destfile=null)
   {
-    $txt = $this->transform(dirname(__FILE__).'/tei2naked.xsl');
+    $txt = $this->transform(dirname(__FILE__).'/xsl/tei2naked.xsl');
     /* TRÈS MAUVAISE IDÉE
     $txt = preg_replace(
       array(

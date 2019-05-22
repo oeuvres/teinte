@@ -2,9 +2,9 @@
 <!--
 
 LGPL  http://www.gnu.org/licenses/lgpl.html
-© 2016 Frederic.Glorieux@fictif.org et LABEX OBVIL
+© 2016 Frederic.Glorieux@fictif.org & LABEX OBVIL
 
-Extraction de métadonnées d’un teiHeader pour une ligne CSV
+Extract teiHeader metadatas for a csv line
 -->
 <xsl:transform version="1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"

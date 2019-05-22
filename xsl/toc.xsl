@@ -1,26 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  
-<h1>TEI » HTML (tei2html.xsl)</h1>
+Produce a table of contents from section structure
 
 LGPL  http://www.gnu.org/licenses/lgpl.html
-© 2013 Frederic.Glorieux@fictif.org et LABEX OBVIL
+© 2019 Frederic.Glorieux@fictif.org & Opteos & LABEX OBVIL
+© 2013 Frederic.Glorieux@fictif.org & LABEX OBVIL
 © 2012 Frederic.Glorieux@fictif.org 
-© 2010 Frederic.Glorieux@fictif.org et École nationale des chartes
+© 2010 Frederic.Glorieux@fictif.org & École nationale des chartes
 © 2007 Frederic.Glorieux@fictif.org
 © 2005 ajlsm.com et Cybertheses
 
-<p>
-Cette transformation XSLT 1.0 (compatible navigateurs, PHP, Python, Java…) 
-transforme du TEI en HTML5.
-Les auteurs ne s'engagent pas à supporter les 600 éléments TEI.
-Cette feuille prend en charge <a href="http://www.tei-c.org/Guidelines/Customization/Lite/">TEI lite</a>
-et les éléments TEI documentés dans les <a href="./../schema/">schémas</a> de cette installation.
-</p>
-<p>
-Alternative : les transformations de Sebastian Rahtz <a href="http://www.tei-c.org/Tools/Stylesheets/">tei-c.org/Tools/Stylesheets/</a>
-sont officiellement ditribuées par le consortium TEI, cependant ce développement est en XSLT 2.0 (java requis).
-</p>
+
 -->
 <xsl:transform version="1.0" 
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
@@ -35,61 +25,8 @@ sont officiellement ditribuées par le consortium TEI, cependant ce développeme
   extension-element-prefixes="exslt"
   >
   <xsl:import href="common.xsl"/>
-  <!-- Name of this xsl  -->
-  <xsl:param name="this">tei2toc.xsl</xsl:param>
-  <!-- No XML declaration for html fragments -->
-  <xsl:output encoding="UTF-8" indent="yes" method="xml" omit-xml-declaration="yes"/>
-  <!-- What kind of root element to output ? html, nav… -->
-  <xsl:param name="root" select="$html"/>
-  <!-- Racine -->
-  <xsl:template match="/*">
-    <xsl:choose>
-      <xsl:when test="$root=$front">
-        <xsl:call-template name="toc-front"/>
-      </xsl:when>      
-      <xsl:when test="$root=$back">
-        <xsl:call-template name="toc-back"/>
-      </xsl:when>
-      <!-- HTML fragment -->
-      <xsl:when test="$root=$ul or $root=$ol">
-        <xsl:call-template name="toc"/>
-      </xsl:when>
-      <!-- HTML fragment -->
-      <xsl:when test="$root=$nav">
-        <nav class="toc">
-          <xsl:call-template name="att-lang"/>
-          <xsl:call-template name="toc-header"/>
-          <xsl:call-template name="toc"/>
-        </nav>
-      </xsl:when>
-      <!-- Complete doc -->
-      <xsl:otherwise>
-        <xsl:text disable-output-escaping="yes">&lt;!DOCTYPE html></xsl:text>
-        <xsl:value-of select="$lf"/>
-        <html>
-          <xsl:call-template name="att-lang"/>
-          <head>
-            <meta http-equiv="Content-type" content="text/html; charset=UTF-8"/>
-            <meta name="modified" content="{$date}"/>
-            <!-- déclaration classes css locale (permettre la surcharge si généralisation) -->
-            <!-- à travailler
-            <xsl:apply-templates select="/*/tei:teiHeader/tei:encodingDesc/tei:tagsDecl"/>
-            -->
-            <link rel="stylesheet" type="text/css" href="{$theme}tei2html.css"/>
-            <script type="text/javascript" src="{$theme}Tree.js">//</script>
-          </head>
-          <body class="{$corpusid}">
-            <nav>
-              <xsl:call-template name="toc-header"/>
-              <xsl:call-template name="toc"/>
-            </nav>
-          </body>
-        </html>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
 
-  <!-- Générer une navigation dans les sections -->
+  <!-- Generate a table of sections -->
   <xsl:template name="toc">
     <xsl:variable name="html">
       <xsl:apply-templates select="/*/tei:text/tei:front" mode="li"/>
@@ -129,19 +66,7 @@ sont officiellement ditribuées par le consortium TEI, cependant ce développeme
     </header>
   </xsl:template>
 
-  <!--
-<h3>mode="a" (lien html)</h3>
-
-<p>
-Générer un lien html &lt;a href="href" title="title">label&lt;/a> pour un élément, notamment pour une table des matières,
-mais aussi pour le liage dans l'apparat critique. Ce mode fait usage des modes :
-</p>
-<ul>
-  <li>“label” : titre court pour l'intitulé du lien</li>
-  <li>“title” : titre long pour une bulle surgissante</li>
-  <li>“href” : lien URI relatif fonctionnant dans le contexte de la publication (en un ou plusieurs fichiers)</li>
-</ul>
-  -->
+  <!-- Produce a link for different kind of target elements -->
   <xsl:template name="a">
     <xsl:param name="title"/>
     <xsl:choose>
@@ -155,7 +80,7 @@ mais aussi pour le liage dans l'apparat critique. Ce mode fait usage des modes 
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-  <!-- Par défaut, le mode lien ne produit rien et alerte d'un manque dans la sortie. -->
+  <!-- Default template  -->
   <xsl:template match="node()" mode="a">
     <b style="color:red;">&lt;<xsl:value-of select="name()"/> mode="a"&gt;</b>
   </xsl:template>

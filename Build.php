@@ -590,7 +590,7 @@ usage    : php -f '.basename(__FILE__).' base.sqlite action "dir/*.xml"'."\n\n";
     if (count($_SERVER['argv']) < 2) {
       if (count($_SERVER['argv'])) $path = $_SERVER['argv'][0];
       else $path = "conf.php";
-      if (!file_exists($path)) exit($path+" — ce fichier n’existe pas.");
+      if (!file_exists($path)) exit($path." — ce fichier n’existe pas.");
       $conf = include($path);
       $build = new Teinte_Build($conf);
       $build->glob();

@@ -1,16 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   
-<h1>TEI » HTML (tei_html.xsl)</h1>
-
+Interpret TEI header as html.
 © 2012, 2015 Frédéric Glorieux
 
-Cette transformation XSLT 1.0 (compatible navigateurs, PHP, Python, Java…) 
-transforme du TEI en HTML5.
-
-
-Alternative : les transformations de Sebastian Rahtz <a href="http://www.tei-c.org/Tools/Stylesheets/">tei-c.org/Tools/Stylesheets/</a>
-sont officiellement ditribuées par le consortium TEI, cependant ce développement est en XSLT 2.0 (java requis).
 -->
 <xsl:transform version="1.0"   xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 
@@ -79,7 +72,34 @@ sont officiellement ditribuées par le consortium TEI, cependant ce développeme
       <xsl:apply-templates/>
     </span>
   </xsl:template>
-
+  <!-- Liste of revisions -->
+  <xsl:template match="tei:revisionDesc">
+    <table>
+      <xsl:call-template name="headatts">
+        <xsl:with-param name="class">data</xsl:with-param>
+      </xsl:call-template>
+      <caption>
+        <xsl:call-template name="message"/>
+      </caption>
+      <xsl:apply-templates/>
+    </table>
+  </xsl:template>
+  <!-- Liste spéciale, journal des modifications  -->
+  <xsl:template match="tei:change">
+    <tr>
+      <xsl:call-template name="headatts"/>
+      <td>
+        <xsl:value-of select="@when"/>
+      </td>
+      <td>
+        <xsl:apply-templates select="@who" mode="anchors"/>
+      </td>
+      <td>
+        <xsl:apply-templates/>
+      </td>
+    </tr>
+  </xsl:template>
+  
   <xsl:template match="tei:fileDesc/tei:titleStmt/tei:title">
     <xsl:choose>
       <xsl:when test="@type= 'formal' or @type='reference' or @type='DEAF' or @type='gmd'"/>

@@ -4,9 +4,9 @@
 LGPL  http://www.gnu.org/licenses/lgpl.html
 © 2005 ajlsm.com (Cybertheses)
 © 2007 Frederic.Glorieux@fictif.org
-© 2010 Frederic.Glorieux@fictif.org et École nationale des chartes
+© 2010 Frederic.Glorieux@fictif.org & École nationale des chartes
 © 2012 Frederic.Glorieux@fictif.org 
-© 2013 Frederic.Glorieux@fictif.org et LABEX OBVIL
+© 2013 Frederic.Glorieux@fictif.org & LABEX OBVIL
 
 
 Different templates shared among the callers
@@ -57,7 +57,7 @@ Gobal TEI parameters and variables are divided in different categories
       <xsl:otherwise><xsl:value-of select="$http"/>oeuvres.github.io/Teinte/</xsl:otherwise>
     </xsl:choose>
   </xsl:param>
-  <!-- generation date, maybe modified by caller -->
+  <!-- Generation date, maybe modified by caller -->
   <xsl:param name="date">
     <xsl:choose>
       <xsl:when test="function-available('date:date-time')">
@@ -79,9 +79,9 @@ Gobal TEI parameters and variables are divided in different categories
       <xsl:otherwise>2016</xsl:otherwise>
     </xsl:choose>
   </xsl:param>
-  <!-- Type de sortie : html5, xhtml, …? -->
+  <!-- Choose an output format (has been used for epub) -->
   <xsl:param name="format">html5</xsl:param>
-  <!-- give name of file from the caller -->
+  <!-- Name of file, from the caller -->
   <xsl:param name="filename"/>
   <!-- doc name -->
   <xsl:param name="docid">
@@ -144,7 +144,7 @@ Gobal TEI parameters and variables are divided in different categories
       </xsl:otherwise>
     </xsl:choose>
   </xsl:param>
-  <!-- Reference title, which order ? -->
+  <!-- Reference title -->
   <xsl:param name="doctitle">
     <xsl:choose>
       <xsl:when test="/*/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title">
@@ -175,7 +175,7 @@ Gobal TEI parameters and variables are divided in different categories
       </xsl:otherwise>
     </xsl:choose>
   </xsl:param>
-  <!-- A build byline from  -->
+  <!-- A byline with multiple authors -->
   <xsl:param name="byline">
     <xsl:for-each select="/tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt[1]">
       <xsl:choose>
@@ -226,7 +226,7 @@ Gobal TEI parameters and variables are divided in different categories
       </xsl:when>
     </xsl:choose>
   </xsl:param>
-  <!-- Publication date, especially useful to date preface and so on  -->
+  <!-- Publication date -->
   <xsl:variable name="issued">
     <xsl:choose>
       <xsl:when test="/*/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:biblFull/tei:publicationStmt/tei:date">
@@ -243,7 +243,7 @@ Gobal TEI parameters and variables are divided in different categories
       </xsl:when>
     </xsl:choose>
   </xsl:variable>
-  <!-- la chaîne identifiante (ISBN, URI…) -->
+  <!-- Identifier string (ISBN, URI…) -->
   <xsl:param name="identifier">
     <xsl:choose>
       <xsl:when test="/*/tei:teiHeader/tei:fileDesc/tei:publicationStmt/tei:idno">
@@ -263,7 +263,7 @@ Gobal TEI parameters and variables are divided in different categories
       </xsl:otherwise>
     </xsl:choose>
   </xsl:param>
-  <!-- Langue du document, sert aussi pour les messages générés -->
+  <!-- Document language (will also be used to choose generated messages) -->
   <xsl:param name="lang">
     <xsl:choose>
       <xsl:when test="/*/@xml:lang">
@@ -280,18 +280,17 @@ Gobal TEI parameters and variables are divided in different categories
   </xsl:param>
   <!-- File for generated messages -->
   <xsl:param name="messages">tei.rdfs</xsl:param>
-  <!--  charger le fichier de messages, document('') permet de résoudre les chemin relativement à ce fichier  -->
+  <!--  Load messages, document('') works to resolve relative paths  -->
   <xsl:variable name="rdf:Property" select="document($messages, document(''))/*/rdf:Property"/>
   <!-- Useful in Teinte package -->
   <xsl:variable name="this"/>
-  <!-- A separate page for footnotes ? -->
+  <!-- A separate page for footnotes (used by epub) -->
   <xsl:param name="fnpage"/>
-  <!-- A dest folder for graphics -->
+  <!-- A dest folder for graphics (used by epub) -->
   <xsl:param name="images"/>
-  <!-- key to know which element to split -->
-  <!-- Éléments uniques dans un fichier, identifiés par leur nom, liste séparée d'espaces. -->
+  <!-- Space separated list of elements names, unique in a TEI document, used for labels -->
   <xsl:variable name="els-unique"> editorialDecl licence projectDesc revisionDesc samplingDecl sourceDesc TEI teiHeader </xsl:variable>
-  <!-- Une barre d'espaces insécables, utilisable pour de l'indentation automatique -->
+  <!-- A bar of non breaking spaces, used for indentation -->
   <xsl:variable name="nbsp">                                                                                         </xsl:variable>
   <xsl:variable name="lf">
     <xsl:text>&#10;</xsl:text>
@@ -299,10 +298,13 @@ Gobal TEI parameters and variables are divided in different categories
   <xsl:variable name="tab">
     <xsl:text>&#9;</xsl:text>
   </xsl:variable>
+  <xsl:variable name="apos">"</xsl:variable> 
   <!-- Some constants -->
   <xsl:variable name="epub2">epub2</xsl:variable>
   <xsl:variable name="epub3">epub3</xsl:variable>
   <xsl:variable name="html5">html5</xsl:variable>
+  <!-- What kind of root element to output ? html, nav… -->
+  <xsl:param name="root" select="$html"/>
   <xsl:variable name="html">html</xsl:variable>
   <xsl:variable name="article">article</xsl:variable>
   <xsl:variable name="nav">nav</xsl:variable>
@@ -310,20 +312,19 @@ Gobal TEI parameters and variables are divided in different categories
   <xsl:variable name="ol">ol</xsl:variable>
   <xsl:variable name="front">front</xsl:variable>
   <xsl:variable name="back">back</xsl:variable>
-  <!-- Upper case letters with diactitics, for translate() -->
+  <!-- Upper case letters with diactitics, translate("L'État", $uc, $lc) = "l'état" -->
   <xsl:variable name="uc">ABCDEFGHIJKLMNOPQRSTUVWXYZÆŒÇÀÁÂÃÄÅÈÉÊËÌÍÎÏÒÓÔÕÖÙÚÛÜÝ</xsl:variable>
-  <!-- Lower case letters with diacritic, for translate() -->
+  <!-- Lower case letters with diacritics, for translate() -->
   <xsl:variable name="lc">abcdefghijklmnopqrstuvwxyzæœçàáâãäåèéêëìíîïòóôõöùúûüý</xsl:variable>
-  <!-- To produce a normalised id -->
+  <!-- To produce a normalised id without diacritics translate("Déjà vu, 4", $idfrom, $idto) = "dejavu4"  To produce a normalised id -->
   <xsl:variable name="idfrom">ABCDEFGHIJKLMNOPQRSTUVWXYZÀÂÄÉÈÊÏÎÔÖÛÜÇàâäéèêëïîöôüû ,.</xsl:variable>
-  <xsl:variable name="idto">abcdefghijklmnopqrstuvwxyzaaaeeeiioouucaaaeeeeiioouu-</xsl:variable>
-  <xsl:variable name="apos">'</xsl:variable>
-  <xsl:variable name="quote">"</xsl:variable>
-  <!-- a key for identified elements -->
+  <!-- Lower case without diacritics -->
+  <xsl:variable name="idto">abcdefghijklmnopqrstuvwxyzaaaeeeiioouucaaaeeeeiioouu</xsl:variable>
+  <!-- A key to handle identified elements -->
   <xsl:key match="*" name="id" use="@xml:id"/>
   <!-- A key to count elements by name -->
   <xsl:key match="*" name="qname" use="local-name()"/>
-  <!-- Put a lang attribute  -->
+  <!-- Put a local @xml:lang attribute according to the  -->
   <xsl:template name="att-lang">
     <xsl:variable name="lang-loc" select="ancestor-or-self::*[@xml:lang][1]/@xml:lang"/>
     <xsl:choose>
@@ -356,7 +357,7 @@ Gobal TEI parameters and variables are divided in different categories
       </xsl:when>
       <xsl:otherwise>
         <xsl:variable name="text" select="normalize-space(string(.))"/>
-        <!-- try to find a year -->
+        <!-- Try to find a year -->
         <xsl:variable name="XXXX" select="translate($text,'0123456789', '##########')"/>
         <xsl:choose>
           <xsl:when test="contains($XXXX, '####')">
@@ -380,38 +381,7 @@ Gobal TEI parameters and variables are divided in different categories
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-  <!-- Create a titlePage from teiHeader -->
-  <xsl:template name="titlePage">
-    <xsl:apply-templates select="/*/tei:teiHeader"/>
-    <!--
-    <div class="titlePage">
-      <xsl:choose>
-        <xsl:when test="not(/*/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author)"/>
-        <xsl:when test="/*/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author[. != '']">
-          <xsl:apply-templates select="/*/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author[. != '']"/>
-        </xsl:when>
-        <xsl:when test="/*/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author[@key != '']">
-          <xsl:for-each select="/*/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author[@key != '']">
-            <div class="author">
-              <xsl:choose>
-                <xsl:when test="contains(@key, '(')">
-                  <xsl:value-of select="normalize-space(substring-before(@key, '('))"/>
-                </xsl:when>
-                <xsl:otherwise>
-                  <xsl:value-of select="@key"/>
-                </xsl:otherwise>
-              </xsl:choose>
-            </div>
-          </xsl:for-each>
-        </xsl:when>
-      </xsl:choose>
-      <xsl:apply-templates select="/*/tei:teiHeader/tei:profileDesc/tei:creation/tei:date[1]"/>
-      <xsl:apply-templates select="/*/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[not(@type) or @type='main' or @type='sub' or @type='alt' or @type='short' or @type='desc']"/>
-      <xsl:apply-templates select="/*/tei:teiHeader/tei:fileDesc/tei:publicationStmt"/>
-    </div>
-    -->
-  </xsl:template>
-  <!-- Créer un titre hiérarchique pour /html/head/title d'une section -->
+  <!-- Produce a hierarchical title for an /html/head/title -->
   <xsl:template name="titlebranch">
     <xsl:variable name="titlebranch">
       <xsl:for-each select="ancestor-or-self::*">
@@ -421,14 +391,12 @@ Gobal TEI parameters and variables are divided in different categories
         </xsl:variable>
         <xsl:variable name="branchNorm" select="normalize-space($branch)"/>
         <xsl:choose>
-          <!-- ramasser le teiHeader (?) -->
           <xsl:when test="self::tei:TEI"/>
           <xsl:when test="self::tei:text">
             <xsl:if test="position() != 1"> — </xsl:if>
             <xsl:copy-of select="$doctitle"/>
           </xsl:when>
           <xsl:when test="self::tei:body"/>
-          <!-- forged title, do not use ? why ? -->
           <!--
           <xsl:when test="starts-with($branchNorm, '[')"/>
           -->
@@ -449,28 +417,17 @@ Gobal TEI parameters and variables are divided in different categories
         </xsl:choose>
       </xsl:for-each>
     </xsl:variable>
-    <!-- ???
-    <xsl:choose>
-      <xsl:when test="normalize-space($titlebranch) = ''">
-        <xsl:value-of select="$corpusTitle"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:value-of select="normalize-space($titlebranch)"/>
-      </xsl:otherwise>
-    </xsl:choose>
-    -->
     <xsl:value-of select="normalize-space($titlebranch)"/>
   </xsl:template>
-  <!--
-<h3>mode="id" (identifiant)</h3>
-
-<p>
-Mode permettant d'associer un identifiant unique dans le contexte d'un document,
-notamment pour établir cible et source de liens.
-</p>
--->
+  <!-- Shared template to get an id -->
   <xsl:template match="*" mode="id" name="id">
     <xsl:param name="prefix"/>
+    <!-- Idea for a prefix ?
+    <xsl:if test="$docid != ''">
+      <xsl:value-of select="translate($docid, $id0, $id1)"/>
+      <xsl:text>_</xsl:text>
+    </xsl:if>
+    -->
     <xsl:param name="suffix"/>
     <xsl:variable name="id0"> '":,; /\</xsl:variable>
     <xsl:value-of select="$prefix"/>
@@ -509,13 +466,6 @@ notamment pour établir cible et source de liens.
         <xsl:number count="tei:listPerson[@type='configuration']" level="any"/>
       </xsl:when>
       <xsl:when test="not(ancestor::tei:group) and (self::tei:div or starts-with(local-name(), 'div'))">
-        <!-- should I put file id as div id prefix ? -->
-        <!--
-        <xsl:if test="$docid != ''">
-          <xsl:value-of select="translate($docid, $id0, $id1)"/>
-          <xsl:text>_</xsl:text>        
-        </xsl:if>
-        -->
         <xsl:choose>
           <xsl:when test="ancestor::tei:body">body-</xsl:when>
           <xsl:when test="ancestor::tei:front">front-</xsl:when>
@@ -523,51 +473,23 @@ notamment pour établir cible et source de liens.
         </xsl:choose>
         <xsl:number count="tei:div|tei:div1|tei:div2|tei:div3|tei:div4" format="1-1" level="multiple"/>
       </xsl:when>
-      <!-- hiérarchie simple de div  -->
+      <!-- Simple hierarchy for <div>  -->
       <xsl:when test="self::tei:div and not(ancestor::tei:group)">
-        <!-- should I put file id as div id prefix ? -->
-        <!--
-        <xsl:if test="$docid != ''">
-          <xsl:value-of select="translate($docid, $id0, $id1)"/>
-          <xsl:text>_</xsl:text>        
-        </xsl:if>
-        -->
         <xsl:number count="tei:div" format="1-1" level="multiple"/>
       </xsl:when>
-      <!-- find index -->
+      <!-- index.html page -->
       <xsl:when test="/tei:TEI/tei:text and count(.|/tei:TEI/tei:text)=1">index</xsl:when>
-      <!-- éléments hauts -->
+      <!-- root element -->
       <xsl:when test="count(.. | /*) = 1">
-        <!-- should I put file id as div id prefix ? -->
-        <!--
-        <xsl:if test="$docid != ''">
-          <xsl:value-of select="translate($docid, $id0, $id1)"/>
-          <xsl:text>_</xsl:text>        
-        </xsl:if>
-        -->
         <xsl:value-of select="local-name()"/>
       </xsl:when>
-      <!-- groupe de textes -->
+      <!-- Groups of texts -->
       <xsl:when test="self::tei:group">
-        <!-- should I put file id as div id prefix ? -->
-        <!--
-        <xsl:if test="$docid != ''">
-          <xsl:value-of select="translate($docid, $id0, $id1)"/>
-          <xsl:text>_</xsl:text>        
-        </xsl:if>
-        -->
         <xsl:value-of select="local-name()"/>
         <xsl:number format="-1-1" from="/*/tei:text/tei:group" level="multiple"/>
       </xsl:when>
-      <!-- éléments uniques identifiables par leur nom -->
+      <!-- Unique element in document  -->
       <xsl:when test="contains($els-unique, concat(' ', local-name(), ' '))">
-        <!-- should I put file id as div id prefix ? -->
-        <!--
-        <xsl:if test="$docid != ''">
-          <xsl:value-of select="translate($docid, $id0, $id1)"/>
-          <xsl:text>_</xsl:text>        
-        </xsl:if>
-        -->
         <xsl:value-of select="local-name()"/>
       </xsl:when>
       <xsl:when test="self::tei:pb">
@@ -593,15 +515,8 @@ notamment pour établir cible et source de liens.
         <xsl:text>img</xsl:text>
         <xsl:number level="any"/>
       </xsl:when>
-      <!-- Défaut -->
+      <!-- Default -->
       <xsl:when test="true()">
-        <!-- should I put file id as div id prefix ? -->
-        <!--
-        <xsl:if test="$docid != ''">
-          <xsl:value-of select="translate($docid, $id0, $id1)"/>
-          <xsl:text>_</xsl:text>
-        </xsl:if>
-        -->
         <xsl:value-of select="local-name()"/>
         <xsl:if test="count(key('qname', local-name())) &gt; 1">
           <xsl:number level="any"/>
@@ -1095,7 +1010,7 @@ résoudre les césures, ou les alternatives éditoriales.
     <xsl:choose>
       <!-- When transform is called from monopage  -->
       <xsl:when test="$this = 'tei2html.xsl' or $this = 'tei2toc.xsl'">
-        <xsl:text>#</xsl:text>
+        <xsl:text>#--</xsl:text>
         <xsl:value-of select="$id"/>
       </xsl:when>
       <!-- For a deported page of notes (site or epub) -->
@@ -1114,7 +1029,7 @@ résoudre les césures, ou les alternatives éditoriales.
           <xsl:otherwise>index<xsl:value-of select="$_html"/></xsl:otherwise>
         </xsl:choose>
       </xsl:when>
-      <!-- Structure TEI, renommés par le template "id" -->
+      <!-- TEI structure -->
       <xsl:when test="count(../.. | /*) = 1">
         <xsl:value-of select="$base"/>
         <xsl:value-of select="$id"/>
@@ -1132,7 +1047,7 @@ résoudre les césures, ou les alternatives éditoriales.
         <xsl:value-of select="$id"/>
         <xsl:value-of select="$_html"/>
       </xsl:when>
-      <!-- Enfant d'une page, id du parent splité + ancre -->
+      <!-- Child of a split section -->
       <xsl:when test="ancestor::*[key('split', generate-id())]">
         <xsl:value-of select="$base"/>
         <xsl:for-each select="ancestor::*[key('split', generate-id())][1]">
@@ -1142,7 +1057,7 @@ résoudre les césures, ou les alternatives éditoriales.
         <xsl:text>#</xsl:text>
         <xsl:value-of select="$id"/>
       </xsl:when>
-      <!-- A été rencontré, laissé pour mémoire -->
+      <!-- ???? -->
       <xsl:when test="ancestor::tei:*[local-name(../..)='TEI']">
         <xsl:for-each select="ancestor::tei:*[local-name(../..)='TEI'][1]">
           <xsl:call-template name="id"/>
@@ -1151,7 +1066,7 @@ résoudre les césures, ou les alternatives éditoriales.
         <xsl:text>#</xsl:text>
         <xsl:value-of select="$id"/>
       </xsl:when>
-      <!-- Pas de split, juste des ancres -->
+      <!-- No split, just anchor -->
       <xsl:otherwise>
         <xsl:text>#</xsl:text>
         <xsl:value-of select="$id"/>
@@ -1220,33 +1135,7 @@ Le mode label génère un intitulé court obtenu par une liste de valeurs locali
       </xsl:when>
     </xsl:choose>
   </xsl:template>
-  <!-- <*>, modèle par défaut d'interception des éléments non pris en charge -->
-  <xsl:template match="*">
-    <span class="error">
-      <xsl:call-template name="tag"/>
-      <xsl:apply-templates/>
-      <b style="color:red">
-        <xsl:text>&lt;/</xsl:text>
-        <xsl:value-of select="name()"/>
-        <xsl:text>&gt;</xsl:text>
-      </b>
-    </span>
-  </xsl:template>
-  <!-- Utile au déboguage, affichage de l'élément en cours -->
-  <xsl:template name="tag">
-    <b style="color:red">
-      <xsl:text>&lt;</xsl:text>
-      <xsl:value-of select="name()"/>
-      <xsl:for-each select="@*">
-        <xsl:text> </xsl:text>
-        <xsl:value-of select="name()"/>
-        <xsl:text>="</xsl:text>
-        <xsl:value-of select="."/>
-        <xsl:text>"</xsl:text>
-      </xsl:for-each>
-      <xsl:text>&gt;</xsl:text>
-    </b>
-  </xsl:template>
+
   <!--
     AGA, xslt 1 donc pas de fonction replace, un template pour y remedier.
   -->
@@ -1348,12 +1237,43 @@ dégrossi le travail, mais du reste à faire  -->
     <xsl:variable name="lastChar" select="substring($current, string-length($current))"/>
     <xsl:if test="translate($lastChar, '.?!,;:', '') != ''">. </xsl:if>
   </xsl:template>
-  <!--
-Historique
-==========
-
-* 2010-03 [FG] Factorisation et documentation pour présentation CCH
-* 2009-07 [FG] Création à partir des corpus sanctoral et cartulairesIdF
-
--->
+  <!-- Loop on a space separated list of URIs, to display links -->
+  <xsl:template name="anchors" match="node()|@*" mode="anchors">
+    <!-- String to loop on -->
+    <xsl:param name="anchors" select="."/>
+    <!-- First id of the list -->
+    <xsl:variable name="id" select="
+      substring-before(
+      concat($anchors, ' ') , ' '
+      )"/>
+    <xsl:choose>
+      <!-- nothing more, finish -->
+      <xsl:when test="normalize-space($anchors) = ''"/>
+      <!-- Is not an anchor (maybe a link ?) -->
+      <xsl:when test="not(starts-with($id, '#'))">
+        <i class="{local-name()}">
+          <xsl:value-of select="$id"/>
+        </i>
+      </xsl:when>
+      <!-- anchor inside the document, build the link, according to the split policy -->
+      <xsl:when test="key('id', substring-after($id, '#'))">
+        <xsl:text> </xsl:text>
+        <xsl:apply-templates select="key('id', substring-after($id, '#'))" mode="a"/>
+      </xsl:when>
+      <!-- anchor not in document -->
+      <xsl:otherwise>
+        <i class="{local-name()}">
+          <xsl:value-of select="substring-after($id, '#')"/>
+        </i>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:variable name="next" select="normalize-space(substring-after($anchors, ' '))"/>
+    <xsl:if test="$next != ''">
+      <xsl:text> </xsl:text>
+      <xsl:call-template name="anchors">
+        <xsl:with-param name="anchors" select="$next"/>
+      </xsl:call-template>
+    </xsl:if>
+  </xsl:template>
+  
 </xsl:transform>

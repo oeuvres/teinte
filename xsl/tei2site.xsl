@@ -16,7 +16,9 @@ Split a single TEI book in a multi-pages site
   xmlns:tei="http://www.tei-c.org/ns/1.0"
   exclude-result-prefixes="tei"
 >
-  <xsl:import href="tei2html.xsl"/>
+  <xsl:import href="flow.xsl"/>
+  <xsl:import href="notes.xsl"/>
+  <xsl:import href="tei2toc.xsl"/>
   <!-- Name of this xsl  -->
   <xsl:variable name="this">tei2site.xsl</xsl:variable>
   <xsl:output indent="yes" encoding="UTF-8" method="xml" />
