@@ -25,8 +25,6 @@ TODO: listes, tables, liens
 >
   <!-- TEI common, metadatas -->
   <xsl:import href="common.xsl"/>
-  <!-- Name of this xsl  -->
-  <xsl:variable name="this">tei2md.xsl</xsl:variable>
   <xsl:output omit-xml-declaration="yes" encoding="UTF-8" method="text" indent="yes"/>
   <!-- Permet l'indentation des éléments de structure -->
   <xsl:strip-space elements="tei:TEI tei:TEI.2 tei:body tei:castList  tei:div tei:div1 tei:div2  tei:docDate tei:docImprint tei:docTitle tei:fileDesc tei:front tei:group tei:index tei:listWit tei:publicationStmp tei:publicationStmt tei:sourceDesc tei:SourceDesc tei:sources tei:text tei:teiHeader tei:text tei:titleStmt"/>

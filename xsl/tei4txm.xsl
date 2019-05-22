@@ -13,8 +13,6 @@ XML TEI allégé, par exemple pièce de théâtre sans didascalies, ou critique 
   exclude-result-prefixes="tei"
 >
   <!-- TEI common, metadatas -->
-  <!-- Name of this xsl  -->
-  <xsl:variable name="this">tei4txm.xsl</xsl:variable>
   <xsl:output omit-xml-declaration="yes" encoding="UTF-8" method="xml" indent="yes"/>
 
   <xsl:template match="node()|@*" mode="txm">

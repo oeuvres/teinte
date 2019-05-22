@@ -35,8 +35,7 @@ sont officiellement ditribuées par le consortium TEI, cependant ce développeme
   extension-element-prefixes="exslt"
   >
   <xsl:import href="toc.xsl"/>
-  <!-- Name of this xsl  -->
-  <xsl:param name="this">tei2toc.xsl</xsl:param>
+  <xsl:param name="root"/>
   <!-- No XML declaration for html fragments -->
   <xsl:output encoding="UTF-8" indent="yes" method="xml" omit-xml-declaration="yes"/>
   <!-- Racine -->

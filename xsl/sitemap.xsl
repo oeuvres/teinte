@@ -6,8 +6,6 @@
 -->
 <xsl:transform exclude-result-prefixes="site" extension-element-prefixes="exslt" version="1.0" xmlns="http://www.w3.org/1999/xhtml" xmlns:exslt="http://exslt.org/common" xmlns:site="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:import href="common.xsl"/>
-  <!-- Name of this xsl, change link resolution  -->
-  <xsl:variable name="this">sitemap2html.xsl</xsl:variable>
   <xsl:output encoding="UTF-8" indent="yes" method="xml" omit-xml-declaration="yes"/>
   <xsl:template match="/*">
     <!--  browser will not like doctype -->

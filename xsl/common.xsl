@@ -282,12 +282,12 @@ Gobal TEI parameters and variables are divided in different categories
   <xsl:param name="messages">tei.rdfs</xsl:param>
   <!--  Load messages, document('') works to resolve relative paths  -->
   <xsl:variable name="rdf:Property" select="document($messages, document(''))/*/rdf:Property"/>
-  <!-- Useful in Teinte package -->
-  <xsl:variable name="this"/>
   <!-- A separate page for footnotes (used by epub) -->
   <xsl:param name="fnpage"/>
   <!-- A dest folder for graphics (used by epub) -->
   <xsl:param name="images"/>
+  <!-- For link resolution in href template, split mode with different dest file -->
+  <xsl:variable name="split"/>
   <!-- Space separated list of elements names, unique in a TEI document, used for labels -->
   <xsl:variable name="els-unique"> editorialDecl licence projectDesc revisionDesc samplingDecl sourceDesc TEI teiHeader </xsl:variable>
   <!-- A bar of non breaking spaces, used for indentation -->
@@ -1009,8 +1009,8 @@ résoudre les césures, ou les alternatives éditoriales.
     </xsl:param>
     <xsl:choose>
       <!-- When transform is called from monopage  -->
-      <xsl:when test="$this = 'tei2html.xsl' or $this = 'tei2toc.xsl'">
-        <xsl:text>#--</xsl:text>
+      <xsl:when test="not($split)">
+        <xsl:text>#</xsl:text>
         <xsl:value-of select="$id"/>
       </xsl:when>
       <!-- For a deported page of notes (site or epub) -->

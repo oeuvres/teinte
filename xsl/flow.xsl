@@ -108,7 +108,7 @@ Sections
         <xsl:attribute name="epub:type">bodymatter</xsl:attribute>
       </xsl:if>
       <xsl:call-template name="atts"/>
-      <xsl:apply-templates select="*">
+      <xsl:apply-templates>
         <xsl:with-param name="level" select="$level "/>
       </xsl:apply-templates>
     </xsl:element>
@@ -190,7 +190,7 @@ Sections
         <!-- hard page break ? -->
         <xsl:otherwise/>
       </xsl:choose>
-      <xsl:apply-templates select="*">
+      <xsl:apply-templates>
         <xsl:with-param name="level" select="$level + 1"/>
       </xsl:apply-templates>
     </xsl:element>
