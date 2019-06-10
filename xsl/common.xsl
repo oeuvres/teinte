@@ -175,6 +175,19 @@ Gobal TEI parameters and variables are divided in different categories
       </xsl:otherwise>
     </xsl:choose>
   </xsl:param>
+  <!-- The first author -->
+  <xsl:param name="author1">
+    <xsl:for-each select="/tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt[1]">
+      <xsl:choose>
+        <xsl:when test="tei:principal">
+          <xsl:apply-templates select="tei:principal[1]" mode="key"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:apply-templates select="tei:author[1]" mode="key"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:for-each>
+  </xsl:param>
   <!-- A byline with multiple authors -->
   <xsl:param name="byline">
     <xsl:for-each select="/tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt[1]">
@@ -368,7 +381,7 @@ Gobal TEI parameters and variables are divided in different categories
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-  <xsl:template name="key">
+  <xsl:template name="key" match="*" mode="key">
     <xsl:choose>
       <xsl:when test="@key and contains(@key, '(')">
         <xsl:value-of select="normalize-space(substring-before(@key, '('))"/>
