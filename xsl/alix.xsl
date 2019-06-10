@@ -69,6 +69,7 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
       </alix:field>
       <!-- process chapters -->
       <xsl:apply-templates mode="alix"/>
+      <!-- notes -->
       <alix:chapter>
         <xsl:copy-of select="$info"/>
         <alix:field name="type" value="notes" type="string"/>
