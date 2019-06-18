@@ -37,7 +37,7 @@ TODO: listes, tables, liens
   </xsl:variable>
   <xsl:variable name="apos">'</xsl:variable>
   <xsl:variable name="quot">"</xsl:variable>
-
+  <xsl:variable name="bar">-------------------------------------------------------</xsl:variable>  
   <xsl:template match="*" mode="md">
     <xsl:apply-templates mode="md"/>
   </xsl:template>

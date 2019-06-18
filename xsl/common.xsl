@@ -146,6 +146,9 @@ Gobal TEI parameters and variables are divided in different categories
   </xsl:param>
   <!-- Reference title -->
   <xsl:param name="doctitle">
+    <xsl:call-template name="doctitle"/>
+  </xsl:param>
+  <xsl:template name="doctitle">
     <xsl:choose>
       <xsl:when test="/*/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title">
         <xsl:for-each select="/*/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[not(@type) or @type='main' or @type='sub']">
@@ -174,9 +177,12 @@ Gobal TEI parameters and variables are divided in different categories
         </xsl:call-template>
       </xsl:otherwise>
     </xsl:choose>
-  </xsl:param>
+  </xsl:template>
   <!-- The first author -->
   <xsl:param name="author1">
+    <xsl:call-template name="author1"/>
+  </xsl:param>
+  <xsl:template name="author1">
     <xsl:for-each select="/tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt[1]">
       <xsl:choose>
         <xsl:when test="tei:principal">
@@ -187,40 +193,44 @@ Gobal TEI parameters and variables are divided in different categories
         </xsl:otherwise>
       </xsl:choose>
     </xsl:for-each>
-  </xsl:param>
+  </xsl:template>
   <!-- A byline with multiple authors -->
   <xsl:param name="byline">
     <xsl:for-each select="/tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt[1]">
+      <xsl:variable name="names" select="tei:author|tei:principal"/>
       <xsl:choose>
-        <xsl:when test="not(tei:author)"/>
-        <xsl:when test="count(tei:author) &gt; 3">
-          <span class="byline">
-            <xsl:for-each select="tei:author[1]">
-              <xsl:call-template name="key"/>
+        <xsl:when test="not($names)"/>
+        <xsl:when test="count($names) &gt; 3">
+            <xsl:for-each select="$names[1]">
+              <span class="persName">
+                <xsl:call-template name="key"/>
+              </span>
             </xsl:for-each>
             <xsl:text> </xsl:text>
             <i>et al.</i>
-          </span>
         </xsl:when>
         <xsl:otherwise>
-          <span class="byline">
-            <xsl:for-each select="tei:author">
-              <xsl:if test="position() &gt; 1"> ; </xsl:if>
-              <xsl:variable name="html">
-                <xsl:call-template name="key"/>
-              </xsl:variable>
+          <xsl:for-each select="$names">
+            <xsl:if test="position() &gt; 1"> ; </xsl:if>
+            <xsl:variable name="html">
+              <xsl:call-template name="key"/>
+            </xsl:variable>
+            <span class="persName">
               <xsl:copy-of select="$html"/>
-              <xsl:variable name="norm" select="normalize-space($html)"/>
-              <xsl:variable name="last" select="substring($norm, string-length($norm))"/>
-              <xsl:if test="position() = last() and position() &gt; 1 and $last != '.'">.</xsl:if>
-            </xsl:for-each>
-          </span>
+            </span>
+            <xsl:variable name="norm" select="normalize-space($html)"/>
+            <xsl:variable name="last" select="substring($norm, string-length($norm))"/>
+            <xsl:if test="position() = last() and $last != '.'">.</xsl:if>
+          </xsl:for-each>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:for-each>
   </xsl:param>
   <!-- Referenced date -->
   <xsl:param name="docdate">
+    <xsl:call-template name="docdate"/>
+  </xsl:param>
+  <xsl:template name="docdate">
     <xsl:choose>
       <xsl:when test="/*/tei:teiHeader/tei:profileDesc/tei:creation/tei:date[concat(.,@when,@notBefore,@notAfter)!='']">
         <xsl:apply-templates mode="year" select="/*/tei:teiHeader/tei:profileDesc/tei:creation[1]/tei:date[1]"/>
@@ -238,7 +248,7 @@ Gobal TEI parameters and variables are divided in different categories
         <xsl:apply-templates mode="year" select="/*/tei:teiHeader/tei:fileDesc/tei:publicationStmt/tei:date[1]"/>
       </xsl:when>
     </xsl:choose>
-  </xsl:param>
+  </xsl:template>
   <!-- Publication date -->
   <xsl:variable name="issued">
     <xsl:choose>
@@ -382,15 +392,30 @@ Gobal TEI parameters and variables are divided in different categories
     </xsl:choose>
   </xsl:template>
   <xsl:template name="key" match="*" mode="key">
+    <xsl:variable name="string">
+      <xsl:choose>
+        <xsl:when test="@key and normalize-space(@key) != ''">
+          <xsl:value-of select="normalize-space(@key)"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <!-- process content to strip notes (but keep typo) -->
+          <xsl:apply-templates mode="title"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <!-- Maybe a value in the form : Surname, Firstname (birth, death) -->
+    <xsl:variable name="name" select="normalize-space(substring-before(concat(translate($string, ' ', ' '), '('), '('))"/>
     <xsl:choose>
-      <xsl:when test="@key and contains(@key, '(')">
-        <xsl:value-of select="normalize-space(substring-before(@key, '('))"/>
-      </xsl:when>
-      <xsl:when test="@key != ''">
-        <xsl:value-of select="@key"/>
+      <!-- Name,  -->
+      <xsl:when test="contains($name, ',')">
+        <span class="surname">
+          <xsl:value-of select="normalize-space(substring-before($name, ','))"/>
+        </span>
+        <xsl:text>, </xsl:text>
+        <xsl:value-of select="normalize-space(substring-after($name, ','))"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:apply-templates mode="title"/>
+        <xsl:copy-of select="$name"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
