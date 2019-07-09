@@ -18,15 +18,12 @@ XSLT 1.0 is compatible browser, PHP, Python, Java…
   xmlns="http://www.w3.org/1999/xhtml"
   xmlns:eg="http://www.tei-c.org/ns/Examples"
   xmlns:tei="http://www.tei-c.org/ns/1.0"
-  xmlns:html="http://www.w3.org/1999/xhtml"
   xmlns:epub="http://www.idpf.org/2007/ops"
-  exclude-result-prefixes="eg html tei epub"
+  exclude-result-prefixes="eg tei epub"
   >
   <!-- Import shared templates -->
   <xsl:import href="common.xsl"/>
   <xsl:output encoding="UTF-8" indent="yes" method="xml" omit-xml-declaration="yes"/>
-  <!-- notes d'apparat critique ? -->
-  <xsl:param name="app" select="boolean(//tei:app)"/>
   <!-- What kind of root element to output ? html, div, article -->
   <xsl:param name="root" select="$html"/>
   <xsl:key name="split" match="/" use="'root'"/>
@@ -446,13 +443,10 @@ Sections
     </pre>
   </xsl:template>
   <!--
-<h3>Listes</h3>
-
-
-
+<h3>Lists</h3>
 -->
   <!-- Différentes listes, avec prise en charge xhtml correcte des titres (inclus dans un blockquote)  -->
-  <xsl:template match="tei:list | tei:listWit | tei:listBibl | tei:recordHist">
+  <xsl:template match="tei:list | tei:listWit | tei:recordHist">
     <xsl:variable name="el">
       <xsl:choose>
         <xsl:when test="not(@rend)">ul</xsl:when>
@@ -488,6 +482,39 @@ Sections
           </xsl:call-template>
           <xsl:apply-templates/>
         </xsl:element>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  <!-- Specif case, a bibliographic reference, followed by a detailed list of copies, no need to include in a <ul> -->
+  <xsl:template match="tei:listBibl[count(*)=2][name(*[1])='bibl'][name(*[2])='listBibl']">
+    <xsl:apply-templates/>
+  </xsl:template>
+  
+  <xsl:template match="tei:listBibl">
+    <xsl:choose>
+      <xsl:when test="tei:head">
+        <div class="{local-name()}">
+          <xsl:apply-templates select="tei:head"/>
+          <ul>
+            <xsl:call-template name="atts"/>
+            <xsl:for-each select="*[not(self::tei:head)]">
+              <li>
+                <xsl:apply-templates select="."/>
+              </li>
+            </xsl:for-each>
+          </ul>
+        </div>
+      </xsl:when>
+      <xsl:otherwise>
+        <ul>
+          <xsl:call-template name="atts"/>
+          <xsl:for-each select="*">
+            <li>
+              <xsl:call-template name="atts"/>
+              <xsl:apply-templates select="."/>
+            </li>
+          </xsl:for-each>
+        </ul>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -1889,12 +1916,6 @@ Tables
   <!--
 Elements block or inline level
    -->
-  <xsl:template match="tei:listBibl/tei:bibl">
-    <li>
-      <xsl:call-template name="atts"/>
-      <xsl:apply-templates/>
-    </li>
-  </xsl:template>
   <xsl:template match="tei:bibl | tei:gloss | tei:label | tei:q | tei:quote | tei:said | tei:stage">
     <xsl:variable name="mixed" select="../text()[normalize-space(.) != '']"/>
     <xsl:choose>
@@ -2173,18 +2194,5 @@ Centralize some html attribute policy, especially for id, and class
   <!-- @xml:*, attributs à recopier à l'identique -->
   <xsl:template match="@xml:base">
     <xsl:copy-of select="."/>
-  </xsl:template>
-  <!-- @html:*, copier les attributs xhtml -->
-  <xsl:template match="@*[ namespace-uri(.) = 'http://www.w3.org/1999/xhtml']">
-    <xsl:attribute name="{local-name(.)}">
-      <xsl:value-of select="."/>
-    </xsl:attribute>
-  </xsl:template>
-  <!-- <html:*> Recopier tout ce qui est html -->
-  <xsl:template match="html:*">
-    <xsl:element name="{local-name()}" namespace="http://www.w3.org/1999/xhtml">
-      <xsl:copy-of select="@*"/>
-      <xsl:apply-templates/>
-    </xsl:element>
   </xsl:template>
 </xsl:transform>

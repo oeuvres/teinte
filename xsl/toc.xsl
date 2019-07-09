@@ -15,14 +15,8 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
 <xsl:transform version="1.0" 
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
   xmlns="http://www.w3.org/1999/xhtml" 
-  xmlns:rng="http://relaxng.org/ns/structure/1.0"
-  xmlns:eg="http://www.tei-c.org/ns/Examples"
   xmlns:tei="http://www.tei-c.org/ns/1.0"
-  xmlns:html="http://www.w3.org/1999/xhtml" 
-  xmlns:epub="http://www.idpf.org/2007/ops" 
-  exclude-result-prefixes="eg html rng tei epub" 
-  xmlns:exslt="http://exslt.org/common" 
-  extension-element-prefixes="exslt"
+  exclude-result-prefixes="tei" 
   >
   <xsl:import href="common.xsl"/>
 

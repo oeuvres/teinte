@@ -64,13 +64,13 @@ XSLT 1.0 is compatible browser, PHP, Python, Java…
         <html>
           <xsl:call-template name="att-lang"/>
           <head>
-            <meta http-equiv="Content-type" content="text/html; charset=UTF-8"/>
+            <meta charset="UTF-8"/>
             <meta name="modified" content="{$date}"/>
             <!-- déclaration classes css locale (permettre la surcharge si généralisation) -->
             <!-- à travailler
             <xsl:apply-templates select="/*/tei:teiHeader/tei:encodingDesc/tei:tagsDecl"/>
             -->
-            <link rel="stylesheet" charset="utf-8" type="text/css" href="{$theme}tei2html.css"/>
+            <link rel="stylesheet" type="text/css" href="{$theme}tei2html.css"/>
           </head>
           <body>
             <xsl:if test="normalize-space($bodyclass)">
