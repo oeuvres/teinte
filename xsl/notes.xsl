@@ -30,6 +30,7 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
     <xsl:param name="cont" select="*"/>
     <!-- for notes by pages -->
     <xsl:param name="pb" select="$cont//tei:pb[@n][not(@ed)]"/>
+    
     <!-- Handle on current node -->
     <xsl:variable name="current" select="."/>
     <xsl:variable name="notes">
@@ -127,8 +128,9 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
           </xsl:apply-templates>
           <xsl:apply-templates select="exslt:node-set($cont)" mode="fn"/>
         </xsl:when>
-        <!-- !! especially not efficient -->
+        <!-- !! especially not efficient with xsltproc -->
         <xsl:when test="$cont">
+
           <xsl:for-each select="$cont //tei:note">
             <xsl:sort select="@place|@resp"/>
             <xsl:call-template name="fn"/>
@@ -248,11 +250,11 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
     <xsl:choose>
       <xsl:when test="@place = 'margin'">
         <!-- no aside, block tags not allowed in p -->
-        <span>
+        <div>
           <xsl:call-template name="noteatts"/>
           <xsl:attribute name="class">marginalia</xsl:attribute>
           <xsl:apply-templates/>
-        </span>
+        </div>
       </xsl:when>
       <xsl:otherwise>
         <xsl:call-template name="noteref"/>
@@ -266,6 +268,7 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
   <!-- Note, appel et lien vers le texte -->
   <xsl:template name="noteref">
     <xsl:param name="class">noteref</xsl:param>
+    <xsl:processing-instruction name="index_off"/>
     <xsl:variable name="id">
       <xsl:call-template name="id"/>
     </xsl:variable>
@@ -302,6 +305,7 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
         </a>
       </xsl:otherwise>
     </xsl:choose>
+    <xsl:processing-instruction name="index_on"/>
   </xsl:template>
   <!-- Display note number -->
   <xsl:template name="note-n">
@@ -349,6 +353,7 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
     <xsl:variable name="id">
       <xsl:call-template name="id"/>
     </xsl:variable>
+    <xsl:processing-instruction name="index_off"/>
     <a class="{$class}">
       <xsl:attribute name="href">
         <xsl:choose>
@@ -371,6 +376,7 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
         <xsl:text>. </xsl:text>
       </xsl:if>
     </a>
+    <xsl:processing-instruction name="index_on"/>
   </xsl:template>
   <!-- Note, texte, fonctionne pour note courante ou déportée -->
   <xsl:template name="note">

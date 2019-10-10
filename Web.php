@@ -1,8 +1,8 @@
 <?php
 /**
- * © 2010 frederic.glorieux@fictif.org et École nationale des chartes
- * © 2012 frederic.glorieux@fictif.org
  * © 2014 frederic.glorieux@fictif.org et LABEX OBVIL
+ * © 2012 frederic.glorieux@fictif.org
+ * © 2010 frederic.glorieux@fictif.org et École nationale des chartes
  * LGPL http://www.gnu.org/licenses/lgpl.html
  *
  * This program is a free software: you can redistribute it and/or modify it
@@ -16,14 +16,14 @@
 /**
  * Tools to deal with PHP Http oddities
  */
-if ( get_magic_quotes_gpc() ) {
-  function stripslashes_gpc( &$value ) {
-    $value = stripslashes( $value );
+if (get_magic_quotes_gpc()) {
+  function stripslashes_gpc(&$value) {
+    $value = stripslashes($value);
   }
-  array_walk_recursive( $_GET, 'stripslashes_gpc' );
-  array_walk_recursive( $_POST, 'stripslashes_gpc' );
-  array_walk_recursive( $_COOKIE, 'stripslashes_gpc' );
-  array_walk_recursive( $_REQUEST, 'stripslashes_gpc' );
+  array_walk_recursive($_GET, 'stripslashes_gpc');
+  array_walk_recursive($_POST, 'stripslashes_gpc');
+  array_walk_recursive($_COOKIE, 'stripslashes_gpc');
+  array_walk_recursive($_REQUEST, 'stripslashes_gpc');
 }
 class Teinte_Web {
   /** web parameters */
@@ -46,12 +46,12 @@ class Teinte_Web {
     "png"  => 'image/png',
     "xml"  => 'text/xml',
     "xhtml" => 'text/html; charset=UTF-8',
-  );
+ );
   /** Langs */
   static $langs=array(
     "en" => "English",
     "fr" => "Français",
-  );
+ );
   /** lang found */
   static $lang;
   /**
@@ -95,7 +95,7 @@ class Teinte_Web {
   /**
    * Relative path to context
    */
-  public static function basehref( $path=null )
+  public static function basehref($path=null)
   {
     if ($path) { // return a result, no store
       $path = preg_replace('@/+@', '/', ltrim($path, '/'));
@@ -118,9 +118,9 @@ class Teinte_Web {
    * return : Array (
    *   "clé" => array("éé"),
    *   "param" => array("valeur1", "", "valeur2")
-   * )
+   *)
    */
-  public static function pars( $name = FALSE, $expire = 0, $pattern = null, $default = null, $query = FALSE )
+  public static function pars($name = FALSE, $expire = 0, $pattern = null, $default = null, $query = FALSE)
   {
     // store params array extracted from query
     if (!self::$pars) {
@@ -182,7 +182,7 @@ class Teinte_Web {
   /**
    * Search for a lang in an accpted list
    */
-  public static function lang( $langs=null )
+  public static function lang($langs=null)
   {
     if (!$langs || !is_array($langs) || !count($langs)) $langs = self::$langs;
     // check browser request
@@ -196,7 +196,7 @@ class Teinte_Web {
       // language requested should be available
       else {
         $lang=$_GET['lang'];
-        setcookie ( "lang", $lang);
+        setcookie ("lang", $lang);
       }
     }
     // coookie persistancy
@@ -230,10 +230,10 @@ class Teinte_Web {
    * $keep=true : keep empty params -> ?A=1&A=2&A=&B=3
    * $exclude=array() : exclude some parameters
    */
-  public static function query( $keep = false, $exclude = array(), $query = null )
+  public static function query($keep = false, $exclude = array(), $query = null)
   {
     // query given as param
-    if ($query) $query = preg_replace( '/&amp;/', '&', $p1);
+    if ($query) $query = preg_replace('/&amp;/', '&', $p1);
     // POST
     else if ($_SERVER['REQUEST_METHOD'] == "POST") {
       if (isset($HTTP_RAW_POST_DATA)) $query = $HTTP_RAW_POST_DATA;
@@ -242,15 +242,15 @@ class Teinte_Web {
     // GET
     else $query = $_SERVER['QUERY_STRING'];
     // exclude some params
-    if (count($exclude)) $query = preg_replace( '/&('.implode('|',$exclude).')=[^&]*/', '', '&'.$query);
+    if (count($exclude)) $query = preg_replace('/&('.implode('|',$exclude).')=[^&]*/', '', '&'.$query);
     // delete empty params
-    if (!$keep) $query = preg_replace( array('/[^&=]+=&/', '/&$/'), array('', ''), $query.'&');
+    if (!$keep) $query = preg_replace(array('/[^&=]+=&/', '/&$/'), array('', ''), $query.'&');
     return $query;
   }
   /**
    * Send the best headers for cache, according to the request and a timestamp
    */
-  public static function notModified( $file, $expires = null, $force = false )
+  public static function notModified($file, $expires = null, $force = false)
   {
     if (!$file) return false;
     $filemtime = false;
@@ -276,7 +276,7 @@ class Teinte_Web {
     if($force);
     else if (self::noCache());
     // ($if_none_match && $if_none_match == $etag) ||
-    else if ( $if_modified_since == $modification) {
+    else if ($if_modified_since == $modification) {
       header('HTTP/1.x 304 Not Modified');
       exit;
     }
@@ -312,49 +312,49 @@ class Teinte_Web {
    * return a file record like ine $_FILES
    * http://php.net/manual/features.file-upload.post-method.php
    */
-   public static function upload( $key=null )
+   public static function upload($key=null)
    {
     // no post, return nothing
-    if ( $_SERVER['REQUEST_METHOD'] != 'POST' ) return false;
+    if ($_SERVER['REQUEST_METHOD'] != 'POST') return false;
     $lang = self::lang(array('en'=>'', 'fr'=>''));
     $mess = array(
       UPLOAD_ERR_INI_SIZE => array(
         'en' => 'The uploaded file exceeds a directive in php.ini; upload_max_filesize='.ini_get('upload_max_filesize').', post_max_size='.ini_get('post_max_size'),
         "fr" => 'Le fichier téléchargé dépasse la limite acceptée par la configuration du serveur (php.ini) ; upload_max_filesize='.ini_get('upload_max_filesize').', post_max_size='.ini_get('post_max_size'),
-      ),
+     ),
       UPLOAD_ERR_FORM_SIZE => array(
         'en' => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form.',
         'fr' => 'Le fichier téléchargé dépasse la directive MAX_FILE_SIZE spécifiée dans le formulaire.',
-      ),
+     ),
       UPLOAD_ERR_PARTIAL => array(
         'en' => 'The uploaded file was only partially uploaded. ',
         'fr' => 'Le fichier téléchargé est incomplet',
-      ),
+     ),
       UPLOAD_ERR_NO_FILE => array(
         'en' => 'No file was uploaded.',
         'fr' => 'Pas de fichier téléchargé.',
-      ),
+     ),
       UPLOAD_ERR_NO_TMP_DIR => array(
         'en' => 'Server configuration error, missing a temporary folder.',
         'fr' => 'Erreur de configuration serveur, pas de dossier temporaire.',
-      ),
+     ),
       UPLOAD_ERR_CANT_WRITE => array(
         'en' => 'Server system error, failed to write file to disk.',
         'fr' => 'Erreur système sur le serveur, impossible d’écrire le fichier sur le disque.',
-      ),
+     ),
       UPLOAD_ERR_EXTENSION => array(
         'en' => 'PHP server problem, a PHP extension stopped the file upload.',
         'fr' => 'Erreur de configuration PHP, une extension a arrêté le téléchargement du fichier.',
-      ),
+     ),
       'nokey' => array(
         'en' => "Teinte_Web::upload(), no field $key in submitted form.",
         'fr' => "Teinte_Web::upload(), pas de champ $key dans le formulaire soumis.",
-      ),
+     ),
       'nofile' => array(
         'en' => 'Teinte_Web::upload(), no file found. Too big ? Directives in php.ini: upload_max_filesize='.ini_get('upload_max_filesize').', post_max_size='.ini_get('post_max_size'),
         'fr' => 'Teinte_Web::upload(), pas de fichier trouvé. Trop gros ? Directives php.ini: upload_max_filesize='.ini_get('upload_max_filesize').', post_max_size='.ini_get('post_max_size'),
-      ),
-    );
+     ),
+   );
     if ($key && !isset($_FILES[$key])) throw new Exception($mess['nokey'][$lang]);
     if ($key) $file = $_FILES[$key];
     else $file = reset($_FILES);

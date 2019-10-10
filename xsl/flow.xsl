@@ -1127,6 +1127,7 @@ Tables
         </xsl:if>
       </xsl:when>
       <xsl:otherwise>
+        <xsl:processing-instruction name="index_off"/>
         <xsl:if test="$mixed != ''">
           <xsl:text> </xsl:text>
         </xsl:if>
@@ -1163,6 +1164,7 @@ Tables
         <xsl:if test="@ed">
           <xsl:text> </xsl:text>
         </xsl:if>
+        <xsl:processing-instruction name="index_on"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -1923,7 +1925,7 @@ Elements block or inline level
         <xsl:apply-templates/>
       </xsl:when>
       <!-- inside mixed content, or line formatted text (? or tei:lb or ../tei:lb), should be inline -->
-      <xsl:when test="$mixed or parent::tei:p or parent::tei:s  or parent::tei:label">
+      <xsl:when test="$mixed  or parent::tei:note or parent::tei:p or parent::tei:s  or parent::tei:label">
         <xsl:call-template name="span">
           <xsl:with-param name="el">
             <xsl:choose>
@@ -1964,10 +1966,6 @@ Elements block or inline level
         <xsl:element name="{$el}" namespace="http://www.w3.org/1999/xhtml">
           <xsl:call-template name="atts">
             <xsl:with-param name="class">
-              <xsl:value-of select="local-name()"/>
-              <!-- modify rendering when contain verses -->
-              <xsl:if test="tei:l"> l</xsl:if>
-              <xsl:if test="tei:lg"> lg</xsl:if>
               <xsl:if test="@corresp"> corresp</xsl:if>
             </xsl:with-param>
           </xsl:call-template>
@@ -2017,7 +2015,7 @@ Elements block or inline level
     <xsl:choose>
       <xsl:when test="@rend = 'margin'">
         <!-- marginalia -->
-        <span class="marginalia">
+        <div class="marginalia">
           <xsl:if test=". = '' and @key">
             <xsl:if test="@role != ''">
               <xsl:call-template name="message">
@@ -2028,7 +2026,7 @@ Elements block or inline level
             <xsl:value-of select="@key"/>
           </xsl:if>
           <xsl:apply-templates/>
-        </span>
+        </div>
       </xsl:when>
       <xsl:when test="normalize-space(.) = ''">
         <xsl:apply-templates/>

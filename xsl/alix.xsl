@@ -36,13 +36,16 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
   <xsl:param name="filename"/>
   <!-- Get metas as a global var to insert fields in all chapters -->
   <xsl:variable name="info">
-    <alix:field name="title" type="facet" value="{$doctitle}"/>
+    <alix:field name="title" type="facet" value="{normalize-space($doctitle)}"/>
     <xsl:for-each select="/tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt">
       <xsl:for-each select="tei:author|tei:principal">
         <xsl:variable name="value">
           <xsl:apply-templates select="." mode="key"/>
         </xsl:variable>
-        <alix:field name="author" type="facet" value="{normalize-space($value)}"/>
+        <xsl:if test="position() = 1">
+          <alix:field name="author1" type="facet" value="{normalize-space($value)}"/>
+        </xsl:if>
+        <alix:field name="author" type="facets" value="{normalize-space($value)}"/>
       </xsl:for-each>
     </xsl:for-each>
     <xsl:if test="$byline != ''">
@@ -81,7 +84,9 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
     <xsl:if test="string(number($year)) != 'NaN'">
       <xsl:text> </xsl:text>
       <span class="year">
+        <xsl:text>(</xsl:text>
         <xsl:value-of select="$year"/>
+        <xsl:text>)</xsl:text>
       </span>
     </xsl:if>
   </xsl:variable>
@@ -89,8 +94,10 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
   <xsl:template match="/*">
     <!-- XML book is handled as nested lucene documents (chapters) -->
     <alix:book>
+      <xsl:attribute name="xml:id">
+        <xsl:value-of select="$filename"/>
+      </xsl:attribute>
       <xsl:copy-of select="$info"/>
-      <alix:field name="type" value="book" type="string"/>
       <alix:field name="bibl" type="store">
         <xsl:copy-of select="$bibl-book"/>
       </alix:field>
@@ -110,21 +117,25 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
 
 
   <xsl:template mode="alix" match="
-    tei:group/tei:text | tei:group |
+    tei:group/tei:text | tei:group | tei:body |
     tei:div | tei:div0 | tei:div1 | tei:div2 | tei:div3 | tei:div4 | tei:div5 | tei:div6 | tei:div7
     "
     >
     <xsl:choose>
-      <!-- Bad encoding producing too small div -->
-      <!--
-      <xsl:when test="string-length(.) &lt; 300"/>
-      -->
-      <!-- blocks of text, open a chapter leaf dateline ? -->
-      <xsl:when test="tei:p|tei:l|tei:list|tei:argument|tei:table">
+      <!-- declared section -->
+      <xsl:when test="
+           contains(@type, 'article')
+        or contains(@type, 'chapter')
+        or contains(@subtype, 'split')
+        or contains(@type, 'act')
+        or contains(@type, 'poem')
+        or contains(@type, 'letter')
+        ">
         <xsl:call-template name="chapter"/>
       </xsl:when>
-      <xsl:when test="*[@type]
-       [
+      <!-- section container -->
+      <xsl:when test="
+      descendant::*[
         contains(@type, 'article')
         or contains(@type, 'chapter')
         or contains(@subtype, 'split')
@@ -132,17 +143,64 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
         or contains(@type, 'poem')
         or contains(@type, 'letter')
        ]">
-        <xsl:apply-templates mode="alix"/>
+        <xsl:apply-templates select="*" mode="alix"/>
       </xsl:when>
+      <!-- blocks of text, open a chapter -->
+      <xsl:when test="tei:p|tei:l|tei:list|tei:argument|tei:table">
+        <xsl:call-template name="chapter"/>
+      </xsl:when>
+      <xsl:when test="self::tei:body">
+        <xsl:apply-templates select="*" mode="alix"/>
+      </xsl:when>
+      <xsl:when test="./*//tei:head[contains(., 'Chapitre')]">
+        <xsl:apply-templates select="*" mode="alix"/>
+      </xsl:when>
+      <!-- maybe not best grain, but not too small -->
       <xsl:otherwise>
         <xsl:call-template name="chapter"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
+  
+  <xsl:template name="next">
+    <xsl:choose>
+      <xsl:when test="following-sibling::*[1]">
+        <xsl:apply-templates select="following-sibling::*[1]" mode="analytic"/>
+      </xsl:when>
+      <xsl:when test="following::*[1]">
+        <xsl:variable name="next" select="following::*[1]/descendant::*[contains(' article chapter act poem letter ', @type) or @subtype = 'split'][1]"/>
+        <xsl:choose>
+          <xsl:when test="$next">
+            <xsl:apply-templates select="$next" mode="analytic"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:apply-templates select="following::*[1]" mode="analytic"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:when>
+    </xsl:choose>
+  </xsl:template>
+
+  <xsl:template name="prev">
+    <xsl:choose>
+      <xsl:when test="preceding-sibling::*[1]">
+        <xsl:apply-templates select="preceding-sibling::*[1]" mode="analytic"/>
+      </xsl:when>
+      <xsl:when test="preceding::*[1][not(ancestor-or-self::tei:teiHeader)]">
+        <xsl:apply-templates select="preceding::*[1]" mode="analytic"/>
+      </xsl:when>
+    </xsl:choose>
+  </xsl:template>
+  
+  <xsl:template match="*" mode="analytic">
+    <xsl:for-each select="ancestor-or-self::*[not(self::tei:TEI)][not(self::tei:text)][not(self::tei:body)]">
+      <xsl:if test="position() != 1"> — </xsl:if>
+      <xsl:apply-templates select="." mode="title"/>
+    </xsl:for-each>
+  </xsl:template>
 
   <xsl:template name="chapter">
     <alix:chapter>
-      <alix:field name="type" value="chapter" type="string"/>
       <xsl:copy-of select="$info"/>
       <xsl:variable name="pages">
         <xsl:variable name="pb" select=".//tei:pb"/>
@@ -168,10 +226,7 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
           </span>
         </xsl:if>
         <xsl:variable name="analytic">
-          <xsl:for-each select="ancestor-or-self::*[not(self::tei:TEI)][not(self::tei:text)][not(self::tei:body)]">
-            <xsl:if test="position() != 1"> — </xsl:if>
-            <xsl:apply-templates select="." mode="title"/>
-          </xsl:for-each>
+          <xsl:apply-templates select="." mode="analytic"/>
         </xsl:variable>
         <xsl:if test="$analytic != ''">
           <xsl:text> </xsl:text>
@@ -180,10 +235,25 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
           </span>
         </xsl:if>
       </alix:field>
+      <xsl:variable name="prev">
+        <xsl:call-template name="prev"/>
+      </xsl:variable>     
+      <xsl:if test="$prev != ''">
+        <alix:field name="prev" type="store">
+          <xsl:value-of select="$prev"/>
+        </alix:field>
+      </xsl:if>
+      <xsl:variable name="next">
+        <xsl:call-template name="next"/>
+      </xsl:variable>     
+      <xsl:if test="$next != ''">
+        <alix:field name="next" type="store">
+          <xsl:value-of select="$next"/>
+        </alix:field>
+      </xsl:if>
       <alix:field name="text" type="text">
         <xsl:apply-templates/>
         <xsl:call-template name="footnotes"/>
-
       </alix:field>
     </alix:chapter>
   </xsl:template>
