@@ -1127,10 +1127,10 @@ Tables
         </xsl:if>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:processing-instruction name="index_off"/>
         <xsl:if test="$mixed != ''">
-          <xsl:text> </xsl:text>
+          <xsl:value-of select="$lf"/>
         </xsl:if>
+        <xsl:processing-instruction name="index_off"/>
         <a class="{normalize-space($class)}">
           <xsl:choose>
             <!-- @xml:base ? -->
@@ -1161,10 +1161,10 @@ Tables
           -->
           <xsl:value-of select="$text"/>
         </a>
-        <xsl:if test="@ed">
-          <xsl:text> </xsl:text>
-        </xsl:if>
         <xsl:processing-instruction name="index_on"/>
+        <xsl:if test="$mixed != ''">
+          <xsl:value-of select="$lf"/>
+        </xsl:if>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>

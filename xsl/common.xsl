@@ -942,7 +942,7 @@ résoudre les césures, ou les alternatives éditoriales.
     <xsl:text> </xsl:text>
   </xsl:template>
   <!-- strip last space in ponctuated elements -->
-  <xsl:template match="tei:head/text() | tei:byline/text()" mode="title">
+  <xsl:template match="tei:head/text() | tei:byline/text() | tei:title/text()" mode="title">
     <xsl:choose>
       <xsl:when test="position()=1">
         <xsl:variable name="norm" select="normalize-space(.)"/>

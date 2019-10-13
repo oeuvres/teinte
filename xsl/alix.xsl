@@ -230,11 +230,11 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
           <xsl:apply-templates select="." mode="analytic"/>
         </xsl:variable>
         <xsl:if test="$analytic != ''">
-          <xsl:text> « </xsl:text>
+          <xsl:text> « </xsl:text>
           <span class="analytic">
             <xsl:copy-of select="$analytic"/>
           </span>
-          <xsl:text> »</xsl:text>
+          <xsl:text> »</xsl:text>
         </xsl:if>
       </alix:field>
       <xsl:variable name="prev">
