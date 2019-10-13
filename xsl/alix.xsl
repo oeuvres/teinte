@@ -216,7 +216,7 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
       <alix:field name="bibl" type="store">
         <xsl:copy-of select="$bibl-book"/>
         <xsl:if test="$pages != ''">
-          <xsl:text> </xsl:text>
+          <xsl:text>. </xsl:text>
           <span class="pages">
             <xsl:choose>
               <xsl:when test="contains($pages, '-')">pp. </xsl:when>
@@ -224,15 +224,17 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
             </xsl:choose>
             <xsl:value-of select="$pages"/>
           </span>
+          <xsl:text>. </xsl:text>
         </xsl:if>
         <xsl:variable name="analytic">
           <xsl:apply-templates select="." mode="analytic"/>
         </xsl:variable>
         <xsl:if test="$analytic != ''">
-          <xsl:text> </xsl:text>
+          <xsl:text> « </xsl:text>
           <span class="analytic">
             <xsl:copy-of select="$analytic"/>
           </span>
+          <xsl:text> »</xsl:text>
         </xsl:if>
       </alix:field>
       <xsl:variable name="prev">

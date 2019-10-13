@@ -250,11 +250,11 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
     <xsl:choose>
       <xsl:when test="@place = 'margin'">
         <!-- no aside, block tags not allowed in p -->
-        <div>
+        <span>
           <xsl:call-template name="noteatts"/>
           <xsl:attribute name="class">marginalia</xsl:attribute>
           <xsl:apply-templates/>
-        </div>
+        </span>
       </xsl:when>
       <xsl:otherwise>
         <xsl:call-template name="noteref"/>
