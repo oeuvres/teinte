@@ -387,21 +387,13 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
     </xsl:variable>
     <xsl:variable name="element">
       <xsl:choose>
-        <!-- no aside for inline margin -->
-        <xsl:when test="@place = 'margin'">span</xsl:when>
+        <!-- For inline margin notes, <p> should now be <div class="p">, aside will be supported -->
+        <xsl:when test="@place = 'margin'">aside</xsl:when>
         <xsl:when test="$format = $epub2">div</xsl:when>
         <xsl:otherwise>aside</xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
     
-    <!-- 
-            <span>
-          <xsl:call-template name="noteatts"/>
-          <xsl:attribute name="class">marginalia</xsl:attribute>
-          <xsl:apply-templates/>
-        </span>
-
-    -->
     
     <xsl:element name="{$element}" namespace="http://www.w3.org/1999/xhtml">
       <xsl:if test="$format = $epub3">
@@ -417,7 +409,7 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
         </xsl:choose>
       </xsl:variable>
       <xsl:choose>
-        <xsl:when test="$text='' and count(*)=1 and tei:p">
+        <xsl:when test="$text='' and count(*)=1 and (tei:p or tei:quote)">
           <xsl:copy-of select="$noteback"/>
           <xsl:apply-templates select="*/node()"/>
         </xsl:when>

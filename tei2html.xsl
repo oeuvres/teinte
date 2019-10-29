@@ -70,7 +70,8 @@ XSLT 1.0 is compatible browser, PHP, Python, Java…
             <!-- à travailler
             <xsl:apply-templates select="/*/tei:teiHeader/tei:encodingDesc/tei:tagsDecl"/>
             -->
-            <link rel="stylesheet" type="text/css" href="{$theme}tei2html.css"/>
+            <link rel="stylesheet" type="text/css" href="{$theme}layout.css"/>
+            <link rel="stylesheet" type="text/css" href="{$theme}teinte.css"/>
           </head>
           <body>
             <xsl:if test="normalize-space($bodyclass)">

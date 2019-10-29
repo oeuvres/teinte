@@ -4,12 +4,12 @@
 TEI to HTML, main flow of text
 
 LGPL  http://www.gnu.org/licenses/lgpl.html
-© 2005 ajlsm.com (Cybertheses)
-© 2007 Frederic.Glorieux@fictif.org
-© 2010 Frederic.Glorieux@fictif.org et École nationale des chartes
-© 2012 Frederic.Glorieux@fictif.org
-© 2013 Frederic.Glorieux@fictif.org et LABEX OBVIL
 © 2019 Frederic.Glorieux@fictif.org et OPTEOS
+© 2013 Frederic.Glorieux@fictif.org et LABEX OBVIL
+© 2012 Frederic.Glorieux@fictif.org
+© 2010 Frederic.Glorieux@fictif.org et École nationale des chartes
+© 2007 Frederic.Glorieux@fictif.org
+© 2005 ajlsm.com (Cybertheses)
 
 XSLT 1.0 is compatible browser, PHP, Python, Java…
 -->
@@ -355,7 +355,14 @@ Sections
   </xsl:template>
   <!-- Paragraph blocs (paragraphs are not allowed in it) -->
   <xsl:template match="tei:p">
-    <p>
+    <xsl:variable name="el">
+      <xsl:choose>
+        <!-- If a margin note contains a block level element, browser will complain with p//p -->
+        <xsl:when test=".//tei:note[@place='margin']">div</xsl:when>
+        <xsl:otherwise>p</xsl:otherwise>
+      </xsl:choose>  
+    </xsl:variable>
+    <xsl:element name="{$el}">
       <xsl:variable name="prev" select="preceding-sibling::*[not(self::tei:pb)][1]"/>
       <xsl:variable name="char1" select="substring( normalize-space(.), 1, 1)"/>
       <xsl:variable name="class">
@@ -383,7 +390,7 @@ Sections
       </xsl:if>
       <xsl:apply-templates/>
       <xsl:if test=".=''"> </xsl:if>
-    </p>
+    </xsl:element>
   </xsl:template>
   <xsl:template match="tei:acheveImprime | tei:approbation | tei:byline | tei:caption | tei:dateline | tei:desc | tei:docEdition | tei:docImprint | tei:imprimatur | tei:performance | tei:premiere | tei:printer | tei:privilege | tei:signed | tei:salute | tei:set | tei:trailer
     ">
@@ -1089,7 +1096,7 @@ Tables
         <xsl:when test="@ana">[<xsl:value-of select="@ana"/>]</xsl:when>
         <xsl:when test="@ed">[<xsl:value-of select="@n"/>]</xsl:when>
         <!-- number display as a page -->
-        <xsl:when test="@n != ''  and contains('0123456789IVXDCM', substring(@n,1,1))">{p. <xsl:value-of select="@n"/>}</xsl:when>
+        <xsl:when test="@n != ''  and contains('0123456789IVXDCM', substring(@n,1,1))">[p. <xsl:value-of select="@n"/>]</xsl:when>
         <xsl:otherwise>[<xsl:value-of select="@n"/>]</xsl:otherwise>
       </xsl:choose>
     </xsl:variable>

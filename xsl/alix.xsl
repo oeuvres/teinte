@@ -98,7 +98,7 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
         <xsl:value-of select="$filename"/>
       </xsl:attribute>
       <xsl:copy-of select="$info"/>
-      <alix:field name="bibl" type="store">
+      <alix:field name="bibl" type="meta">
         <xsl:copy-of select="$bibl-book"/>
       </alix:field>
       <alix:field name="toc" type="store">
@@ -192,50 +192,11 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
     </xsl:choose>
   </xsl:template>
   
-  <xsl:template match="*" mode="analytic">
-    <xsl:for-each select="ancestor-or-self::*[not(self::tei:TEI)][not(self::tei:text)][not(self::tei:body)]">
-      <xsl:if test="position() != 1"> — </xsl:if>
-      <xsl:apply-templates select="." mode="title"/>
-    </xsl:for-each>
-  </xsl:template>
-
   <xsl:template name="chapter">
     <alix:chapter>
       <xsl:copy-of select="$info"/>
-      <xsl:variable name="pages">
-        <xsl:variable name="pb" select=".//tei:pb"/>
-        <xsl:if test="$pb">
-          <xsl:value-of select="$pb[1]/@n"/>
-          <xsl:variable name="last" select="$pb[position() != 1][position() = last()]/@n"/>
-          <xsl:if test="$last &gt; 1">
-            <xsl:text>-</xsl:text>
-            <xsl:value-of select="$last"/>
-          </xsl:if>
-        </xsl:if>
-      </xsl:variable>
-      <alix:field name="bibl" type="store">
-        <xsl:copy-of select="$bibl-book"/>
-        <xsl:if test="$pages != ''">
-          <xsl:text>. </xsl:text>
-          <span class="pages">
-            <xsl:choose>
-              <xsl:when test="contains($pages, '-')">pp. </xsl:when>
-              <xsl:otherwise>p.</xsl:otherwise>
-            </xsl:choose>
-            <xsl:value-of select="$pages"/>
-          </span>
-          <xsl:text>. </xsl:text>
-        </xsl:if>
-        <xsl:variable name="analytic">
-          <xsl:apply-templates select="." mode="analytic"/>
-        </xsl:variable>
-        <xsl:if test="$analytic != ''">
-          <xsl:text> « </xsl:text>
-          <span class="analytic">
-            <xsl:copy-of select="$analytic"/>
-          </span>
-          <xsl:text> »</xsl:text>
-        </xsl:if>
+      <alix:field name="bibl" type="meta">
+        <xsl:call-template name="bibl"/>
       </alix:field>
       <xsl:variable name="prev">
         <xsl:call-template name="prev"/>

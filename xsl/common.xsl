@@ -2,11 +2,11 @@
 <!--
 
 LGPL  http://www.gnu.org/licenses/lgpl.html
-© 2005 ajlsm.com (Cybertheses)
-© 2007 Frederic.Glorieux@fictif.org
-© 2010 Frederic.Glorieux@fictif.org & École nationale des chartes
-© 2012 Frederic.Glorieux@fictif.org 
 © 2013 Frederic.Glorieux@fictif.org & LABEX OBVIL
+© 2012 Frederic.Glorieux@fictif.org 
+© 2010 Frederic.Glorieux@fictif.org & École nationale des chartes
+© 2007 Frederic.Glorieux@fictif.org
+© 2005 ajlsm.com (Cybertheses)
 
 
 Different templates shared among the callers
@@ -343,6 +343,37 @@ Gobal TEI parameters and variables are divided in different categories
   <xsl:variable name="idfrom">ABCDEFGHIJKLMNOPQRSTUVWXYZÀÂÄÉÈÊÏÎÔÖÛÜÇàâäéèêëïîöôüû ,.</xsl:variable>
   <!-- Lower case without diacritics -->
   <xsl:variable name="idto">abcdefghijklmnopqrstuvwxyzaaaeeeiioouucaaaeeeeiioouu</xsl:variable>
+  <!-- A ibliographic reference -->
+  <xsl:variable name="bibl">
+    <xsl:choose>
+      <xsl:when test="/*/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:bibl">
+        <xsl:apply-templates select="/*/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:bibl/node()"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:if test="$byline != ''">
+          <span class="byline">
+            <xsl:copy-of select="$byline"/>
+          </span>
+        </xsl:if>
+        <xsl:variable name="year" select="substring($docdate, 1, 4)"/>
+        <xsl:if test="string(number($year)) != 'NaN'">
+          <xsl:text> </xsl:text>
+          <span class="year">
+            <xsl:text>(</xsl:text>
+            <xsl:value-of select="$year"/>
+            <xsl:text>)</xsl:text>
+          </span>
+        </xsl:if>
+        <xsl:if test="$doctitle != ''">
+          <xsl:text> </xsl:text>
+          <span class="title">
+            <xsl:copy-of select="$doctitle"/>
+          </span>
+        </xsl:if>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  
   <!-- A key to handle identified elements -->
   <xsl:key match="*" name="id" use="@xml:id"/>
   <!-- A key to count elements by name -->
@@ -457,8 +488,53 @@ Gobal TEI parameters and variables are divided in different categories
     </xsl:variable>
     <xsl:value-of select="normalize-space($titlebranch)"/>
   </xsl:template>
+  <!-- A template to get a descent bibliographic to display -->
+  <xsl:template name="bibl">
+    <xsl:variable name="pages">
+      <xsl:variable name="pb" select=".//tei:pb"/>
+      <xsl:if test="$pb">
+        <xsl:value-of select="$pb[1]/@n"/>
+        <xsl:variable name="last" select="$pb[position() != 1][position() = last()]/@n"/>
+        <xsl:if test="$last &gt; 1">
+          <xsl:text>-</xsl:text>
+          <xsl:value-of select="$last"/>
+        </xsl:if>
+      </xsl:if>
+    </xsl:variable>
+    <xsl:variable name="analytic">
+      <xsl:for-each select="ancestor-or-self::*[not(self::tei:TEI)][not(self::tei:text)][not(self::tei:body)]">
+        <xsl:if test="position() != 1"> — </xsl:if>
+        <xsl:apply-templates select="." mode="title"/>
+      </xsl:for-each>
+    </xsl:variable>
+    <xsl:copy-of select="$bibl"/>
+    <xsl:if test="$pages != ''">
+      <xsl:text>. </xsl:text>
+      <span class="pages">
+        <xsl:choose>
+          <xsl:when test="contains($pages, '-')">pp. </xsl:when>
+          <xsl:otherwise>p.</xsl:otherwise>
+        </xsl:choose>
+        <xsl:value-of select="$pages"/>
+      </span>
+      <xsl:text>. </xsl:text>
+    </xsl:if>
+    <xsl:if test="$analytic != ''">
+      <xsl:text> « </xsl:text>
+      <span class="analytic">
+        <xsl:copy-of select="$analytic"/>
+      </span>
+      <xsl:text> »</xsl:text>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template name="id">
+    <xsl:apply-templates select="." mode="id"/>
+  </xsl:template>
+    
+
   <!-- Shared template to get an id -->
-  <xsl:template match="*" mode="id" name="id">
+  <xsl:template match="*" mode="id">
     <xsl:param name="prefix"/>
     <!-- Idea for a prefix ?
     <xsl:if test="$docid != ''">
@@ -604,6 +680,7 @@ Gobal TEI parameters and variables are divided in different categories
     </xsl:choose>
     <xsl:value-of select="$suffix"/>
   </xsl:template>
+  
   <!--
 <h3>mode="n" (numéro)</h3>
 

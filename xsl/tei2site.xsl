@@ -19,8 +19,8 @@ Split a single TEI book in a multi-pages site
   <xsl:import href="flow.xsl"/>
   <xsl:import href="notes.xsl"/>
   <xsl:import href="tei2toc.xsl"/>
-  <xsl:variable name="split" select="true()"/>
   <xsl:output indent="yes" encoding="UTF-8" method="xml" />
+  <xsl:variable name="split" select="true()"/>
   <xsl:key name="split" match="
 tei:*[self::tei:div or self::tei:div1 or self::tei:div2][normalize-space(.) != ''][@type][
   contains(@type, 'article') 

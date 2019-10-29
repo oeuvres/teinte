@@ -1,0 +1,271 @@
+
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif;
+}
+
+
+/* noterefover */
+#noterefover {
+  display: block;
+  visibility: hidden;
+  line-height: 1.1em;
+  padding: 2px 1ex;
+  font-size: 85%;
+  background: #FFFFFF;
+  border: 1px solid #AAAAAA;
+  box-shadow: 0px 0px 20px #AAAAAA;
+  max-width: 30em;
+  height: auto;
+  position: absolute;
+  visibility: none;
+}
+
+#noterefover.editor {
+  box-shadow: 0px 0px 20px #AAAA66;
+  border: 1px solid #CCCC99;
+}
+
+#noterefover.author {
+  box-shadow: 0px 0px 20px #6666AA;
+  border: 1px solid #9999CC;
+}
+
+#noterefover .noteback {
+  display: none;
+}
+
+#facsdiv {
+  text-align: center;
+  background: #FFFFFF;
+  border: 3px solid #FFFFFF;
+}
+
+#facsdiv a.close {
+  cursor: pointer;
+  font-weight: bold;
+  color: red;
+}
+
+#facsdiv a.close:hover {
+  box-shadow: 0px 0px 10px red;
+  background-color: rgb(255, 255, 255, 0.7);
+}
+
+/* Global Layout */
+#header {
+  height: 60px;
+  z-index: 2;
+  position: relative;
+  background-color: #FFFFFF;
+}
+
+#aside {
+  page-break-after: always;
+}
+
+/* floatfix */
+#main:after, #main:before, #aside:after, #aside:before, #center:after, #center:before {
+  content: " ";
+  visibility: hidden;
+  display: block;
+  clear: both;
+  height: 0;
+}
+
+#main, #aside {
+  zoom: 1;
+  clear: both;
+  position: relative;
+}
+
+#main {
+  background-color: #FFFFFF;
+}
+
+#center, #cont, #contenu, #main, #article {
+  min-height: 100%;
+}
+
+#article {}
+
+/** specific wide screen, not for print or phone */
+@media screen {
+  body {
+    background-color: #E2DED0;
+    color: #161616;
+  }
+
+  #center {}
+
+  #contenu {}
+
+  #article {
+    padding: 3em 4em 3em 4em;
+    border-bottom: 1px dotted #FFFFFF;
+  }
+
+  /* box-shadow: 10px 0px 50px #E2DED0; box shadow is not 100% for long doc */
+  #aside {
+    padding: 1em 1em 2em 1em;
+    padding: 1rem 1rem 2rem 1rem;
+  }
+
+  #aside, .pannel {
+    background-color: #E2DED0;
+    background-image: -webkit-linear-gradient(left #E2DED0, #FFFFFF, );
+    background-image: -moz-linear-gradient(left, #E2DED0, #FFFFFF);
+    background-image: -ms-linear-gradient(left, #E2DED0, #FFFFFF);
+    background-image: -o-linear-gradient(right, #FFFFFF, #E2DED0);
+    background-image: linear-gradient(left, #E2DED0, #FFFFFF);
+  }
+
+  body.article {
+    width: 100ex;
+    margin: 3em auto 2em auto;
+    padding: 1em;
+  }
+
+}
+
+/** wide screens */
+@media screen and (min-width : 1024px) {
+  #center {
+    width: 1000px;
+    margin: 0 auto;
+  }
+
+  #main {
+    width: 700px;
+    float: right;
+  }
+
+  #aside {
+    width: 300px;
+    float: left;
+    position: fixed;
+    overflow: auto;
+    top: 0;
+    bottom: 0;
+    margin: 0;
+    padding: 70px 0 3em 1rem;
+    border-right: #C9C6BB 1px solid;
+  }
+
+  #cont {}
+
+  #header {
+    position: relative;
+    z-index: 2;
+  }
+
+  .marginalia {
+    margin-right: -10em;
+    width: 15em;
+  }
+}
+
+#aside, #toolbar, #header {
+  color: #808099;
+}
+
+#breadcrumb {
+  margin-left: 260px;
+  background-color: #FFFFFF;
+}
+
+#center {
+  margin: 0 auto 0 auto;
+  background-color: #FFFFFF;
+}
+
+body.search #center {
+  max-width: 99%;
+}
+
+#footer {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  height: 17px;
+  padding: 1px 1em 0 1em;
+  margin: 0;
+  border-top: 1px #E2DED0 solid;
+}
+
+#header {
+  border: none;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+  border-right: none;
+  border-left: none;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  margin: 0;
+  padding: 0 0 0.5ex 1em;
+}
+
+#header a.logo {
+  display: block;
+  float: right;
+  padding: 2px 1em;
+  margin-top: 1ex;
+}
+
+#main #toc, #article #toc {
+  float: right;
+  position: fixed;
+  width: 200px;
+  background-color: #FFFFFF;
+}
+
+/* toc inside article */
+#aside a {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: none;
+}
+
+#aside a:hover {
+  background: #FFF;
+  color: #000;
+  text-shadow: none;
+}
+
+#aside li.here a:hover {
+  background-color: #EEEEEE;
+}
+
+#aside menu {
+  margin-bottom: 3em;
+}
+
+#footer a img {
+  width: 16px;
+  height: 16px;
+  margin-right: 2px;
+  border: 1px solid transparent;
+  padding: 1px;
+}
+
+#footer a:hover img {
+  border: 1px inset #DDDDDD;
+}
+
+#footer a, #header a {
+  border-bottom-color: transparent;
+}
+
+#header h1 {
+  font-size: 1.7em;
+  text-align: left;
+  margin: 1ex 0 0 0;
+  padding: 0;
+  opacity: 0.6;
+  font-variant: small-caps;
+  letter-spacing: 0.7ex;
+  float: left;
+  clear: none;
+}

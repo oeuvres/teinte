@@ -20,7 +20,7 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
   >
   <xsl:import href="common.xsl"/>
 
-  <!-- Generate a table of sections -->
+  <!-- Generate an absolute table of sections -->
   <xsl:template name="toc">
     <xsl:variable name="html">
       <xsl:apply-templates select="/*/tei:text/tei:front" mode="li"/>
@@ -29,12 +29,87 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
       <xsl:apply-templates select="/*/tei:text/tei:back" mode="li"/>
     </xsl:variable>
     <xsl:if test="$html != ''">
-      <ol class="tree">
+      <ul class="tree">
         <xsl:copy-of select="$html"/>
-      </ol>
+      </ul>
     </xsl:if>
   </xsl:template>
+
+  <xsl:template name="toclocal">
+    <ul>
+      <xsl:apply-templates select="/*/tei:text/tei:front/* | /*/tei:text/tei:body/* | /*/tei:text/tei:group/* | /*/tei:text/tei:back/*" mode="toclocal">
+        <xsl:with-param name="localid" select="generate-id()"/>
+      </xsl:apply-templates>
+    </ul>
+  </xsl:template>
   
+  <xsl:template match="*" mode="toclocal"/>
+
+  <xsl:template match="tei:div" mode="toclocal">
+    <xsl:param name="localid"/>
+    <xsl:variable name="children" select="tei:castList | tei:div | tei:titlePage"/>
+    <li>
+      <xsl:if test="generate-id() = $localid">
+        <xsl:attribute name="class">here</xsl:attribute>
+      </xsl:if>
+      <!-- link only on last split child -->
+      <xsl:choose>
+        <!-- no link when no split -->
+        <xsl:when test="descendant::*[key('split', generate-id())]">
+          <span>
+            <xsl:call-template name="title"/>
+          </span>
+        </xsl:when>
+        <xsl:when test="key('split', generate-id())">
+          <xsl:variable name="id">
+            <xsl:text>go</xsl:text>
+            <xsl:call-template name="id"/>
+          </xsl:variable>
+          <a>
+            <xsl:attribute name="href">
+              <xsl:call-template name="href"/>
+              <xsl:text>#</xsl:text>
+              <xsl:value-of select="$id"/>
+            </xsl:attribute>
+            <xsl:attribute name="xml:id">
+              <xsl:value-of select="$id"/>
+            </xsl:attribute>
+            <xsl:call-template name="title"/>
+          </a>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:call-template name="a"/>
+        </xsl:otherwise>
+      </xsl:choose>
+      <xsl:choose>
+        <!-- No descendant -->
+        <xsl:when test="not($children)"/>
+        <!-- A descendant with a file generated -->
+        <xsl:when test="descendant::*[key('split', generate-id())]">
+          <ul>
+            <xsl:apply-templates select="$children" mode="toclocal">
+              <xsl:with-param name="localid" select="$localid"/>
+            </xsl:apply-templates>
+          </ul>
+        </xsl:when>
+        <!-- local tree, go in, forget localid -->
+        <xsl:when test="generate-id() = $localid">
+          <ul>
+            <xsl:apply-templates select="$children" mode="toclocal"/>
+          </ul>
+        </xsl:when>
+        <!-- in local tree -->
+        <xsl:when test="not($localid)">
+          <ul>
+            <xsl:apply-templates select="$children" mode="toclocal"/>
+          </ul>
+        </xsl:when>
+        <!-- Should ne  -->
+      </xsl:choose>
+    </li>
+  </xsl:template>
+  
+
   <xsl:template name="toc-header">
     <header>
       <a>
@@ -217,7 +292,7 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
           <span>
             <xsl:call-template name="title"/>
           </span>
-          <ol>
+          <ul>
             <xsl:for-each select="tei:castList | tei:div | tei:div1 | tei:titlePage">
               <xsl:choose>
                 <!-- ??? first section with no title, no forged title -->
@@ -227,7 +302,7 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
                 </xsl:otherwise>
               </xsl:choose>
             </xsl:for-each>
-          </ol>
+          </ul>
         </li>
       </xsl:when>
       <xsl:when test="self::tei:body">
@@ -246,11 +321,11 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
         <!-- simple content -->
         <xsl:when test="not(tei:front|tei:back) and tei:body/tei:p | tei:body/tei:l | tei:body/tei:list | tei:body/tei:argument | tei:body/tei:table | tei:body/tei:docTitle | tei:body/tei:docAuthor"/>
         <xsl:otherwise>
-          <ol>
+          <ul>
             <xsl:apply-templates select="tei:front" mode="li"/>
             <xsl:apply-templates select="tei:body" mode="li"/>
             <xsl:apply-templates select="tei:back" mode="li"/>
-          </ol>
+          </ul>
         </xsl:otherwise>
       </xsl:choose>
     </li>
@@ -281,7 +356,7 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
       <xsl:choose>
         <xsl:when test="count($children) &gt; 0">
           <xsl:call-template name="a"/>
-          <ol>
+          <ul>
             <xsl:if test="$class">
               <xsl:attribute name="class">
                 <xsl:value-of select="$class"/>
@@ -300,7 +375,7 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
                 </xsl:otherwise>
               </xsl:choose>
             </xsl:for-each>
-          </ol>
+          </ul>
         </xsl:when>
         <xsl:otherwise>
           <xsl:call-template name="a"/>
@@ -330,9 +405,9 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
         <xsl:call-template name="a"/>
       </xsl:when>
       <xsl:when test="tei:div[normalize-space(.) != '']|tei:div1[normalize-space(.) != '']">
-        <ol class="tree">
+        <ul class="tree">
           <xsl:apply-templates select="*[self::tei:div|self::tei:div1][normalize-space(.) != '']" mode="li"/>
-        </ol>
+        </ul>
       </xsl:when>
     </xsl:choose>
   </xsl:template>
