@@ -463,7 +463,14 @@ Gobal TEI parameters and variables are divided in different categories
           <xsl:when test="self::tei:TEI"/>
           <xsl:when test="self::tei:text">
             <xsl:if test="position() != 1"> — </xsl:if>
-            <xsl:copy-of select="$doctitle"/>
+            <xsl:choose>
+              <xsl:when test="$bibl">
+                <xsl:copy-of select="$bibl"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:copy-of select="$doctitle"/>
+              </xsl:otherwise>
+            </xsl:choose>
           </xsl:when>
           <xsl:when test="self::tei:body"/>
           <!--
@@ -472,9 +479,7 @@ Gobal TEI parameters and variables are divided in different categories
           <!-- end -->
           <xsl:otherwise>
             <xsl:if test="position() != 1"> — </xsl:if>
-            <xsl:if test="position() = 1 and not(starts-with($branchNorm, '['))">« </xsl:if>
             <xsl:copy-of select="$branch"/>
-            <xsl:if test="position() = 1 and not(starts-with($branchNorm, '['))"> »</xsl:if>
             <!--
             <xsl:choose>
               <xsl:when test="contains(';.,', substring($branchNorm, string-length($branchNorm)) )"> </xsl:when>
