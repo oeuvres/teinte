@@ -7,30 +7,19 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
 
 
 -->
-<xsl:transform version="1.0"
-  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-  xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:tei="http://www.tei-c.org/ns/1.0"
-  xmlns:epub="http://www.idpf.org/2007/ops"
-  
-  exclude-result-prefixes="tei epub"
-  xmlns:exslt="http://exslt.org/common"
-  extension-element-prefixes="exslt"
-  >
+<xsl:transform exclude-result-prefixes="tei epub" extension-element-prefixes="exslt" version="1.0" xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xmlns:exslt="http://exslt.org/common" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <!-- Shared templates -->
   <xsl:import href="common.xsl"/>
-
   <!-- key for notes by page, keep the tricky @use expression in this order, when there are other parallel pages number -->
-  <xsl:key name="note-pb" match="tei:note[not(parent::tei:sp)][not(starts-with(local-name(..), 'div'))]" use="generate-id(  preceding::*[self::tei:pb[not(@ed)][@n] ][1]  ) "/>
+  <xsl:key match="tei:note[not(parent::tei:sp)][not(starts-with(local-name(..), 'div'))]" name="note-pb" use="generate-id(  preceding::*[self::tei:pb[not(@ed)][@n] ][1]  ) "/>
   <!-- Are there apparatus entry ? -->
   <xsl:param name="app" select="boolean(//tei:app)"/>
   <!-- Call this template to get all the notes from the current node with their links -->
   <xsl:template name="footnotes">
     <!-- children from which find notes -->
-    <xsl:param name="cont" select="*"/>
+    <xsl:param name="cont" select="."/>
     <!-- for notes by pages -->
     <xsl:param name="pb" select="$cont//tei:pb[@n][not(@ed)]"/>
-    
     <!-- Handle on current node -->
     <xsl:variable name="current" select="."/>
     <xsl:variable name="notes">
@@ -55,6 +44,7 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
           </p>
         </xsl:if>
       </xsl:if>
+      <!-- Here some xsl processors add an empty ref in notes -->
       <!--
       <xsl:for-each select="$cont //tei:*[@rend='note']">
         <xsl:sort select="local-name()"/>
@@ -120,33 +110,33 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
         </xsl:when>
         <!-- handle notes by split sections ? -->
         <xsl:when test="$cont and function-available('exslt:node-set')">
-          <xsl:apply-templates select="exslt:node-set($cont)" mode="fn">
+          <xsl:variable name="nodes" select="exslt:node-set($cont)"/>
+          <xsl:apply-templates mode="fn" select="$nodes//tei:note">
             <xsl:with-param name="resp">author</xsl:with-param>
           </xsl:apply-templates>
-          <xsl:apply-templates select="exslt:node-set($cont)" mode="fn">
+          <xsl:apply-templates mode="fn" select="$nodes//tei:note">
             <xsl:with-param name="resp">editor</xsl:with-param>
           </xsl:apply-templates>
-          <xsl:apply-templates select="exslt:node-set($cont)" mode="fn"/>
+          <xsl:apply-templates mode="fn" select="$nodes//tei:note"/>
         </xsl:when>
         <!-- !! especially not efficient with xsltproc -->
         <xsl:when test="$cont">
-
           <xsl:for-each select="$cont //tei:note">
             <xsl:sort select="@place|@resp"/>
             <xsl:call-template name="fn"/>
           </xsl:for-each>
         </xsl:when>
         <xsl:when test="key('id', 'note-footseq')">
-          <xsl:apply-templates select="*" mode="fn"/>
+          <xsl:apply-templates mode="fn" select="*"/>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:apply-templates select="*" mode="fn">
+          <xsl:apply-templates mode="fn" select="*">
             <xsl:with-param name="resp">author</xsl:with-param>
           </xsl:apply-templates>
-          <xsl:apply-templates select="*" mode="fn">
+          <xsl:apply-templates mode="fn" select="*">
             <xsl:with-param name="resp">editor</xsl:with-param>
           </xsl:apply-templates>
-          <xsl:apply-templates select="*" mode="fn"/>
+          <xsl:apply-templates mode="fn" select="*"/>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
@@ -245,11 +235,11 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
-  <!-- Note, appel sous forme de lien -->
+  <!-- Note, ref link already in text -->
   <xsl:template match="tei:ref[@type='note']">
     <xsl:call-template name="noteref"/>
   </xsl:template>
-  <!-- Note, appel et lien vers le texte -->
+  <!-- Note, ref link in flow -->
   <xsl:template name="noteref">
     <xsl:param name="class">noteref</xsl:param>
     <xsl:processing-instruction name="index_off"/>
@@ -315,19 +305,19 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
       </xsl:when>
       -->
       <xsl:when test="$hasformat">
-        <xsl:number count="tei:note[@rend=$hasformat]" format="{@rend}" level="any" from="/"/>
+        <xsl:number count="tei:note[@rend=$hasformat]" format="{@rend}" from="/" level="any"/>
       </xsl:when>
       <xsl:when test="@type='app'">
-        <xsl:number count="tei:note[@type='app']" format="a" level="any" from="/"/>
+        <xsl:number count="tei:note[@type='app']" format="a" from="/" level="any"/>
       </xsl:when>
       <xsl:when test="@resp='editor'">
-        <xsl:number count="tei:note[@resp=$resp]" format="I" level="any" from="/"/>
+        <xsl:number count="tei:note[@resp=$resp]" format="I" from="/" level="any"/>
       </xsl:when>
       <xsl:when test="@resp">
-        <xsl:number count="tei:note[@resp=$resp]" level="any" from="/"/>
+        <xsl:number count="tei:note[@resp=$resp]" from="/" level="any"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:number count="tei:note[not(@resp) and not(@rend) and not(@place='margin') and not(parent::tei:div) and not(parent::tei:notesStmt)]" level="any" from="/"/>
+        <xsl:number count="tei:note[not(@resp) and not(@rend) and not(@place='margin') and not(parent::tei:div) and not(parent::tei:notesStmt)]" from="/" level="any"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -362,7 +352,7 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
     </a>
     <xsl:processing-instruction name="index_on"/>
   </xsl:template>
-  <!-- Note, ancre courante (sauf si enfant direct d'un div) -->
+  <!--Default behavior for note-->
   <xsl:template match="tei:note | tei:*[@rend='note']">
     <xsl:choose>
       <xsl:when test="@place = 'margin'">
@@ -373,8 +363,7 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-  
-  <!-- Note, texte, fonctionne pour note courante ou déportée -->
+  <!-- Display note text with a link back to flow -->
   <xsl:template name="note">
     <!-- identifiant de la note -->
     <xsl:variable name="id">
@@ -393,9 +382,10 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
         <xsl:otherwise>aside</xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
-    
-    
     <xsl:element name="{$element}" namespace="http://www.w3.org/1999/xhtml">
+      <xsl:attribute name="id">
+        <xsl:value-of select="$id"/>
+      </xsl:attribute>
       <xsl:if test="$format = $epub3">
         <xsl:attribute name="epub:type">note</xsl:attribute>
       </xsl:if>
@@ -416,7 +406,9 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
         <xsl:when test="@place = 'margin' and $text=''">
           <xsl:for-each select="*">
             <xsl:apply-templates/>
-            <xsl:if test="position()!=last()"><br/></xsl:if>
+            <xsl:if test="position()!=last()">
+              <br/>
+            </xsl:if>
           </xsl:for-each>
         </xsl:when>
         <xsl:when test="$text='' and *[1][self::tei:p]">
@@ -518,7 +510,7 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
     <xsl:choose>
       <!-- not a note, go in  -->
       <xsl:when test="not(self::tei:note)">
-        <xsl:apply-templates select="*" mode="fn">
+        <xsl:apply-templates mode="fn" select="*">
           <xsl:with-param name="resp" select="$resp"/>
         </xsl:apply-templates>
       </xsl:when>
@@ -809,7 +801,7 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
               <xsl:value-of select="*/@source"/>
               <xsl:text> : </xsl:text>
             </xsl:if>
-            <xsl:apply-templates select="tei:orig" mode="title"/>
+            <xsl:apply-templates mode="title" select="tei:orig"/>
           </xsl:attribute>
           <xsl:apply-templates select="tei:reg/node()"/>
         </span>
@@ -822,7 +814,7 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
               <xsl:value-of select="*/@source"/>
               <xsl:text> : </xsl:text>
             </xsl:if>
-            <xsl:apply-templates select="tei:sic" mode="title"/>
+            <xsl:apply-templates mode="title" select="tei:sic"/>
           </xsl:attribute>
           <xsl:apply-templates select="tei:corr/node()"/>
         </span>
@@ -835,7 +827,7 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
               <xsl:value-of select="*/@source"/>
               <xsl:text> : </xsl:text>
             </xsl:if>
-            <xsl:apply-templates select="tei:del" mode="title"/>
+            <xsl:apply-templates mode="title" select="tei:del"/>
           </xsl:attribute>
           <xsl:apply-templates select="tei:add/node()"/>
         </span>
@@ -848,7 +840,7 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
               <xsl:value-of select="*/@source"/>
               <xsl:text> : </xsl:text>
             </xsl:if>
-            <xsl:apply-templates select="tei:abbr" mode="title"/>
+            <xsl:apply-templates mode="title" select="tei:abbr"/>
           </xsl:attribute>
           <xsl:apply-templates select="tei:expan/node()"/>
         </span>
@@ -964,7 +956,7 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
         </samp>
       </xsl:when>
       <xsl:otherwise>
-        <samp style="width:2em;" class="space">    </samp>
+        <samp class="space" style="width:2em;">    </samp>
       </xsl:otherwise>
     </xsl:choose>
     <xsl:apply-templates/>

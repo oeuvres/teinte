@@ -192,6 +192,13 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
     </xsl:choose>
   </xsl:template>
   
+  <xsl:template match="*" mode="analytic">
+    <xsl:for-each select="ancestor-or-self::*[not(self::tei:TEI)][not(self::tei:text)][not(self::tei:body)]">
+      <xsl:if test="position() != 1"> — </xsl:if>
+      <xsl:apply-templates select="." mode="title"/>
+    </xsl:for-each>
+  </xsl:template>
+  
   <xsl:template name="chapter">
     <alix:chapter>
       <xsl:copy-of select="$info"/>

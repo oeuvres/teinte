@@ -1363,31 +1363,23 @@ Tables
     </span>
   </xsl:template>
   <!--
-<h3>Liens</h3>
+<h3>Links</h3>
   -->
-  <!-- Template to override  -->
+  <!--   -->
   <xsl:template match="tei:ref">
-    <a>
-      <xsl:call-template name="atts"/>
-      <xsl:if test="@subtype">
-        <xsl:attribute name="target">
-          <xsl:value-of select="@subtype"/>
-        </xsl:attribute>
-      </xsl:if>
-      <xsl:variable name="html">
-        <xsl:apply-templates/>
-      </xsl:variable>     
-      <xsl:choose>
-        <xsl:when test="string($html) != ''">
+    <xsl:variable name="html">
+      <xsl:apply-templates/>
+    </xsl:variable>
+    <xsl:choose>
+      <!-- bad link pb, seen in notes -->
+      <xsl:when test="normalize-space($html) = ''"/>
+      <xsl:otherwise>
+        <a>
+          <xsl:call-template name="atts"/>
           <xsl:copy-of select="$html"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:call-template name="anchors">
-            <xsl:with-param name="anchors" select="@target"/>
-          </xsl:call-template>
-        </xsl:otherwise>
-      </xsl:choose>
-    </a>
+        </a>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   <!-- Ancre -->
   <xsl:template match="tei:anchor">
@@ -2020,8 +2012,13 @@ Elements block or inline level
   <!-- Termes with possible normal form -->
   <xsl:template match="tei:addName | tei:affiliation | tei:author | tei:authority | tei:country | tei:foreign | tei:forename | tei:genName | tei:geogFeat | tei:geogName | tei:name | tei:origPlace | tei:orgName | tei:persName | tei:placeName | tei:repository | tei:roleName | tei:rs | tei:settlement | tei:surname">
     <xsl:choose>
+      <!-- empty -->
+      <xsl:when test="normalize-space(.) = ''">
+        <xsl:apply-templates/>
+      </xsl:when>
+      <!-- ?? name as a margin note ? But what is in flow ? -->
+      <!--
       <xsl:when test="@rend = 'margin'">
-        <!-- marginalia -->
         <div class="marginalia">
           <xsl:if test=". = '' and @key">
             <xsl:if test="@role != ''">
@@ -2035,9 +2032,7 @@ Elements block or inline level
           <xsl:apply-templates/>
         </div>
       </xsl:when>
-      <xsl:when test="normalize-space(.) = ''">
-        <xsl:apply-templates/>
-      </xsl:when>
+      -->
       <xsl:when test="@ref or @xml:base">
         <a>
           <!-- linking policy will be resolved from the "linking" template, matched by @ref attribute -->
