@@ -343,35 +343,28 @@ Gobal TEI parameters and variables are divided in different categories
   <xsl:variable name="idfrom">ABCDEFGHIJKLMNOPQRSTUVWXYZÀÂÄÉÈÊÏÎÔÖÛÜÇàâäéèêëïîöôüû ,.</xsl:variable>
   <!-- Lower case without diacritics -->
   <xsl:variable name="idto">abcdefghijklmnopqrstuvwxyzaaaeeeiioouucaaaeeeeiioouu</xsl:variable>
-  <!-- A ibliographic reference -->
+  <!-- A normalized bibliographic reference -->
   <xsl:variable name="bibl">
-    <xsl:choose>
-      <xsl:when test="/*/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:bibl">
-        <xsl:apply-templates select="/*/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:bibl/node()"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:if test="$byline != ''">
-          <span class="byline">
-            <xsl:copy-of select="$byline"/>
-          </span>
-        </xsl:if>
-        <xsl:variable name="year" select="substring($docdate, 1, 4)"/>
-        <xsl:if test="string(number($year)) != 'NaN'">
-          <xsl:text> </xsl:text>
-          <span class="year">
-            <xsl:text>(</xsl:text>
-            <xsl:value-of select="$year"/>
-            <xsl:text>)</xsl:text>
-          </span>
-        </xsl:if>
-        <xsl:if test="$doctitle != ''">
-          <xsl:text> </xsl:text>
-          <span class="title">
-            <xsl:copy-of select="$doctitle"/>
-          </span>
-        </xsl:if>
-      </xsl:otherwise>
-    </xsl:choose>
+    <xsl:if test="$byline != ''">
+      <span class="byline">
+        <xsl:copy-of select="$byline"/>
+      </span>
+    </xsl:if>
+    <xsl:variable name="year" select="substring($docdate, 1, 4)"/>
+    <xsl:if test="string(number($year)) != 'NaN'">
+      <xsl:text> </xsl:text>
+      <span class="year">
+        <xsl:text>(</xsl:text>
+        <xsl:value-of select="$year"/>
+        <xsl:text>)</xsl:text>
+      </span>
+    </xsl:if>
+    <xsl:if test="$doctitle != ''">
+      <xsl:text> </xsl:text>
+      <span class="title">
+        <xsl:copy-of select="$doctitle"/>
+      </span>
+    </xsl:if>
   </xsl:variable>
   
   <!-- A key to handle identified elements -->
@@ -1023,28 +1016,7 @@ résoudre les césures, ou les alternatives éditoriales.
     <xsl:value-of select="$text"/>
     <xsl:text> </xsl:text>
   </xsl:template>
-  <!-- strip last space in ponctuated elements -->
-  <xsl:template match="tei:head/text() | tei:byline/text() | tei:title/text()" mode="title">
-    <xsl:choose>
-      <xsl:when test="position()=1">
-        <xsl:variable name="norm" select="normalize-space(.)"/>
-        <xsl:value-of select="$norm"/>
-        <xsl:if test="$norm != '' and substring(., string-length(.)) = ' '">
-          <xsl:text> </xsl:text>
-        </xsl:if>
-      </xsl:when>
-      <xsl:when test="position()=last()">
-        <xsl:if test="starts-with(., ' ')">
-          <xsl:text> </xsl:text>
-        </xsl:if>
-        <xsl:value-of select="normalize-space(.)"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:copy/>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
-  <!-- Mode title -->
+  <!-- normalization of space in title has lots of bad side effects, do not -->
   <xsl:template match="tei:teiHeader" mode="title">
     <xsl:if test="tei:fileDesc/tei:titleStmt/tei:author">
       <xsl:apply-templates mode="title" select="tei:fileDesc/tei:titleStmt/tei:author[1]"/>
