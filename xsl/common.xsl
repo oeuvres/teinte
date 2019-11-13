@@ -488,6 +488,7 @@ Gobal TEI parameters and variables are divided in different categories
   </xsl:template>
   <!-- A template to get a descent bibliographic to display -->
   <xsl:template name="bibl">
+    <xsl:param name="book" select="$bibl"/>
     <xsl:variable name="pages">
       <xsl:variable name="pb" select=".//tei:pb"/>
       <xsl:if test="$pb">
@@ -505,7 +506,7 @@ Gobal TEI parameters and variables are divided in different categories
         <xsl:apply-templates select="." mode="title"/>
       </xsl:for-each>
     </xsl:variable>
-    <xsl:copy-of select="$bibl"/>
+    <xsl:copy-of select="$book"/>
     <xsl:if test="$pages != ''">
       <xsl:text>. </xsl:text>
       <span class="pages">

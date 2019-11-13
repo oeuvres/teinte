@@ -71,7 +71,7 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
               <xsl:text>#</xsl:text>
               <xsl:value-of select="$id"/>
             </xsl:attribute>
-            <xsl:attribute name="xml:id">
+            <xsl:attribute name="id">
               <xsl:value-of select="$id"/>
             </xsl:attribute>
             <xsl:call-template name="title"/>

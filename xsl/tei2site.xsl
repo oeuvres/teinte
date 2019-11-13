@@ -286,10 +286,12 @@ use="generate-id(.)"/>
                 </xsl:for-each>
               </nav>
               <!-- les notes, passer les noeud sur lesquels générer -->
+              <!-- TODO, handle notes better here
               <xsl:call-template name="footnotes">
                 <xsl:with-param name="cont" select="$cont"/>
                 <xsl:with-param name="pb"/>
               </xsl:call-template>
+              -->
             </article>
           </div>
 

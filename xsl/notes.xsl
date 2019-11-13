@@ -10,33 +10,24 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
 <xsl:transform exclude-result-prefixes="tei epub" extension-element-prefixes="exslt" version="1.0" xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xmlns:exslt="http://exslt.org/common" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <!-- Shared templates -->
   <xsl:import href="common.xsl"/>
+  <xsl:output indent="yes" encoding="UTF-8" method="xml" />
   <!-- key for notes by page, keep the tricky @use expression in this order, when there are other parallel pages number -->
-  <xsl:key match="tei:note[not(parent::tei:sp)][not(starts-with(local-name(..), 'div'))]" name="note-pb" use="generate-id(  preceding::*[self::tei:pb[not(@ed)][@n] ][1]  ) "/>
+  <xsl:key name="note-pb" match="tei:note[not(parent::tei:sp)][not(starts-with(local-name(..), 'div'))]" use="generate-id(  preceding::*[self::tei:pb[not(@ed)][@n] ][1]  ) "/>
+  <xsl:key name="note-before" match="tei:note[not(parent::tei:sp)][not(starts-with(local-name(..), 'div'))]" use="generate-id(following::*[self::tei:pb[not(@ed)][@n] ][1]  ) "/>
   <!-- Are there apparatus entry ? -->
   <xsl:param name="app" select="boolean(//tei:app)"/>
   <!-- Call this template to get all the notes from the current node with their links -->
   <xsl:template name="footnotes">
-    <!-- children from which find notes -->
-    <xsl:param name="cont" select="."/>
-    <!-- for notes by pages -->
-    <xsl:param name="pb" select="$cont//tei:pb[@n][not(@ed)]"/>
+    <!-- get pages in the section -->
+    <xsl:variable name="pb" select=".//tei:pb[@n][not(@ed)]"/>
     <!-- Handle on current node -->
     <xsl:variable name="current" select="."/>
     <xsl:variable name="notes">
       <xsl:if test="$app">
         <xsl:variable name="apparatus">
-          <xsl:choose>
-            <xsl:when test="$cont">
-              <xsl:for-each select="$cont // tei:app">
-                <xsl:call-template name="note-inline"/>
-              </xsl:for-each>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:for-each select="$cont // tei:app">
-                <xsl:call-template name="note-inline"/>
-              </xsl:for-each>
-            </xsl:otherwise>
-          </xsl:choose>
+          <xsl:for-each select=". // tei:app">
+            <xsl:call-template name="note-inline"/>
+          </xsl:for-each>
         </xsl:variable>
         <xsl:if test="$apparatus != ''">
           <p class="apparatus">
@@ -53,18 +44,20 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
       -->
       <xsl:choose>
         <xsl:when test=" $pb ">
+          <xsl:variable name="pb1" select="$pb[1]"/>
           <!-- first notes before the first pb, a preceding:: axis was very slow  -->
-          <xsl:variable name="notes1" select="key('note-pb', NONODE)"/>
+          <xsl:variable name="notes1" select="key('note-before', generate-id($pb1))"/>
+          
           <xsl:if test="$notes1">
             <div class="page">
-              <xsl:for-each select="$notes1[@resp = 'author'][not(@place = 'margin')]">
-                <xsl:call-template name="note"/>
-              </xsl:for-each>
-              <xsl:for-each select="$notes1[@resp = 'editor'][not(@place = 'margin')]">
-                <xsl:call-template name="note"/>
-              </xsl:for-each>
-              <xsl:for-each select="$notes1[not(@resp) or (@resp != 'editor' and @resp != 'author')][not(@place = 'margin')]">
-                <xsl:call-template name="note"/>
+              <xsl:for-each select="$notes1">
+                <xsl:sort select="@place|@resp"/>
+                <xsl:choose>
+                  <!-- is inside current section -->
+                  <xsl:when test="ancestor::*[count(.|$current)=1]">
+                    <xsl:call-template name="note"/>
+                  </xsl:when>
+                </xsl:choose>
               </xsl:for-each>
             </div>
           </xsl:if>
@@ -109,34 +102,20 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
           </xsl:for-each>
         </xsl:when>
         <!-- handle notes by split sections ? -->
-        <xsl:when test="$cont and function-available('exslt:node-set')">
-          <xsl:variable name="nodes" select="exslt:node-set($cont)"/>
-          <xsl:apply-templates mode="fn" select="$nodes//tei:note">
+        <xsl:otherwise>
+          <xsl:for-each select=".//tei:note">
+            <xsl:sort select="@place|@resp"/>
+            <xsl:call-template name="note"/>
+          </xsl:for-each>
+          <!-- ???
+          <xsl:apply-templates mode="fn" select=".//tei:note">
             <xsl:with-param name="resp">author</xsl:with-param>
           </xsl:apply-templates>
           <xsl:apply-templates mode="fn" select="$nodes//tei:note">
             <xsl:with-param name="resp">editor</xsl:with-param>
           </xsl:apply-templates>
           <xsl:apply-templates mode="fn" select="$nodes//tei:note"/>
-        </xsl:when>
-        <!-- !! especially not efficient with xsltproc -->
-        <xsl:when test="$cont">
-          <xsl:for-each select="$cont //tei:note">
-            <xsl:sort select="@place|@resp"/>
-            <xsl:call-template name="fn"/>
-          </xsl:for-each>
-        </xsl:when>
-        <xsl:when test="key('id', 'note-footseq')">
-          <xsl:apply-templates mode="fn" select="*"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:apply-templates mode="fn" select="*">
-            <xsl:with-param name="resp">author</xsl:with-param>
-          </xsl:apply-templates>
-          <xsl:apply-templates mode="fn" select="*">
-            <xsl:with-param name="resp">editor</xsl:with-param>
-          </xsl:apply-templates>
-          <xsl:apply-templates mode="fn" select="*"/>
+          -->
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
