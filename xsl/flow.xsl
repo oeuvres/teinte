@@ -1512,12 +1512,6 @@ Tables
       </xsl:if>
     </img>
   </xsl:template>
-  <!-- Sentence -->
-  <xsl:template match="tei:s">
-    <xsl:text>
-</xsl:text>
-    <xsl:apply-templates/>
-  </xsl:template>
   <!-- <w>, word, avec possible définition -->
   <xsl:template match="tei:w">
     <xsl:variable name="def" select="key('id', substring(@lemmaRef, 2))"/>

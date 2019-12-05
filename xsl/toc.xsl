@@ -67,9 +67,14 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
           </xsl:variable>
           <a>
             <xsl:attribute name="href">
-              <xsl:call-template name="href"/>
-              <xsl:text>#</xsl:text>
-              <xsl:value-of select="$id"/>
+              <xsl:choose>
+                <xsl:when test="generate-id() = $localid">#</xsl:when>
+                <xsl:otherwise>
+                  <xsl:call-template name="href"/>
+                  <xsl:text>#</xsl:text>
+                  <xsl:value-of select="$id"/>
+                </xsl:otherwise>
+              </xsl:choose>
             </xsl:attribute>
             <xsl:attribute name="id">
               <xsl:value-of select="$id"/>

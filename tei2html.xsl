@@ -150,4 +150,20 @@ XSLT 1.0 is compatible browser, PHP, Python, Java…
       </xsl:if>
     </article>
   </xsl:template>
+  <xsl:template match="*" priority="-1">
+    <xsl:choose>
+      <xsl:when test="namespace-uri(/*) = namespace-uri()">
+        <xsl:element name="{local-name()}">
+          <xsl:copy-of select="@*"/>
+          <xsl:apply-templates/>
+        </xsl:element>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:copy>
+          <xsl:copy-of select="@*"/>
+          <xsl:apply-templates/>
+        </xsl:copy>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
 </xsl:transform>
