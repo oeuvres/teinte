@@ -4,7 +4,7 @@
   <a:documentation>teibookHeader</a:documentation>
   <div xmlns="http://www.w3.org/1999/xhtml">
     <ul class="auteurs">
-      <li>[FG] <a onmouseover="this.href='mailto'+'\x3A'+'glorieux'+'\x40'+'algone.net'">Frédéric Glorieux</a></li>
+      <li>[FG] <a onmouseover="this.href='mailto'+'\x3A'+'glorieux'+'\x40'+'fictif.org'">Frédéric Glorieux</a></li>
       <li>[VJ] <a onmouseover="this.href='mailto'+'\x3A'+'jolivet'+'\x40'+'algone.net'">Vincent Jolivet</a></li>
     </ul>
     <p>Ce schéma précise la structure du teiHeader <a href="http://algone.net/teibook/">Teibook</a>.<br/> Il détaille où et comment sont inscrites les métadonnées d’un fichier source afin de faciliter les opérations de conversion.</p>
@@ -157,10 +157,27 @@
               <text/>
               <ref name="teiHeader.hi"/>
               <ref name="teiHeader.num"/>
+              <ref name="journal"/>
             </choice>
           </zeroOrMore>
         </element>
       </oneOrMore>
+    </define>
+    <define name="journal">
+      <element name="title">
+        <attribute name="level">
+          <choice>
+            <value>j</value>
+          </choice>
+        </attribute>
+        <zeroOrMore>
+          <choice>
+            <text/>
+            <ref name="teiHeader.hi"/>
+            <ref name="teiHeader.num"/>
+          </choice>
+        </zeroOrMore>
+      </element>
     </define>
     <define name="title.type">
       <attribute name="type">
@@ -1048,6 +1065,7 @@
           <choice>
             <ref name="teiHeader.flow"/>
             <ref name="teiHeader.author"/>
+            <ref name="journal"/>
             <element name="author">
               <text/>
             </element>
