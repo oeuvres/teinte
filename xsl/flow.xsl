@@ -376,9 +376,11 @@ Sections
           <xsl:when test="local-name($prev) ='p' and translate($prev, '*∾  ','')!=''"/>
           <xsl:otherwise>autofirst</xsl:otherwise>
         </xsl:choose>
-      </xsl:variable>     
+      </xsl:variable>
+      <xsl:variable name="annotation" select="@annotation"/>
       <xsl:call-template name="atts">
         <xsl:with-param name="class" select="$class"/>
+        <xsl:with-param name="annotation" select="$annotation"/>
       </xsl:call-template>
       <xsl:if test="@n">
         <small class="n">
@@ -392,6 +394,29 @@ Sections
       <xsl:if test=".=''"> </xsl:if>
     </xsl:element>
   </xsl:template>
+  <!-- Paragraph blocs (paragraphs are not allowed in it) -->
+  <xsl:template match="tei:NE">
+    <span>
+      <xsl:variable name="annotation" select="@annotation"/>
+      <xsl:call-template name="atts">
+        <xsl:with-param name="class" select="$annotation"/>
+        <xsl:with-param name="annotation" select="$annotation"/>
+        <xsl:with-param name="ne" select="'NE'"/>
+      </xsl:call-template>
+      <xsl:apply-templates/>
+    </span>
+  </xsl:template>
+  <xsl:template match="tei:note">
+    <p>
+      <xsl:variable name="annotation" select="@annotation"/>
+      <xsl:call-template name="atts">
+        <xsl:with-param name="class" select="$annotation"/>
+        <xsl:with-param name="annotation" select="$annotation"/>
+      </xsl:call-template>
+      <xsl:apply-templates/>
+    </p>
+  </xsl:template>
+
   <xsl:template match="tei:acheveImprime | tei:approbation | tei:byline | tei:caption | tei:dateline | tei:desc | tei:docEdition | tei:docImprint | tei:imprimatur | tei:performance | tei:premiere | tei:printer | tei:privilege | tei:signed | tei:salute | tei:set | tei:trailer
     ">
     <xsl:variable name="el">
@@ -623,8 +648,11 @@ Sections
   </xsl:template>
   <!-- <item>, item de liste -->
   <xsl:template match="tei:item">
+    <xsl:variable name="annotation" select="@annotation"/>
     <li>
-      <xsl:call-template name="atts"/>
+      <xsl:call-template name="atts">
+        <xsl:with-param name="annotation" select="$annotation"/>
+      </xsl:call-template>
       <!-- unplug, maybe expensive -->
       <!--
       <xsl:if test="../@type='index' and not(../tei:list)">
@@ -938,68 +966,96 @@ Tables
   <!-- <hi>, mise en forme typo générique -->
   <xsl:template match="tei:hi">
     <xsl:variable name="rend" select="translate(@rend, $idfrom, $idto)"/>
+    <xsl:variable name="annotation" select="@annotation"/>
     <xsl:choose>
       <xsl:when test=". =''"/>
       <!-- si @rend est un nom d'élément HTML -->
       <xsl:when test="contains( ' b big em i s small strike strong sub sup tt u ', concat(' ', $rend, ' '))">
         <xsl:element name="{$rend}" namespace="http://www.w3.org/1999/xhtml">
-          <xsl:call-template name="atts"/>
+          <xsl:call-template name="atts">
+            <xsl:with-param name="annotation" select="$annotation"/>
+          </xsl:call-template>
+
           <xsl:apply-templates/>
         </xsl:element>
       </xsl:when>
       <xsl:when test="$rend = ''">
         <em>
-          <xsl:call-template name="atts"/>
+          <xsl:call-template name="atts">
+            <xsl:with-param name="annotation" select="$annotation"/>
+          </xsl:call-template>
+
           <xsl:apply-templates/>
         </em>
       </xsl:when>
       <xsl:when test="starts-with($rend, 'it')">
         <i>
-          <xsl:call-template name="atts"/>
+          <xsl:call-template name="atts">
+            <xsl:with-param name="annotation" select="$annotation"/>
+          </xsl:call-template>
           <xsl:apply-templates/>
         </i>
       </xsl:when>
       <xsl:when test="starts-with($rend, 'it')">
         <i>
-          <xsl:call-template name="atts"/>
+          <xsl:call-template name="atts">
+            <xsl:with-param name="annotation" select="$annotation"/>
+          </xsl:call-template>
+
           <xsl:apply-templates/>
         </i>
       </xsl:when>
       <xsl:when test="contains($rend, 'bold') or contains($rend, 'gras')">
         <b>
-          <xsl:call-template name="atts"/>
+          <xsl:call-template name="atts">
+            <xsl:with-param name="annotation" select="$annotation"/>
+          </xsl:call-template>
+
           <xsl:apply-templates/>
         </b>
       </xsl:when>
       <xsl:when test="starts-with($rend, 'ind')">
         <sub>
-          <xsl:call-template name="atts"/>
+          <xsl:call-template name="atts">
+            <xsl:with-param name="annotation" select="$annotation"/>
+          </xsl:call-template>
+
           <xsl:apply-templates/>
         </sub>
       </xsl:when>
       <xsl:when test="starts-with($rend, 'exp')">
         <sup>
-          <xsl:call-template name="atts"/>
+          <xsl:call-template name="atts">
+            <xsl:with-param name="annotation" select="$annotation"/>
+          </xsl:call-template>
           <xsl:apply-templates/>
         </sup>
       </xsl:when>
       <!-- surlignages venus de la transformation ODT -->
       <xsl:when test="$rend='bg' or $rend='mark'">
         <span class="bg" style="background-color:#{@n};">
-          <xsl:call-template name="atts"/>
+          <xsl:call-template name="atts">
+            <xsl:with-param name="annotation" select="$annotation"/>
+          </xsl:call-template>
+
           <xsl:apply-templates/>
         </span>
       </xsl:when>
       <xsl:when test="$rend='col' or $rend='color'">
         <span class="col" style="color:#{@n};">
-          <xsl:call-template name="atts"/>
+          <xsl:call-template name="atts">
+            <xsl:with-param name="annotation" select="$annotation"/>
+          </xsl:call-template>
+
           <xsl:apply-templates/>
         </span>
       </xsl:when>
       <!-- sinon appeler le span général -->
       <xsl:otherwise>
         <span>
-          <xsl:call-template name="atts"/>
+          <xsl:call-template name="atts">
+            <xsl:with-param name="annotation" select="$annotation"/>
+          </xsl:call-template>
           <xsl:apply-templates/>
         </span>
       </xsl:otherwise>
@@ -1512,6 +1568,16 @@ Tables
       </xsl:if>
     </img>
   </xsl:template>
+  <xsl:template match="tei:s">
+    <span>
+      <xsl:variable name="annotation" select="@annotation"/>
+      <xsl:call-template name="atts">
+        <xsl:with-param name="class" select="$annotation"/>
+        <xsl:with-param name="annotation" select="$annotation"/>
+      </xsl:call-template>
+      <xsl:apply-templates/>
+    </span>
+  </xsl:template>
   <!-- <w>, word, avec possible définition -->
   <xsl:template match="tei:w">
     <xsl:variable name="def" select="key('id', substring(@lemmaRef, 2))"/>
@@ -1913,6 +1979,7 @@ Elements block or inline level
    -->
   <xsl:template match="tei:bibl | tei:gloss | tei:label | tei:q | tei:quote | tei:said | tei:stage">
     <xsl:variable name="mixed" select="../text()[normalize-space(.) != '']"/>
+    <xsl:variable name="annotation" select="@annotation"/>
     <xsl:choose>
       <xsl:when test="normalize-space(.) = ''">
         <xsl:apply-templates/>
@@ -1931,15 +1998,19 @@ Elements block or inline level
               <xsl:otherwise>span</xsl:otherwise>
             </xsl:choose>
           </xsl:with-param>
+          <xsl:with-param name="class" select="@annotation"/>
         </xsl:call-template>
       </xsl:when>
       <xsl:when test="@corresp and contains(@type, 'embed') and $format != $epub2">
         <figure>
           <xsl:call-template name="atts">
+            <xsl:with-param name="annotation" select="$annotation"/>
             <xsl:with-param name="class">corresp</xsl:with-param>
           </xsl:call-template>
           <figcaption>
-            <xsl:call-template name="atts"/>
+            <xsl:call-template name="atts">
+              <xsl:with-param name="annotation" select="$annotation"/>
+            </xsl:call-template>
             <xsl:attribute name="xml:base">
               <xsl:value-of select="@corresp"/>
             </xsl:attribute>
@@ -2060,6 +2131,8 @@ Centralize some html attribute policy, especially for id, and class
   <xsl:template name="atts">
     <!-- Add some html classes to the automatic ones -->
     <xsl:param name="class"/>
+    <xsl:param name="annotation"/>
+    <xsl:param name="ne"/>
     <!-- Ddelegate class attribution to another template -->
     <xsl:call-template name="class">
       <xsl:with-param name="class" select="$class"/>
@@ -2073,6 +2146,24 @@ Centralize some html attribute policy, especially for id, and class
         </xsl:attribute>
       </xsl:when>
       -->
+      <xsl:when test="$annotation and $ne">
+        <xsl:attribute name="id">
+          <xsl:value-of select="concat('annotation-', generate-id(.))"/>
+          <xsl:call-template name="id"/>
+        </xsl:attribute>
+        <xsl:attribute name="class">
+          <xsl:value-of select="concat('annotation ', @annotation, ' end', ' NE')"/>
+        </xsl:attribute>
+      </xsl:when>
+      <xsl:when test="$annotation">
+        <xsl:attribute name="id">
+          <xsl:value-of select="concat('annotation-', generate-id(.))"/>
+          <xsl:call-template name="id"/>
+        </xsl:attribute>
+        <xsl:attribute name="class">
+          <xsl:value-of select="concat('annotation ', @annotation, ' end')"/>
+        </xsl:attribute>
+      </xsl:when>
       <xsl:when test="normalize-space(@xml:id) != ''">
         <xsl:attribute name="id">
           <xsl:value-of select="translate(normalize-space(@xml:id), ' ', '')"/>
