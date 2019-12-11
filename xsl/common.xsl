@@ -41,6 +41,8 @@ Gobal TEI parameters and variables are divided in different categories
   <xsl:param name="_html">.html</xsl:param>
   <!-- Corpus name passed by caller, used as a body class -->
   <xsl:param name="corpusid"/>
+  <!-- If true, output processing instructions for a text indexer consumer -->
+  <xsl:param name="index"/>
   <!-- Maybe set by a parent transformation, used here for link resolution -->
   <xsl:param name="mode"/>
   <!-- Path from XML file to xsl applied, useful for browser transformation -->
