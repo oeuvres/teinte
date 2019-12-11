@@ -1193,7 +1193,9 @@ Tables
         <xsl:if test="$mixed != ''">
           <xsl:value-of select="$lf"/>
         </xsl:if>
-        <xsl:processing-instruction name="index_off"/>
+        <xsl:if test="$index">
+          <xsl:processing-instruction name="index_off"/>
+        </xsl:if>
         <a class="{normalize-space($class)}">
           <xsl:choose>
             <!-- @xml:base ? -->
@@ -1224,7 +1226,9 @@ Tables
           -->
           <xsl:value-of select="$text"/>
         </a>
-        <xsl:processing-instruction name="index_on"/>
+        <xsl:if test="$index">
+          <xsl:processing-instruction name="index_on"/>
+        </xsl:if>
         <xsl:if test="$mixed != ''">
           <xsl:value-of select="$lf"/>
         </xsl:if>

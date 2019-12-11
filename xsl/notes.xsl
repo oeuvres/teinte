@@ -221,7 +221,9 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
   <!-- Note, ref link in flow -->
   <xsl:template name="noteref">
     <xsl:param name="class">noteref</xsl:param>
-    <xsl:processing-instruction name="index_off"/>
+    <xsl:if test="$index">
+      <xsl:processing-instruction name="index_off"/>
+    </xsl:if>
     <xsl:variable name="id">
       <xsl:call-template name="id"/>
     </xsl:variable>
@@ -258,7 +260,9 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
         </a>
       </xsl:otherwise>
     </xsl:choose>
-    <xsl:processing-instruction name="index_on"/>
+    <xsl:if test="$index">
+      <xsl:processing-instruction name="index_on"/>
+    </xsl:if>
   </xsl:template>
   <!-- Display note number -->
   <xsl:template name="note-n">
@@ -306,7 +310,9 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
     <xsl:variable name="id">
       <xsl:call-template name="id"/>
     </xsl:variable>
-    <xsl:processing-instruction name="index_off"/>
+    <xsl:if test="$index">
+      <xsl:processing-instruction name="index_off"/>
+    </xsl:if>
     <a class="{$class}">
       <xsl:attribute name="href">
         <xsl:choose>
@@ -329,7 +335,9 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
         <xsl:text>. </xsl:text>
       </xsl:if>
     </a>
-    <xsl:processing-instruction name="index_on"/>
+    <xsl:if test="$index">
+      <xsl:processing-instruction name="index_on"/>
+    </xsl:if>
   </xsl:template>
   <!--Default behavior for note-->
   <xsl:template match="tei:note | tei:*[@rend='note']">
