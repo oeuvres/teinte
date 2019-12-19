@@ -395,7 +395,7 @@ Sections
     </xsl:element>
   </xsl:template>
   <!-- Paragraph blocs (paragraphs are not allowed in it) -->
-  <xsl:template match="tei:NE">
+  <xsl:template match="tei:Entity">
     <span>
       <xsl:variable name="annotation" select="@annotation"/>
       <xsl:call-template name="atts">
