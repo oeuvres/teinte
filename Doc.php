@@ -254,21 +254,21 @@ class Teinte_Doc
    */
   public function iramuteq($destfile=null)
   {
-    return $this->transform(dirname(__FILE__).'/xsl/tei2iramuteq.xsl', $destfile);
+    return $this->transform(dirname(__FILE__).'/xsl/tei2iramuteq.xsl', $destfile, array('filename' => $this->_filename));
   }
   /**
    * Output txm XML
    */
   public function txm($destfile=null)
   {
-    return $this->transform(dirname(__FILE__).'/xsl/tei4txm.xsl', $destfile);
+    return $this->transform(dirname(__FILE__).'/xsl/tei4txm.xsl', $destfile, array('filename' => $this->_filename));
   }
   /**
    * Output naked text
    */
   public function naked($destfile=null)
   {
-    $txt = $this->transform(dirname(__FILE__).'/xsl/tei2naked.xsl');
+    $txt = $this->transform(dirname(__FILE__).'/xsl/tei2naked.xsl', array('filename' => $this->_filename));
     /* TRÈS MAUVAISE IDÉE
     $txt = preg_replace(
       array(
@@ -493,12 +493,19 @@ class Teinte_Doc
     $formats=implode('|', array_keys(self::$ext));
     array_shift($_SERVER['argv']); // shift first arg, the script filepath
     if (!count($_SERVER['argv'])) exit('
-    usage     : php -f Doc.php ('.$formats.')? dstdir/? "*.xml"
+    usage     : php -f Doc.php force? ('.$formats.')? dstdir/? "*.xml"
     format?   : optional dest format, default is html
     dstdir/? : optional dstdir
     *.xml     : glob patterns are allowed, with or without quotes, win or nix
 
 ');
+
+    $force = false;
+    if(trim($_SERVER['argv'][0], '- ') == "force") {
+      array_shift($_SERVER['argv']);
+      $force = true;
+    }
+
 
     $format="html";
     if(preg_match("/^($formats)\$/", trim($_SERVER['argv'][0], '- '))) {
@@ -525,7 +532,8 @@ class Teinte_Doc
         $destname = pathinfo($srcfile, PATHINFO_FILENAME).self::$ext[$format];
         if (isset($dstdir)) $destfile = $dstdir.$destname;
         else $destfile=dirname($srcfile).'/'.$destname;
-        if (file_exists($destfile) && filemtime($srcfile) < filemtime($destfile)) continue;
+	if ($force); // force overwrite
+        else if (file_exists($destfile) && filemtime($srcfile) < filemtime($destfile)) continue;
         if (STDERR) fwrite(STDERR, "$count. $srcfile > $destfile\n");
         $count++;
         try {

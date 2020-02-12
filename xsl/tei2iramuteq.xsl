@@ -21,8 +21,8 @@ Doit pouvoir fonctionner en import.
   <xsl:key name="split" match="/" use="'root'"/>
   <!-- Key on structural items, do not use the keyword "split", or it will override the split key for 2site  -->
   <xsl:key name="div" match="*[descendant-or-self::*[starts-with(local-name(), 'div')][@type][contains(@type, 'article') or contains(@type, 'letter') or contains(@type, 'scene') or contains(@type, 'act') or contains(@type, 'chapter') or contains(@type, 'poem') or contains(@subtype, 'split')]] | tei:group/tei:text | tei:TEI/tei:text/tei:front/* | tei:TEI/tei:text/tei:back/* | tei:TEI/tei:text/tei:body/* " use="generate-id(.)"/>
-  <xsl:variable name="who1">ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïñòóôõöùúûüý -’'</xsl:variable>
-  <xsl:variable name="who2">abcdefghijklmnopqrstuvwxyzaaaaaaceeeeiiiinooooouuuuyaaaaaaceeeeiiiinooooouuuuy__</xsl:variable>
+  <xsl:variable name="who1">ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïñòóôõöùúûüý’'-</xsl:variable>
+  <xsl:variable name="who2">abcdefghijklmnopqrstuvwxyzaaaaaaceeeeiiiinooooouuuuyaaaaaaceeeeiiiinooooouuuuy</xsl:variable>
   <xsl:key name="who" match="tei:sp" use="@who"/>
   <xsl:key name="role" match="tei:castList//tei:role" use="@xml:id"/>
   <!-- Clé sur les personnages ? -->
@@ -32,6 +32,41 @@ Doit pouvoir fonctionner en import.
   <xsl:preserve-space elements="tei:l tei:p tei:s "/>
   <xsl:variable name="apos">'</xsl:variable>
   <xsl:variable name="quot">"</xsl:variable>
+  <xsl:variable name="male">male</xsl:variable>
+  <xsl:variable name="female">female</xsl:variable>
+  <xsl:variable name="neutral">neutral</xsl:variable>
+  <xsl:variable name="veteran">veteran</xsl:variable>
+  <xsl:variable name="senior">senior</xsl:variable>
+  <xsl:variable name="junior">junior</xsl:variable>
+  <xsl:variable name="noage">noage</xsl:variable>
+  <xsl:variable name="superior">superior</xsl:variable>
+  <xsl:variable name="free">free</xsl:variable>
+  <xsl:variable name="inferior">inferior</xsl:variable>
+  <xsl:variable name="exterior">exterior</xsl:variable>
+  <xsl:variable name="maid">maid</xsl:variable>
+  <xsl:variable name="jack">jack</xsl:variable>
+  <xsl:variable name="daughter">daughter</xsl:variable>
+  <xsl:variable name="son">son</xsl:variable>
+  <xsl:variable name="mother">mother</xsl:variable>
+  <xsl:variable name="father">father</xsl:variable>
+  <xsl:variable name="other">other</xsl:variable>
+  <xsl:variable name="verse">verse</xsl:variable>
+  <xsl:variable name="prose">prose</xsl:variable>
+  <!-- Theatre, <sp who="">, minimun count of <sp> for a <role xml:id=""> -->
+  <xsl:variable name="minsp">3</xsl:variable>
+  <!-- style -->
+  <xsl:key name="el" match="*[ancestor::tei:body]" use="local-name()"/>
+  <xsl:variable name="style">
+    <xsl:choose>
+      <xsl:when test="count(key('el', 'l')) &gt; count(key('el', 'p'))">
+        <xsl:value-of select="$verse"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$prose"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+
   <xsl:template match="/">
     <xsl:apply-templates mode="iramuteq"/>
   </xsl:template>
@@ -40,7 +75,31 @@ Doit pouvoir fonctionner en import.
   </xsl:template>
   <xsl:template match="/*" mode="iramuteq">
     <book>
-      <xsl:apply-templates mode="iramuteq"/>
+      <xsl:choose>
+        <!-- supposed to be theatre -->
+        <xsl:when test="//tei:sp[@who]">
+          <xsl:for-each select="//tei:role[@xml:id]">
+            <xsl:variable name="id" select="@xml:id"/>
+            <xsl:variable name="sp" select="key('who', $id)"/>
+            <xsl:if test="count($sp) &gt; $minsp">
+              <xsl:value-of select="$lf"/>
+              <xsl:value-of select="$lf"/>
+              <xsl:text>****</xsl:text>
+              <xsl:call-template name="irarole"/>
+
+              <xsl:call-template name="iratext"/>
+              <xsl:for-each select="$sp">
+                <xsl:value-of select="$lf"/>
+                <xsl:apply-templates mode="iramuteq"/>
+              </xsl:for-each>
+              <xsl:value-of select="$lf"/>
+            </xsl:if>
+          </xsl:for-each>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:apply-templates mode="iramuteq"/>
+        </xsl:otherwise>
+      </xsl:choose>
       <xsl:value-of select="$lf"/>
     </book>
   </xsl:template>
@@ -58,33 +117,86 @@ Doit pouvoir fonctionner en import.
       <xsl:text> </xsl:text>
     </xsl:if>
   </xsl:template>
+  
+  <xsl:template name="gender">
+    <xsl:param name="rend" select="concat(' ', @rend, ' ')"/>
+    <xsl:choose>
+      <xsl:when test="contains($rend, concat(' ', $male, ' '))">masculin</xsl:when>
+      <xsl:when test="contains($rend, concat(' ', $female, ' '))">feminin</xsl:when>
+      <xsl:otherwise>neutre</xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+  <xsl:template name="age">
+    <xsl:param name="rend" select="concat(' ', @rend, ' ')"/>
+    <xsl:choose>
+      <xsl:when test="contains($rend, concat(' ', $junior, ' '))">jeune</xsl:when>
+      <xsl:when test="contains($rend, concat(' ', $veteran, ' '))">veteran</xsl:when>
+      <xsl:when test="contains($rend, concat(' ', $exterior, ' '))">sans-age</xsl:when>
+      <xsl:when test="contains($rend, concat(' ', $inferior, ' '))">sans-age</xsl:when>
+      <!-- A character should have a gender to have an age -->
+      <xsl:when test="contains($rend, concat(' ', $male, ' ')) or contains($rend, concat(' ', $female, ' '))">mur</xsl:when>
+      <xsl:otherwise>sans-age</xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+  <xsl:template name="status">
+    <xsl:param name="rend" select="concat(' ', @rend, ' ')"/>
+    <xsl:choose>
+      <xsl:when test="contains($rend, concat(' ', $inferior, ' '))">serviteur</xsl:when>
+      <xsl:when test="contains($rend, concat(' ', $exterior, ' '))">exterieur</xsl:when>
+      <!-- A character should have a gender to have a status (let alone “clercs” or other “gens d’armes”) -->
+      <xsl:when test="contains($rend, concat(' ', $male, ' ')) or contains($rend, concat(' ', $female, ' '))">maitre</xsl:when>
+      <xsl:otherwise>exterieur</xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  
+  <xsl:template name="function">
+    <xsl:param name="rend" select="concat(' ', @rend, ' ')"/>
+    <xsl:choose>
+      <xsl:when test="contains($rend, concat(' ', $inferior, ' ')) and contains($rend, concat(' ', $female, ' '))">servante</xsl:when>
+      <xsl:when test="contains($rend, concat(' ', $inferior, ' ')) and contains($rend, concat(' ', $male, ' '))">valet</xsl:when>
+      <xsl:when test="contains($rend, concat(' ', $inferior, ' '))">autres</xsl:when>
+      <xsl:when test="contains($rend, concat(' ', $superior, ' '))">autres</xsl:when>
+      <xsl:when test="contains($rend, concat(' ', $exterior, ' '))">autres</xsl:when>
+      <xsl:when test="contains($rend, concat(' ', $female, ' ')) and contains($rend, concat(' ', $junior, ' '))">fille</xsl:when>
+      <xsl:when test="contains($rend, concat(' ', $male, ' ')) and contains($rend, concat(' ', $junior, ' '))">gars</xsl:when>
+      <xsl:when test="contains($rend, concat(' ', $female, ' '))">mere</xsl:when>
+      <xsl:when test="contains($rend, concat(' ', $male, ' '))">pere</xsl:when>
+      <xsl:otherwise>autres</xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+  <xsl:template name="irarole">
+    <xsl:param name="role" select="."/>
+    <xsl:text> *labbe_</xsl:text>
+    <xsl:value-of select="substring-after($filename, '_')"/>
+    <xsl:text>_</xsl:text>
+    <xsl:value-of select="$style"/>
+    <xsl:text> *style_</xsl:text>
+    <xsl:value-of select="$style"/>
+    <xsl:variable name="rend" select="concat(' ', $role/@rend, ' ')"/>
+    <xsl:text> *sexe_</xsl:text>
+    <xsl:call-template name="gender"/>
+    <xsl:text> *age_</xsl:text>
+    <xsl:call-template name="age"/>
+    <xsl:text> *statut_</xsl:text>
+    <xsl:call-template name="status"/>
+    <xsl:text> *fonction_</xsl:text>
+    <xsl:call-template name="function"/>
+    <xsl:text> *role_</xsl:text>
+    <xsl:value-of select="translate(@xml:id, $who1, $who2)"/>
+  </xsl:template>
+
   <xsl:template match="tei:castList" mode="iramuteq"/>
   <xsl:template match="tei:sp" mode="iramuteq">
     <!-- iramuteq title -->
     <xsl:value-of select="$lf"/>
     <xsl:value-of select="$lf"/>
-    <xsl:text>-*who_</xsl:text>
-    <xsl:variable name="who">
-      <xsl:choose>
-        <xsl:when test="@who">
-          <xsl:value-of select="translate(@who, $who1, $who2)"/>
-        </xsl:when>
-        <xsl:when test="tei:speaker">
-          <xsl:value-of select="translate(tei:speaker, $who1, $who2)"/>
-        </xsl:when>
-      </xsl:choose>
-    </xsl:variable>
-    <xsl:value-of select="$who"/>
-    <!-- only one var allowed
-          <xsl:variable name="role" select="key('role', $who)"/>
-          <xsl:if test="$role/@civil">
-            <xsl:value-of select="$lf"/>
-            <xsl:text>-*civil_</xsl:text>
-            <xsl:value-of select="$role/@civil"/>
-          </xsl:if>
-          -->
     <xsl:apply-templates select="*" mode="iramuteq"/>
   </xsl:template>
+
+
   <xsl:template match="tei:speaker" mode="iramuteq"/>
   <xsl:template match="tei:stage" mode="iramuteq"/>
 
@@ -154,9 +266,7 @@ Doit pouvoir fonctionner en import.
         <xsl:copy-of select="$lf"/>
       </xsl:otherwise>
     </xsl:choose>
-    <xsl:call-template name="sent">
-      <xsl:with-param name="txt" select="normalize-space($txt)"/>
-    </xsl:call-template>
+    <xsl:value-of select="normalize-space($txt)"/>
   </xsl:template>
   <xsl:template match="tei:lb" mode="iramuteq">
     <xsl:value-of select="$lf"/>
@@ -192,15 +302,21 @@ Doit pouvoir fonctionner en import.
     tei:div | tei:div0 | tei:div1 | tei:div2 | tei:div4 | tei:div5 | tei:div6 | tei:div7 
 " mode="iramuteq">
     <xsl:choose>
-      <!-- section avec juste des notes -->
+      <!-- section with only notes -->
       <xsl:when test="not(tei:div | tei:div1 | tei:div2 | tei:div3 | tei:l | tei:lg | tei:list | tei:p | tei:quote | tei:sp )"/>
       <!-- Empty parent section -->
       <xsl:when test="descendant::*[key('div', generate-id())]">
         <!-- Process other children -->
         <xsl:apply-templates select="tei:group | tei:div | tei:div1 | tei:div2 | tei:div3 | tei:div4 | tei:div5 | tei:div6" mode="iramuteq"/>
       </xsl:when>
+      <xsl:when test="tei:sp">
+        <xsl:apply-templates select="*" mode="iramuteq"/>
+      </xsl:when>
       <!-- Should be last level to split -->
       <xsl:when test="key('div', generate-id())">
+        <xsl:value-of select="$lf"/>
+        <xsl:value-of select="$lf"/>
+        <xsl:text>****</xsl:text>
         <xsl:call-template name="iratext"/>
         <xsl:apply-templates select="*" mode="iramuteq"/>
       </xsl:when>
@@ -211,9 +327,6 @@ Doit pouvoir fonctionner en import.
   </xsl:template>
   <!-- iramuteq title -->
   <xsl:template name="iratext">
-    <xsl:value-of select="$lf"/>
-    <xsl:value-of select="$lf"/>
-    <xsl:text>****</xsl:text>
     <xsl:text> *book_</xsl:text>
     <xsl:choose>
       <xsl:when test="/*/@xml:id">
@@ -223,12 +336,10 @@ Doit pouvoir fonctionner en import.
         <xsl:value-of select="$filename"/>
       </xsl:otherwise>
     </xsl:choose>
-    <xsl:text> *id_</xsl:text>
-    <xsl:call-template name="id"/>
-    <xsl:if test="@type='scene'">
+    <xsl:for-each select="ancestor-or-self::tei:*[@type = 'act'][1]">
       <xsl:text> *act_</xsl:text>
-      <xsl:value-of select="../@xml:id"/>
-    </xsl:if>
+      <xsl:value-of select="@xml:id"/>
+    </xsl:for-each>
     <xsl:variable name="created">
       <xsl:choose>
         <xsl:when test="tei:docDate">
