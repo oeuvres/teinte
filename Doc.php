@@ -268,7 +268,7 @@ class Teinte_Doc
    */
   public function naked($destfile=null)
   {
-    $txt = $this->transform(dirname(__FILE__).'/xsl/tei2naked.xsl', array('filename' => $this->_filename));
+    $txt = $this->transform(dirname(__FILE__).'/xsl/tei2naked.xsl', null, array('filename' => $this->_filename));
     /* TRÈS MAUVAISE IDÉE
     $txt = preg_replace(
       array(

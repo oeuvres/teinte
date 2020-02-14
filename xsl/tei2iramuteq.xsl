@@ -85,9 +85,8 @@ Doit pouvoir fonctionner en import.
               <xsl:value-of select="$lf"/>
               <xsl:value-of select="$lf"/>
               <xsl:text>****</xsl:text>
-              <xsl:call-template name="irarole"/>
-
               <xsl:call-template name="iratext"/>
+              <xsl:call-template name="irarole"/>
               <xsl:for-each select="$sp">
                 <xsl:value-of select="$lf"/>
                 <xsl:apply-templates mode="iramuteq"/>
@@ -160,7 +159,7 @@ Doit pouvoir fonctionner en import.
       <xsl:when test="contains($rend, concat(' ', $superior, ' '))">autres</xsl:when>
       <xsl:when test="contains($rend, concat(' ', $exterior, ' '))">autres</xsl:when>
       <xsl:when test="contains($rend, concat(' ', $female, ' ')) and contains($rend, concat(' ', $junior, ' '))">fille</xsl:when>
-      <xsl:when test="contains($rend, concat(' ', $male, ' ')) and contains($rend, concat(' ', $junior, ' '))">gars</xsl:when>
+      <xsl:when test="contains($rend, concat(' ', $male, ' ')) and contains($rend, concat(' ', $junior, ' '))">garçon</xsl:when>
       <xsl:when test="contains($rend, concat(' ', $female, ' '))">mere</xsl:when>
       <xsl:when test="contains($rend, concat(' ', $male, ' '))">pere</xsl:when>
       <xsl:otherwise>autres</xsl:otherwise>
@@ -168,14 +167,14 @@ Doit pouvoir fonctionner en import.
   </xsl:template>
 
   <xsl:template name="irarole">
+    <!--
     <xsl:param name="role" select="."/>
+    <xsl:variable name="rend" select="concat(' ', $role/@rend, ' ')"/>
     <xsl:text> *labbe_</xsl:text>
     <xsl:value-of select="substring-after($filename, '_')"/>
     <xsl:text>_</xsl:text>
     <xsl:value-of select="$style"/>
-    <xsl:text> *style_</xsl:text>
-    <xsl:value-of select="$style"/>
-    <xsl:variable name="rend" select="concat(' ', $role/@rend, ' ')"/>
+    -->
     <xsl:text> *sexe_</xsl:text>
     <xsl:call-template name="gender"/>
     <xsl:text> *age_</xsl:text>
@@ -327,15 +326,78 @@ Doit pouvoir fonctionner en import.
   </xsl:template>
   <!-- iramuteq title -->
   <xsl:template name="iratext">
+    <xsl:variable name="bookid">
+      <xsl:choose>
+        <xsl:when test="$filename != ''">
+          <xsl:value-of select="$filename"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="$docid"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+
+    <xsl:variable name="titleshort" select="substring-after($bookid, '_')"/>
+
+    <xsl:variable name="creator">
+      <xsl:variable name="key" select="/*/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author/@key"/>
+      <xsl:choose>
+        <xsl:when test="contains($bookid, '_')">
+          <xsl:value-of select="substring-before($bookid, '_')"/>
+        </xsl:when>
+        <xsl:when test="$key != ''">
+          <xsl:value-of select="translate(normalize-space(substring-before(concat(substring-before(concat($key, '('), '('), ','), ',')), $who1, $who2)"/>
+        </xsl:when>
+      </xsl:choose>
+    </xsl:variable>
+    
+    <xsl:text> *creator_</xsl:text>
+    <xsl:value-of select="$creator"/>
+    
     <xsl:text> *book_</xsl:text>
-    <xsl:choose>
-      <xsl:when test="/*/@xml:id">
-        <xsl:value-of select="/*/@xml:id"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:value-of select="$filename"/>
-      </xsl:otherwise>
-    </xsl:choose>
+    <xsl:value-of select="$bookid"/>
+
+    <xsl:text> *style_</xsl:text>
+    <xsl:value-of select="$style"/>
+    
+    
+    
+    <xsl:variable name="term1" select="/tei:TEI/tei:teiHeader/tei:profileDesc/tei:textClass//tei:term[@type = 'genre']"/>
+    <xsl:variable name="genre">
+      <xsl:choose>
+        <xsl:when test="$term1/@subtype">
+          <xsl:value-of select="$term1/@subtype"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="translate(normalize-space($term1), $who1, $who2)"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>   
+    <xsl:if test="$genre != ''">
+      <xsl:text> *genre_</xsl:text>
+      <xsl:value-of select="$genre"/>
+      <xsl:text> *dist1_</xsl:text>
+      <xsl:value-of select="$creator"/>
+      <xsl:text>_</xsl:text>
+      <xsl:value-of select="$style"/>
+      <xsl:text>_</xsl:text>
+      <xsl:value-of select="$genre"/>
+      <xsl:text>_</xsl:text>
+      <xsl:value-of select="$titleshort"/>
+      
+      <xsl:text> *dist2_</xsl:text>
+      <xsl:value-of select="$creator"/>
+      <xsl:text>_</xsl:text>
+      <xsl:value-of select="$style"/>
+      <xsl:text>_</xsl:text>
+      <xsl:value-of select="$genre"/>
+    </xsl:if>
+    
+    <xsl:if test="@xml:id">
+      <xsl:text> *id_</xsl:text>
+      <xsl:value-of select="@xml:id"/>
+    </xsl:if>
+    
     <xsl:for-each select="ancestor-or-self::tei:*[@type = 'act'][1]">
       <xsl:text> *act_</xsl:text>
       <xsl:value-of select="@xml:id"/>
@@ -359,18 +421,6 @@ Doit pouvoir fonctionner en import.
     <xsl:if test="$created != ''">
       <xsl:text> *date_</xsl:text>
       <xsl:value-of select="$created"/>
-    </xsl:if>
-    <xsl:variable name="creator">
-      <xsl:variable name="key" select="/*/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author/@key"/>
-      <xsl:choose>
-        <xsl:when test="$key != ''">
-          <xsl:value-of select="translate(normalize-space(substring-before(concat(substring-before(concat($key, '('), '('), ','), ',')), $who1, $who2)"/>
-        </xsl:when>
-      </xsl:choose>
-    </xsl:variable>
-    <xsl:if test="$creator != ''">
-      <xsl:text> *creator_</xsl:text>
-      <xsl:value-of select="$creator"/>
     </xsl:if>
     <xsl:for-each select="tei:index[@indexName]">
       <xsl:text> *</xsl:text>
