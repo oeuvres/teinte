@@ -20,7 +20,7 @@ Doit pouvoir fonctionner en import.
   <xsl:import href="common.xsl"/>
   <xsl:key name="split" match="/" use="'root'"/>
   <!-- Key on structural items, do not use the keyword "split", or it will override the split key for 2site  -->
-  <xsl:key name="div" match="*[descendant-or-self::*[starts-with(local-name(), 'div')][@type][contains(@type, 'article') or contains(@type, 'letter') or contains(@type, 'scene') or contains(@type, 'act') or contains(@type, 'chapter') or contains(@type, 'poem') or contains(@subtype, 'split')]] | tei:group/tei:text | tei:TEI/tei:text/tei:front/* | tei:TEI/tei:text/tei:back/* | tei:TEI/tei:text/tei:body/* " use="generate-id(.)"/>
+  <xsl:key name="div" match="*[descendant-or-self::*[starts-with(local-name(), 'div')][@type][contains(@type, 'article') or contains(@type, 'letter') or contains(@type, 'act') or contains(@type, 'chapter') or contains(@type, 'poem') or contains(@subtype, 'split')]] | tei:group/tei:text | tei:TEI/tei:text/tei:front/* | tei:TEI/tei:text/tei:back/* | tei:TEI/tei:text/tei:body/* " use="generate-id(.)"/>
   <xsl:variable name="who1">ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïñòóôõöùúûüý’'-</xsl:variable>
   <xsl:variable name="who2">abcdefghijklmnopqrstuvwxyzaaaaaaceeeeiiiinooooouuuuyaaaaaaceeeeiiiinooooouuuuy</xsl:variable>
   <xsl:key name="who" match="tei:sp" use="@who"/>
@@ -53,7 +53,7 @@ Doit pouvoir fonctionner en import.
   <xsl:variable name="verse">verse</xsl:variable>
   <xsl:variable name="prose">prose</xsl:variable>
   <!-- Theatre, <sp who="">, minimun count of <sp> for a <role xml:id=""> -->
-  <xsl:variable name="minsp">3</xsl:variable>
+  <xsl:variable name="minsp">300</xsl:variable>
   <!-- style -->
   <xsl:key name="el" match="*[ancestor::tei:body]" use="local-name()"/>
   <xsl:variable name="style">
@@ -80,18 +80,25 @@ Doit pouvoir fonctionner en import.
         <xsl:when test="//tei:sp[@who]">
           <xsl:for-each select="//tei:role[@xml:id]">
             <xsl:variable name="id" select="@xml:id"/>
-            <xsl:variable name="sp" select="key('who', $id)"/>
-            <xsl:if test="count($sp) &gt; $minsp">
+            <xsl:variable name="txt">
+              <xsl:for-each select="key('who', $id)">
+                <xsl:choose>
+                  <xsl:when test="ancestor::*[@type = 'interlude']"/>
+                  <xsl:otherwise>
+                    <xsl:value-of select="$lf"/>
+                    <xsl:apply-templates mode="iramuteq"/>
+                  </xsl:otherwise>
+                </xsl:choose>
+              </xsl:for-each>
+            </xsl:variable>           
+            <xsl:if test="normalize-space($txt) != ''">
               <xsl:value-of select="$lf"/>
               <xsl:value-of select="$lf"/>
               <xsl:text>****</xsl:text>
               <xsl:call-template name="iratext"/>
               <xsl:call-template name="irarole"/>
-              <xsl:for-each select="$sp">
-                <xsl:value-of select="$lf"/>
-                <xsl:apply-templates mode="iramuteq"/>
-              </xsl:for-each>
               <xsl:value-of select="$lf"/>
+              <xsl:value-of select="$txt"/>
             </xsl:if>
           </xsl:for-each>
         </xsl:when>
@@ -159,7 +166,7 @@ Doit pouvoir fonctionner en import.
       <xsl:when test="contains($rend, concat(' ', $superior, ' '))">autres</xsl:when>
       <xsl:when test="contains($rend, concat(' ', $exterior, ' '))">autres</xsl:when>
       <xsl:when test="contains($rend, concat(' ', $female, ' ')) and contains($rend, concat(' ', $junior, ' '))">fille</xsl:when>
-      <xsl:when test="contains($rend, concat(' ', $male, ' ')) and contains($rend, concat(' ', $junior, ' '))">garçon</xsl:when>
+      <xsl:when test="contains($rend, concat(' ', $male, ' ')) and contains($rend, concat(' ', $junior, ' '))">fils</xsl:when>
       <xsl:when test="contains($rend, concat(' ', $female, ' '))">mere</xsl:when>
       <xsl:when test="contains($rend, concat(' ', $male, ' '))">pere</xsl:when>
       <xsl:otherwise>autres</xsl:otherwise>
@@ -189,8 +196,6 @@ Doit pouvoir fonctionner en import.
 
   <xsl:template match="tei:castList" mode="iramuteq"/>
   <xsl:template match="tei:sp" mode="iramuteq">
-    <!-- iramuteq title -->
-    <xsl:value-of select="$lf"/>
     <xsl:value-of select="$lf"/>
     <xsl:apply-templates select="*" mode="iramuteq"/>
   </xsl:template>
@@ -295,6 +300,7 @@ Doit pouvoir fonctionner en import.
   <xsl:template match="tei:w | tei:c" mode="iramuteq">
     <xsl:value-of select="."/>
   </xsl:template>
+  <xsl:template match="tei:div1[@type='interlude'] | tei:div[@type='interlude']" mode="iramuteq"/>
   <!-- Sections, split candidates -->
   <xsl:template match="
     tei:body | tei:group |
