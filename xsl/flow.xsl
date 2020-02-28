@@ -504,10 +504,18 @@ Sections
           <xsl:apply-templates select="tei:head"/>
           <ul>
             <xsl:call-template name="atts"/>
-            <xsl:for-each select="*[not(self::tei:head)]">
-              <li>
-                <xsl:apply-templates select="."/>
-              </li>
+            <xsl:for-each select="*">
+              <xsl:choose>
+                <xsl:when test="self::tei:head"/>
+                <xsl:when test="self::tei:pb">
+                  <xsl:apply-templates select="."/>
+                </xsl:when>
+                <xsl:otherwise>
+                  <li>
+                    <xsl:apply-templates select="."/>
+                  </li>
+                </xsl:otherwise>
+              </xsl:choose>
             </xsl:for-each>
           </ul>
         </div>

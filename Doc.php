@@ -520,7 +520,7 @@ class Teinte_Doc
       $dstdir = rtrim($dstdir, '/\\').'/';
       if (!file_exists($dstdir)) {
         mkdir($dstdir, 0775, true);
-        @chmod($dir, 0775);  // let @, if www-data is not owner but allowed to write
+        @chmod($dstdir, 0775);  // let @, if www-data is not owner but allowed to write
       }
     }
 

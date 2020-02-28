@@ -40,7 +40,7 @@
         </fileDesc>
         <profileDesc>
           <creation>
-            <date notAfter="1861" notBefore="1840">Entre 1840 et 1861</date>
+            <date from="1840" to="1861">Entre 1840 et 1861</date>
           </creation>
           <langUsage>
             <language ident="fre"/>
@@ -464,20 +464,20 @@
             </attribute>
           </group>
           <group>
-            <attribute name="notBefore">
+            <attribute name="from">
               <ref name="date.type"/>
             </attribute>
-            <attribute name="notAfter">
-              <ref name="date.type"/>
-            </attribute>
-          </group>
-          <group>
-            <attribute name="notAfter">
+            <attribute name="to">
               <ref name="date.type"/>
             </attribute>
           </group>
           <group>
-            <attribute name="notBefore">
+            <attribute name="from">
+              <ref name="date.type"/>
+            </attribute>
+          </group>
+          <group>
+            <attribute name="to">
               <ref name="date.type"/>
             </attribute>
           </group>
@@ -1242,7 +1242,7 @@
         <dt><a href="http://purl.org/dc/terms/date" target="dc">dc:date</a> (xsi:type="dcterms:W3CDTF")</dt>
         <dd>
           <q>A point or period of time associated with an event in the lifecycle of the resource.</q>
-          <br/>Date de création du document et non de sa déclinaison éditoriale (première édition imprimée, date du fichier TEI, etc.). <br/>/TEI/teiHeader/profileDesc/creation/date/@when <br/>/TEI/teiHeader/profileDesc/creation/date/@notBefore <br/>/TEI/teiHeader/profileDesc/creation/date/@notAfter </dd>
+          <br/>Date de création du document et non de sa déclinaison éditoriale (première édition imprimée, date du fichier TEI, etc.). <br/>/TEI/teiHeader/profileDesc/creation/date/@when <br/>/TEI/teiHeader/profileDesc/creation/date/@from <br/>/TEI/teiHeader/profileDesc/creation/date/@to </dd>
         <dt>
           <a href="http://purl.org/dc/terms/description" target="dc">dc:description</a>
         </dt>

@@ -129,7 +129,7 @@ Doit pouvoir fonctionner en import.
     <xsl:choose>
       <xsl:when test="contains($rend, concat(' ', $male, ' '))">masculin</xsl:when>
       <xsl:when test="contains($rend, concat(' ', $female, ' '))">feminin</xsl:when>
-      <xsl:otherwise>neutre</xsl:otherwise>
+      <xsl:otherwise>masculin</xsl:otherwise>
     </xsl:choose>
   </xsl:template>
 
