@@ -1,4 +1,5 @@
-Teinte est une librairie XSLT et PHP qui peut s’utiliser dans plusieurs contextes : dans un serveur web, avec un éditeur XML et un navigateur, en ligne de commande. 
+Teinte est une librairie XSLT et PHP pour XML/TEI.
+Elle peut s’utiliser dans plusieurs contextes : sur un serveur web, avec un éditeur XML et un navigateur, en ligne de commande. 
 
 # Utiliser Teinte dans un serveur web
 
