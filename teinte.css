@@ -97,14 +97,14 @@ tt, pre {
   font-family: "FreeSans", "DejaVu Sans", "Lucida Sans Unicode", "Arial Unicode MS", sans-serif
 }
 
-blockquote, dd, p.p, div.p, .argument, .availability, div.bibl, li.bibl, .dialogue li, .justify, .note, div.stage {
+blockquote.quote, dd, p.p, div.p, .argument, .availability, div.bibl, li.bibl, .dialogue li, 
+.justify, div.note, aside.note, div.stage {
   text-align: justify;
 }
 
 /* html5 default, in alphabetic order */
 a:target, mark:target, b.mark:target {
-  border-bottom: 3px #CCCCCC solid;
-  background-color: #FFFFEE;
+  background-color: #EEE;
   border-radius-top-left: 0;
 }
 
@@ -158,7 +158,6 @@ address {
 }
 
 article {
-  margin-top: 1em;
   page-break-after: always;
   clear: both;
 }
@@ -177,15 +176,14 @@ b, strong {
   font-weight: bolder;
 }
 
-blockquote {
+blockquote.quote {
   margin: 1.5em 0em 1.5em 3rem;
-  text-align: justify;
   line-height: 130%;
   font-size: 92%;
   padding: 0;
 }
 
-blockquote p, blockquote div.p {
+blockquote.quote .p {
   text-indent: 2em;
 }
 
@@ -198,7 +196,6 @@ code {
 }
 
 dd {
-  text-align: justify
 }
 
 details {
@@ -232,7 +229,6 @@ dl.dl dt {
 }
 
 dl.dl dd {
-  text-align: justify;
   color: #333;
   margin-top: 0em;
   margin-bottom: 0.5em;
@@ -438,26 +434,26 @@ kbd {
   font-variant: small-caps;
 }
 
-li {
+li.item {
   line-height: 120%;
   margin-top: 0.5ex;
   margin-bottom: 0.5ex;
 }
 
-li p {
+li.item p {
   margin: 0;
 }
 
-li pre {
+li.item pre {
   margin: 0;
 }
 
-li blockquote {
-  margin: 1em 0 1em 0;
+li.item blockquote {
+  margin: 1rem 0 1rem 0;
 }
 
-li blockquote p {
-  text-indent: 2em;
+li.item blockquote p {
+  text-indent: 2rem;
 }
 
 legend {
@@ -572,7 +568,7 @@ optgroup {
   font-weight: bold;
 }
 
-p, div.p, .dialogue li {
+p.p, div.p, .dialogue li {
   margin: 0;
   text-align: justify;
   line-height: 150%;
@@ -901,7 +897,7 @@ ul.castList {
   background-color: rgba(255, 255, 255, 0.6);
   padding: 1px 2px 1px 2px;
   position: absolute;
-  left: -4rem;
+  right: -4rem;
   text-align: right;
   width: 3.5rem;
   /* float: right; problèmes dans les tableaux */
@@ -930,7 +926,6 @@ a.pb:hover {
 a.ed, a.pb {}
 
 a.facs {
-  float: left;
   margin-right: 0;
   margin-left: -1em;
   z-index: 2;
@@ -994,6 +989,12 @@ aside .docDate {
 
 .entry>.form {
   margin-left: 0;
+}
+
+li.item {
+  line-height: 120%;
+  margin-top: 0.5ex;
+  margin-bottom: 0.5ex;
 }
 
 .fileDesc, .fileDesc>p {
@@ -1285,7 +1286,7 @@ p.label, div.label {
   font-size: 105%;
 }
 
-blockquote .label {
+blockquote.quote .label {
   margin: 1ex 0 0.5ex 2em;
   text-align: left;
 }
@@ -1300,7 +1301,7 @@ figure .label {
   font-style: italic;
 }
 
-.listBibl li.desc, 
+.listBibl li.desc,
 .listBibl li.note {
   list-style-type: none;
   padding-left: 0;
@@ -2490,9 +2491,9 @@ dl.xml dt {
 /** specific wide screen, not for print or phone */
 @media screen {
   div.note, aside.note {
-    margin: 0 0 0 2.5em;
+    margin: 0 0 0 1.7rem;
     border-left: 1px solid #CCCCCC;
-    padding: 0.5ex 0 0.5ex 0.5em;
+    padding: 0.3rem 0 0.5ex 0.5rem;
   }
 
   section>div.note {
@@ -2505,8 +2506,8 @@ dl.xml dt {
     position: absolute;
     display: block;
     text-align: right;
-    width: 5ex;
-    margin: 0.3ex 0 0 -7ex;
+    width: 1.5rem;
+    margin: 0.3ex 0 0 -2.5rem;
   }
 
   aside.marginnote {
@@ -2558,7 +2559,7 @@ dl.xml dt {
     font-size: 11pt;
   }
 
-  blockquote {
+  blockquote.quote {
     margin-left: 1rem;
     margin-right: 0;
   }

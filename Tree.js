@@ -176,7 +176,7 @@ li.here mark { background: inherit; }\
     var nl = document.querySelectorAll("a.facs");
     for (var i=0, length = nl.length; i < length; i++) {
       if (i+1 < length) nl[i].next = nl[i+1];
-      nl[i].innerHTML = '◄' + nl[i].innerHTML;
+      // nl[i].innerHTML = '◄' + nl[i].innerHTML;
       nl[i].onclick = Tree.facs;
     }
     if (nl.length) {

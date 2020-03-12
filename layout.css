@@ -1,7 +1,11 @@
 
 
-h1, h2, h3, h4, h5, h6 {
+#article, h1, h2, h3, h4, h5, h6 {
   font-family: "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif;
+}
+
+#aside, #toolbar, #header {
+  font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;
 }
 
 
@@ -18,7 +22,7 @@ h1, h2, h3, h4, h5, h6 {
   max-width: 30em;
   height: auto;
   position: absolute;
-  visibility: none;
+  visibility: hidden;
 }
 
 #noterefover.editor {
@@ -36,6 +40,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 #facsdiv {
+  width: 500px;
   text-align: center;
   background: #FFFFFF;
   border: 3px solid #FFFFFF;
@@ -49,7 +54,7 @@ h1, h2, h3, h4, h5, h6 {
 
 #facsdiv a.close:hover {
   box-shadow: 0px 0px 10px red;
-  background-color: rgb(255, 255, 255, 0.7);
+  background-color: rgba(255, 255, 255, 0.7);
 }
 
 /* Global Layout */
@@ -74,7 +79,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 #main, #aside {
-  zoom: 1;
   clear: both;
   position: relative;
 }
@@ -132,8 +136,11 @@ h1, h2, h3, h4, h5, h6 {
 @media screen and (min-width : 1024px) {
   #center {
     width: 1000px;
-    margin: 0 auto;
   }
+  #facsdiv {
+    left:1020px;
+  }
+
 
   #main {
     width: 700px;
@@ -175,7 +182,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 #center {
-  margin: 0 auto 0 auto;
   background-color: #FFFFFF;
 }
 
@@ -195,8 +201,6 @@ body.search #center {
 
 #header {
   border: none;
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
   border-radius: 0;
   border-right: none;
   border-left: none;
