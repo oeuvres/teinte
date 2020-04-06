@@ -1035,7 +1035,9 @@
             <ref name="textual"/>
             <ref name="name"/>
             <ref name="foreign"/>
+            <ref name="persName"/>
             <ref name="stage"/>
+            <ref name="tech"/>
             <ref name="term"/>
           </choice>
         </zeroOrMore>
@@ -1642,9 +1644,7 @@
               <a:documentation>Baliser dans une citation les incises et commentaires qui viennent l’interrompre.</a:documentation>
               <!-- http://listserv.brown.edu/archives/cgi-bin/wa?A2=TEI-L;bc182630.1306 -->
               <value>tab</value>
-              <!--
               <text/>
-              -->
             </choice>
           </attribute>
         </optional>
@@ -2300,6 +2300,7 @@
         <ref name="placeName"/>
         <ref name="rs"/>
         <ref name="term"/>
+        <ref name="tech"/>
         <ref name="title"/>
       </choice>
     </define>
@@ -2660,6 +2661,15 @@
           </optional>
           -->
         <ref name="textual"/>
+      </element>
+    </define>
+    <define name="tech">
+      <element name="tech">
+        <a:documentation>Technique théâtrale</a:documentation>
+        <optional>
+          <ref name="ref-att"/>
+        </optional>
+        <text/>
       </element>
     </define>
   </div>
