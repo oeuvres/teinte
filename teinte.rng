@@ -879,6 +879,7 @@
               <text/>
             </element>
             <ref name="date"/>
+            <ref name="emph"/>
             <ref name="hi"/>
             <ref name="num"/>
             <!-- publisher avec les entités nommées ? pas nécessaire, dans la mesure où on ne souhaite pas les indexer pour l’instant -->
