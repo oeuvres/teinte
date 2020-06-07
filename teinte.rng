@@ -580,7 +580,7 @@
     </define>
     <define name="byline">
       <element name="byline">
-        <a:documentation>Mention de responsabilité (dans un article de presse, une lettre…). On souhaitera y voir </a:documentation>
+        <a:documentation>Mention de responsabilité (dans un article de périodique, une lettre…)</a:documentation>
         <zeroOrMore>
           <choice>
             <text/>
@@ -965,7 +965,7 @@
     </define>
     <define name="l">
       <element name="l">
-        <a:documentation>Un vers, généralement contenu dans une strophe &lt;lg></a:documentation>
+        <a:documentation>Un vers, peut être contenu dans une strophe &lt;lg></a:documentation>
         <div xmlns="http://www.w3.org/1999/xhtml"> <br/>Pour les vers rompus du théâtre (– Hé ? – Quoi ! – Ah…), renseigner l’attribut @part qui permettra à une application de rétablir les alignements, indiquer explicitement la succession pour informer un automate : Initial (1) – Medial (0 ou n) – Final (1) <br/>Les indentations spécifiques sont à inscrire sous forme d’espaces insécables (caractère unicode équivalent à l’entité XML <![CDATA[&#160;]]>). Pour les vers numérotés, le numéro est inscrit dans l’attribut <a:att>n</a:att>.</div>
         <ref name="xml-atts"/>
         <optional>
@@ -2161,7 +2161,7 @@
     </define>
     <define name="foreign">
       <element name="foreign">
-        <a:documentation>Mot, expression, ou proposition dans une langue différente du contexte. Permet de spécifier une police particulière pour certains alphabets (grec, hébreu…).</a:documentation>
+        <a:documentation>Mot, expression, ou proposition dans une langue différente du contexte</a:documentation>
         <ref name="xml-atts"/>
         <ref name="textual"/>
       </element>
@@ -2973,7 +2973,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
     </define>
     <define name="xml.id">
       <attribute name="xml:id">
-        <a:documentation>Identifiant, au moins unique pour le document.</a:documentation>
+        <a:documentation>Identifiant, au moins unique pour le document</a:documentation>
         <data type="ID"/>
       </attribute>
     </define>

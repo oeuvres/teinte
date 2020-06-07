@@ -50,7 +50,7 @@ Gobal TEI parameters and variables are divided in different categories
     <xsl:call-template name="xslbase"/>
   </xsl:param>
   <!-- Allow caller to override protocol for theme (https) -->
-  <xsl:param name="http">http://</xsl:param>
+  <xsl:param name="http">https://</xsl:param>
   <xsl:param name="theme">
     <xsl:choose>
       <xsl:when test="$xslbase != ''">
@@ -533,6 +533,18 @@ Gobal TEI parameters and variables are divided in different categories
     <xsl:apply-templates select="." mode="id"/>
   </xsl:template>
     
+  <xsl:template match="tei:persName" mode="id">
+    <xsl:variable name="id0"> '":,; /\</xsl:variable>
+   <xsl:choose>
+      <xsl:when test="@xml:id">
+        <xsl:value-of select="translate(@xml:id, $id0, '')"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>pers</xsl:text>
+          <xsl:number level="any"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
 
   <!-- Shared template to get an id -->
   <xsl:template match="*" mode="id">
@@ -806,7 +818,12 @@ résoudre les césures, ou les alternatives éditoriales.
               <!-- test if title end by ponctuation -->
               <xsl:variable name="norm" select="normalize-space(.)"/>
               <xsl:variable name="last" select="substring($norm, string-length($norm))"/>
-              <xsl:if test="translate($last, '.;:?!»', '')!=''">. </xsl:if>
+              <xsl:choose>
+                <xsl:when test="translate($last, '.;:?!»', '')!=''">. </xsl:when>
+                <xsl:otherwise>
+                  <xsl:text> </xsl:text>
+                </xsl:otherwise>
+              </xsl:choose>
             </xsl:if>
           </xsl:for-each>
         </xsl:variable>
