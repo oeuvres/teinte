@@ -641,8 +641,10 @@
         <a:documentation>Épigraphe, citation en exergue de section</a:documentation>
         <a:example>
           <epigraph>
-            <l>Quand tu diras à Tabaqui<note n="9" place="bottom">Le Chacal.</note> : Frère, à l’Hyène : <lb/>Voici mon gibier,</l>
-            <l>Tu feras ta trêve avec Jacala<note n="10" place="bottom">Crocodile de rivière, habituellement charognard.</note>, le Ventre qui court <lb/>sur quatre pieds.</l>
+            <l>Quand tu diras à Tabaqui<note n="9" place="bottom">Le Chacal.</note> : Frère, à l’Hyène :
+              <lb/>Voici mon gibier,</l>
+            <l>Tu feras ta trêve avec Jacala<note n="10" place="bottom">Crocodile de rivière, habituellement charognard.</note>, le Ventre qui court
+              <lb/>sur quatre pieds.</l>
             <bibl>Loi de Jungle.</bibl>
           </epigraph>
         </a:example>
@@ -966,7 +968,8 @@
     <define name="l">
       <element name="l">
         <a:documentation>Un vers, peut être contenu dans une strophe &lt;lg></a:documentation>
-        <div xmlns="http://www.w3.org/1999/xhtml"> <br/>Pour les vers rompus du théâtre (– Hé ? – Quoi ! – Ah…), renseigner l’attribut @part qui permettra à une application de rétablir les alignements, indiquer explicitement la succession pour informer un automate : Initial (1) – Medial (0 ou n) – Final (1) <br/>Les indentations spécifiques sont à inscrire sous forme d’espaces insécables (caractère unicode équivalent à l’entité XML <![CDATA[&#160;]]>). Pour les vers numérotés, le numéro est inscrit dans l’attribut <a:att>n</a:att>.</div>
+        <div xmlns="http://www.w3.org/1999/xhtml">
+          <br/>Pour les vers rompus du théâtre (– Hé ? – Quoi ! – Ah…), renseigner l’attribut @part qui permettra à une application de rétablir les alignements, indiquer explicitement la succession pour informer un automate : Initial (1) – Medial (0 ou n) – Final (1) <br/>Les indentations spécifiques sont à inscrire sous forme d’espaces insécables (caractère unicode équivalent à l’entité XML <![CDATA[&#160;]]>). Pour les vers numérotés, le numéro est inscrit dans l’attribut <a:att>n</a:att>.</div>
         <ref name="xml-atts"/>
         <optional>
           <ref name="n-att"/>
@@ -987,7 +990,6 @@
               <value>alex</value>
               <text/>
             </choice>
-            
           </attribute>
         </optional>
         <optional>
@@ -1020,9 +1022,13 @@
             </element>
             <ref name="function"/>
             <ref name="indexable"/>
-            <ref name="point"/>
             <ref name="stage"/>
             <ref name="typo"/>
+            <ref name="cb"/>
+            <ref name="note"/>
+            <ref name="milestone"/>
+            <ref name="pb"/>
+            <ref name="space"/>
           </choice>
         </oneOrMore>
       </element>
@@ -1196,7 +1202,18 @@
           <ref name="type-att"/>
         </optional>
         <!-- Maybe in italic and not in quotes -->
-        <ref name="rendering.block"/>
+        <optional>
+          <attribute name="rend">
+            <list>
+              <oneOrMore>
+                <choice>
+                  <value>border</value>
+                  <a:documentation>Pour encadrés hors flux</a:documentation>
+                </choice>
+              </oneOrMore>
+            </list>
+          </attribute>
+        </optional>
         <optional>
           <choice>
             <ref name="bibl"/>
@@ -1743,7 +1760,6 @@
         </oneOrMore>
       </element>
     </define>
-    
     <define name="who">
       <attribute name="who">
         <data type="IDREFS"/>
@@ -1753,15 +1769,13 @@
       <element name="stage">
         <a:documentation>Théâtre, indication scénique.</a:documentation>
         <div xmlns="http://www.w3.org/1999/xhtml">
-          <p>La <b>didascalie</b> est une notion pouvant accepter plusieurs définitions. Un encodage en XML impose une grammaire stricte dans la désignation et l’imbrication des éléments. A priori, le balisage des didascalies concerne principalement l’élément <a:el>stage</a:el>. Il peut se trouver au niveau de la pièce (Le Cid : « La scène est à Séville »), de l’acte, de la scène, de la réplique, ou en cours de réplique (« Tartuffe : Le Ciel défend, de vrai, certains contentements ; <i>C’est un Scélérat qui parle.</i> Mais on trouve avec lui des accommodements. »). Tout semble théoriquement prévu, mais la machine se grippe rapidement, par exemple avec cette entête de réplique pourtant fréquente « SGANARELLE, à part ». En TEI, les noms de personnages sont enveloppées dans l’élément <a:el>speaker</a:el>. <a:el>speaker</a:el> n’a pas le droit de contenir l’élément  <a:el>stage</a:el>. Ce choix a été longtemps discuté et réfléchi dans la communauté TEI, il porte potentiellement une définition des didascalies.</p>
-          <p>On pourrait proposer cette première définition : « la didascalie est un discours de l’auteur et non d’un personnage ». Ceci recouvre très bien ce qui se met dans un <a:el>stage</a:el>, mais aussi, une grande partie du paratexte. La distribution des rôles <a:el>castList</a:el> est aussi un discours de l’auteur, ne serait-ce que par son ordre qui donne une indication scénique. Ainsi, Tartuffe est entre la famille et les valets, qualifié de « faux dévot ». Cette indication scénique donne une direction importante aux acteurs, la TEI la met généralement dans un jeu d’éléments pour encoder la distribution des rôles : <a:el>castList</a:el>, contenant des <a:el>castItem</a:el>, contenant principalement les notions de <a:el>role</a:el>, <a:el>actor</a:el> et <a:el>roleDesc</a:el> (description du rôle, qui contiendrait « faux dévot »). <a:el>stage</a:el> n’est pas autorisé dans <a:el>castItem</a:el>. Le « discours de l’auteur » s’avère donc une notion très imprécise à interpréter. D’ailleurs, ne serait-ce pas l’auteur, ou certains de ses aspects, qui parle à travers chaque personnage ?
-           </p>
+          <p>La <b>didascalie</b> est une notion pouvant accepter plusieurs définitions. Un encodage en XML impose une grammaire stricte dans la désignation et l’imbrication des éléments. A priori, le balisage des didascalies concerne principalement l’élément <a:el>stage</a:el>. Il peut se trouver au niveau de la pièce (Le Cid : « La scène est à Séville »), de l’acte, de la scène, de la réplique, ou en cours de réplique (« Tartuffe : Le Ciel défend, de vrai, certains contentements ; <i>C’est un Scélérat qui parle.</i> Mais on trouve avec lui des accommodements. »). Tout semble théoriquement prévu, mais la machine se grippe rapidement, par exemple avec cette entête de réplique pourtant fréquente « SGANARELLE, à part ». En TEI, les noms de personnages sont enveloppées dans l’élément <a:el>speaker</a:el>. <a:el>speaker</a:el> n’a pas le droit de contenir l’élément <a:el>stage</a:el>. Ce choix a été longtemps discuté et réfléchi dans la communauté TEI, il porte potentiellement une définition des didascalies.</p>
+          <p>On pourrait proposer cette première définition : « la didascalie est un discours de l’auteur et non d’un personnage ». Ceci recouvre très bien ce qui se met dans un <a:el>stage</a:el>, mais aussi, une grande partie du paratexte. La distribution des rôles <a:el>castList</a:el> est aussi un discours de l’auteur, ne serait-ce que par son ordre qui donne une indication scénique. Ainsi, Tartuffe est entre la famille et les valets, qualifié de « faux dévot ». Cette indication scénique donne une direction importante aux acteurs, la TEI la met généralement dans un jeu d’éléments pour encoder la distribution des rôles : <a:el>castList</a:el>, contenant des <a:el>castItem</a:el>, contenant principalement les notions de <a:el>role</a:el>, <a:el>actor</a:el> et <a:el>roleDesc</a:el> (description du rôle, qui contiendrait « faux dévot »). <a:el>stage</a:el> n’est pas autorisé dans <a:el>castItem</a:el>. Le « discours de l’auteur » s’avère donc une notion très imprécise à interpréter. D’ailleurs, ne serait-ce pas l’auteur, ou certains de ses aspects, qui parle à travers chaque personnage ? </p>
           <p>Nous avons préféré partir d’une analyse plus concrète de la situation de communication. Généralement, un texte imprimé de théâtre s’adresse d’abord à une troupe. Il en résulte une distinction forte : une didascalie est du texte écrit à destination des acteurs, et qui ne se prononce pas. Cette définition a des effets larges, qui expliquent assez bien les choix de la TEI.</p>
           <ul>
             <li>La distribution ou liste de personnages en tête de pièce <a:el>castList</a:el> est une didascalie à destination de la troupe pour annoncer les rôles, emplois, et relations. La dramaturgie automatique a besoin de cette information, de manière plus précise et plus structurée.</li>
             <li>La distribution de scène, ex : « Phède, Hippolyte », relève de la didascalie. Le titre d’acte, de tableau ou de scène, aussi : « Scène 1 ». Il en résulte que l’on pourrait mettre titre de section et liste de personnages dans un même élément, un “titre” <a:el>head</a:el> : « Scène 1. Phèdre, Hippolyte. ». Ce n’est pas contradictoire avec la définition ci-dessus, mais <a:el>head</a:el> en TEI a le sens plus général de titres de section. Or, la liste des personnages peut être diversement longue et mêlée d’autres indications scéniques, ne relevant plus à proprement du titre. En conséquence, nous plaçons la distribution de scène dans un élément <a:el>stage</a:el>, juste après le <a:el>head</a:el>. Cette structure n’engage pas la présentation typographique (ex : tout peut paraître une ligne). La dramaturgie automatique aura besoin d’informations supplémentaires, cf. <a:el>listPerson</a:el>.</li>
-            <li>Les noms de personnages en tête de réplique <a:el>speaker</a:el> sont des didascalies, raison qui justifie TEI de ne pas y autoriser <a:el>stage</a:el> (comme on ne peut pas mettre un paragraphe dans un paragraphe). Il en résulte que les mots qui ne sont pas des noms de personnage ont le même statut de didascalie, les distinctions ne sont que typographiques. 
-              <a:example><speaker>Pipi <emph>et</emph> quatorze, <emph>riant</emph></speaker></a:example>
+            <li>Les noms de personnages en tête de réplique <a:el>speaker</a:el> sont des didascalies, raison qui justifie TEI de ne pas y autoriser <a:el>stage</a:el> (comme on ne peut pas mettre un paragraphe dans un paragraphe). Il en résulte que les mots qui ne sont pas des noms de personnage ont le même statut de didascalie, les distinctions ne sont que typographiques. <a:example><speaker>Pipi <emph>et</emph> quatorze, <emph>riant</emph></speaker></a:example>
             </li>
           </ul>
           <p>Selon cette définition, l'élément <a:el>stage</a:el> peut apparaître à de nombreux endroits :</p>
@@ -1915,10 +1929,9 @@
           <a:example>
             <div type="scene" xml:id="IV05">
               <head>Scène V</head>
-              <stage>Tartuffe, Elmire, Orgon
-                <listPerson type="configuration">
+              <stage>Tartuffe, Elmire, Orgon <listPerson type="configuration">
                   <person corresp="#tartuffe"/>
-                  <person corresp="#elmire" />
+                  <person corresp="#elmire"/>
                   <!-- Orgon est caché sous la table -->
                   <person corresp="#orgon" role="hidden"/>
                 </listPerson>
@@ -2027,7 +2040,6 @@
         </choice>
       </element>
     </define>
-    
   </div>
   <div xml:id="function">
     <a:documentation>Fonctions</a:documentation>
@@ -2382,9 +2394,9 @@
           <ul>
             <li><b>Mise en forme typographique</b> : si l’objectif est la mise en petites capitales des noms de famille, utiliser <a:el>surname</a:el>, afin que <a:el>persName</a:el> encadre la totalité d’un nom de personne, nom, prénom, et autres composantes compris.</li>
             <li><b>Traitements linguistiques</b> : le but sera d’inclure tous les noms propres. Il doit être possible de remplacer <a:el>persName</a:el> par "il" ou "elle" sans rompre la signification de la phrase. Pour un tel objectif, il convient de baliser aussi les noms abrégés ("K.", "Joseph K.").</li>
-            <li><b>Indexation</b> : il est nécessaire d'ajouter l’attribut utile (index-atts()) à l’identification de la personne, notamment pour les pronoms, et permettre les regroupements.<br/> <a:example><persName key="dieu">Il</persName></a:example> L’attribut <a:att>type</a:att> permet, grâce à la valeur "author", d’indexer les <em>auteurs mentionnés</em> au fil du texte. De manière complémentaire, l’élement <a:el>author</a:el>, autorisé uniquement dans <a:el>bibl</a:el>, permet d’indexer les <em>auteurs référencés</em>, c’est-à-dire ceux dont les citations sont explicitement référencées par un auteur ou un éditeur scientifique. Pour établir l’index des auteurs cités dans un texte, il convient donc de regrouper les clés (<a:att>key</a:att>, <a:att>corresp</a:att> ou <a:att>ref</a:att>, cf index-atts()) renseignées pour les éléments <a:el>persName @type="author"]</a:el> et <a:el>author</a:el>.<br/> Auteur mentionné : <a:example>Je veux parler du drame d’amour qui mit aux prises, voici soixante ans passé, deux des beaux génies de notre âge : <persName ref="http://www.idref.fr/027043339" type="author">Alfred de Musset</persName> et <persName ref="http://www.idref.fr/027121577" type="author">George Sand</persName>.</a:example> Auteur référencé : <a:example><note>Le merveilleux
-              <bibl><title>Cyrano</title> de <author ref="http://www.idref.fr/027109860">M. Edmond Rostand</author></bibl>
-               est venu confirmer cette hypothèse. (NdA)</note></a:example> </li>
+            <li><b>Indexation</b> : il est nécessaire d'ajouter l’attribut utile (index-atts()) à l’identification de la personne, notamment pour les pronoms, et permettre les regroupements.<br/>
+              <a:example><persName key="dieu">Il</persName></a:example> L’attribut <a:att>type</a:att> permet, grâce à la valeur "author", d’indexer les <em>auteurs mentionnés</em> au fil du texte. De manière complémentaire, l’élement <a:el>author</a:el>, autorisé uniquement dans <a:el>bibl</a:el>, permet d’indexer les <em>auteurs référencés</em>, c’est-à-dire ceux dont les citations sont explicitement référencées par un auteur ou un éditeur scientifique. Pour établir l’index des auteurs cités dans un texte, il convient donc de regrouper les clés (<a:att>key</a:att>, <a:att>corresp</a:att> ou <a:att>ref</a:att>, cf index-atts()) renseignées pour les éléments <a:el>persName @type="author"]</a:el> et <a:el>author</a:el>.<br/> Auteur mentionné : <a:example>Je veux parler du drame d’amour qui mit aux prises, voici soixante ans passé, deux des beaux génies de notre âge : <persName ref="http://www.idref.fr/027043339" type="author">Alfred de Musset</persName> et <persName ref="http://www.idref.fr/027121577" type="author">George Sand</persName>.</a:example> Auteur référencé : <a:example><note>Le merveilleux <bibl><title>Cyrano</title> de <author ref="http://www.idref.fr/027109860">M. Edmond Rostand</author></bibl> est venu confirmer cette hypothèse. (NdA)</note></a:example>
+            </li>
           </ul>
         </div>
         <ref name="xml-atts"/>
@@ -2826,10 +2838,10 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
     <define name="lb">
       <element name="lb">
         <a:documentation>Saut de ligne “line break” &lt;html5:br/&gt;</a:documentation>
-        <div xmlns="http://www.w3.org/1999/xhtml"> (<i>line break</i>)
-          <p><a:el>lb</a:el> peut être utilisé pour forcer un saut de ligne, par exemple dans un titre.</p>
+        <div xmlns="http://www.w3.org/1999/xhtml"> (<i>line break</i>) <p><a:el>lb</a:el> peut être utilisé pour forcer un saut de ligne, par exemple dans un titre.</p>
           <p>Dans le cas d’un texte avec lignes numérotées qui ne sont pas des vers inclus dans un élément <a:el>l</a:el>, les numéros sont utiles au référencement des citations des notes d’apparat critique. Il est donc nécessaire de conserver tous les sauts de lignes dans le flux du texte, et d’inscrire le numéro — quand il est imprimé — dans l’attribut <a:att>n</a:att>. <b>Attention</b> : certaines éditions alternent l’emplacement du numéro de ligne selon les pages paires ou impaires (marges intérieures ou extérieures). Conformément à la spécification TEI, le numéro inscrit doit toujours se rapporter à ce qui suit. Les césures sont traitées comme pour le reste du texte. Une édition électronique de référence doit proposer une exploitation de ces sauts de ligne pour garantir une citabilité de qualité égale à la version imprimée. Si plusieurs numérotations concurrentes des lignes sont conservées, elles sont distinguées par l’attribut <a:att>ed</a:att>.</p>
-          <a:example href="teibook.xml#lb"/> </div>
+          <a:example href="teibook.xml#lb"/>
+        </div>
         <optional>
           <ref name="n-att"/>
         </optional>
@@ -2869,7 +2881,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <optional>
           <choice>
             <ref name="corresp"/>
-            <ref name="xml.id"/>            
+            <ref name="xml.id"/>
           </choice>
         </optional>
         <optional>
@@ -2954,7 +2966,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <a:documentation>Mot clé indiquant une analyse, une interprétation.</a:documentation>
       </attribute>
     </define>
-    
     <define name="corresp">
       <attribute name="corresp">
         <a:documentation>Pointeur vers une ressource liée</a:documentation>
@@ -3177,7 +3188,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
       </optional>
     </define>
     <define name="rendering.block">
-      <a:documentation>Information de rendu pour un bloc, combine des rendus de niveau caractère et de niveau bloc avec possibilité de classe personnalisé comme une liste de tokens séparés d'espaces.</a:documentation>
+      <a:documentation>Information de rendu pour un bloc, combine des rendus de niveau caractère et de niveau bloc.</a:documentation>
       <optional>
         <attribute name="rend">
           <list>

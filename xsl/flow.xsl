@@ -36,6 +36,7 @@ XSLT 1.0 is compatible browser, PHP, Python, Java…
 Sections
   -->
   <xsl:template match="tei:elementSpec">
+    <xsl:param name="from"/>
     <article>
       <xsl:attribute name="id">
         <xsl:call-template name="id"/>
@@ -46,11 +47,14 @@ Sections
         <xsl:value-of select="@ident"/>
         <xsl:text>&gt;</xsl:text>
       </h1>
-      <xsl:apply-templates select="*"/>
+      <xsl:apply-templates select="*">
+        <xsl:with-param name="from" select="$from"/>
+      </xsl:apply-templates>
     </article>
   </xsl:template>
 
   <xsl:template match="tei:front">
+    <xsl:param name="from"/>
     <xsl:param name="level" select="count(ancestor::tei:group)"/>
     <xsl:variable name="element">
       <xsl:choose>
@@ -65,10 +69,12 @@ Sections
       <xsl:call-template name="atts"/>
       <xsl:apply-templates select="*">
         <xsl:with-param name="level" select="$level"/>
+        <xsl:with-param name="from" select="$from"/>
       </xsl:apply-templates>
     </xsl:element>
   </xsl:template>
   <xsl:template match="tei:back">
+    <xsl:param name="from"/>
     <xsl:param name="notes" select="not(ancestor::tei:group)"/>
     <xsl:param name="level" select="count(ancestor::tei:group)"/>
     <xsl:choose>
@@ -87,12 +93,14 @@ Sections
           <xsl:call-template name="atts"/>
           <xsl:apply-templates select="*">
             <xsl:with-param name="level" select="$level "/>
+            <xsl:with-param name="from" select="$from"/>
           </xsl:apply-templates>
         </xsl:element>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
   <xsl:template match="tei:body">
+    <xsl:param name="from"/>
     <xsl:param name="level" select="count(ancestor::tei:group)"/>
     <xsl:variable name="element">
       <xsl:choose>
@@ -107,6 +115,7 @@ Sections
       <xsl:call-template name="atts"/>
       <xsl:apply-templates>
         <xsl:with-param name="level" select="$level "/>
+        <xsl:with-param name="from" select="$from"/>
       </xsl:apply-templates>
     </xsl:element>
   </xsl:template>
@@ -133,6 +142,7 @@ Sections
   -->
   <!-- Sections -->
   <xsl:template match="tei:div | tei:div0 | tei:div1 | tei:div2 | tei:div3 | tei:div4 | tei:div5 | tei:div6 | tei:div7 | tei:epilogue | tei:preface | tei:group | tei:prologue">
+    <xsl:param name="from"/>
     <xsl:param name="level" select="count(ancestor::*) - 2"/>
     <xsl:param name="el">
       <xsl:choose>
@@ -189,11 +199,13 @@ Sections
       </xsl:choose>
       <xsl:apply-templates>
         <xsl:with-param name="level" select="$level + 1"/>
+        <xsl:with-param name="from" select="$from"/>
       </xsl:apply-templates>
     </xsl:element>
   </xsl:template>
   <!-- Floating division -->
   <xsl:template match="tei:floatingText">
+    <xsl:param name="from"/>
     <xsl:param name="el">
       <xsl:choose>
         <xsl:when test="$format = 'html5'">aside</xsl:when>
@@ -202,11 +214,14 @@ Sections
     </xsl:param>
     <xsl:element name="{$el}" namespace="http://www.w3.org/1999/xhtml">
       <xsl:call-template name="atts"/>
-      <xsl:apply-templates/>
+      <xsl:apply-templates>
+        <xsl:with-param name="from" select="$from"/>
+      </xsl:apply-templates>
     </xsl:element>
   </xsl:template>
   <!-- Cartouche d'entête d'acte -->
   <xsl:template match="tei:group/tei:text/tei:front ">
+    <xsl:param name="from"/>
     <xsl:param name="el">
       <xsl:choose>
         <xsl:when test="$format = 'html5'">header</xsl:when>
@@ -225,9 +240,13 @@ Sections
             </xsl:when>
           </xsl:choose>
         -->
-      <xsl:apply-templates/>
+      <xsl:apply-templates>
+        <xsl:with-param name="from" select="$from"/>
+      </xsl:apply-templates>
       <!-- VJ : inscire la mention "D'après témoin" -->
-      <xsl:apply-templates select=".//tei:witness[@ana='edited']" mode="according"/>
+      <xsl:apply-templates select=".//tei:witness[@ana='edited']" mode="according">
+        <xsl:with-param name="from" select="$from"/>
+      </xsl:apply-templates>
     </xsl:element>
   </xsl:template>
   <!-- Éléments coupés de la sortie, ou à implémenter -->
@@ -238,6 +257,7 @@ Sections
   -->
   <!-- Titre en entête -->
   <xsl:template match="tei:titleStmt/tei:title">
+    <xsl:param name="from"/>
     <h1>
       <xsl:choose>
         <xsl:when test="@type">
@@ -249,11 +269,14 @@ Sections
           <xsl:attribute name="class">notmain</xsl:attribute>
         </xsl:when>
       </xsl:choose>
-      <xsl:apply-templates/>
+      <xsl:apply-templates>
+        <xsl:with-param name="from" select="$from"/>
+      </xsl:apply-templates>
     </h1>
   </xsl:template>
   <!-- Page de titre -->
   <xsl:template match="tei:titlePage">
+    <xsl:param name="from"/>
     <xsl:param name="el">
       <xsl:choose>
         <xsl:when test="$format = 'html5'">section</xsl:when>
@@ -265,12 +288,15 @@ Sections
         <xsl:attribute name="epub:type">titlepage</xsl:attribute>
       </xsl:if>
       <xsl:call-template name="atts"/>
-      <xsl:apply-templates/>
+      <xsl:apply-templates>
+        <xsl:with-param name="from" select="$from"/>
+      </xsl:apply-templates>
     </xsl:element>
   </xsl:template>
   <xsl:template match="tei:titlePage/tei:performance"/>
   <!-- <h[1-6]> titres avec niveaux hiérarchiques génériques selon le nombre d'ancêtres, il est possible de paramétrer le niveau, pour commencer à 1 en haut de document généré -->
   <xsl:template match="tei:head">
+    <xsl:param name="from"/>
     <xsl:param name="level" select="count(ancestor::tei:*) - 2"/>
     <xsl:variable name="name">
       <xsl:choose>
@@ -290,7 +316,9 @@ Sections
             <xsl:if test="$verse"> verse</xsl:if>
           </xsl:with-param>
         </xsl:call-template>
-        <xsl:apply-templates select="node()[local-name()!='pb']"/>
+        <xsl:apply-templates select="node()[local-name()!='pb']">
+          <xsl:with-param name="from" select="$from"/>
+        </xsl:apply-templates>
         <xsl:if test="not(following-sibling::*[1][self::tei:head]) and $format != $epub2 and $format != $epub3">
           <a class="bookmark">
             <xsl:attribute name="href">
@@ -306,9 +334,12 @@ Sections
   </xsl:template>
   <!-- Autres titres -->
   <xsl:template match="tei:titlePart">
+    <xsl:param name="from"/>
     <div>
       <xsl:call-template name="atts"/>
-      <xsl:apply-templates/>
+      <xsl:apply-templates>
+        <xsl:with-param name="from" select="$from"/>
+      </xsl:apply-templates>
     </div>
   </xsl:template>
   <!--
@@ -317,13 +348,17 @@ Sections
   <!--  -->
   <!-- Quotation (may contain paragraphs) -->
   <xsl:template match="tei:epigraph | tei:exemplum | tei:remarks">
+    <xsl:param name="from"/>
     <blockquote>
       <xsl:call-template name="atts"/>
-      <xsl:apply-templates/>
+      <xsl:apply-templates>
+        <xsl:with-param name="from" select="$from"/>
+      </xsl:apply-templates>
     </blockquote>
   </xsl:template>
   <!-- labelled paragraphe container -->
   <xsl:template match="tei:classes | tei:content">
+    <xsl:param name="from"/>
     <fieldset>
       <xsl:call-template name="atts"/>
       <legend>
@@ -331,30 +366,39 @@ Sections
           <xsl:with-param name="id" select="local-name()"/>
         </xsl:call-template>
       </legend>
-      <xsl:apply-templates/>
+      <xsl:apply-templates>
+        <xsl:with-param name="from" select="$from"/>
+      </xsl:apply-templates>
     </fieldset>
   </xsl:template>
   <!-- Contains blocks, but are no sections -->
   <xsl:template match="tei:argument | tei:closer | tei:def | tei:docTitle | tei:entry | tei:form | tei:postscript  | tei:entry/tei:xr | tei:opener">
+    <xsl:param name="from"/>
     <xsl:if test=". != ''">
       <div>
         <xsl:call-template name="atts"/>
-        <xsl:apply-templates/>
+        <xsl:apply-templates>
+          <xsl:with-param name="from" select="$from"/>
+        </xsl:apply-templates>
       </div>
     </xsl:if>
   </xsl:template>
   <!-- To think, rendering ? -->
   <xsl:template match="tei:sp">
+    <xsl:param name="from"/>
     <div>
       <xsl:attribute name="id">
         <xsl:call-template name="id"/>
       </xsl:attribute>
       <xsl:call-template name="atts"/>
-      <xsl:apply-templates/>
+      <xsl:apply-templates>
+        <xsl:with-param name="from" select="$from"/>
+      </xsl:apply-templates>
     </div>
   </xsl:template>
   <!-- Paragraph blocs (paragraphs are not allowed in it) -->
   <xsl:template match="tei:p">
+    <xsl:param name="from"/>
     <xsl:variable name="el">
       <xsl:choose>
         <!-- If a margin note contains a block level element, browser will complain with p//p -->
@@ -388,12 +432,15 @@ Sections
         </small>
         <xsl:text> </xsl:text>
       </xsl:if>
-      <xsl:apply-templates/>
+      <xsl:apply-templates>
+        <xsl:with-param name="from" select="$from"/>
+      </xsl:apply-templates>
       <xsl:if test=".=''"> </xsl:if>
     </xsl:element>
   </xsl:template>
   <xsl:template match="tei:acheveImprime | tei:approbation | tei:byline | tei:caption | tei:dateline | tei:desc | tei:docEdition | tei:docImprint | tei:imprimatur | tei:performance | tei:premiere | tei:printer | tei:privilege | tei:signed | tei:salute | tei:set | tei:trailer
     ">
+    <xsl:param name="from"/>
     <xsl:variable name="el">
       <xsl:choose>
         <xsl:when test="self::tei:trailer">p</xsl:when>
@@ -405,20 +452,26 @@ Sections
     <xsl:if test="normalize-space(.) != '' ">
       <xsl:element name="{$el}" namespace="http://www.w3.org/1999/xhtml">
         <xsl:call-template name="atts"/>
-        <xsl:apply-templates/>
+        <xsl:apply-templates>
+          <xsl:with-param name="from" select="$from"/>
+        </xsl:apply-templates>
       </xsl:element>
     </xsl:if>
   </xsl:template>
   <xsl:template match="tei:address">
+    <xsl:param name="from"/>
     <address>
       <xsl:call-template name="atts"/>
-      <xsl:apply-templates/>
+      <xsl:apply-templates>
+        <xsl:with-param name="from" select="$from"/>
+      </xsl:apply-templates>
     </address>
   </xsl:template>
   <!-- Ne pas sortir les saut de ligne dans du texte préformaté -->
   <xsl:template match="tei:eg/tei:lb"/>
   <!-- Couillards et autres culs de lampe -->
   <xsl:template match="tei:ab">
+    <xsl:param name="from"/>
     <xsl:choose>
       <xsl:when test="@type='hr'">
         <hr align="center" width="30%"/>
@@ -427,7 +480,9 @@ Sections
         <div>
           <xsl:call-template name="atts"/>
           <xsl:text> </xsl:text>
-          <xsl:apply-templates/>
+          <xsl:apply-templates>
+            <xsl:with-param name="from" select="$from"/>
+          </xsl:apply-templates>
         </div>
       </xsl:when>
       <xsl:otherwise>
@@ -437,16 +492,21 @@ Sections
               <xsl:if test="substring(normalize-space(.), 1, 1) = '*'">star</xsl:if>
             </xsl:with-param>
           </xsl:call-template>
-          <xsl:apply-templates/>
+          <xsl:apply-templates>
+            <xsl:with-param name="from" select="$from"/>
+          </xsl:apply-templates>
         </div>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
   <!-- Preformated text -->
   <xsl:template match="tei:eg">
+    <xsl:param name="from"/>
     <pre>
       <xsl:call-template name="atts"/>
-      <xsl:apply-templates/>
+      <xsl:apply-templates>
+        <xsl:with-param name="from" select="$from"/>
+      </xsl:apply-templates>
     </pre>
   </xsl:template>
   <!--
@@ -454,6 +514,7 @@ Sections
 -->
   <!-- Différentes listes, avec prise en charge xhtml correcte des titres (inclus dans un blockquote)  -->
   <xsl:template match="tei:list | tei:listWit | tei:recordHist">
+    <xsl:param name="from"/>
     <xsl:variable name="el">
       <xsl:choose>
         <xsl:when test="not(@rend)">ul</xsl:when>
@@ -469,14 +530,18 @@ Sections
       <!-- liste titrée à mettre dans un conteneur-->
       <xsl:when test="tei:head">
         <div class="{local-name()}">
-          <xsl:apply-templates select="tei:head"/>
+          <xsl:apply-templates select="tei:head">
+            <xsl:with-param name="from" select="$from"/>
+          </xsl:apply-templates>
           <xsl:element name="{$el}" namespace="http://www.w3.org/1999/xhtml">
             <xsl:call-template name="atts">
               <xsl:with-param name="class">
                 <xsl:if test="$none">none</xsl:if>
               </xsl:with-param>
             </xsl:call-template>
-            <xsl:apply-templates select="*[local-name() != 'head']"/>
+            <xsl:apply-templates select="*[local-name() != 'head']">
+              <xsl:with-param name="from" select="$from"/>
+            </xsl:apply-templates>
           </xsl:element>
         </div>
       </xsl:when>
@@ -487,32 +552,44 @@ Sections
               <xsl:if test="$none">none</xsl:if>
             </xsl:with-param>
           </xsl:call-template>
-          <xsl:apply-templates/>
+          <xsl:apply-templates>
+            <xsl:with-param name="from" select="$from"/>
+          </xsl:apply-templates>
         </xsl:element>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
   <!-- Specif case, a bibliographic reference, followed by a detailed list of copies, no need to include in a <ul> -->
   <xsl:template match="tei:listBibl[count(*)=2][name(*[1])='bibl'][name(*[2])='listBibl']">
-    <xsl:apply-templates/>
+    <xsl:param name="from"/>
+    <xsl:apply-templates>
+      <xsl:with-param name="from" select="$from"/>
+    </xsl:apply-templates>
   </xsl:template>
   
   <xsl:template match="tei:listBibl">
+    <xsl:param name="from"/>
     <xsl:choose>
       <xsl:when test="tei:head">
         <div class="{local-name()}">
-          <xsl:apply-templates select="tei:head"/>
+          <xsl:apply-templates select="tei:head">
+            <xsl:with-param name="from" select="$from"/>
+          </xsl:apply-templates>
           <ul>
             <xsl:call-template name="atts"/>
             <xsl:for-each select="*">
               <xsl:choose>
                 <xsl:when test="self::tei:head"/>
                 <xsl:when test="self::tei:pb">
-                  <xsl:apply-templates select="."/>
+                  <xsl:apply-templates select=".">
+                    <xsl:with-param name="from" select="$from"/>
+                  </xsl:apply-templates>
                 </xsl:when>
                 <xsl:otherwise>
                   <li>
-                    <xsl:apply-templates select="."/>
+                    <xsl:apply-templates select=".">
+                      <xsl:with-param name="from" select="$from"/>
+                    </xsl:apply-templates>
                   </li>
                 </xsl:otherwise>
               </xsl:choose>
@@ -526,7 +603,9 @@ Sections
           <xsl:for-each select="*">
             <li>
               <xsl:call-template name="atts"/>
-              <xsl:apply-templates select="."/>
+              <xsl:apply-templates select=".">
+                <xsl:with-param name="from" select="$from"/>
+              </xsl:apply-templates>
             </li>
           </xsl:for-each>
         </ul>
@@ -543,6 +622,7 @@ Sections
   </xsl:template>
   <!-- Pseudo-listes  -->
   <xsl:template match="tei:respStmt">
+    <xsl:param name="from"/>
     <xsl:variable name="name" select="name()"/>
     <!-- Plus de 2 item du même nom, voir s'il y a un titre dans le fichier de messages -->
     <xsl:if test="../*[name() = $name][2] and count(../*[name() = $name][1]|.) = 1">
@@ -565,7 +645,9 @@ Sections
         <xsl:text>) </xsl:text>
       </xsl:if>
       <xsl:for-each select="*">
-        <xsl:apply-templates select="."/>
+        <xsl:apply-templates select=".">
+          <xsl:with-param name="from" select="$from"/>
+        </xsl:apply-templates>
         <xsl:choose>
           <xsl:when test="position() = last()">
             <xsl:call-template name="dot"/>
@@ -577,13 +659,19 @@ Sections
     </div>
   </xsl:template>
   <xsl:template match="tei:resp">
-    <xsl:apply-templates/>
+    <xsl:param name="from"/>
+    <xsl:apply-templates>
+      <xsl:with-param name="from" select="$from"/>
+    </xsl:apply-templates>
   </xsl:template>
   <!-- Liste de type index -->
   <xsl:template match="tei:list[@type='index']">
+    <xsl:param name="from"/>
     <div>
       <xsl:call-template name="atts"/>
-      <xsl:apply-templates select="tei:head"/>
+      <xsl:apply-templates select="tei:head">
+        <xsl:with-param name="from" select="$from"/>
+      </xsl:apply-templates>
       <!-- s'il n'y a pas de division spéciale, barre de lettres -->
       <!--
       <xsl:choose>
@@ -595,7 +683,9 @@ Sections
       </xsl:choose>
       -->
       <ul class="index">
-        <xsl:apply-templates select="*[local-name() != 'head']"/>
+        <xsl:apply-templates select="*[local-name() != 'head']">
+          <xsl:with-param name="from" select="$from"/>
+        </xsl:apply-templates>
       </ul>
     </div>
   </xsl:template>
@@ -625,12 +715,16 @@ Sections
   </xsl:template>
   <!-- Titre d'une liste -->
   <xsl:template match="tei:list/tei:head">
+    <xsl:param name="from"/>
     <p class="list">
-      <xsl:apply-templates/>
+      <xsl:apply-templates>
+        <xsl:with-param name="from" select="$from"/>
+      </xsl:apply-templates>
     </p>
   </xsl:template>
   <!-- <item>, item de liste -->
   <xsl:template match="tei:item">
+    <xsl:param name="from"/>
     <li>
       <xsl:call-template name="atts"/>
       <!-- unplug, maybe expensive -->
@@ -642,19 +736,26 @@ Sections
         </xsl:if>
       </xsl:if>
       -->
-      <xsl:apply-templates/>
+      <xsl:apply-templates>
+        <xsl:with-param name="from" select="$from"/>
+      </xsl:apply-templates>
     </li>
   </xsl:template>
   <!-- term list -->
   <xsl:template match="tei:list[@type='gloss' or tei:label]">
+    <xsl:param name="from"/>
     <xsl:choose>
       <!-- liste titrée à mettre dans un conteneur-->
       <xsl:when test="tei:head">
         <div class="{local-name()}">
-          <xsl:apply-templates select="tei:head"/>
+          <xsl:apply-templates select="tei:head">
+            <xsl:with-param name="from" select="$from"/>
+          </xsl:apply-templates>
           <dl class="dl">
             <xsl:call-template name="atts"/>
-            <xsl:apply-templates select="*[local-name() != 'head']"/>
+            <xsl:apply-templates select="*[local-name() != 'head']">
+              <xsl:with-param name="from" select="$from"/>
+            </xsl:apply-templates>
           </dl>
         </div>
       </xsl:when>
@@ -663,71 +764,93 @@ Sections
           <xsl:call-template name="atts">
             <xsl:with-param name="class">dl</xsl:with-param>
           </xsl:call-template>
-          <xsl:apply-templates/>
+          <xsl:apply-templates>
+            <xsl:with-param name="from" select="$from"/>
+          </xsl:apply-templates>
         </dl>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
   <xsl:template match="tei:list[@type='gloss' or tei:label]/tei:label">
+    <xsl:param name="from"/>
     <dt>
       <xsl:call-template name="atts"/>
-      <xsl:apply-templates/>
+      <xsl:apply-templates>
+        <xsl:with-param name="from" select="$from"/>
+      </xsl:apply-templates>
     </dt>
   </xsl:template>
   <xsl:template match="tei:list[@type='gloss' or tei:label]/tei:item">
+    <xsl:param name="from"/>
     <dd>
       <xsl:call-template name="atts"/>
-      <xsl:apply-templates/>
+      <xsl:apply-templates>
+        <xsl:with-param name="from" select="$from"/>
+      </xsl:apply-templates>
     </dd>
   </xsl:template>
   <xsl:template match="tei:castList">
+    <xsl:param name="from"/>
     <div>
       <xsl:attribute name="id">
         <xsl:call-template name="id"/>
       </xsl:attribute>
       <xsl:call-template name="atts"/>
-      <xsl:apply-templates select="tei:head | tei:p"/>
+      <xsl:apply-templates select="tei:head | tei:p">
+        <xsl:with-param name="from" select="$from"/>
+      </xsl:apply-templates>
       <ul class="castList">
         <xsl:for-each select="*[not(self::tei:head) and not(self::tei:p)]">
           <li>
             <xsl:call-template name="atts"/>
-            <xsl:apply-templates select="."/>
+            <xsl:apply-templates select=".">
+              <xsl:with-param name="from" select="$from"/>
+            </xsl:apply-templates>
           </li>
         </xsl:for-each>
       </ul>
     </div>
   </xsl:template>
   <xsl:template match="tei:castItem">
-    <xsl:apply-templates/>
+    <xsl:param name="from"/>
+    <xsl:apply-templates>
+      <xsl:with-param name="from" select="$from"/>
+    </xsl:apply-templates>
   </xsl:template>
   <xsl:template match="tei:castGroup">
-    <xsl:apply-templates select="tei:head | tei:note | tei:roleDesc"/>
+    <xsl:param name="from"/>
+    <xsl:apply-templates select="tei:head | tei:note | tei:roleDesc">
+      <xsl:with-param name="from" select="$from"/>
+    </xsl:apply-templates>
     <ul class="castGroup">
       <xsl:for-each select="*">
         <li>
           <xsl:call-template name="atts"/>
-          <xsl:apply-templates select="."/>
+          <xsl:apply-templates select=".">
+            <xsl:with-param name="from" select="$from"/>
+          </xsl:apply-templates>
         </li>
       </xsl:for-each>
     </ul>
   </xsl:template>
-  <xsl:template match="tei:castGroup/tei:head">
-    <xsl:call-template name="span"/>
-  </xsl:template>
-  <xsl:template match="tei:actor | tei:role | tei:roleDesc">
-    <xsl:call-template name="span"/>
-  </xsl:template>
+
   <!-- Glossary like dictionary entry -->
   <xsl:template match="tei:entryFree">
+    <xsl:param name="from"/>
     <div>
       <xsl:call-template name="atts"/>
-      <xsl:apply-templates/>
+      <xsl:apply-templates>
+        <xsl:with-param name="from" select="$from"/>
+      </xsl:apply-templates>
     </div>
   </xsl:template>
   <xsl:template match="tei:xr">
+    <xsl:param name="from"/>
     <div>
       <xsl:call-template name="atts"/>
-      <xsl:apply-templates/>
+      <xsl:apply-templates>
+        <xsl:with-param name="from" select="$from"/>
+      </xsl:apply-templates>
     </div>
   </xsl:template>
   <!--
@@ -736,39 +859,52 @@ Tables
   -->
   <!-- table  -->
   <xsl:template match="tei:table">
-    <hr class="clear"/>
+    <xsl:param name="from"/>
     <table>
       <xsl:call-template name="atts">
         <xsl:with-param name="class">table</xsl:with-param>
       </xsl:call-template>
-      <xsl:apply-templates/>
+      <xsl:apply-templates>
+        <xsl:with-param name="from" select="$from"/>
+      </xsl:apply-templates>
     </table>
   </xsl:template>
   <xsl:template match="tei:table/tei:head">
+    <xsl:param name="from"/>
     <caption>
       <xsl:call-template name="atts"/>
-      <xsl:apply-templates/>
+      <xsl:apply-templates>
+        <xsl:with-param name="from" select="$from"/>
+      </xsl:apply-templates>
     </caption>
   </xsl:template>
   <xsl:template match="tei:table/tei:spanGrp">
+    <xsl:param name="from"/>
     <colgroup>
-      <xsl:apply-templates/>
+      <xsl:apply-templates>
+        <xsl:with-param name="from" select="$from"/>
+      </xsl:apply-templates>
     </colgroup>
   </xsl:template>
   <xsl:template match="tei:table/tei:spanGrp/tei:span">
+    <xsl:param name="from"/>
     <col>
       <xsl:call-template name="atts"/>
     </col>
   </xsl:template>
   <!-- ligne -->
   <xsl:template match="tei:row">
+    <xsl:param name="from"/>
     <tr>
       <xsl:call-template name="atts"/>
-      <xsl:apply-templates/>
+      <xsl:apply-templates>
+        <xsl:with-param name="from" select="$from"/>
+      </xsl:apply-templates>
     </tr>
   </xsl:template>
   <!-- Cellule  -->
   <xsl:template match="tei:cell">
+    <xsl:param name="from"/>
     <xsl:variable name="el">
       <xsl:choose>
         <xsl:when test="@role='label'">th</xsl:when>
@@ -788,12 +924,15 @@ Tables
           <xsl:value-of select="@cols"/>
         </xsl:attribute>
       </xsl:if>
-      <xsl:apply-templates/>
+      <xsl:apply-templates>
+        <xsl:with-param name="from" select="$from"/>
+      </xsl:apply-templates>
     </xsl:element>
   </xsl:template>
   <!-- vers, strophe -->
 
   <xsl:template match="tei:lg">
+    <xsl:param name="from"/>
     <div>
       <xsl:call-template name="atts">
         <xsl:with-param name="class">
@@ -803,7 +942,9 @@ Tables
           </xsl:if>
         </xsl:with-param>
       </xsl:call-template>
-      <xsl:apply-templates/>
+      <xsl:apply-templates>
+        <xsl:with-param name="from" select="$from"/>
+      </xsl:apply-templates>
     </div>
   </xsl:template>
   <xsl:template name="l-n">
@@ -815,6 +956,7 @@ Tables
   </xsl:template>
   <!-- ligne (ex : vers) -->
   <xsl:template match="tei:l">
+    <xsl:param name="from"/>
     <xsl:variable name="n">
       <xsl:call-template name="l-n"/>
     </xsl:variable>
@@ -894,7 +1036,9 @@ Tables
               </span>
             </xsl:if>
           </xsl:if>
-          <xsl:apply-templates/>
+          <xsl:apply-templates>
+            <xsl:with-param name="from" select="$from"/>
+          </xsl:apply-templates>
         </div>
       </xsl:otherwise>
     </xsl:choose>
@@ -945,6 +1089,7 @@ Tables
   -->
   <!-- <hi>, mise en forme typo générique -->
   <xsl:template match="tei:hi">
+    <xsl:param name="from"/>
     <xsl:variable name="rend" select="translate(@rend, $idfrom, $idto)"/>
     <xsl:choose>
       <xsl:when test=". =''"/>
@@ -952,95 +1097,103 @@ Tables
       <xsl:when test="contains( ' b big em i s small strike strong sub sup tt u ', concat(' ', $rend, ' '))">
         <xsl:element name="{$rend}" namespace="http://www.w3.org/1999/xhtml">
           <xsl:call-template name="atts"/>
-          <xsl:apply-templates/>
+          <xsl:apply-templates>
+            <xsl:with-param name="from" select="$from"/>
+          </xsl:apply-templates>
         </xsl:element>
       </xsl:when>
       <xsl:when test="$rend = ''">
         <em>
           <xsl:call-template name="atts"/>
-          <xsl:apply-templates/>
+          <xsl:apply-templates>
+            <xsl:with-param name="from" select="$from"/>
+          </xsl:apply-templates>
         </em>
       </xsl:when>
       <xsl:when test="starts-with($rend, 'it')">
         <i>
           <xsl:call-template name="atts"/>
-          <xsl:apply-templates/>
+          <xsl:apply-templates>
+            <xsl:with-param name="from" select="$from"/>
+          </xsl:apply-templates>
         </i>
       </xsl:when>
       <xsl:when test="starts-with($rend, 'it')">
         <i>
           <xsl:call-template name="atts"/>
-          <xsl:apply-templates/>
+          <xsl:apply-templates>
+            <xsl:with-param name="from" select="$from"/>
+          </xsl:apply-templates>
         </i>
       </xsl:when>
       <xsl:when test="contains($rend, 'bold') or contains($rend, 'gras')">
         <b>
           <xsl:call-template name="atts"/>
-          <xsl:apply-templates/>
+          <xsl:apply-templates>
+            <xsl:with-param name="from" select="$from"/>
+          </xsl:apply-templates>
         </b>
       </xsl:when>
       <xsl:when test="starts-with($rend, 'ind')">
         <sub>
           <xsl:call-template name="atts"/>
-          <xsl:apply-templates/>
+          <xsl:apply-templates>
+            <xsl:with-param name="from" select="$from"/>
+          </xsl:apply-templates>
         </sub>
       </xsl:when>
       <xsl:when test="starts-with($rend, 'exp')">
         <sup>
           <xsl:call-template name="atts"/>
-          <xsl:apply-templates/>
+          <xsl:apply-templates>
+            <xsl:with-param name="from" select="$from"/>
+          </xsl:apply-templates>
         </sup>
       </xsl:when>
       <!-- surlignages venus de la transformation ODT -->
       <xsl:when test="$rend='bg' or $rend='mark'">
         <span class="bg" style="background-color:#{@n};">
           <xsl:call-template name="atts"/>
-          <xsl:apply-templates/>
+          <xsl:apply-templates>
+            <xsl:with-param name="from" select="$from"/>
+          </xsl:apply-templates>
         </span>
       </xsl:when>
       <xsl:when test="$rend='col' or $rend='color'">
         <span class="col" style="color:#{@n};">
           <xsl:call-template name="atts"/>
-          <xsl:apply-templates/>
+          <xsl:apply-templates>
+            <xsl:with-param name="from" select="$from"/>
+          </xsl:apply-templates>
         </span>
       </xsl:when>
       <!-- sinon appeler le span général -->
       <xsl:otherwise>
         <span>
           <xsl:call-template name="atts"/>
-          <xsl:apply-templates/>
+          <xsl:apply-templates>
+            <xsl:with-param name="from" select="$from"/>
+          </xsl:apply-templates>
         </span>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-  <!-- <code>, code en police à chasse fixe -->
-  <xsl:template match="tei:code">
-    <xsl:call-template name="span">
-      <xsl:with-param name="el">code</xsl:with-param>
-    </xsl:call-template>
-  </xsl:template>
-  <xsl:template match="tei:u">
-    <xsl:call-template name="span"/>
-  </xsl:template>
-  <!-- <eg>, exemple en ligne -->
-  <!--
-  <xsl:template match="tei:p/tei:eg">
-    <xsl:call-template name="span">
-      <xsl:with-param name="el">samp</xsl:with-param>
-    </xsl:call-template>
-  </xsl:template>
-  -->
+
   <!-- <gi>, nom d’un élément -->
   <!-- ajout de < et > pas assez robuste en CSS pour utiliser template span -->
   <xsl:template match="tei:gi">
+    <xsl:param name="from"/>
     <code>
       <xsl:text>&lt;</xsl:text>
-      <xsl:apply-templates/>
+      <xsl:apply-templates>
+        <xsl:with-param name="from" select="$from"/>
+      </xsl:apply-templates>
       <xsl:text>&gt;</xsl:text>
     </code>
   </xsl:template>
   <!-- XML sample -->
   <xsl:template match="eg:egXML">
+    <xsl:param name="from"/>
     <xsl:choose>
       <xsl:when test="*">
         <div class="xml">
@@ -1050,7 +1203,9 @@ Tables
       <xsl:otherwise>
         <pre class="prettyprint linenums">
           <code class="language-xml">
-            <xsl:apply-templates/>
+            <xsl:apply-templates>
+              <xsl:with-param name="from" select="$from"/>
+            </xsl:apply-templates>
           </code>
         </pre>
       </xsl:otherwise>
@@ -1061,6 +1216,7 @@ Tables
 
     -->
   <xsl:template match="tei:tag">
+    <xsl:param name="from"/>
     <code class="language-xml prettyprint">
       <xsl:choose>
         <xsl:when test="@type='start'">&lt;</xsl:when>
@@ -1070,7 +1226,9 @@ Tables
         <xsl:when test="@type='comment'">&lt;!--</xsl:when>
         <xsl:when test="@type='pi'">&lt;[CDATA[</xsl:when>
       </xsl:choose>
-      <xsl:apply-templates/>
+      <xsl:apply-templates>
+        <xsl:with-param name="from" select="$from"/>
+      </xsl:apply-templates>
       <xsl:choose>
         <xsl:when test="@type='start'">&gt;</xsl:when>
         <xsl:when test="@type='end'">&gt;</xsl:when>
@@ -1080,14 +1238,6 @@ Tables
         <xsl:when test="@type='pi'">]]&gt;</xsl:when>
       </xsl:choose>
     </code>
-  </xsl:template>
-  <!-- <num>, nombres, utile pour les chiffres romains -->
-  <xsl:template match="tei:num">
-    <xsl:call-template name="span"/>
-  </xsl:template>
-  <!-- Césure, html5 <wbr> ? -->
-  <xsl:template match="tei:caes">
-    <xsl:apply-templates/>
   </xsl:template>
   <!-- Page break in titlePage, something to do, don't know what for now -->
   <xsl:template match="tei:titlePage/tei:pb"/>
@@ -1241,57 +1391,52 @@ Tables
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-  <!-- bloc hors flux -->
-  <xsl:template match="tei:fw">
-    <xsl:call-template name="span">
-      <xsl:with-param name="el">small</xsl:with-param>
-    </xsl:call-template>
-  </xsl:template>
-  <!-- HTML5, “identifiant” -->
-  <xsl:template match="tei:ident">
-    <xsl:call-template name="span">
-      <xsl:with-param name="el">b</xsl:with-param>
-    </xsl:call-template>
-  </xsl:template>
+
   <!-- Create an html5 inline element, differents tests done to ensure quality of output -->
-  <xsl:template match="tei:institution | tei:heraldry | tei:locus | tei:metamark | tei:nameLink | tei:biblFull/tei:publicationStmt/tei:date | tei:biblFull/tei:publicationStmt/tei:pubPlace | tei:repository | tei:settlement " name="span">
-    <xsl:param name="el">span</xsl:param>
+  <xsl:template match="tei:actor | tei:c | tei:caes | tei:castGroup/tei:head | tei:code | tei:distinct | tei:emph | tei:fw | tei:ident | tei:institution | tei:heraldry | tei:locus | tei:mentioned | tei:metamark | tei:nameLink | tei:num | tei:phr | tei:biblFull/tei:publicationStmt/tei:date | tei:biblFull/tei:publicationStmt/tei:pubPlace | tei:repository | tei:role | tei:roleDesc | tei:seg[@rend] | tei:seg[@type] | tei:settlement| tei:sic | tei:soCalled | tei:u" name="span">
+    <xsl:param name="from"/>
+    <xsl:param name="el">
+      <xsl:choose>
+        <xsl:when test="self::tei:code">code</xsl:when>
+        <xsl:when test="self::tei:distinct">em</xsl:when>
+        <xsl:when test="self::tei:emph">em</xsl:when>
+        <xsl:when test="self::tei:fw">small</xsl:when>
+        <xsl:when test="self::tei:ident">b</xsl:when>
+        <xsl:when test="self::tei:mentioned">em</xsl:when>
+        <xsl:when test="self::tei:sic">em</xsl:when>
+        <xsl:when test="self::tei:soCalled">em</xsl:when>
+        <xsl:when test="self::tei:u">u</xsl:when>
+        <xsl:otherwise>span</xsl:otherwise>
+      </xsl:choose>
+    </xsl:param>
     <xsl:choose>
       <xsl:when test=".=''"/>
       <!-- bad tag, with spaces only, tested, not too expensive -->
       <xsl:when test="translate(.,'  ,:;.','')=''">
-        <xsl:apply-templates/>
+        <xsl:apply-templates>
+          <xsl:with-param name="from" select="$from"/>
+        </xsl:apply-templates>
       </xsl:when>
       <xsl:otherwise>
         <xsl:element name="{$el}" namespace="http://www.w3.org/1999/xhtml">
           <xsl:call-template name="atts"/>
-          <xsl:apply-templates/>
+          <xsl:apply-templates>
+            <xsl:with-param name="from" select="$from"/>
+          </xsl:apply-templates>
         </xsl:element>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-  <!-- generic inline catch a lot, to put some  -->
-  <xsl:template match="tei:distinct | tei:emph | tei:mentioned | tei:sic | tei:soCalled ">
-    <xsl:call-template name="span">
-      <xsl:with-param name="el">em</xsl:with-param>
-    </xsl:call-template>
-  </xsl:template>
-  <!-- <span class="..."/>, segment générique sans mise en forme particulière -->
-  <xsl:template match="tei:phr ">
-    <xsl:call-template name="span"/>
-  </xsl:template>
   <!-- Go throw with no html effect -->
   <xsl:template match="tei:seg | tei:imprint |  tei:pubPlace | tei:glyph ">
-    <xsl:apply-templates/>
-  </xsl:template>
-  <xsl:template match="tei:seg[@rend] | tei:seg[@type]">
-    <span>
-      <xsl:call-template name="atts"/>
-      <xsl:apply-templates/>
-    </span>
+    <xsl:param name="from"/>
+    <xsl:apply-templates>
+      <xsl:with-param name="from" select="$from"/>
+    </xsl:apply-templates>
   </xsl:template>
   <!-- dates -->
   <xsl:template match="tei:date | tei:publicationStmt/tei:date | tei:docDate | tei:origDate">
+    <xsl:param name="from"/>
     <xsl:variable name="el">
       <xsl:choose>
         <xsl:when test="parent::tei:div">div</xsl:when>
@@ -1362,25 +1507,24 @@ Tables
               <xsl:value-of select="$value"/>
             </xsl:attribute>
           </xsl:if>
-          <xsl:apply-templates/>
+          <xsl:apply-templates>
+            <xsl:with-param name="from" select="$from"/>
+          </xsl:apply-templates>
         </xsl:element>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-  <!-- caractère particulier, par exemple lettrine, peut nécessiter une police particulière -->
-  <xsl:template match="tei:c">
-    <span>
-      <xsl:call-template name="atts"/>
-      <xsl:apply-templates/>
-    </span>
-  </xsl:template>
+
   <!--
 <h3>Links</h3>
   -->
   <!--   -->
   <xsl:template match="tei:ref">
+    <xsl:param name="from"/>
     <xsl:variable name="html">
-      <xsl:apply-templates/>
+      <xsl:apply-templates>
+        <xsl:with-param name="from" select="$from"/>
+      </xsl:apply-templates>
     </xsl:variable>
     <xsl:choose>
       <!-- bad link pb, seen in notes -->
@@ -1457,6 +1601,7 @@ Tables
 
   -->
   <xsl:template match="tei:figure | tei:facsimile">
+    <xsl:param name="from"/>
     <xsl:param name="el">
       <xsl:choose>
         <xsl:when test="$format = 'html5'">figure</xsl:when>
@@ -1476,16 +1621,21 @@ Tables
         <xsl:text> §</xsl:text>
       </a>
       -->
-      <xsl:apply-templates/>
+      <xsl:apply-templates>
+        <xsl:with-param name="from" select="$from"/>
+      </xsl:apply-templates>
     </xsl:element>
   </xsl:template>
   <xsl:template match="tei:figure/tei:figDesc | tei:figure/tei:desc | tei:figure/tei:head">
+    <xsl:param name="from"/>
     <xsl:choose>
       <xsl:when test=".=''"/>
       <xsl:when test="$format = 'html5'">
         <figcaption>
           <xsl:call-template name="atts"/>
-          <xsl:apply-templates/>
+          <xsl:apply-templates>
+            <xsl:with-param name="from" select="$from"/>
+          </xsl:apply-templates>
         </figcaption>
       </xsl:when>
       <xsl:otherwise>
@@ -1493,7 +1643,9 @@ Tables
           <xsl:call-template name="atts">
             <xsl:with-param name="class">figcaption</xsl:with-param>
           </xsl:call-template>
-          <xsl:apply-templates/>
+          <xsl:apply-templates>
+            <xsl:with-param name="from" select="$from"/>
+          </xsl:apply-templates>
         </div>
       </xsl:otherwise>
     </xsl:choose>
@@ -1526,6 +1678,7 @@ Tables
   </xsl:template>
   <!-- <w>, word, avec possible définition -->
   <xsl:template match="tei:w">
+    <xsl:param name="from"/>
     <xsl:variable name="def" select="key('id', substring(@lemmaRef, 2))"/>
     <xsl:variable name="lastW" select="preceding-sibling::tei:w[1]"/>
     <xsl:variable name="lastChar" select="substring($lastW, string-length($lastW))"/>
@@ -1543,7 +1696,9 @@ Tables
               </xsl:choose>
             </xsl:for-each>
           </xsl:attribute>
-          <xsl:apply-templates/>
+          <xsl:apply-templates>
+            <xsl:with-param name="from" select="$from"/>
+          </xsl:apply-templates>
         </a>
       </xsl:when>
       <!-- french PUNCT ? -->
@@ -1564,14 +1719,13 @@ Tables
         <xsl:if test="$pos!=1 and $lastChar!='’' and $lastChar!=$apos">
           <xsl:text> </xsl:text>
         </xsl:if>
-        <xsl:apply-templates/>
+        <xsl:apply-templates>
+          <xsl:with-param name="from" select="$from"/>
+        </xsl:apply-templates>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-  <!-- Do something on punctuation ? -->
-  <xsl:template match="tei:pc | tei:g">
-    <xsl:apply-templates/>
-  </xsl:template>
+
   <!-- behaviors on text nodes between words  -->
   <!--
   <xsl:template match="text()">
@@ -1592,19 +1746,23 @@ Tables
   </xsl:template>
   <!-- Cross without a trace? -->
   <xsl:template match="tei:corr">
+    <xsl:param name="from"/>
     <xsl:choose>
       <xsl:when test="not(../tei:w)"/>
       <xsl:when test="preceding-sibling::*[1][self::tei:w]">
         <xsl:text> </xsl:text>
       </xsl:when>
     </xsl:choose>
-    <xsl:apply-templates/>
+    <xsl:apply-templates>
+      <xsl:with-param name="from" select="$from"/>
+    </xsl:apply-templates>
   </xsl:template>
   <!--
 <h3>Bibliographie</h3>
 
   -->
   <xsl:template match="tei:biblFull | tei:biblStruct | tei:msDesc | tei:msPart | tei:witness">
+    <xsl:param name="from"/>
     <xsl:variable name="el">
       <xsl:choose>
         <!-- Référence bibliographique affichée comme bloc -->
@@ -1630,7 +1788,9 @@ Tables
       <xsl:choose>
         <xsl:when test="self::tei:biblStruct">
           <xsl:for-each select="*">
-            <xsl:apply-templates select="."/>
+            <xsl:apply-templates select=".">
+              <xsl:with-param name="from" select="$from"/>
+            </xsl:apply-templates>
             <xsl:choose>
               <xsl:when test="position()=last()">.</xsl:when>
               <xsl:otherwise>. </xsl:otherwise>
@@ -1638,15 +1798,14 @@ Tables
           </xsl:for-each>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:apply-templates/>
+          <xsl:apply-templates>
+            <xsl:with-param name="from" select="$from"/>
+          </xsl:apply-templates>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:element>
   </xsl:template>
-  <!-- Traverser sans trace -->
-  <xsl:template match="tei:monogr | tei:analytic">
-    <xsl:apply-templates/>
-  </xsl:template>
+
   <!-- Manuscript ou imprimé, notamment appelé comme témoin -->
   <xsl:template match="tei:msDesc | tei:bibl" mode="a">
     <a class="{local-name()}">
@@ -1696,33 +1855,42 @@ Tables
     </xsl:choose>
   </xsl:template>
   <xsl:template match="tei:title">
+    <xsl:param name="from"/>
     <xsl:choose>
       <xsl:when test="@ref">
         <!-- ?? resolve links ? -->
         <a href="{@ref}">
           <xsl:call-template name="atts"/>
-          <xsl:apply-templates/>
+          <xsl:apply-templates>
+            <xsl:with-param name="from" select="$from"/>
+          </xsl:apply-templates>
         </a>
       </xsl:when>
       <xsl:otherwise>
         <cite>
           <xsl:call-template name="atts"/>
-          <xsl:apply-templates/>
+          <xsl:apply-templates>
+            <xsl:with-param name="from" select="$from"/>
+          </xsl:apply-templates>
         </cite>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
   <!-- titre avec une URI pas loin -->
   <xsl:template match="tei:title[../tei:idno[@type='URI']]">
+    <xsl:param name="from"/>
     <a href="{../tei:idno[@type='URI']}">
       <xsl:call-template name="atts"/>
-      <xsl:apply-templates/>
+      <xsl:apply-templates>
+        <xsl:with-param name="from" select="$from"/>
+      </xsl:apply-templates>
     </a>
   </xsl:template>
   <!-- na pas sortir l'URI -->
   <xsl:template match="tei:idno[@type='URI'][../tei:title]" priority="5"/>
   <!-- identifiant bibliographique -->
   <xsl:template match="tei:idno | tei:altIdentifier">
+    <xsl:param name="from"/>
     <xsl:choose>
       <xsl:when test="starts-with(normalize-space(.), 'http')">
         <a>
@@ -1735,7 +1903,9 @@ Tables
               <xsl:value-of select="@type"/>
             </xsl:when>
             <xsl:otherwise>
-              <xsl:apply-templates/>
+              <xsl:apply-templates>
+                <xsl:with-param name="from" select="$from"/>
+              </xsl:apply-templates>
             </xsl:otherwise>
           </xsl:choose>
         </a>
@@ -1743,12 +1913,15 @@ Tables
       <xsl:otherwise>
         <span>
           <xsl:call-template name="atts"/>
-          <xsl:apply-templates/>
+          <xsl:apply-templates>
+            <xsl:with-param name="from" select="$from"/>
+          </xsl:apply-templates>
         </span>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
   <xsl:template match="tei:biblScope | tei:collation | tei:collection | tei:dim | tei:docAuthor | tei:editor | tei:edition | tei:extent | tei:funder | tei:publisher | tei:stamp | tei:biblFull/tei:titleStmt/tei:title">
+    <xsl:param name="from"/>
     <xsl:variable name="element">
       <xsl:choose>
         <xsl:when test="parent::tei:titlePage">p</xsl:when>
@@ -1759,11 +1932,14 @@ Tables
     </xsl:variable>
     <xsl:element name="{$element}">
       <xsl:call-template name="atts"/>
-      <xsl:apply-templates/>
+      <xsl:apply-templates>
+        <xsl:with-param name="from" select="$from"/>
+      </xsl:apply-templates>
     </xsl:element>
   </xsl:template>
   <!-- generic div -->
   <xsl:template match="tei:accMat | tei:additional | tei:additions | tei:addrLine | tei:adminInfo | tei:binding | tei:bindingDesc | tei:closer | tei:condition | tei:equiv | tei:history | tei:licence | tei:listRef | tei:objectDesc | tei:origin | tei:provenance | tei:physDesc | tei:biblFull/tei:publicationStmt | tei:source | tei:speaker | tei:support | tei:supportDesc | tei:surrogates | tei:biblFull/tei:titleStmt" name="div">
+    <xsl:param name="from"/>
     <xsl:param name="el">
       <xsl:choose>
         <xsl:when test="self::tei:speaker">p</xsl:when>
@@ -1773,11 +1949,14 @@ Tables
     <xsl:if test="normalize-space(.) != ''">
       <xsl:element name="{$el}" namespace="http://www.w3.org/1999/xhtml">
         <xsl:call-template name="atts"/>
-        <xsl:apply-templates/>
+        <xsl:apply-templates>
+          <xsl:with-param name="from" select="$from"/>
+        </xsl:apply-templates>
       </xsl:element>
     </xsl:if>
   </xsl:template>
   <xsl:template match="tei:handDesc">
+    <xsl:param name="from"/>
     <ul>
       <xsl:for-each select="*">
         <li>
@@ -1786,12 +1965,15 @@ Tables
             <small class="id">[<xsl:value-of select="@xml:id"/>]</small>
             <xsl:text> </xsl:text>
           </xsl:if>
-          <xsl:apply-templates/>
+          <xsl:apply-templates>
+            <xsl:with-param name="from" select="$from"/>
+          </xsl:apply-templates>
         </li>
       </xsl:for-each>
     </ul>
   </xsl:template>
   <xsl:template match="tei:dimensions">
+    <xsl:param name="from"/>
     <span>
       <xsl:call-template name="atts"/>
       <xsl:variable name="message">
@@ -1807,7 +1989,9 @@ Tables
         <xsl:text> : </xsl:text>
       </xsl:if>
       <xsl:for-each select="*">
-        <xsl:apply-templates select="."/>
+        <xsl:apply-templates select=".">
+          <xsl:with-param name="from" select="$from"/>
+        </xsl:apply-templates>
         <xsl:choose>
           <xsl:when test="position() =last()"/>
           <xsl:otherwise> x </xsl:otherwise>
@@ -1821,6 +2005,7 @@ Tables
     </span>
   </xsl:template>
   <xsl:template match="tei:layout">
+    <xsl:param name="from"/>
     <div>
       <xsl:call-template name="atts"/>
       <xsl:choose>
@@ -1848,21 +2033,29 @@ Tables
         </xsl:when>
       </xsl:choose>
       <xsl:variable name="text">
-        <xsl:apply-templates/>
+        <xsl:apply-templates>
+          <xsl:with-param name="from" select="$from"/>
+        </xsl:apply-templates>
       </xsl:variable>
       <xsl:copy-of select="$text"/>
       <xsl:if test="translate(substring(normalize-space($text), string-length(normalize-space($text))), '.?!', '') != ''">.</xsl:if>
     </div>
   </xsl:template>
-  <!-- Go throw -->
-  <xsl:template match="tei:height | tei:width | tei:layoutDesc ">
-    <xsl:apply-templates/>
+  <!-- Go through -->
+  <xsl:template match="tei:analytic | tei:g| tei:height | tei:layoutDesc | tei:monogr | tei:pc | tei:width">
+    <xsl:param name="from"/>
+    <xsl:apply-templates>
+      <xsl:with-param name="from" select="$from"/>
+    </xsl:apply-templates>
   </xsl:template>
   <xsl:template match="tei:msIdentifier">
+    <xsl:param name="from"/>
     <span>
       <xsl:call-template name="atts"/>
       <xsl:for-each select="*">
-        <xsl:apply-templates select="."/>
+        <xsl:apply-templates select=".">
+          <xsl:with-param name="from" select="$from"/>
+        </xsl:apply-templates>
         <xsl:choose>
           <xsl:when test="position() = last()">. </xsl:when>
           <xsl:otherwise>
@@ -1924,14 +2117,18 @@ Tables
 Elements block or inline level
    -->
   <xsl:template match="tei:bibl | tei:gloss | tei:label | tei:q | tei:quote | tei:said | tei:stage">
+    <xsl:param name="from"/>
     <xsl:variable name="mixed" select="../text()[normalize-space(.) != '']"/>
     <xsl:choose>
       <xsl:when test="normalize-space(.) = ''">
-        <xsl:apply-templates/>
+        <xsl:apply-templates>
+          <xsl:with-param name="from" select="$from"/>
+        </xsl:apply-templates>
       </xsl:when>
       <!-- inside mixed content, or line formatted text (? or tei:lb or ../tei:lb), should be inline -->
       <xsl:when test="$mixed  or parent::tei:note or parent::tei:p or parent::tei:s  or parent::tei:label">
         <xsl:call-template name="span">
+          <xsl:with-param name="from" select="$from"/>
           <xsl:with-param name="el">
             <xsl:choose>
               <xsl:when test="self::tei:gloss">dfn</xsl:when>
@@ -1955,7 +2152,9 @@ Elements block or inline level
             <xsl:attribute name="xml:base">
               <xsl:value-of select="@corresp"/>
             </xsl:attribute>
-            <xsl:apply-templates/>
+            <xsl:apply-templates>
+              <xsl:with-param name="from" select="$from"/>
+            </xsl:apply-templates>
           </figcaption>
         </figure>
       </xsl:when>
@@ -1974,12 +2173,15 @@ Elements block or inline level
               <xsl:if test="@corresp"> corresp</xsl:if>
             </xsl:with-param>
           </xsl:call-template>
-          <xsl:apply-templates/>
+          <xsl:apply-templates>
+            <xsl:with-param name="from" select="$from"/>
+          </xsl:apply-templates>
         </xsl:element>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
   <xsl:template match="tei:cit">
+    <xsl:param name="from"/>
     <xsl:variable name="mixed" select="../text()[normalize-space(.) != '']"/>
     <xsl:choose>
       <xsl:when test="$mixed">
@@ -1989,38 +2191,33 @@ Elements block or inline level
             <xsl:if test="position() != 1">
               <xsl:text> </xsl:text>
             </xsl:if>
-            <xsl:apply-templates select="."/>
+            <xsl:apply-templates select=".">
+              <xsl:with-param name="from" select="$from"/>
+            </xsl:apply-templates>
           </xsl:for-each>
         </span>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:call-template name="div"/>
+        <xsl:call-template name="div">
+          <xsl:with-param name="from" select="$from"/>
+        </xsl:call-template>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
   <!--
 <h3>Indexables</h3>
   -->
-  <!-- kindle support @id & @title only on <em> (but no class !!)  -->
-  <xsl:template match="tei:term">
-    <xsl:choose>
-      <xsl:when test=". = ''"/>
-      <xsl:otherwise>
-        <dfn>
-          <xsl:call-template name="atts"/>
-          <xsl:apply-templates/>
-        </dfn>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
   <!-- Default, content from <index> is supposed to not be displayed -->
   <xsl:template match="tei:index"/>
   <!-- Termes with possible normal form -->
-  <xsl:template match="tei:addName | tei:affiliation | tei:author | tei:authority | tei:country | tei:foreign | tei:forename | tei:genName | tei:geogFeat | tei:geogName | tei:name | tei:origPlace | tei:orgName | tei:persName | tei:placeName | tei:repository | tei:roleName | tei:rs | tei:settlement | tei:surname">
+  <xsl:template match="tei:addName | tei:affiliation | tei:author | tei:authority | tei:country | tei:foreign | tei:forename | tei:genName | tei:geogFeat | tei:geogName | tei:name | tei:origPlace | tei:orgName | tei:persName | tei:placeName | tei:repository | tei:roleName | tei:rs | tei:settlement | tei:surname | tei:term | tei:tech">
+    <xsl:param name="from"/>
     <xsl:choose>
       <!-- empty -->
       <xsl:when test="normalize-space(.) = ''">
-        <xsl:apply-templates/>
+        <xsl:apply-templates>
+          <xsl:with-param name="from" select="$from"/>
+        </xsl:apply-templates>
       </xsl:when>
       <!-- ?? name as a margin note ? But what is in flow ? -->
       <!--
@@ -2039,6 +2236,7 @@ Elements block or inline level
         </div>
       </xsl:when>
       -->
+      
       <xsl:when test="@ref or @xml:base">
         <a>
           <!-- linking policy will be resolved from the "linking" template, matched by @ref attribute -->
@@ -2052,13 +2250,36 @@ Elements block or inline level
               <xsl:attribute name="property">dbo:place</xsl:attribute>
             </xsl:when>
           </xsl:choose>
-          <xsl:apply-templates/>
+          <xsl:attribute name="id">
+            <xsl:call-template name="id"/>
+          </xsl:attribute>
+          <xsl:apply-templates>
+            <xsl:with-param name="from" select="$from"/>
+          </xsl:apply-templates>
         </a>
+      </xsl:when>
+      <xsl:when test="@key">
+        <span>
+          <xsl:call-template name="atts">
+            <xsl:with-param name="class">
+              <xsl:value-of select="translate(@key, $idfrom, $idto)"/>
+            </xsl:with-param>
+          </xsl:call-template>
+          <xsl:attribute name="data-key">
+            <xsl:value-of select="translate(@key, $idfrom, $idto)"/>
+          </xsl:attribute>
+          <xsl:attribute name="id">
+            <xsl:call-template name="id"/>
+          </xsl:attribute>
+          <xsl:apply-templates/>
+        </span>
       </xsl:when>
       <xsl:otherwise>
         <span>
           <xsl:call-template name="atts"/>
-          <xsl:apply-templates/>
+          <xsl:apply-templates>
+            <xsl:with-param name="from" select="$from"/>
+          </xsl:apply-templates>
         </span>
       </xsl:otherwise>
     </xsl:choose>
