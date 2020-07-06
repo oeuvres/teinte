@@ -882,6 +882,7 @@
             </element>
             <ref name="date"/>
             <ref name="emph"/>
+            <ref name="foreign"/>
             <ref name="hi"/>
             <ref name="num"/>
             <!-- publisher avec les entités nommées ? pas nécessaire, dans la mesure où on ne souhaite pas les indexer pour l’instant -->
@@ -1209,6 +1210,8 @@
                 <choice>
                   <value>border</value>
                   <a:documentation>Pour encadrés hors flux</a:documentation>
+                  <value>sc</value>
+                  <a:documentation>Petites capitales (small caps)</a:documentation>
                 </choice>
               </oneOrMore>
             </list>
@@ -2583,8 +2586,8 @@
             <ref name="point"/>
             <ref name="hi"/>
             <ref name="num"/>
-            <!-- 
             <ref name="title"/>
+            <!-- 
             <ref name="persName"/>
             <ref name="placeName"/>
             -->
