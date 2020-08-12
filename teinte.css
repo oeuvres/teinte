@@ -983,6 +983,25 @@ aside .docDate {
 
 .editionStmt {}
 
+.epigraph {
+  margin: 2rem 0 5rem 2rem;
+  font-size: 87%;
+}
+
+.epigraph p.p,
+.epigraph .l {
+  font-style: italic;
+  text-align: right;
+}
+
+.epigraph .bibl {
+}
+
+.epigraph .p i,
+.epigraph .p em {
+  font-style: normal;
+}
+
 .entry>* {
   margin-left: 2em;
 }
@@ -1097,6 +1116,12 @@ p dfn.gloss, div.gloss {
   font-size: small;
   background-color: #F3F3F3;
   text-indent: 0;
+}
+
+li.item {
+  line-height: 120%;
+  margin-top: 0.5ex;
+  margin-bottom: 0.5ex;
 }
 
 div.l {
@@ -1663,6 +1688,33 @@ i .title, .i .title {
 .titlePage p {
   margin-top: 1em;
   margin-top: 1em;
+}
+
+.titlePart {
+  font-size: 200%;
+  margin-top: 1em;
+}
+
+.titlePart.sub {
+  font-style: italic;
+  margin-top: 0em;
+}
+
+.titleStmt>p {
+  text-align: center;
+  text-indent: 0;
+}
+
+.titleStmt h1 {
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+.titleStmt div {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
 }
 
 .trailer {
