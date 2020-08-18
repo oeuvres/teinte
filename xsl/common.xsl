@@ -317,6 +317,9 @@ Gobal TEI parameters and variables are divided in different categories
   <xsl:variable name="els-unique"> editorialDecl licence projectDesc revisionDesc samplingDecl sourceDesc TEI teiHeader </xsl:variable>
   <!-- A bar of non breaking spaces, used for indentation -->
   <xsl:variable name="nbsp">                                                                                         </xsl:variable>
+  <xsl:variable name="cr">
+    <xsl:text>&#13;</xsl:text>
+  </xsl:variable>
   <xsl:variable name="lf">
     <xsl:text>&#10;</xsl:text>
   </xsl:variable>
@@ -1027,6 +1030,17 @@ résoudre les césures, ou les alternatives éditoriales.
   <xsl:template match="*" mode="title" priority="-2">
     <xsl:apply-templates mode="title"/>
   </xsl:template>
+  <xsl:template match="text()" mode="title">
+    <xsl:variable name="text" select="translate(., ' ', '')"/>
+    <xsl:if test="translate(substring($text, 1,1), concat(' ', $lf, $cr, $tab), '') = ''">
+      <xsl:text> </xsl:text>
+    </xsl:if>
+    <xsl:value-of select="normalize-space($text)"/>
+    <xsl:if test="translate(substring($text, string-length($text)), concat(' ', $lf, $cr, $tab), '') = ''">
+      <xsl:text> </xsl:text>
+    </xsl:if>
+  </xsl:template>
+
   <!-- Keep text from some element with possible values in attributes -->
   <xsl:template match="tei:date | tei:docDate | tei:origDate" mode="title">
     <xsl:variable name="text">
