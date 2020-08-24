@@ -115,20 +115,20 @@ section:target {
 
 a:target {}
 
-a {
+article a {
   background-color: transparent;
   text-decoration: none;
   color: #339;
 }
 
-a:hover {
+article a:hover {
   background-color: rgba(255, 255, 255, 0.3);
   color: #000;
   border-bottom-color: inherit;
   text-decoration: none;
 }
 
-a:active, a:hover {
+article a:active, article a:hover {
   outline: 0;
 }
 
@@ -184,7 +184,7 @@ blockquote.quote {
 }
 
 blockquote.quote .p {
-  text-indent: 2em;
+  
 }
 
 cite {
@@ -658,7 +658,7 @@ button, select {
   text-transform: none;
 }
 
-button, html input[type="button"], input[type="reset"], input[type="submit"], .button {
+button.but, html input[type="button"].but, input[type="reset"].but, input[type="submit"].but, .button {
   -webkit-appearance: button;
   cursor: pointer;
   display: inline;
@@ -927,7 +927,7 @@ a.ed, a.pb {}
 
 a.facs {
   margin-right: 0;
-  margin-left: -1em;
+  margin-left: -1rem;
   z-index: 2;
 }
 
@@ -952,7 +952,8 @@ h1.collection {
 
 .dateline {
   margin: 2em 0;
-  text-indent: 4em;
+  text-align: right;
+  text-indent: 0;
 }
 
 section {
@@ -1483,10 +1484,9 @@ div.part-Y {text-indent: 3em;}
 .l.part-F {margin-left: 6em; text-indent: 0; padding-left: 0;}
 */
 div.salute, p.salute {
-  margin: 1em 0 1em 4em;
-  text-indent: 0em;
-  font-style: italic;
-  text-align: right;
+  margin: 1rem 0 1rem 0;
+  text-align: left;
+  text-indent: 1.5rem;
 }
 
 .letter .salute {
@@ -1771,7 +1771,7 @@ section.article h2 {
 
 .border {
   border: 1px solid #808080;
-  padding: 1ex;
+  padding: 0.2rem 0.5rem;
 }
 
 blockquote.border {
@@ -1796,6 +1796,11 @@ h1:hover a.bookmark, h2:hover a.bookmark, h3:hover a.bookmark, h4:hover a.bookma
   margin-left: auto;
   margin-right: auto;
   padding-left: 0;
+}
+
+.center.border {
+  padding: 0.2rem 0.5rem;
+  display:table;
 }
 
 .center p {

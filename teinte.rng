@@ -1594,10 +1594,12 @@
     <define name="hi.rend">
       <optional>
         <attribute name="rend">
-          <choice>
-            <ref name="rend.font"/>
-            <ref name="hi.rend.more"/>
-          </choice>
+          <list>
+            <choice>
+              <ref name="rend.font"/>
+              <ref name="hi.rend.more"/>
+            </choice>
+          </list>
         </attribute>
       </optional>
     </define>
