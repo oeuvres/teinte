@@ -1569,21 +1569,7 @@
             <q>J'appelle <term rend="i">typographie</term> la mise à plat d’une pensée</q>
           </a:example>
         </div>
-        <optional>
-          <attribute name="rend">
-            <choice>
-              <ref name="rend.font"/>
-              <value>strong</value>
-              <a:documentation>Renforcé (souvent en gras) &lt;html5:strong></a:documentation>
-              <value>mark</value>
-              <a:documentation>Surligné &lt;html5:mark></a:documentation>
-              <!-- généré par odt_tei
-              <value>color</value>
-              <a:documentation>En couleur, css{color:@n}</a:documentation>
-              -->
-            </choice>
-          </attribute>
-        </optional>
+        <ref name="hi.rend"/>
         <!--
         <optional>
           <attribute name="n"/>
@@ -1604,6 +1590,24 @@
           </choice>
         </zeroOrMore>
       </element>
+    </define>
+    <define name="hi.rend">
+      <optional>
+        <attribute name="rend">
+          <choice>
+            <ref name="rend.font"/>
+            <ref name="hi.rend.more"/>
+          </choice>
+        </attribute>
+      </optional>
+    </define>
+    <define name="hi.rend.more">
+      <choice>
+        <value>strong</value>
+        <a:documentation>Renforcé (souvent en gras) &lt;html5:strong></a:documentation>
+        <value>mark</value>
+        <a:documentation>Surligné &lt;html5:mark></a:documentation>
+      </choice>
     </define>
     <define name="g">
       <element name="g">
