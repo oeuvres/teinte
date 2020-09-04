@@ -474,7 +474,10 @@ Sections
     <xsl:param name="from"/>
     <xsl:choose>
       <xsl:when test="@type='hr'">
-        <hr align="center" width="30%"/>
+        <hr class="hr" align="center" width="30%"/>
+      </xsl:when>
+      <xsl:when test="@type='dots'">
+        <hr class="dots"/>
       </xsl:when>
       <xsl:when test="normalize-space(.) = ''">
         <div>

@@ -820,6 +820,8 @@
         <a:example href="teibook.xml#ab"/>
         <attribute name="type">
           <choice>
+            <value>dots</value>
+            <a:documentation>Ligne de points</a:documentation>
             <value>hr</value>
             <a:documentation>Filet (horizontal rule)</a:documentation>
             <value>line</value>
