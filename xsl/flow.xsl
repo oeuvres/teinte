@@ -37,7 +37,7 @@ Sections
   -->
   <xsl:template match="tei:elementSpec">
     <xsl:param name="from"/>
-    <article>
+    <article role="article">
       <xsl:attribute name="id">
         <xsl:call-template name="id"/>
       </xsl:attribute>

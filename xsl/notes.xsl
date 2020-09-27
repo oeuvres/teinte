@@ -396,6 +396,9 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
       <xsl:attribute name="id">
         <xsl:value-of select="$id"/>
       </xsl:attribute>
+      <xsl:attribute name="role">
+        <xsl:text>note</xsl:text>
+      </xsl:attribute>
       <xsl:if test="$format = $epub3">
         <xsl:attribute name="epub:type">note</xsl:attribute>
       </xsl:if>

@@ -83,9 +83,14 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
     <xsl:param name="localid"/>
     <xsl:variable name="children" select="tei:castList | tei:div | tei:titlePage"/>
     <li>
-      <xsl:if test="generate-id() = $localid">
-        <xsl:attribute name="class">here</xsl:attribute>
-      </xsl:if>
+      <xsl:attribute name="class">
+        <xsl:choose>
+          <xsl:when test="generate-id() = $localid">here</xsl:when>
+          <xsl:when test="ancestor::*[generate-id() = $localid]">descendant</xsl:when>
+          <xsl:when test="descendant::*[generate-id() = $localid]">ancestor</xsl:when>
+          <xsl:otherwise>collateral</xsl:otherwise>
+        </xsl:choose>
+      </xsl:attribute>
       <!-- link only on last split child -->
       <xsl:choose>
         <!-- no link when no split -->

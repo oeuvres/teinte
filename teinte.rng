@@ -681,11 +681,13 @@
               <a:documentation>Titre alternatif</a:documentation>
               <value>desc</value>
               <a:documentation>Description fonctionnant comme un titre</a:documentation>
+              <value>kicker</value>
+              <a:documentation>Surtitre</a:documentation>
               <value>main</value>
               <a:documentation>Titre principal</a:documentation>
               <value>short</value>
               <a:documentation>Titre abrégé</a:documentation>
-              <value>sub</value>
+              <value>subtitle</value>
               <a:documentation>Sous-titre</a:documentation>
               <data type="token"/>
             </choice>

@@ -990,6 +990,23 @@ résoudre les césures, ou les alternatives éditoriales.
   <xsl:template match="tei:pb" mode="title">
     <xsl:text> </xsl:text>
   </xsl:template>
+  <xsl:template match="text()" mode="title">
+    <xsl:variable name="text" select="translate(., ' ', '')"/>
+    <xsl:if test="translate(substring($text, 1,1), concat(' ', $lf, $cr, $tab), '') = ''">
+      <xsl:text> </xsl:text>
+    </xsl:if>
+    <xsl:value-of select="normalize-space($text)"/>
+    <xsl:choose>
+      <!-- do not append space before line break -->
+      <xsl:when test="following-sibling::node()[1][self::tei:lb]"/>
+      <!-- si text node last ? be careful on that <head>This <title>title </title>is badly tagged</head> -->
+      <xsl:when test="ancestor::tei:head and count(.|ancestor::tei:head/node()[position() = last()])"/>
+      <xsl:when test="translate(substring($text, string-length($text)), concat(' ', $lf, $cr, $tab), '') = ''">
+        <xsl:text> </xsl:text>
+      </xsl:when>
+    </xsl:choose>
+  </xsl:template>
+  
   <xsl:template match="tei:lb" mode="title">
     <xsl:variable name="prev" select="preceding-sibling::node()[1]"/>
     <xsl:variable name="norm" select="normalize-space( $prev )"/>
@@ -998,11 +1015,15 @@ résoudre les césures, ou les alternatives éditoriales.
       <xsl:when test="contains(',.;:—–-', $lastchar)">
         <xsl:text> </xsl:text>
       </xsl:when>
+      <!-- last char choud be a letter and not a space if we append a dot -->
       <xsl:when test="string-length($prev) = string-length($norm)">
         <xsl:text>. </xsl:text>
       </xsl:when>
       <xsl:otherwise>
+        <xsl:text>. </xsl:text>
+        <!--
         <xsl:text> – </xsl:text>
+        -->
       </xsl:otherwise>
     </xsl:choose>
     <xsl:text> </xsl:text>
@@ -1029,16 +1050,6 @@ résoudre les césures, ou les alternatives éditoriales.
   <!-- default, cross all, keep only text -->
   <xsl:template match="*" mode="title" priority="-2">
     <xsl:apply-templates mode="title"/>
-  </xsl:template>
-  <xsl:template match="text()" mode="title">
-    <xsl:variable name="text" select="translate(., ' ', '')"/>
-    <xsl:if test="translate(substring($text, 1,1), concat(' ', $lf, $cr, $tab), '') = ''">
-      <xsl:text> </xsl:text>
-    </xsl:if>
-    <xsl:value-of select="normalize-space($text)"/>
-    <xsl:if test="translate(substring($text, string-length($text)), concat(' ', $lf, $cr, $tab), '') = ''">
-      <xsl:text> </xsl:text>
-    </xsl:if>
   </xsl:template>
 
   <!-- Keep text from some element with possible values in attributes -->
