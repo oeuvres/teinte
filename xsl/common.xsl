@@ -778,7 +778,7 @@ résoudre les césures, ou les alternatives éditoriales.
       <xsl:when test="self::tei:titlePage">
         <xsl:call-template name="message"/>
       </xsl:when>
-      <xsl:when test="tei:head[not(@type='sub')]">
+      <xsl:when test="tei:head[not(@type='sub')][not(@type='subtitle')][not(@type='kicker')]">
         <xsl:variable name="byline">
           <xsl:choose>
             <xsl:when test="tei:byline">
@@ -815,7 +815,7 @@ résoudre les césures, ou les alternatives éditoriales.
           </xsl:choose>
         </xsl:variable>
         <xsl:variable name="title">
-          <xsl:for-each select="tei:head[not(@type='sub')]">
+          <xsl:for-each select="tei:head[not(@type='sub')][not(@type='subtitle')][not(@type='kicker')]">
             <xsl:apply-templates mode="title" select="."/>
             <xsl:if test="position() != last()">
               <!-- test if title end by ponctuation -->
@@ -1009,13 +1009,21 @@ résoudre les césures, ou les alternatives éditoriales.
   
   <xsl:template match="tei:lb" mode="title">
     <xsl:variable name="prev" select="preceding-sibling::node()[1]"/>
+    <xsl:variable name="next" select="following-sibling::node()[1]"/>
     <xsl:variable name="norm" select="normalize-space( $prev )"/>
     <xsl:variable name="lastchar" select="substring($norm, string-length($norm))"/>
+    <xsl:variable name="nextchar" select="substring(normalize-space($next), 1, 1)"/>
     <xsl:choose>
       <xsl:when test="contains(',.;:—–-', $lastchar)">
         <xsl:text> </xsl:text>
       </xsl:when>
-      <!-- last char choud be a letter and not a space if we append a dot -->
+      <xsl:when test="contains($uc, $nextchar)">
+        <xsl:text>. </xsl:text>
+      </xsl:when>
+      <xsl:when test="not(contains(concat($prev, $next), ','))">
+        <xsl:text>, </xsl:text>
+      </xsl:when>
+      <!-- last char should be a letter and not a space if we append a dot -->
       <xsl:when test="string-length($prev) = string-length($norm)">
         <xsl:text>. </xsl:text>
       </xsl:when>
