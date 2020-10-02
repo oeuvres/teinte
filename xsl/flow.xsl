@@ -2280,6 +2280,9 @@ Elements block or inline level
       <xsl:otherwise>
         <span>
           <xsl:call-template name="atts"/>
+          <xsl:attribute name="id">
+            <xsl:call-template name="id"/>
+          </xsl:attribute>
           <xsl:apply-templates>
             <xsl:with-param name="from" select="$from"/>
           </xsl:apply-templates>

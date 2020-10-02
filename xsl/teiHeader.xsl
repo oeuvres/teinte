@@ -27,10 +27,10 @@ Interpret TEI header as html.
     <xsl:apply-templates select="tei:fileDesc"/>
   </xsl:template>
   <xsl:template match="tei:teiHeader//tei:title" priority="-1">
-    <i>
+    <cite>
       <xsl:call-template name="headatts"/>
       <xsl:apply-templates/>
-    </i>
+    </cite>
   </xsl:template>
   <xsl:template match="tei:teiHeader//tei:bibl/tei:* | tei:publisher" priority="-1">
     <span>
@@ -56,16 +56,22 @@ Interpret TEI header as html.
           <xsl:apply-templates select="tei:titleStmt"/>
           <xsl:apply-templates select="tei:publicationStmt"/>
           <xsl:apply-templates select="tei:sourceDesc"/>
-          <xsl:apply-templates select="tei:editionStmt"/>
-          <!-- En faire quelque chose ?
           <xsl:apply-templates select="tei:notesStmt"/>
-          -->
-          
+          <xsl:apply-templates select="tei:editionStmt"/>
         </xsl:element>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-  <xsl:template match="tei:notesStmt"/>
+  <xsl:template match="tei:notesStmt">
+    <div class="headnotes">
+      <xsl:apply-templates/>
+    </div>
+  </xsl:template>
+  <xsl:template match="tei:notesStmt/tei:note">
+    <div class="note">
+      <xsl:apply-templates/>
+    </div>
+  </xsl:template>
   <xsl:template match="tei:teiHeader // tei:bibl // tei:note">
     <span>
       <xsl:call-template name="headatts"/>
@@ -159,7 +165,7 @@ Interpret TEI header as html.
         <xsl:apply-templates/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:element name="div" namespace="http://www.w3.org/1999/xhtml">
+        <p>
           <xsl:call-template name="headatts"/>
           <xsl:if test="tei:idno">
             <div class="idno">
@@ -190,7 +196,7 @@ Interpret TEI header as html.
           <xsl:apply-templates select="tei:address"/>
           <xsl:apply-templates select="tei:availability"/>
           -->
-        </xsl:element>
+        </p>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -226,7 +232,7 @@ Interpret TEI header as html.
       <xsl:when test="tei:permalien | tei:inspiration | tei:genre"/>
       <xsl:when test="normalize-space(.) = ''"/>
       <xsl:otherwise>
-        <div>
+        <p>
           <xsl:call-template name="headatts"/>
           <xsl:variable name="message">
             <xsl:call-template name="message"/>
@@ -253,7 +259,7 @@ Interpret TEI header as html.
               <xsl:apply-templates/>
             </xsl:otherwise>
           </xsl:choose>
-        </div>      
+        </p>      
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -460,7 +466,7 @@ Interpret TEI header as html.
     <xsl:choose>
       <xsl:when test="not(tei:respStmt/tei:name[normalize-space(.) != ''] | ../tei:titleStmt/tei:respStmt)"/>
       <xsl:otherwise>
-        <div>
+        <p>
           <xsl:call-template name="headatts"/>
           <xsl:call-template name="message"/>
           <xsl:for-each select="../tei:titleStmt/tei:respStmt | tei:respStmt">
@@ -479,7 +485,7 @@ Interpret TEI header as html.
               </span>
           </xsl:for-each>
           <xsl:text>.</xsl:text>
-        </div>
+        </p>
       </xsl:otherwise>
     </xsl:choose>
     <!-- special CESR -->
@@ -491,11 +497,17 @@ Interpret TEI header as html.
       </div>
     </xsl:if>
   </xsl:template>
-  <xsl:template match="tei:author | tei:biblFull | tei:biblScope | tei:collation | tei:collection | tei:country | tei:dim | tei:editor | tei:edition | tei:extent | tei:funder | tei:institution | tei:name | tei:persName | tei:biblFull/tei:publicationStmt | tei:publisher | tei:pubPlace | tei:repository | tei:settlement | tei:stamp  | tei:biblFull/tei:seriesStmt | tei:biblFull/tei:titleStmt | tei:biblFull/tei:titleStmt/tei:title">
-    <span>
+  <xsl:template match="tei:teiHeader//tei:author | tei:teiHeader//tei:biblFull | tei:teiHeader//tei:biblScope | tei:teiHeader//tei:collation | tei:teiHeader//tei:collection | tei:teiHeader//tei:country | tei:teiHeader//tei:dim | tei:teiHeader//tei:editor | tei:teiHeader//tei:edition | tei:teiHeader//tei:extent | tei:teiHeader//tei:funder | tei:teiHeader//tei:institution | tei:teiHeader//tei:name | tei:teiHeader//tei:persName | tei:teiHeader//tei:biblFull/tei:publicationStmt | tei:teiHeader//tei:publisher | tei:teiHeader//tei:pubPlace | tei:teiHeader//tei:repository | tei:teiHeader//tei:settlement | tei:teiHeader//tei:stamp  | tei:teiHeader//tei:biblFull/tei:seriesStmt | tei:teiHeader//tei:biblFull/tei:titleStmt | tei:teiHeader//tei:biblFull/tei:titleStmt/tei:title">
+    <xsl:variable name="element">
+      <xsl:choose>
+        <xsl:when test="self::title">cite</xsl:when>
+        <xsl:otherwise>span</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:element name="{$element}">
       <xsl:call-template name="headatts"/>
       <xsl:apply-templates/>
-    </span>
+    </xsl:element>
   </xsl:template>
   <xsl:template match="tei:msIdentifier">
     <xsl:text> </xsl:text>

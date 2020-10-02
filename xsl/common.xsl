@@ -815,6 +815,10 @@ résoudre les césures, ou les alternatives éditoriales.
           </xsl:choose>
         </xsl:variable>
         <xsl:variable name="title">
+          <xsl:if test="@n">
+            <xsl:value-of select="@n"/>
+            <xsl:text> </xsl:text>
+          </xsl:if>
           <xsl:for-each select="tei:head[not(@type='sub')][not(@type='subtitle')][not(@type='kicker')]">
             <xsl:apply-templates mode="title" select="."/>
             <xsl:if test="position() != last()">
@@ -1014,7 +1018,7 @@ résoudre les césures, ou les alternatives éditoriales.
     <xsl:variable name="lastchar" select="substring($norm, string-length($norm))"/>
     <xsl:variable name="nextchar" select="substring(normalize-space($next), 1, 1)"/>
     <xsl:choose>
-      <xsl:when test="contains(',.;:—–-', $lastchar)">
+      <xsl:when test="contains(',.;:—–-)?!»&quot;', $lastchar)">
         <xsl:text> </xsl:text>
       </xsl:when>
       <xsl:when test="contains($uc, $nextchar)">
