@@ -29,6 +29,8 @@ XSLT 1.0 is compatible browser, PHP, Python, Java…
   <xsl:key name="split" match="/" use="'root'"/>
   <!-- test if there are code examples to js prettyprint -->
   <xsl:key name="prettify" match="eg:egXML|tei:tag" use="1"/>
+  <!-- Constant used in class names for indexable terms with no keys -->
+  <xsl:variable name="nokey">nokey</xsl:variable>
   <!-- mainly in verse -->
   <xsl:variable name="verse" select="count(/*/tei:text/tei:body//tei:l) &gt; count(/*/tei:text/tei:body//tei:p)"/>
 
@@ -2261,31 +2263,34 @@ Elements block or inline level
           </xsl:apply-templates>
         </a>
       </xsl:when>
-      <xsl:when test="@key">
+      <xsl:otherwise>
+        <xsl:variable name="key">
+          <xsl:choose>
+            <xsl:when test="normalize-space(@key) != ''">
+              <xsl:value-of select="normalize-space(@key)"/>
+            </xsl:when>
+            <xsl:when test="normalize-space(@type) != ''">
+              <xsl:value-of select="normalize-space(@type)"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="local-name()"/>
+              <xsl:value-of select="$nokey"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:variable>
         <span>
           <xsl:call-template name="atts">
             <xsl:with-param name="class">
-              <xsl:value-of select="translate(@key, $idfrom, $idto)"/>
+              <xsl:value-of select="translate($key, $idfrom, $idto)"/>
             </xsl:with-param>
           </xsl:call-template>
           <xsl:attribute name="data-key">
-            <xsl:value-of select="translate(@key, $idfrom, $idto)"/>
+            <xsl:value-of select="translate($key, $idfrom, $idto)"/>
           </xsl:attribute>
           <xsl:attribute name="id">
             <xsl:call-template name="id"/>
           </xsl:attribute>
           <xsl:apply-templates/>
-        </span>
-      </xsl:when>
-      <xsl:otherwise>
-        <span>
-          <xsl:call-template name="atts"/>
-          <xsl:attribute name="id">
-            <xsl:call-template name="id"/>
-          </xsl:attribute>
-          <xsl:apply-templates>
-            <xsl:with-param name="from" select="$from"/>
-          </xsl:apply-templates>
         </span>
       </xsl:otherwise>
     </xsl:choose>
@@ -2322,6 +2327,11 @@ Centralize some html attribute policy, especially for id, and class
           <xsl:call-template name="id"/>
         </xsl:attribute>
       </xsl:when>
+      <xsl:when test="@ana">
+        <xsl:attribute name="id">
+          <xsl:call-template name="id"/>
+        </xsl:attribute>
+      </xsl:when>
     </xsl:choose>
     <!-- Process other know attributes -->
     <xsl:apply-templates select="@*"/>
@@ -2341,6 +2351,7 @@ Centralize some html attribute policy, especially for id, and class
       <xsl:value-of select="@subtype"/>
       <xsl:text> </xsl:text>
       <xsl:value-of select="@role"/>
+      <xsl:if test="@ana != ''"> ana</xsl:if>
       <xsl:text> </xsl:text>
       <xsl:value-of select="@ana"/>
       <xsl:text> </xsl:text>
@@ -2427,5 +2438,11 @@ Centralize some html attribute policy, especially for id, and class
   <!-- @xml:*, attributs à recopier à l'identique -->
   <xsl:template match="@xml:base">
     <xsl:copy-of select="."/>
+  </xsl:template>
+  <!-- @nana -->
+  <xsl:template match="@ana">
+    <xsl:attribute name="data-key">
+      <xsl:value-of select="."/>
+    </xsl:attribute>
   </xsl:template>
 </xsl:transform>
