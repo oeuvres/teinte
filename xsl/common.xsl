@@ -1001,10 +1001,10 @@ résoudre les césures, ou les alternatives éditoriales.
     </xsl:if>
     <xsl:value-of select="normalize-space($text)"/>
     <xsl:choose>
-      <!-- do not append space before line break -->
       <xsl:when test="following-sibling::node()[1][self::tei:lb]"/>
-      <!-- si text node last ? be careful on that <head>This <title>title </title>is badly tagged</head> -->
+      <!--
       <xsl:when test="ancestor::tei:head and count(.|ancestor::tei:head/node()[position() = last()])"/>
+      -->
       <xsl:when test="translate(substring($text, string-length($text)), concat(' ', $lf, $cr, $tab), '') = ''">
         <xsl:text> </xsl:text>
       </xsl:when>
