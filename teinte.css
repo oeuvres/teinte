@@ -796,7 +796,10 @@ p.argument {
 }
 
 /* .back p, .front p {text-indent: 0;} no indent in paratext */
-div.bibl {}
+div.bibl {
+  margin-left: 1.5rem;
+  text-indent: -1.5rem;
+}
 
 section>div.bibl,
 article>div.bibl,
@@ -1298,6 +1301,7 @@ figure .label {
 .listBibl h4 {
   font-weight: normal;
   font-style: italic;
+  font-size: 100%;
 }
 
 .listBibl li.desc,

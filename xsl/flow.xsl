@@ -554,66 +554,13 @@ Sections
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-  <!-- Specif case, a bibliographic reference, followed by a detailed list of copies, no need to include in a <ul> -->
-  <xsl:template match="tei:listBibl[count(*)=2][name(*[1])='bibl'][name(*[2])='listBibl']">
-    <xsl:param name="from"/>
-    <xsl:apply-templates>
-      <xsl:with-param name="from" select="$from"/>
-    </xsl:apply-templates>
-  </xsl:template>
   
-  <xsl:template match="tei:listBibl">
+  <xsl:template match="tei:listBibl | tei:listPerson">
     <xsl:param name="from"/>
-    <xsl:choose>
-      <xsl:when test="tei:head">
-        <div class="{local-name()}">
-          <xsl:apply-templates select="tei:head">
-            <xsl:with-param name="from" select="$from"/>
-          </xsl:apply-templates>
-          <ul>
-            <xsl:call-template name="atts"/>
-            <xsl:for-each select="*">
-              <xsl:choose>
-                <xsl:when test="self::tei:head"/>
-                <xsl:when test="self::tei:pb">
-                  <xsl:apply-templates select=".">
-                    <xsl:with-param name="from" select="$from"/>
-                  </xsl:apply-templates>
-                </xsl:when>
-                <xsl:otherwise>
-                  <li>
-                    <xsl:apply-templates select=".">
-                      <xsl:with-param name="from" select="$from"/>
-                    </xsl:apply-templates>
-                  </li>
-                </xsl:otherwise>
-              </xsl:choose>
-            </xsl:for-each>
-          </ul>
-        </div>
-      </xsl:when>
-      <xsl:otherwise>
-        <ul>
-          <xsl:call-template name="atts"/>
-          <xsl:for-each select="*">
-            <li>
-              <xsl:call-template name="atts"/>
-              <xsl:apply-templates select=".">
-                <xsl:with-param name="from" select="$from"/>
-              </xsl:apply-templates>
-            </li>
-          </xsl:for-each>
-        </ul>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
-  <!-- Pour l’instant ne pas afficher les configurations -->
-  <xsl:template match="tei:listPerson">
-    <span>
-      <xsl:attribute name="id">
-        <xsl:call-template name="id"/>
-      </xsl:attribute>
-    </span>
+    <div>
+      <xsl:call-template name="atts"/>
+      <xsl:apply-templates/>
+    </div>
   </xsl:template>
   <!-- Pseudo-listes  -->
   <xsl:template match="tei:respStmt">
