@@ -33,7 +33,8 @@ table,
 td,
 code,
 dd {
-  font-size: 100%;
+  font-size: inherit;
+  font-family: inherit;
 }
 
 *,
@@ -75,6 +76,8 @@ div.note,
 aside.note,
 div.stage {
   text-align: justify;
+  text-justify: inter-character;
+  hyphens: auto;
 }
 
 /* html5 default, in alphabetic order */
@@ -100,11 +103,6 @@ b.mark:target {
 .marginnote:target,
 .l:target {
   background-color: #FFFFEE;
-}
-
-section:target {
-  background: transparent !important;
-  border-left: none;
 }
 
 article a {
@@ -796,10 +794,7 @@ p.argument {
 }
 
 /* .back p, .front p {text-indent: 0;} no indent in paratext */
-div.bibl {
-  margin-left: 1.5rem;
-  text-indent: -1.5rem;
-}
+div.bibl {}
 
 section>div.bibl,
 article>div.bibl,
@@ -841,21 +836,20 @@ blockquote .bibl {
   margin-right: 15%;
 }
 
-div.byline {
+.byline {
   text-align: right;
-  margin-left: 45%;
+  margin-left: 2rem;
   margin-top: 2rem;
-  margin-bottom: 1rem;
   text-indent: 0;
 }
 
-aside div.byline {
+aside .byline {
   margin-top: 0;
   text-align: left;
   margin: 0 20% 0 0;
 }
 
-div.byline .docAuthor {
+.byline .docAuthor {
   font-variant: small-caps;
 }
 
@@ -1111,127 +1105,73 @@ li.item {
   margin-bottom: 0.25rem;
 }
 
-div.l {
+.l {
+/* negative indent for long verse ?
   text-indent: -1.5rem;
   padding-left: 1.5rem;
   line-height: 150%;
+  */
+}
+
+.lg > .lg > .l:first-of-type {
+  text-indent: 1.5rem;
+}
+
+
+.lg > .lg:first-of-type > .l:first-of-type {
+  text-indent: 0;
 }
 
 .l.indent {
   text-indent: -1rem;
 }
 
-.l1 {
-  padding-left: 13rem;
-}
-
 /* metric */
-.l2 {
-  padding-left: 12rem;
-}
-
-.l3 {
-  padding-left: 11rem;
-}
-
-.l4 {
-  padding-left: 10rem;
-}
-
-.l5 {
-  padding-left: 9rem;
-}
-
-.l6 {
-  padding-left: 8rem;
-}
-
-.l7 {
-  padding-left: 7rem;
-}
-
-.l8 {
-  padding-left: 6rem;
-}
-
-.l9 {
-  padding-left: 5rem;
-}
-
-.l10 {
-  padding-left: 4rem;
-}
-
-.l11 {
-  padding-left: 3rem;
-}
-
-.l12 {
-  padding-left: 2rem;
-}
-
-.l13 {
-  padding-left: 1rem;
-}
-
-.l14 {
-  padding-left: 0rem;
-}
 
 .l.hendeca {
   margin-left: 0.5rem;
-  text-indent: 0;
-  padding-left: 0;
 }
 
+.l10,
 .l.deca {
   margin-left: 1.0rem;
-  text-indent: 0;
-  padding-left: 0;
 }
 
+.l9,
 .l.ennea {
   margin-left: 1.5rem;
-  text-indent: 0;
-  padding-left: 0;
 }
 
+.l8,
 .l.octo {
   margin-left: 2.0rem;
-  text-indent: 0;
-  padding-left: 0;
 }
 
 .l.hepta {
   margin-left: 2.5rem;
-  text-indent: 0;
-  padding-left: 0;
 }
 
+.l6,
 .l.hexa {
   margin-left: 3.0rem;
-  text-indent: 0;
-  padding-left: 0;
 }
 
+.l5,
 .l.penta {
   margin-left: 3.5rem;
-  text-indent: 0;
-  padding-left: 0;
 }
 
+.l4,
 .l.tetra {
   margin-left: 4.0rem;
-  text-indent: 0;
-  padding-left: 0;
 }
 
+.l3,
 .l.tri {
   margin-left: 4.5rem;
-  text-indent: 0;
-  padding-left: 0;
 }
 
+.l2,
 .l.dis {
   margin-left: 5.0rem;
   text-indent: 0;
@@ -1282,7 +1222,7 @@ div.label {
   margin: 1.4rem 0 0.7rem 0;
   line-height: 105%;
   text-align: center;
-  text-indent: 0;
+  text-indent: 0 !important;
   padding-left: 0;
   font-weight: bold;
   font-size: 105%;
@@ -1301,7 +1241,6 @@ figure .label {
 .listBibl h4 {
   font-weight: normal;
   font-style: italic;
-  font-size: 100%;
 }
 
 .listBibl li.desc,
@@ -1481,7 +1420,6 @@ p.speaker {
   text-transform: uppercase;
   font-size: 0.9rem;
   text-indent: 3rem;
-  text-indent: 3rem;
   line-height: 120%;
 }
 
@@ -1508,7 +1446,7 @@ section>div.stage em {
 
 div.stage {
   text-align: justify;
-  line-height: 120%;
+  /* line-height: 120%; */
 }
 
 .stage.indent {
@@ -1622,7 +1560,7 @@ i .title,
   padding-top: 0;
 }
 
-.titlePage div.byline {
+.titlePage .byline {
   margin-top: 4rem;
   margin-top: 4rem;
   margin-left: auto;
@@ -1827,6 +1765,30 @@ span.center {
 hr.dots {
   border: none;
   border-bottom: 2.6px dotted #999;
+}
+
+.p.dropcap,
+.l.dropcap {
+  text-indent: 0;
+  padding-left: 0;
+}
+
+.dropcap::first-letter {
+  display: block;
+  font-weight: bold;
+  padding-top: 10px;
+  margin-right: 5px;
+  font-size: 3.5em;
+  float: left;
+  line-height: 1;
+}
+
+.i .dropcap::first-letter {
+  margin-right: 10px;
+}
+
+p.dropcap {
+  margin-top: 1em;
 }
 
 span.exquote {
@@ -2598,7 +2560,7 @@ dl.xml dt {
 
 /** specific wide screen, not for print or phone */
 @media screen {
-  .note {
+  .footnotes .note {
     margin: 0 0 0 1.7rem;
     padding: 0.3rem 0 0.25rem 0.5rem;
   }
@@ -2684,15 +2646,6 @@ dl.xml dt {
   ol {
     padding-left: 1rem;
     margin-left: 0;
-  }
-
-  div.l {
-    text-indent: -1rem;
-    padding-left: 1rem;
-  }
-
-  .l.indent {
-    text-indent: 0;
   }
 
   li {
