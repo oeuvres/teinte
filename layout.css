@@ -2,6 +2,7 @@
 
 #article, h1, h2, h3, h4, h5, h6 {
   font-family: "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif;
+  line-height: 150%;
 }
 
 #aside, #toolbar, #header {
@@ -69,16 +70,19 @@
   page-break-after: always;
 }
 
-/* floatfix */
-#main:after, #main:before, #aside:after, #aside:before, #center:after, #center:before {
-  content: " ";
-  visibility: hidden;
-  display: block;
+/* clearfix */
+body::after,
+main::after,
+#main::after, 
+#aside::after, 
+#center::after {
+  content: "";
   clear: both;
-  height: 0;
+  display: table;
 }
 
-#main, #aside {
+#main, 
+#aside {
   clear: both;
   position: relative;
 }
@@ -87,8 +91,12 @@
   background-color: #FFFFFF;
 }
 
-#center, #cont, #contenu, #main, #article {
-  min-height: 100%;
+#center, 
+#cont, 
+#contenu, 
+#main, 
+#article {
+  height: 100%;
 }
 
 #article {}
@@ -96,6 +104,7 @@
 /** specific wide screen, not for print or phone */
 @media screen {
   body {
+    height: 100%;
     background-color: #E2DED0;
     color: #161616;
   }

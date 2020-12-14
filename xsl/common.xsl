@@ -53,6 +53,9 @@ Gobal TEI parameters and variables are divided in different categories
   <xsl:param name="http">https://</xsl:param>
   <xsl:param name="theme">
     <xsl:choose>
+      <xsl:when test="/processing-instruction('theme')">
+        <xsl:value-of select="/processing-instruction('theme')"/>
+      </xsl:when>
       <xsl:when test="$xslbase != ''">
         <xsl:value-of select="$xslbase"/>
       </xsl:when>

@@ -2,7 +2,8 @@
 /* Reset CSS */
 html,
 body {
-  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 html {
@@ -46,20 +47,13 @@ dd {
   box-sizing: border-box;
 }
 
-article:after {
-  content: " ";
-  display: block;
-  height: 0;
+article::after,
+.clearfix::after {
+  content: "";
   clear: both;
-  visibility: hidden;
+  display: table;
 }
 
-body,
-html {
-  min-height: 100%;
-  margin: 0;
-  padding: 0;
-}
 
 /* no fonts here, too complex to override */
 blockquote.quote,
