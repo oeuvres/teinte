@@ -86,7 +86,7 @@
         <ref name="xml.lang"/>
         <optional>
           <choice>
-            <ref name="n-att"/>
+            <ref name="att.n"/>
             <ref name="xml.id"/>
           </choice>
         </optional>
@@ -197,7 +197,7 @@
           <a:example href="teibook.xml#titlePage"/>
         </div>
         <optional>
-          <ref name="facs-att"/>
+          <ref name="att.facs"/>
         </optional>
         <ref name="xml-atts"/>
         <ref name="rendering.figure"/>
@@ -377,13 +377,13 @@
         </attribute>
       </optional>
       <optional>
-        <ref name="copyOf"/>
+        <ref name="att.copyOf"/>
       </optional>
       <optional>
         <attribute name="resp"/>
       </optional>
       <optional>
-        <ref name="n-att"/>
+        <ref name="att.n"/>
       </optional>
       <optional>
         <ref name="xml.base"/>
@@ -630,7 +630,7 @@
         <a:documentation>Date de création d'un document</a:documentation>
         <ref name="xml-atts"/>
         <optional>
-          <attribute name="when"/>
+          <ref name="att.when"/>
         </optional>
         <ref name="rendering.block"/>
         <ref name="flow"/>
@@ -860,11 +860,11 @@
       <element name="bibl">
         <a:documentation>Référence bibliographique. Peut apparaître comme un bloc, comme un item de liste &lt;listBibl>, ou comme un élément “inline” contenu dans un bloc.</a:documentation>
         <optional>
-          <ref name="n-att"/>
+          <ref name="att.n"/>
         </optional>
         <optional>
           <a:documentation>Lier une référence bibliographique à une citation par exemple.</a:documentation>
-          <ref name="corresp"/>
+          <ref name="att.corresp"/>
         </optional>
         <optional>
           <attribute name="type">
@@ -872,7 +872,7 @@
           </attribute>
         </optional>
         <optional>
-          <ref name="source-att"/>
+          <ref name="att.source"/>
         </optional>
         <oneOrMore>
           <choice>
@@ -965,7 +965,7 @@
         <a:documentation>Exemple de code, apparaissant souvent en texte préformaté, html5:pre</a:documentation>
         <ref name="xml-atts"/>
         <optional>
-          <ref name="n-att"/>
+          <ref name="att.n"/>
         </optional>
         <ref name="flow"/>
       </element>
@@ -977,7 +977,7 @@
           <br/>Pour les vers rompus du théâtre (– Hé ? – Quoi ! – Ah…), renseigner l’attribut @part qui permettra à une application de rétablir les alignements, indiquer explicitement la succession pour informer un automate : Initial (1) – Medial (0 ou n) – Final (1) <br/>Les indentations spécifiques sont à inscrire sous forme d’espaces insécables (caractère unicode équivalent à l’entité XML <![CDATA[&#160;]]>). Pour les vers numérotés, le numéro est inscrit dans l’attribut <a:att>n</a:att>.</div>
         <ref name="xml-atts"/>
         <optional>
-          <ref name="n-att"/>
+          <ref name="att.n"/>
         </optional>
         <optional>
           <ref name="part-att"/>
@@ -1054,7 +1054,7 @@
           </choice>
         </zeroOrMore>
         <optional>
-          <ref name="place-att"/>
+          <ref name="att.place"/>
         </optional>
         <optional>
           <attribute name="type">
@@ -1094,10 +1094,10 @@
       <element name="lg">
         <a:documentation>Strophe de vers</a:documentation>
         <optional>
-          <ref name="type-att"/>
+          <ref name="att.type"/>
         </optional>
         <optional>
-          <ref name="n-att"/>
+          <ref name="att.n"/>
         </optional>
         <optional>
           <ref name="part-att"/>
@@ -1135,7 +1135,7 @@
         </div>
         <ref name="xml-atts"/>
         <optional>
-          <ref name="n-att"/>
+          <ref name="att.n"/>
         </optional>
         <optional>
           <ref name="part-att"/>
@@ -1204,7 +1204,7 @@
         <a:documentation>Citation, notamment les paragraphes en retrait ou/et en italique, &lt;html5:blockquote></a:documentation>
         <ref name="xml-atts"/>
         <optional>
-          <ref name="type-att"/>
+          <ref name="att.type"/>
         </optional>
         <!-- Maybe in italic and not in quotes -->
         <optional>
@@ -1273,7 +1273,7 @@
         <a:documentation>Citation insérée dans un paragraphe (niveau caractère)</a:documentation>
         <ref name="xml-atts"/>
         <optional>
-          <ref name="type-att"/>
+          <ref name="att.type"/>
         </optional>
         <!-- Maybe in italic and not in quotes -->
         <ref name="rendering.char"/>
@@ -1287,12 +1287,12 @@
       <element name="figure">
         <a:documentation>Boîte hors du flux, parfois encadrée, pouvant contenir une image, une table, une formule, ou autre objet susceptible d’être référencé dans une table dédiée. Permet notamment d’envelopper une image avec sa légende. &lt;html5:figure></a:documentation>
         <optional>
-          <ref name="n-att"/>
+          <ref name="att.n"/>
         </optional>
         <ref name="xml-atts"/>
         <ref name="rendering.figure"/>
         <optional>
-          <ref name="type-att"/>
+          <ref name="att.type"/>
         </optional>
         <oneOrMore>
           <choice>
@@ -1352,7 +1352,7 @@
     <define name="item">
       <element name="item">
         <optional>
-          <ref name="n-att"/>
+          <ref name="att.n"/>
         </optional>
         <ref name="xml-atts"/>
         <choice>
@@ -1454,7 +1454,7 @@
               </optional>
               <ref name="rendering-atts"/>
               <optional>
-                <ref name="n-att"/>
+                <ref name="att.n"/>
               </optional>
               <oneOrMore>
                 <element name="cell">
@@ -1536,7 +1536,7 @@
           <div><span style="font-size: 170%; font-weight: bold; display: inline-block; transform-origin: top right 0; margin-top: 1.35em; position: absolute; transform: rotate(90deg);">U</span>n cœur, le mien te suit dans ton voyage au Nord</div>
         </div>
         <optional>
-          <ref name="n-att"/>
+          <ref name="att.n"/>
         </optional>
         <optional>
           <attribute name="rend">
@@ -1580,7 +1580,7 @@
         </optional>
         -->
         <optional>
-          <ref name="rendition-att"/>
+          <ref name="att.rendition"/>
         </optional>
         <!-- généré par traitement de texte -->
         <optional>
@@ -1623,7 +1623,7 @@
             <c n="cent">¢</c>
           </a:example>
         </div>
-        <ref name="n-att"/>
+        <ref name="att.n"/>
         <ref name="rendering.char"/>
         <text/>
         <optional>
@@ -1911,7 +1911,7 @@
                     <ref name="rend-role"/>
                   </optional>
                   <optional>
-                    <ref name="n-att"/>
+                    <ref name="att.n"/>
                   </optional>
                   <ref name="textual"/>
                 </element>
@@ -2009,7 +2009,7 @@
         </div>
         <choice>
           <group>
-            <ref name="corresp"/>
+            <ref name="att.corresp"/>
             <optional>
               <attribute name="role">
                 <list>
@@ -2043,7 +2043,7 @@
             </optional>
             <optional>
               <attribute name="role">
-                <ref name="val-status"/>
+                <ref name="val.status"/>
               </attribute>
             </optional>
             <optional>
@@ -2126,7 +2126,7 @@
     <define name="app">
       <element name="app">
         <a:documentation>Note d’apparat critique</a:documentation>
-        <ref name="n-att"/>
+        <ref name="att.n"/>
         <ref name="xml-atts"/>
         <optional>
           <element name="lem">
@@ -2157,7 +2157,7 @@
         <a:documentation>Date</a:documentation>
         <ref name="xml-atts"/>
         <optional>
-          <ref name="evidence-att">
+          <ref name="att.evidence">
             <a:documentation>Date forgée</a:documentation>
           </ref>
         </optional>
@@ -2165,7 +2165,7 @@
           <attribute name="type"/>
         </optional>
         <optional>
-          <attribute name="when"/>
+          <ref name="att.when"/>
         </optional>
         <ref name="rendering.char"/>
         <ref name="textual"/>
@@ -2195,7 +2195,7 @@
       <element name="formula">
         <a:documentation>Formule mathématique</a:documentation>
         <optional>
-          <ref name="rend-att"/>
+          <ref name="att.rend"/>
         </optional>
         <optional>
           <ref name="xml.id"/>
@@ -2226,7 +2226,7 @@
           <a:example><num>xvi<hi rend="sup">e</hi></num> s.</a:example>
         </div>
         <optional>
-          <ref name="type-att"/>
+          <ref name="att.type"/>
         </optional>
         <optional>
           <attribute name="value">
@@ -2266,7 +2266,7 @@
         </attribute>
         <ref name="rendering.char"/>
         <optional>
-          <ref name="type-att"/>
+          <ref name="att.type"/>
         </optional>
         <zeroOrMore>
           <choice>
@@ -2339,7 +2339,7 @@
         <ref name="index-atts"/>
         <ref name="rendering.char"/>
         <optional>
-          <ref name="resp-att"/>
+          <ref name="att.resp"/>
         </optional>
         <optional>
           <attribute name="role">
@@ -2417,7 +2417,7 @@
         <!-- en cas de mise en forme -->
         <ref name="rendering.char"/>
         <optional>
-          <ref name="evidence-att"/>
+          <ref name="att.evidence"/>
         </optional>
         <optional>
           <attribute name="type">
@@ -2588,7 +2588,7 @@
           <attribute name="resp"/>
         </optional>
         <optional>
-          <attribute name="n-att"/>
+          <attribute name="att.n"/>
         </optional>
         <zeroOrMore>
           <choice>
@@ -2629,25 +2629,25 @@
         <p>La maîtrise de l’attribution de ce jeu d’attributs aux justes éléments indexables est essentiel, de manière à éviter tout risque d’indexation redondante (par ex. persName > name|forname|surname, etc.).</p>
       </div>
       <optional>
-        <ref name="cert-att"/>
+        <ref name="att.cert"/>
       </optional>
       <optional>
-        <ref name="corresp"/>
+        <ref name="att.corresp"/>
       </optional>
       <optional>
-        <ref name="key-att"/>
+        <ref name="att.key"/>
       </optional>
       <optional>
-        <ref name="precision-att"/>
+        <ref name="att.precision"/>
       </optional>
       <optional>
-        <ref name="quantity-att"/>
+        <ref name="att.quantity"/>
       </optional>
       <optional>
-        <ref name="ref-att"/>
+        <ref name="att.ref"/>
       </optional>
       <optional>
-        <ref name="unit-att"/>
+        <ref name="att.unit"/>
       </optional>
     </define>
     <define name="term">
@@ -2674,7 +2674,7 @@
         <!-- attributs plus générique, inutiles pour la représentation d’un index lexical ODT -->
         <ref name="xml-atts"/>
         <optional>
-          <ref name="rend-att"/>
+          <ref name="att.rend"/>
         </optional>
         <!--
           <optional>
@@ -2693,7 +2693,7 @@
       <element name="tech">
         <a:documentation>Technique théâtrale</a:documentation>
         <optional>
-          <ref name="ref-att"/>
+          <ref name="att.ref"/>
         </optional>
         <text/>
       </element>
@@ -2762,7 +2762,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
           <p>Conservation des sauts de colonne de l’édition imprimée. Un tel numéro est nécessaire pour le référencement des citations des textes imprimés en colonnes (un dictionnaire par exemple). Par convention, on accole le numéro de page à la lettre de colonne pour constituer une référence de colonne unique par ouvrage. Par exemple 245c pour la troisième colonne de la page 245.</p>
         </div>
         <empty/>
-        <ref name="n-att"/>
+        <ref name="att.n"/>
       </element>
     </define>
     <define name="ed">
@@ -2856,7 +2856,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
           <a:example href="teibook.xml#lb"/>
         </div>
         <optional>
-          <ref name="n-att"/>
+          <ref name="att.n"/>
         </optional>
         <optional>
           <ref name="ed"/>
@@ -2871,7 +2871,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
           </attribute>
         </optional>
         <optional>
-          <ref name="resp-att"/>
+          <ref name="att.resp"/>
         </optional>
         <empty/>
       </element>
@@ -2893,7 +2893,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </optional>
         <optional>
           <choice>
-            <ref name="corresp"/>
+            <ref name="att.corresp"/>
             <ref name="xml.id"/>
           </choice>
         </optional>
@@ -2911,13 +2911,13 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </div>
         <ref name="xml-atts"/>
         <optional>
-          <ref name="n-att"/>
+          <ref name="att.n"/>
         </optional>
         <optional>
-          <ref name="resp-att"/>
+          <ref name="att.resp"/>
         </optional>
         <optional>
-          <ref name="place-att"/>
+          <ref name="att.place"/>
         </optional>
         <ref name="rendering-atts"/>
         <choice>
@@ -2960,11 +2960,11 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
           <p>Lorsqu’un saut de page coupe un mot dans l’édition imprimée, on conseillera de résoudre la césure, et de placer le saut de page après le mot non coupé + une espace (une page ne doit jamais commencer par une espace).</p>
         </div>
         <optional>
-          <ref name="n-att"/>
+          <ref name="att.n"/>
         </optional>
         <ref name="xml-atts"/>
         <optional>
-          <ref name="facs-att"/>
+          <ref name="att.facs"/>
         </optional>
         <optional>
           <ref name="ed"/>
@@ -2974,12 +2974,12 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
   </div>
   <div xml:id="atts">
     <a:documentation>Attributs</a:documentation>
-    <define name="ana-att">
+    <define name="att.ana">
       <attribute name="ana">
         <a:documentation>Mot clé indiquant une analyse, une interprétation.</a:documentation>
       </attribute>
     </define>
-    <define name="corresp">
+    <define name="att.corresp">
       <attribute name="corresp">
         <a:documentation>Pointeur vers une ressource liée</a:documentation>
         <list>
@@ -2987,7 +2987,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </list>
       </attribute>
     </define>
-    <define name="copyOf">
+    <define name="att.copyOf">
       <attribute name="copyOf">
         <a:documentation>Lien de copie (non directionnel) entre l’élément porteur de l’attribut et un fichier ou un fragment de fichier pointé par une url.</a:documentation>
         <list>
@@ -3001,37 +3001,37 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <data type="ID"/>
       </attribute>
     </define>
-    <define name="key-att">
+    <define name="att.key">
       <attribute name="key">
         <a:documentation>Terme normalisé (clé de regroupement) pour une entité indexable (auteur, titre, personne, lieu…)</a:documentation>
       </attribute>
     </define>
-    <define name="facs-att">
+    <define name="att.facs">
       <attribute name="facs">
         <a:documentation>Lien vers une image</a:documentation>
       </attribute>
     </define>
-    <define name="cert-att">
+    <define name="att.cert">
       <attribute name="cert">
         <a:documentation>Degré de certitude d'une information</a:documentation>
       </attribute>
     </define>
-    <define name="precision-att">
+    <define name="att.precision">
       <attribute name="precision">
         <a:documentation>Degré de précision d'une information</a:documentation>
       </attribute>
     </define>
-    <define name="unit-att">
+    <define name="att.unit">
       <attribute name="unit">
         <a:documentation>Unité d'une information</a:documentation>
       </attribute>
     </define>
-    <define name="quantity-att">
+    <define name="att.quantity">
       <attribute name="quantity">
         <a:documentation>Quantité en chiffre décimaux se rapportant à une information</a:documentation>
       </attribute>
     </define>
-    <define name="evidence-att">
+    <define name="att.evidence">
       <attribute name="evidence">
         <a:documentation>Nature de la preuve attestant la justesse de l'interprétation</a:documentation>
         <value>conjecture</value>
@@ -3049,14 +3049,14 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <a:documentation>Base de résolution des liens.</a:documentation>
       </attribute>
     </define>
-    <define name="n-att">
+    <define name="att.n">
       <attribute name="n">
         <data type="string">
           <param name="minLength">1</param>
         </data>
       </attribute>
     </define>
-    <define name="place-att">
+    <define name="att.place">
       <attribute name="place">
         <choice>
           <!-- TEI, mais peu fréquents -->
@@ -3090,24 +3090,24 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </choice>
       </attribute>
     </define>
-    <define name="ref-att">
+    <define name="att.ref">
       <attribute name="ref">
         <a:documentation>URI de référence pour un terme indexable : auteur, titre, personne, lieu…</a:documentation>
         <data type="anyURI"/>
       </attribute>
     </define>
-    <define name="source-att">
+    <define name="att.source">
       <attribute name="source">
         <a:documentation>URI dont est tiré l’information</a:documentation>
         <data type="anyURI"/>
       </attribute>
     </define>
-    <define name="rend-att">
+    <define name="att.rend">
       <attribute name="rend">
         <a:documentation>Indication de rendu, selon un vocabulaire contrôlé. Interprété comme une liste de classes CSS comme dans l'attribut @html5:class. Conserve une information de la source, ou suggère une présentation. À distinguer de la précision sémantique de l’élément, indiquée avec l’attribut @type</a:documentation>
       </attribute>
     </define>
-    <define name="resp-att">
+    <define name="att.resp">
       <attribute name="resp">
         <choice>
           <value>author</value>
@@ -3122,9 +3122,14 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </choice>
       </attribute>
     </define>
-    <define name="type-att">
+    <define name="att.type">
       <attribute name="type">
         <a:documentation>Type, qualifiant l’élément parent, indépendamment de son apparence. Dans la mesure du possible, une liste d’autorité contextuelle sera proposée au niveau de l’élément.</a:documentation>
+      </attribute>
+    </define>
+    <define name="att.when">
+      <attribute name="when">
+        <ref name="date.type"/>
       </attribute>
     </define>
     <define name="xml-atts">
@@ -3135,7 +3140,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <ref name="xml.id"/>
       </optional>
       <optional>
-        <ref name="ana-att"/>
+        <ref name="att.ana"/>
       </optional>
     </define>
     <define name="rend.list">
@@ -3176,10 +3181,10 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
     </define>
     <define name="rendering-atts">
       <optional>
-        <ref name="rend-att"/>
+        <ref name="att.rend"/>
       </optional>
       <optional>
-        <ref name="rendition-att"/>
+        <ref name="att.rendition"/>
       </optional>
     </define>
     <define name="rendering.figure">
@@ -3197,7 +3202,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </attribute>
       </optional>
       <optional>
-        <ref name="rendition-att"/>
+        <ref name="att.rendition"/>
       </optional>
     </define>
     <define name="rendering.block">
@@ -3230,7 +3235,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </attribute>
       </optional>
       <optional>
-        <ref name="rendition-att"/>
+        <ref name="att.rendition"/>
       </optional>
     </define>
     <define name="rendering.char">
@@ -3243,10 +3248,10 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </attribute>
       </optional>
       <optional>
-        <ref name="rendition-att"/>
+        <ref name="att.rendition"/>
       </optional>
     </define>
-    <define name="rendition-att">
+    <define name="att.rendition">
       <attribute name="rendition">
         <a:documentation>Lien à une déclaration locale de stylage (URI ancre, ex : #surtitre, vers une déclaration &lt;rendition xml:id="surtitre"> dans &lt;teiHeader>). L'attribut @rend est contraint dans ce schéma à une liste close de valeurs dont le traitement est garanti, @rendition permet d'ajouter d’autres classes</a:documentation>
         <data type="anyURI"/>
@@ -3363,14 +3368,14 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
                 <value>male</value>
                 <value>female</value>
               </choice>
-              <ref name="val-age"/>
-              <ref name="val-status"/>
+              <ref name="val.age"/>
+              <ref name="val.status"/>
             </choice>
           </oneOrMore>
         </list>
       </attribute>
     </define>
-    <define name="val-age">
+    <define name="val.age">
       <choice>
         <value>cadet</value>
         <a:documentation>Enfant</a:documentation>
@@ -3382,7 +3387,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <a:documentation>Vieux</a:documentation>
       </choice>
     </define>
-    <define name="val-status">
+    <define name="val.status">
       <choice>
         <value>inferior</value>
         <a:documentation>Statut inférieur aux principaux protagonistes (valet, nourrice…)</a:documentation>

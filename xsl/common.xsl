@@ -53,9 +53,6 @@ Gobal TEI parameters and variables are divided in different categories
   <xsl:param name="http">https://</xsl:param>
   <xsl:param name="theme">
     <xsl:choose>
-      <xsl:when test="/processing-instruction('theme')">
-        <xsl:value-of select="/processing-instruction('theme')"/>
-      </xsl:when>
       <xsl:when test="$xslbase != ''">
         <xsl:value-of select="$xslbase"/>
       </xsl:when>
@@ -237,7 +234,7 @@ Gobal TEI parameters and variables are divided in different categories
   </xsl:param>
   <xsl:template name="docdate">
     <xsl:choose>
-      <xsl:when test="/*/tei:teiHeader/tei:profileDesc/tei:creation/tei:date[concat(.,@when,@notBefore,@notAfter)!='']">
+      <xsl:when test="/*/tei:teiHeader/tei:profileDesc/tei:creation/tei:date[concat(.,@when,@notBefore,@notAfter,@from,@to)!='']">
         <xsl:apply-templates mode="year" select="/*/tei:teiHeader/tei:profileDesc/tei:creation[1]/tei:date[1]"/>
       </xsl:when>
       <xsl:when test="/*/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:biblFull/tei:publicationStmt/tei:date">
@@ -309,7 +306,7 @@ Gobal TEI parameters and variables are divided in different categories
   <!-- File for generated messages -->
   <xsl:param name="messages">tei.rdfs</xsl:param>
   <!--  Load messages, document('') works to resolve relative paths  -->
-  <xsl:variable name="rdf:Property" select="document($messages, document(''))/*/rdf:Property"/>
+  <xsl:variable name="rdf:Property" select="document($messages)/*/rdf:Property"/>
   <!-- A separate page for footnotes (used by epub) -->
   <xsl:param name="fnpage"/>
   <!-- A dest folder for graphics (used by epub) -->
@@ -369,9 +366,9 @@ Gobal TEI parameters and variables are divided in different categories
     </xsl:if>
     <xsl:if test="$doctitle != ''">
       <xsl:text> </xsl:text>
-      <span class="title">
+      <em class="title">
         <xsl:copy-of select="$doctitle"/>
-      </span>
+      </em>
     </xsl:if>
   </xsl:variable>
   
@@ -401,11 +398,17 @@ Gobal TEI parameters and variables are divided in different categories
       <xsl:when test="@when">
         <xsl:value-of select="substring(@when, 1, 4)"/>
       </xsl:when>
+      <xsl:when test="@to">
+        <xsl:value-of select="substring(@to, 1, 4)"/>
+      </xsl:when>
       <xsl:when test="@notAfter">
         <xsl:value-of select="substring(@notAfter, 1, 4)"/>
       </xsl:when>
       <xsl:when test="@notBefore">
         <xsl:value-of select="substring(@notBefore, 1, 4)"/>
+      </xsl:when>
+      <xsl:when test="@to">
+        <xsl:value-of select="substring(@to, 1, 4)"/>
       </xsl:when>
       <xsl:when test="@n">
         <xsl:value-of select="substring(@n, 1, 4)"/>
@@ -497,41 +500,49 @@ Gobal TEI parameters and variables are divided in different categories
   <!-- A template to get a descent bibliographic to display -->
   <xsl:template name="bibl">
     <xsl:param name="book" select="$bibl"/>
+    <xsl:copy-of select="$book"/>
     <xsl:variable name="pages">
-      <xsl:variable name="pb" select=".//tei:pb"/>
-      <xsl:if test="$pb">
-        <xsl:value-of select="$pb[1]/@n"/>
-        <xsl:variable name="last" select="$pb[position() != 1][position() = last()]/@n"/>
-        <xsl:if test="$last &gt; 1">
-          <xsl:text>-</xsl:text>
-          <xsl:value-of select="$last"/>
-        </xsl:if>
-      </xsl:if>
+      <xsl:call-template name="pages"/>
     </xsl:variable>
     <xsl:variable name="analytic">
-      <xsl:for-each select="ancestor-or-self::*[not(self::tei:TEI)][not(self::tei:text)][not(self::tei:body)]">
-        <xsl:if test="position() != 1"> — </xsl:if>
-        <xsl:apply-templates select="." mode="title"/>
-      </xsl:for-each>
+      <xsl:call-template name="analytic"/>
     </xsl:variable>
-    <xsl:copy-of select="$book"/>
-    <xsl:if test="$pages != ''">
-      <xsl:text>. </xsl:text>
-      <span class="pages">
-        <xsl:choose>
-          <xsl:when test="contains($pages, '-')">pp. </xsl:when>
-          <xsl:otherwise>p.</xsl:otherwise>
-        </xsl:choose>
-        <xsl:value-of select="$pages"/>
-      </span>
-      <xsl:text>. </xsl:text>
-    </xsl:if>
     <xsl:if test="$analytic != ''">
       <xsl:text> « </xsl:text>
       <span class="analytic">
         <xsl:copy-of select="$analytic"/>
       </span>
       <xsl:text> »</xsl:text>
+    </xsl:if>
+    <xsl:if test="$pages != ''">
+      <xsl:text> </xsl:text>
+      <span class="pages">
+        <xsl:value-of select="$pages"/>
+      </span>
+      <xsl:text> </xsl:text>
+    </xsl:if>
+  </xsl:template>
+  
+  <xsl:template name="analytic">
+    <xsl:for-each select="ancestor-or-self::*[not(self::tei:TEI)][not(self::tei:text)][not(self::tei:body)]">
+      <xsl:if test="position() != 1"> — </xsl:if>
+      <xsl:apply-templates select="." mode="title"/>
+    </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template name="pages">
+    <xsl:variable name="pb" select=".//tei:pb"/>
+    <xsl:if test="$pb">
+      <xsl:choose>
+        <xsl:when test="count($pb) &gt; 1">pp. </xsl:when>
+        <xsl:otherwise>p. </xsl:otherwise>
+      </xsl:choose>
+      <xsl:value-of select="$pb[1]/@n"/>
+      <xsl:variable name="last" select="$pb[position() != 1][position() = last()]/@n"/>
+      <xsl:if test="$last &gt; 1">
+        <xsl:text>-</xsl:text>
+        <xsl:value-of select="$last"/>
+      </xsl:if>
     </xsl:if>
   </xsl:template>
 

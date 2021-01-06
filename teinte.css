@@ -1216,7 +1216,7 @@ div.label {
   margin: 1.4rem 0 0.7rem 0;
   line-height: 105%;
   text-align: center;
-  text-indent: 0 !important;
+  text-indent: 0;
   padding-left: 0;
   font-weight: bold;
   font-size: 105%;
