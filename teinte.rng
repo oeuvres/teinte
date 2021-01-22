@@ -380,6 +380,9 @@
         <ref name="att.copyOf"/>
       </optional>
       <optional>
+        <ref name="att.when"/>
+      </optional>
+      <optional>
         <attribute name="resp"/>
       </optional>
       <optional>
