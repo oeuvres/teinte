@@ -165,7 +165,7 @@ Interpret TEI header as html.
         <xsl:apply-templates/>
       </xsl:when>
       <xsl:otherwise>
-        <p>
+        <div>
           <xsl:call-template name="headatts"/>
           <xsl:if test="tei:idno">
             <div class="idno">
@@ -196,7 +196,7 @@ Interpret TEI header as html.
           <xsl:apply-templates select="tei:address"/>
           <xsl:apply-templates select="tei:availability"/>
           -->
-        </p>
+        </div>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>

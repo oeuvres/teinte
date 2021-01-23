@@ -2060,7 +2060,7 @@ Elements block or inline level
         </xsl:apply-templates>
       </xsl:when>
       <!-- inside mixed content, or line formatted text (? or tei:lb or ../tei:lb), should be inline -->
-      <xsl:when test="$mixed  or parent::tei:note or parent::tei:p or parent::tei:s  or parent::tei:label">
+      <xsl:when test="$mixed  or parent::tei:p or parent::tei:s  or parent::tei:label">
         <xsl:call-template name="span">
           <xsl:with-param name="from" select="$from"/>
           <xsl:with-param name="el">
