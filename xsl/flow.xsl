@@ -461,24 +461,21 @@ Sections
   </xsl:template>
   <!-- Ne pas sortir les saut de ligne dans du texte préformaté -->
   <xsl:template match="tei:eg/tei:lb"/>
-  <!-- Couillards et autres culs de lampe -->
   <xsl:template match="tei:ab">
     <xsl:param name="from"/>
     <xsl:choose>
       <xsl:when test="@type='hr'">
         <hr class="hr" align="center" width="30%"/>
       </xsl:when>
-      <xsl:when test="@type='dots'">
-        <hr class="dots"/>
+      <xsl:when test="@type='rule'">
+        <hr>
+          <xsl:call-template name="atts"/>
+        </hr>
       </xsl:when>
       <xsl:when test="normalize-space(.) = ''">
-        <div>
+        <br>
           <xsl:call-template name="atts"/>
-          <xsl:text> </xsl:text>
-          <xsl:apply-templates>
-            <xsl:with-param name="from" select="$from"/>
-          </xsl:apply-templates>
-        </div>
+        </br>
       </xsl:when>
       <xsl:otherwise>
         <div>
@@ -2130,6 +2127,15 @@ Elements block or inline level
         </xsl:element>
       </xsl:otherwise>
     </xsl:choose>
+  </xsl:template>
+  <!-- Titre d'une liste -->
+  <xsl:template match="tei:quote/tei:head">
+    <xsl:param name="from"/>
+    <p class="head">
+      <xsl:apply-templates>
+        <xsl:with-param name="from" select="$from"/>
+      </xsl:apply-templates>
+    </p>
   </xsl:template>
   <xsl:template match="tei:cit">
     <xsl:param name="from"/>

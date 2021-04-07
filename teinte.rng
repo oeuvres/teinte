@@ -829,8 +829,12 @@
             <a:documentation>Ligne de points</a:documentation>
             <value>hr</value>
             <a:documentation>Filet (horizontal rule)</a:documentation>
+            <value>rule</value>
+            <a:documentation>Filet</a:documentation>
             <value>line</value>
             <a:documentation>Ligne vide (pour séparer des alinéas)</a:documentation>
+            <value>dinkus</value>
+            <a:documentation>*, * * *, ⁂ et autres astérismes</a:documentation>
             <value>ornament</value>
             <a:documentation>Ornements, avec parfois le sens d'un séparateur entre deux sections, couillards et autres culs de lampe</a:documentation>
           </choice>
@@ -839,7 +843,18 @@
           <attribute name="n"/>
         </optional>
         <optional>
-          <ref name="rendering.block"/>
+          <attribute name="rend">
+            <list>
+              <oneOrMore>
+                <choice>
+                  <ref name="rend.font"/>
+                  <ref name="rend.align"/>
+                  <ref name="rend.lmarg"/>
+                  <data type="token"/>
+                </choice>
+              </oneOrMore>
+            </list>
+          </attribute>
         </optional>
         <oneOrMore>
           <choice>
@@ -1228,6 +1243,7 @@
         <optional>
           <choice>
             <ref name="bibl"/>
+            <ref name="head"/>
             <ref name="persName"/>
           </choice>
         </optional>
@@ -1247,7 +1263,10 @@
             <choice>
               <ref name="ab"/>
               <ref name="bibl"/>
+              <ref name="byline"/>
               <ref name="cb"/>
+              <ref name="dateline"/>
+              <ref name="epigraph"/>
               <ref name="l"/>
               <ref name="label"/>
               <ref name="list"/>
@@ -1258,6 +1277,8 @@
               <ref name="p"/>
               <ref name="pb"/>
               <ref name="quote-p"/>
+              <ref name="salute"/>
+              <ref name="signed"/>
               <ref name="sp.quote"/>
               <ref name="stage"/>
               <ref name="table"/>
@@ -2871,6 +2892,13 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
               <value>hyphen</value>
               <a:documentation>Césure</a:documentation>
               <text/>
+            </choice>
+          </attribute>
+        </optional>
+        <optional>
+          <attribute name="type">
+            <choice>
+              <value>line</value>
             </choice>
           </attribute>
         </optional>
