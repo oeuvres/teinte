@@ -340,12 +340,36 @@ Interpret TEI header as html.
       <xsl:apply-templates/>
     </div>
   </xsl:template>
-  <xsl:template match="tei:fileDesc/tei:titleStmt/tei:author">
-    <p>
-      <xsl:call-template name="headatts"/>
-      <xsl:apply-templates/>
-    </p>
+  <xsl:template match="tei:titleStmt/tei:author" priority="3">
+    <xsl:variable name="author">
+      <xsl:call-template name="header_name"/>
+    </xsl:variable>
+    <xsl:if test="$author != ''">
+      <p>
+        <xsl:call-template name="headatts"/>
+        <xsl:copy-of select="$author"/>
+      </p>
+    </xsl:if>
   </xsl:template>
+  
+  <xsl:template name="header_name">
+    <xsl:choose>
+      <xsl:when test="normalize-space(.) != ''">
+        <xsl:apply-templates/>
+      </xsl:when>
+      <xsl:when test="@key">
+        <xsl:choose>
+          <xsl:when test="contains(@key, '(')">
+            <xsl:value-of select="normalize-space(substring-before(@key, '('))"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="normalize-space(@key)"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:when>
+    </xsl:choose>
+  </xsl:template>
+  
   <!-- Différents titres de responsabilité intellectuelle -->
   <xsl:template match="
   tei:fileDesc/tei:titleStmt/tei:editor[position() != 1]
@@ -378,7 +402,7 @@ Interpret TEI header as html.
             <xsl:text> </xsl:text>
           </xsl:otherwise>
         </xsl:choose>
-        <xsl:apply-templates/>
+        <xsl:call-template name="header_name"/>
       </xsl:for-each>
       <!--
       <xsl:text>.</xsl:text>
@@ -452,11 +476,13 @@ Interpret TEI header as html.
           <xsl:apply-templates select="tei:title"/>
           <xsl:apply-templates select="tei:editor | tei:funder | tei:meeting | tei:principal | tei:sponsor"/>
           <xsl:apply-templates select="tei:respStmt"/>
+          <!--
           <xsl:if test="../tei:publicationStmt/tei:date">
             <div class="date">
               <xsl:apply-templates select="../tei:publicationStmt/tei:date"/>
             </div>
           </xsl:if>
+          -->
         </div>
       </xsl:otherwise>
     </xsl:choose>

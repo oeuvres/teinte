@@ -46,12 +46,12 @@ class Teinte_Web {
     "png"  => 'image/png',
     "xml"  => 'text/xml',
     "xhtml" => 'text/html; charset=UTF-8',
- );
+  );
   /** Langs */
   static $langs=array(
     "en" => "English",
     "fr" => "Français",
- );
+  );
   /** lang found */
   static $lang;
   /**

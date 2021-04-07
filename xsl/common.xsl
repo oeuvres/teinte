@@ -611,7 +611,7 @@ Gobal TEI parameters and variables are divided in different categories
       </xsl:when>
       <xsl:when test="not(ancestor::tei:group) and (self::tei:div or starts-with(local-name(), 'div'))">
         <xsl:choose>
-          <xsl:when test="ancestor::tei:body">body-</xsl:when>
+          <xsl:when test="ancestor::tei:body"/>
           <xsl:when test="ancestor::tei:front">front-</xsl:when>
           <xsl:when test="ancestor::tei:back">back-</xsl:when>
         </xsl:choose>
@@ -829,7 +829,7 @@ résoudre les césures, ou les alternatives éditoriales.
           </xsl:choose>
         </xsl:variable>
         <xsl:variable name="title">
-          <xsl:if test="@n">
+          <xsl:if test="@n and not(tei:head)">
             <xsl:value-of select="@n"/>
             <xsl:text> </xsl:text>
           </xsl:if>
@@ -1184,20 +1184,6 @@ résoudre les césures, ou les alternatives éditoriales.
         <xsl:text>#</xsl:text>
         <xsl:value-of select="$id"/>
       </xsl:when>
-      <!-- -->
-      <xsl:when test="/*/tei:text/tei:body and count(.|/*/tei:text/tei:body)=1">
-        <xsl:value-of select="$base"/>
-        <xsl:choose>
-          <xsl:when test="$_html = ''">.</xsl:when>
-          <xsl:otherwise>index<xsl:value-of select="$_html"/></xsl:otherwise>
-        </xsl:choose>
-      </xsl:when>
-      <!-- TEI structure -->
-      <xsl:when test="count(../.. | /*) = 1">
-        <xsl:value-of select="$base"/>
-        <xsl:value-of select="$id"/>
-        <xsl:value-of select="$_html"/>
-      </xsl:when>
       <!-- is a splitted section -->
       <xsl:when test="self::*[key('split', generate-id())]">
         <xsl:value-of select="$base"/>
@@ -1220,6 +1206,24 @@ résoudre les césures, ou les alternatives éditoriales.
         <xsl:text>#</xsl:text>
         <xsl:value-of select="$id"/>
       </xsl:when>
+      <!-- ??
+      <xsl:when test="ancestor-or-self::tei:body[count(.| /*/tei:text/tei:body) = 1]">
+        <xsl:value-of select="$base"/>
+        <xsl:choose>
+          <xsl:when test="$_html = ''">.</xsl:when>
+          <xsl:otherwise>index<xsl:value-of select="$_html"/></xsl:otherwise>
+        </xsl:choose>
+        <xsl:if test="not(self::tei:body)">
+          <xsl:text>#</xsl:text>
+          <xsl:value-of select="$id"/>
+        </xsl:if>
+      </xsl:when>
+      <xsl:when test="count(../.. | /*) = 1">
+        <xsl:value-of select="$base"/>
+        <xsl:value-of select="$id"/>
+        <xsl:value-of select="$_html"/>
+      </xsl:when>
+      -->
       <!-- ???? -->
       <xsl:when test="ancestor::tei:*[local-name(../..)='TEI']">
         <xsl:for-each select="ancestor::tei:*[local-name(../..)='TEI'][1]">

@@ -296,6 +296,11 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
     <xsl:variable name="children" select="tei:group | tei:text | tei:div 
       | tei:div0 | tei:div1 | tei:div2 | tei:div3 | tei:div4 | tei:div5 | tei:div6 | tei:div7 "/>
     <xsl:choose>
+      <xsl:when test="self::tei:body and count($children) &lt; 1">
+        <li>
+          <xsl:call-template name="a"/>
+        </li>
+      </xsl:when>
       <xsl:when test="count($children) &lt; 1"/>
       <xsl:when test="count($children) = 1">
         <li>

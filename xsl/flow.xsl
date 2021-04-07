@@ -33,7 +33,7 @@ XSLT 1.0 is compatible browser, PHP, Python, Java…
   <xsl:variable name="nokey">nokey</xsl:variable>
   <!-- mainly in verse -->
   <xsl:variable name="verse" select="count(/*/tei:text/tei:body//tei:l) &gt; count(/*/tei:text/tei:body//tei:p)"/>
-
+  <xsl:variable name="biblverse" select="count(/*/tei:text/tei:body//tei:l[tei:lb]) &gt; count(/*/tei:text/tei:body//tei:l[not(tei:lb)])"/>
   <!--
 Sections
   -->
@@ -410,19 +410,19 @@ Sections
           <xsl:when test="$prev and contains('-–—', substring(normalize-space($prev), 1, 1))"/>
           -->
           <xsl:when test="local-name($prev) ='p' and translate($prev, '*∾  ','')!=''"/>
+          <xsl:when test="@n"/>
           <xsl:otherwise>autofirst</xsl:otherwise>
         </xsl:choose>
-      </xsl:variable>     
+        <xsl:if test="@n"> no</xsl:if>
+      </xsl:variable>
       <xsl:call-template name="atts">
         <xsl:with-param name="class" select="$class"/>
       </xsl:call-template>
       <xsl:if test="@n">
-        <small class="n">
-          <xsl:text>[</xsl:text>
+        <small class="no">
           <xsl:value-of select="@n"/>
-          <xsl:text>]</xsl:text>
+          <xsl:text>. </xsl:text>
         </small>
-        <xsl:text> </xsl:text>
       </xsl:if>
       <xsl:apply-templates>
         <xsl:with-param name="from" select="$from"/>
@@ -931,6 +931,7 @@ Tables
                 <xsl:text> </xsl:text>
                 <xsl:value-of select="@met"/>
               </xsl:if>
+              <xsl:if test="$biblverse"> biblverse</xsl:if>
               <!-- first verse in stanza -->
               <xsl:choose>
                 <!-- Not in a stanza -->
@@ -966,6 +967,13 @@ Tables
             <xsl:when test="@part='M' or @part='F'"/>
             <!-- line number could be multiple in a file, do not check repeated number in broken verses  -->
             <xsl:when test="ancestor::tei:quote"/>
+            <!-- Biblcal verse -->
+            <xsl:when test="$biblverse">
+              <small class="no">
+                <xsl:value-of select="$n"/>
+                <xsl:text>. </xsl:text>
+              </small>
+            </xsl:when>
             <xsl:when test="($n mod 5) = 0">
               <small class="l-n">
                 <xsl:value-of select="$n"/>
@@ -1290,6 +1298,9 @@ Tables
   <!-- line breaks -->
   <xsl:template match="tei:lb">
     <xsl:choose>
+      <xsl:when test="parent::tei:l">
+        <span class="lb"><br/></span>
+      </xsl:when>
       <xsl:when test="@n and ancestor::tei:p">
         <xsl:text> </xsl:text>
         <small class="l">[l. <xsl:value-of select="@n"/>]</small>
@@ -1323,6 +1334,12 @@ Tables
         <small class="pb folio">
           <xsl:text>f. </xsl:text>
           <xsl:value-of select="@n"/>
+        </small>
+      </xsl:when>
+      <xsl:when test="@n">
+        <small class="milestone no">
+          <xsl:value-of select="@n"/>
+          <xsl:text>. </xsl:text>
         </small>
       </xsl:when>
       <xsl:otherwise>
@@ -1708,7 +1725,7 @@ Tables
     <xsl:element name="{$el}" namespace="http://www.w3.org/1999/xhtml">
       <xsl:call-template name="atts"/>
       <xsl:if test="@n">
-        <small class="n">
+        <small class="no">
           <xsl:value-of select="@n"/>
         </small>
         <xsl:text> </xsl:text>

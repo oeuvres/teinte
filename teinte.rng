@@ -1021,6 +1021,13 @@
             <element name="caesura">
               <empty/>
             </element>
+            <ref name="cb"/>
+            <ref name="function"/>
+            <ref name="indexable"/>
+            <ref name="lb"/>
+            <ref name="milestone"/>
+            <ref name="note"/>
+            <ref name="pb"/>
             <element name="rhyme">
               <attribute name="label"/>
               <optional>
@@ -1028,15 +1035,9 @@
               </optional>
               <text/>
             </element>
-            <ref name="function"/>
-            <ref name="indexable"/>
+            <ref name="space"/>
             <ref name="stage"/>
             <ref name="typo"/>
-            <ref name="cb"/>
-            <ref name="note"/>
-            <ref name="milestone"/>
-            <ref name="pb"/>
-            <ref name="space"/>
           </choice>
         </oneOrMore>
       </element>
@@ -2902,6 +2903,9 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </optional>
         <optional>
           <attribute name="type"/>
+        </optional>
+        <optional>
+          <attribute name="n"/>
         </optional>
       </element>
     </define>
