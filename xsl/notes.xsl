@@ -266,9 +266,7 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
           <xsl:if test="$format = $epub3">
             <xsl:attribute name="epub:type">noteref</xsl:attribute>
           </xsl:if>
-          <sup>
-            <xsl:value-of select="$n"/>
-          </sup>
+          <xsl:value-of select="$n"/>
         </a>
       </xsl:otherwise>
     </xsl:choose>

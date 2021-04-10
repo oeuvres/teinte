@@ -109,10 +109,10 @@ Obtenir la dernière version de Teinte
 Associer les fichiers XM/TEI aux ressources de Teinte, les liens relatifs dépendent de la structure des dossiers `../../`
 ```xml
     <?xml version="1.0" encoding="UTF-8"?>
-    <?xml-model href="http://oeuvres.github.io/Teinte/teinte.rng" type="application/xml" 
+    <?xml-model href="http://oeuvres.github.io/teinte/teinte.rng" type="application/xml" 
       schematypens="http://relaxng.org/ns/structure/1.0"?>
-    <?xml-stylesheet type="text/css" href="../../Teinte/opentei.css"?>
-    <?xml-stylesheet type="text/xsl" href="../../Teinte/tei2html.xsl"?>
+    <?xml-stylesheet type="text/css" href="../../teinte/opentei.css"?>
+    <?xml-stylesheet type="text/xsl" href="../../teinte/tei2html.xsl"?>
     <TEI xmlns="http://www.tei-c.org/ns/1.0" xml:lang="fr">
     …
 ```
@@ -125,7 +125,7 @@ Transformation d’un fichier XML/TEI dans le navigateur, exemple : http://drama
 En ligne, cela fonctionne dans la plupart des navigateurs. Pour des fichiers locaux, cela permet de travailler l’édition XML dans l’éditeur, et d’en voir l’effet directement dans le navigateur, en rechargeant. Toutefois, plusieurs navigateurs limitent cette poossibilité pour des raisons de sécurité (*same origin policy*). Cela fonctionne directement dans Safari et Internet Explorer, voir en annexe pour modifier la configuration de Firefox. Pour Chrome, Opera, ou Microsoft Edge, pas de hacks trouvés
 
 
-# Utiliser Teinte en ligne de commande
+# Utiliser teinte en ligne de commande
 
 TODO
 
@@ -141,13 +141,13 @@ Teinte is visible as Github pages (branch gh-pages) to allow Internet linking.
 
 XSL transformation 
 ```bash
-  $ xsltproc http://oeuvres.github.io/Teinte/tei2html.xsl corpus.xml > corpus.html
+  $ xsltproc http://oeuvres.github.io/teinte/tei2html.xsl corpus.xml > corpus.html
 ```
 
 Validation avec Oxygen
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml-model href="http://oeuvres.github.io/Teinte/teinte.rng"
+<?xml-model href="http://oeuvres.github.io/teinte/teinte.rng"
   type="application/xml"
   schematypens="http://relaxng.org/ns/structure/1.0"?>
 ```

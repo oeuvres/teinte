@@ -74,6 +74,28 @@ div.stage {
   hyphens: auto;
 }
 
+.bookmark,
+.cb,
+.pb,
+.ed,
+small.l,
+small.l-n,
+.noteref,
+.pb,
+div.biblverse span.lb::after,
+.mark a.prev,
+.mark a.next,
+.unselectable,
+.noselect {
+  -webkit-touch-callout: none;
+    -webkit-user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+}
+
+
 /* html5 default, in alphabetic order */
 a:target,
 mark:target,
@@ -873,11 +895,6 @@ small.l-n {
   text-indent: 0;
   text-decoration: none;
   border: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
 }
 
 a.pb {
@@ -1326,11 +1343,15 @@ p.note {
 }
 
 a.noteref {
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+  top: -0.5rem;
+}
+
+a.noteref sup {
+  font-size: 100%;
 }
 
 a.noteref,
@@ -1709,7 +1730,6 @@ blockquote.border {
 a.bookmark {
   font-size: 60%;
   visibility: hidden;
-  user-select: none;
 }
 
 h1:hover a.bookmark,
@@ -1883,15 +1903,6 @@ h1.main {
 
 .noborder {
   border: none;
-}
-
-.noselect {
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
 }
 
 .normal,
@@ -2074,12 +2085,6 @@ a.next {
 .mark a.prev,
 .mark a.next {
   color: rgba(100, 100, 100, 0.5);
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
 }
 
 .mark a.prev:hover,

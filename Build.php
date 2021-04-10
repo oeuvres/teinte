@@ -513,8 +513,8 @@ END;
 
     $inc = dirname(__FILE__).'/Doc.php';
     if (!file_exists($inc)) {
-      echo "Impossible de trouver ".dirname(__FILE__)."/Teinte/Doc.php
-    Vous pouvez le télécharger sur https://github.com/oeuvres/Teinte\n";
+      echo "Impossible de trouver ".dirname(__FILE__)."/teinte/Doc.php
+    Vous pouvez le télécharger sur https://github.com/oeuvres/teinte\n";
       exit();
     }
     else {
