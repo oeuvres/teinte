@@ -13,12 +13,7 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
 
 XSLT 1.0 is compatible browser, PHP, Python, Java…
 -->
-<xsl:transform version="1.0"
-  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-  xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:tei="http://www.tei-c.org/ns/1.0"
-  exclude-result-prefixes="tei"
-  >
+<xsl:transform version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" xmlns:tei="http://www.tei-c.org/ns/1.0" exclude-result-prefixes="tei">
   <xsl:include href="xsl/flow.xsl"/>
   <xsl:include href="xsl/notes.xsl"/>
   <xsl:include href="xsl/teiHeader.xsl"/>
@@ -79,13 +74,11 @@ XSLT 1.0 is compatible browser, PHP, Python, Java…
                 <xsl:value-of select="normalize-space($bodyclass)"/>
               </xsl:attribute>
             </xsl:if>
-            <div id="center">
-              <div id="main">
-                <div id="article">
-                  <xsl:apply-templates/>
-                </div>
+            <div class="container" id="viewport">
+              <div id="text">
+                <xsl:apply-templates/>
               </div>
-              <aside id="aside">
+              <aside id="sidebar">
                 <nav>
                   <header>
                     <a>

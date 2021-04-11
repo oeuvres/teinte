@@ -66,7 +66,7 @@ var Tree = {
   /** default class name for clicked link */
   HERE: "here",
   /** default id where to find navigation pannel */
-  ASIDE: "aside",
+  ASIDE: "sidebar",
   /** the pannel element */
   aside: null,
   /** default id where to find titles */
@@ -209,6 +209,7 @@ li.here mark { background: inherit; }\
     }
   },
   asideresize: function() {
+    return;
     if (this.lastWidth == this.offsetWidth) return;
     var diff = this.offsetWidth - this.lastWidth
     this.lastWidth = this.offsetWidth;
@@ -225,6 +226,7 @@ li.here mark { background: inherit; }\
    * Resize left pannel
    */
   winresize: function() {
+    return;
     if(!Tree.aside) return;
     var w=window,d=document,e=d.documentElement,b=d.getElementsByTagName('body')[0];
     w.x=w.innerWidth||e.clientWidth||g.clientWidth;
@@ -708,7 +710,7 @@ Tree.ini();
 // if loaded as bottom script, create trees ?
 if(window.document.body) {
   Notes.load();
-  Tree.load("aside");
+  Tree.load("sidebar");
 }
 else if (window.addEventListener) {
   window.addEventListener('load', Tree.load, false);
