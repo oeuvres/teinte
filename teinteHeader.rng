@@ -1085,6 +1085,9 @@
               <text/>
             </element>
             <ref name="teiHeader.emph"/>
+            <element name="lb">
+              <empty/>
+            </element>
             <element name="publisher">
               <text/>
             </element>

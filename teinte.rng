@@ -529,8 +529,6 @@
           <!-- <ab> is not in TEI model.divTop -->
           <ref name="ab"/>
           <ref name="argument"/>
-          <ref name="byline"/>
-          <ref name="dateline"/>
           <ref name="docAuthor"/>
           <ref name="docDate"/>
           <ref name="epigraph"/>
@@ -551,15 +549,11 @@
           <ref name="argument"/>
           <ref name="byline"/>
           <ref name="closer"/>
-          <ref name="dateline"/>
           <ref name="docAuthor"/>
           <ref name="docDate"/>
-          <ref name="epigraph"/>
           <ref name="index"/>
           <ref name="milestone"/>
           <ref name="postscript"/>
-          <ref name="salute"/>
-          <ref name="signed"/>
           <ref name="trailer"/>
           <ref name="point"/>
         </choice>
@@ -796,6 +790,10 @@
         <ref name="pb"/>
         <ref name="cb"/>
         -->
+        <ref name="byline"/>
+        <ref name="dateline"/>
+        <ref name="salute"/>
+        <ref name="signed"/>
       </choice>
     </define>
     <define name="flow">
@@ -906,6 +904,7 @@
             <ref name="emph"/>
             <ref name="foreign"/>
             <ref name="hi"/>
+            <ref name="lb"/>
             <ref name="num"/>
             <!-- publisher avec les entités nommées ? pas nécessaire, dans la mesure où on ne souhaite pas les indexer pour l’instant -->
             <ref name="point"/>

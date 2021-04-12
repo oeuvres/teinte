@@ -138,7 +138,7 @@ main::after,
     background: -moz-linear-gradient(left, #eee, #fff);
     background: -ms-linear-gradient(left, #eee, #fff);
     background: -o-linear-gradient(right, #fff, #eee);
-    background: linear-gradient(to right, #eee, #fefefe);
+    background: linear-gradient(to right, #eee, #fdfdfd);
   }
 
   body.article {

@@ -614,9 +614,12 @@ Interpret TEI header as html.
     </span>
   </xsl:template>
   <xsl:template match="tei:creation">
-    <xsl:if test="tei:date">
-      <div>
-        <xsl:apply-templates select="tei:date[1]"/>
+    <xsl:variable name="date">
+      <xsl:apply-templates select="tei:date[1]"/>
+    </xsl:variable>  
+    <xsl:if test="$date != ''">
+      <div class="creation">
+        <xsl:copy-of select="$date"/>
       </div>
     </xsl:if>
   </xsl:template>
