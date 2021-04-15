@@ -4,13 +4,13 @@ set_time_limit(-1);
 if (isset($_SERVER['SCRIPT_FILENAME']) && basename($_SERVER['SCRIPT_FILENAME']) != basename(__FILE__));
 else if (isset($_SERVER['ORIG_SCRIPT_FILENAME']) && realpath($_SERVER['ORIG_SCRIPT_FILENAME']) != realpath(__FILE__));
 // direct command line call, work
-else if (php_sapi_name() == "cli") Teinte_Doc::cli();
+else if (php_sapi_name() == "cli") Teidoc::cli();
 
 
 /**
  * Sample pilot for Teinte transformations of XML/TEI
  */
-class Teinte_Doc
+class Teidoc
 {
   /** TEI/XML DOM Document to process */
   private $_dom;
@@ -115,15 +115,18 @@ class Teinte_Doc
     $meta = array();
     $meta['code'] = pathinfo($this->_file, PATHINFO_FILENAME);
     $nl = $this->_xpath->query("/*/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author");
-    $meta['creator'] = array();
+    $meta['author'] = array();
     $meta['byline'] = null;
     $first = true;
     foreach ($nl as $node) {
       $value = $node->getAttribute("key");
       if (!$value) $value = $node->textContent;
       if (($pos = strpos($value, '('))) $value = trim(substr($value, 0, $pos));
-      $meta['creator'][] = $value;
-      if ($first) $first = false;
+      $meta['author'][] = $value;
+      if ($first) {
+        $meta['author1'] = $value;
+        $first = false;
+      }
       else $meta['byline'] .= " ; ";
       $meta['byline'] .= $value;
     }
@@ -537,7 +540,7 @@ class Teinte_Doc
         if (STDERR) fwrite(STDERR, "$count. $srcfile > $destfile\n");
         $count++;
         try {
-          $doc=new Teinte_Doc($srcfile);
+          $doc=new Teidoc($srcfile);
           $meta = $doc->meta();
           $doc->export($format, $destfile);
           echo $meta['code']."\t".$meta['byline']."\t".$meta['date']."\t".$meta['title']."\n";
