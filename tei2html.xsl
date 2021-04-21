@@ -77,7 +77,7 @@ XSLT 1.0 is compatible browser, PHP, Python, Java…
               </xsl:attribute>
             </xsl:if>
             <div class="container" id="viewport">
-              <div id="text">
+              <div id="text" class="text">
                 <xsl:apply-templates/>
               </div>
               <aside id="sidebar">

@@ -895,11 +895,21 @@ small.l-n {
   text-indent: 0;
   text-decoration: none;
   border: none;
+  font-size: 80%;
+}
+
+section > .pb,
+article > .pb {
+  float: left;
+  margin-right: 0.5rem;
+  margin-top: 0.3rem;
 }
 
 a.pb {
   color: #888;
 }
+
+
 
 a.pb:hover {
   background-color: #FFFFFF;

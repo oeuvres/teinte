@@ -162,6 +162,7 @@ class Teidoc
     $meta['date'] = null;
     foreach ($nl as $date) {
       $value = $date->getAttribute ('when');
+      if (!$value) $value = $date->getAttribute ('to');
       if (!$value) $value = $date->getAttribute ('notAfter');
       if (!$value) $value = $date->nodeValue;
       $value = substr(trim($value), 0, 4);

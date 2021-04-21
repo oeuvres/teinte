@@ -4,15 +4,16 @@ body {
 }
 
 
-body,
+.pb,
 .note,
 #sidebar,
 #toolbar, 
-#header {
+#header,
+body {
   font-family: "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif;
 }
 
-#text { 
+.text { 
   font-family: 'Bodoni Moda', 'Old Standard TT', sans-serif; /*   */
   font-size: 19px;
 }
