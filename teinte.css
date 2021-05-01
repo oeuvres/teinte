@@ -173,9 +173,8 @@ aside header {
 }
 
 blockquote.quote {
-  margin: 1.5rem 0rem 1.5rem 1.5rem;
-  line-height: 130%;
-  font-size: 92%;
+  margin: 2rem 0rem 1.5rem 2rem;
+  line-height: 125%;
   padding: 0;
 }
 
@@ -373,7 +372,7 @@ h3 {
   margin-top: 1rem;
   margin-bottom: 1rem;
   padding-top: 1rem;
-  text-indent: 1.5rem;
+  text-indent: 2rem;
 }
 
 h5,
@@ -589,8 +588,14 @@ q:after {
   content: '';
 }
 
-q q {
+q.quote {
   font-style: italic;
+}
+
+q.quote em,
+q.quote i,
+q.quote q {
+  font-style: normal;
 }
 
 samp {
@@ -983,7 +988,7 @@ aside .docDate {
 
 .epigraph {
   margin: 2rem 0 3rem 5rem;
-  font-size: 87%;
+  font-size: 92%;
 }
 
 .epigraph p.p,
@@ -1128,14 +1133,14 @@ li.item {
 
 .l {
 /* negative indent for long verse ?
-  text-indent: -1.5rem;
-  padding-left: 1.5rem;
+  text-indent: -2rem;
+  padding-left: 2rem;
   line-height: 150%;
   */
 }
 
 .lg > .lg > .l:first-of-type {
-  text-indent: 1.5rem;
+  text-indent: 2rem;
 }
 
 
@@ -1219,7 +1224,7 @@ li.item {
 
 .p.manuscrits {
   font-size: 80%;
-  margin-top: 1.5rem;
+  margin-top: 2rem;
   background-color: #FBFAF8;
   border-radius: 8px;
 }
@@ -1407,7 +1412,7 @@ div.salute,
 p.salute {
   margin: 1rem 0 1rem 0;
   text-align: left;
-  text-indent: 1.5rem;
+  text-indent: 2rem;
 }
 
 .letter .salute {
@@ -1439,20 +1444,23 @@ p.salute {
 
 div.speaker,
 p.speaker {
+  color: #666;
+  font-weight: bold;
+  font-size: 90%;
   margin-top: 1rem;
   margin-bottom: 0.25rem;
-  font-weight: normal;
   text-transform: uppercase;
-  font-size: 0.9rem;
   text-indent: 3rem;
   line-height: 120%;
 }
 
 .speaker i,
 .speaker em {
+  font-weight: normal;
+  font-size: 111%;
   font-variant: normal;
-  font-size: 90%;
   text-transform: none;
+  color: #000;
 }
 
 .stage {
@@ -1681,7 +1689,7 @@ a.msDesc {
  * @rend, @type useful classes, in alphabetic order
  */
 p.p {
-  text-indent: 1.5rem;
+  text-indent: 2rem;
 }
 
 p.p.no {
@@ -1841,8 +1849,8 @@ span.exquote {
 /* seg[@type='exquote'] */
 .hanging,
 p.hanging {
-  margin-left: 1.5rem;
-  text-indent: -1.5rem
+  margin-left: 2rem;
+  text-indent: -2rem
 }
 
 .he {
@@ -1874,7 +1882,7 @@ div.left {
 }
 
 .lmarg1 {
-  margin-left: 1.5rem;
+  margin-left: 2rem;
 }
 
 .lmarg2 {
@@ -1903,7 +1911,7 @@ div.left {
 }
 
 h1.main {
-  margin-top: 1.5rem;
+  margin-top: 2rem;
 }
 
 .margin {
@@ -2595,7 +2603,7 @@ dl.xml dt {
 
   section>.note {
     margin: 1em 0 1rem 0;
-    padding-left: 1.5rem;
+    padding-left: 2rem;
   }
 
   a.noteback {

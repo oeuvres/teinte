@@ -236,7 +236,7 @@ class Teidoc
    */
   public function html($destfile=null, $theme = null)
   {
-    if (!$theme) $theme = 'http://oeuvres.github.io/Teinte/'; // where to find web assets like css and jslog for html file
+    if (!$theme) $theme = 'http://oeuvres.github.io/teinte/'; // where to find web assets like css and jslog for html file
     return $this->transform(
       dirname(__FILE__).'/tei2html.xsl',
       $destfile,
