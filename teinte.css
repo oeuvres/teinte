@@ -1959,12 +1959,14 @@ p.autofirst {
   text-indent: 0;
 }
 
+.dinkus,
 div.ornament {
   line-height: 95%;
   margin: 1rem 5rem;
   text-align: center;
 }
 
+.dinkus,
 .ornament.star {
   letter-spacing: 0.6rem;
 }

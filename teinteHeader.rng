@@ -501,7 +501,7 @@
     </define>
     <define name="date.type">
       <data type="string">
-        <param name="pattern">([0-9]{4}(-[0-9]{2}(-[0-9]{2})?)?)?</param>
+        <param name="pattern">\-?([0-9]{1,4}(-[0-9]{2}(-[0-9]{2})?)?)?</param>
       </data>
     </define>
     <define combine="choice" name="lang-att">
