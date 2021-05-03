@@ -300,6 +300,11 @@ Sections
   <xsl:template match="tei:head">
     <xsl:param name="from"/>
     <xsl:param name="level" select="count(ancestor::tei:*) - 2"/>
+    <xsl:variable name="id">
+      <xsl:for-each select="parent::*">
+        <xsl:call-template name="id"/>
+      </xsl:for-each>
+    </xsl:variable>
     <xsl:variable name="name">
       <xsl:choose>
         <xsl:when test="normalize-space(.) = ''"/>
@@ -318,9 +323,11 @@ Sections
             <xsl:if test="$verse"> verse</xsl:if>
           </xsl:with-param>
         </xsl:call-template>
-        <xsl:apply-templates select="node()[local-name()!='pb']">
-          <xsl:with-param name="from" select="$from"/>
-        </xsl:apply-templates>
+        <a href="#{$id}">
+          <xsl:apply-templates select="node()[local-name()!='pb']">
+            <xsl:with-param name="from" select="$from"/>
+          </xsl:apply-templates>
+        </a>
       </xsl:element>
     </xsl:if>
   </xsl:template>

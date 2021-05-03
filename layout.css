@@ -16,7 +16,7 @@ body {
 .text { 
   font-family: 'Bodoni Moda', 'Old Standard TT', sans-serif; /*   */
   font-size: 19px;
-  line-height: 150%;
+  line-height: 1.6;
 }
 
 
@@ -24,7 +24,7 @@ body {
 #noterefover {
   display: block;
   visibility: hidden;
-  line-height: 1.1em;
+  line-height: 1.1;
   padding: 2px 1ex;
   font-size: 85%;
   background: #FFFFFF;
