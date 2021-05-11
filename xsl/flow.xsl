@@ -474,6 +474,11 @@ Sections
       <xsl:when test="@type='hr'">
         <hr class="hr" align="center" width="30%"/>
       </xsl:when>
+      <xsl:when test="@type='dots'">
+        <hr  align="center" width="70%">
+          <xsl:call-template name="atts"/>
+        </hr>
+      </xsl:when>
       <xsl:when test="@type='rule'">
         <hr>
           <xsl:call-template name="atts"/>
