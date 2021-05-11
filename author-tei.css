@@ -25,11 +25,11 @@ Sources :
 
 /* Par défaut */
 TEI {
-  font-family: Arial;
+  font-family: Calibri, Arial, sans-serif;
   color: black;
   margin-left: auto;
   margin-right: auto;
-  max-width: 80ex;
+  max-width: 60ex;
 }
 
 /*
@@ -152,8 +152,8 @@ div7,
 front,
 group,
 text {
-  padding-left: 1ex;
-  margin-left: 1ex;
+  padding-left: 0.1rem;
+  margin-left: 0.4rem;
   border: 1px dashed #afafaf;
   border-top-color: #FFFFFF;
   border-bottom-color: #FFFFFF;
@@ -212,7 +212,7 @@ div7 {
   margin-bottom: 1rem;
   counter-increment: div7;
 }
-
+/* 
 div1 > head:before {
   content: counter(div1) ". ";
 }
@@ -236,6 +236,7 @@ body > div > div > head:before {
 body > div > div > div > head:before {
   content: counter(div1) "." counter(div2) "." counter(div3) ". ";
 }
+*/
 
 head {
   font-weight: bold;
@@ -384,20 +385,24 @@ opener {
 }
 
 p {
-  text-indent: 1.5rem;
+  text-indent: 1rem;
 }
 
-p > quote {
-  display: block;
-  margin-left: 2rem;
-  color: #008000;
+quote {
+  margin: 1rem 0 1rem 1rem;
+  color: #060;
 }
 
-p > quote > quote {
-  display: block;
-  margin-left: 2rem;
-  color: #00FF00;
+quote p:first-child {
+  text-indent: 0;
 }
+
+p quote {
+  display: inline;
+  margin: 0;
+  font-style: italic;
+}
+
 
 salute {
   text-indent: 1.5rem;
@@ -507,22 +512,31 @@ text {
 
 
 note {
+  font-style:initial;
+  font-weight: 300;
+  font-size: 90%;
   text-indent: 0;
   display: inline-block;
-  font-size: 95%;
   font-family: sans-serif;
-  font-style: normal;
-  color: #000000;
+  color: #666;
+  padding: 3px;
   background-color: #efefef;
 }
 
 note:before {
   counter-increment: note;
   white-space: pre;
-  content: '  [' counter(note) ']\a';
+  padding: 0;
+  background: #800;
+  font-size: 80%;
+  line-height: 0.8;
+  color: #fff;
+  font-weight: bold;
+  content: '[' counter(note) ']\a';
 }
 
 note:after {
+  background: #800;
   white-space: pre;
   content: '\a  ';
 }
@@ -585,16 +599,18 @@ gap:after {
 }
 
 *[rend = "i"],
-hi[rend = "i"],
-hi[rend = "it"],
-hi[rend = "italic"],
+*[rend = "it"],
+*[rend = "italic"],
+emph,
 mentioned,
-soCalled {
+soCalled,
+title {
   font-style: italic;
 }
 
-hi[rend = "i"] {
-  color: red;
+*[rend = "i"] emph,
+*[rend = "i"] title {
+  font-style: normal;
 }
 
 *[rend = "b"],
@@ -609,9 +625,9 @@ hi[rend = "smallcaps"] {
 }
 
 hi[rend = "sup"] {
-  vertical-align: super;
+  position: relative; 
+  top: -0.5em; 
   font-size: 80%;
-  line-height: 0.1;
 }
 
 hi[rend = "ul"],
