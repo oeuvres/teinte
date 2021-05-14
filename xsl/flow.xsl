@@ -523,7 +523,7 @@ Sections
       <xsl:choose>
         <xsl:when test="not(@rend)">ul</xsl:when>
         <xsl:when test="contains(' ordered ol Décimale ', concat(' ', @type, ' ')) ">ol</xsl:when>
-        <xsl:when test="contains(' a) a. decimal Décimal decimal-leading-zero 1. 1° 1) I I. lower-alpha lower-latin ol upper-alpha upper-latin upper-roman  ', concat(' ', @rend, ' ')) ">ol</xsl:when>
+        <xsl:when test="contains(' A A. A) a a) a. decimal Décimal decimal-leading-zero 1 1. 1° 1) I I. lower-alpha lower-latin ol upper-alpha upper-latin upper-roman  ', concat(' ', @rend, ' ')) ">ol</xsl:when>
         <xsl:otherwise>ul</xsl:otherwise>
       </xsl:choose>
     </xsl:variable>

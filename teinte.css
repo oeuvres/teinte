@@ -2172,10 +2172,12 @@ ol.simple {
   list-style-type: lower-greek
 }
 
+ol.a,
 .lower-latin {
   list-style-type: lower-latin
 }
 
+ol.i,
 .lower-roman {
   list-style-type: lower-roman
 }
@@ -2188,10 +2190,12 @@ ol.simple {
   list-style-type: upper-alpha;
 }
 
+ol.A,
 .upper-latin {
   list-style-type: upper-latin;
 }
 
+ol.I,
 .upper-roman {
   list-style-type: upper-roman;
 }

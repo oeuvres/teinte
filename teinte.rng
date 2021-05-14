@@ -2120,6 +2120,7 @@
                 <value>sup</value>
                 <value>sc</value>
                 <value>i</value>
+                <value>it</value>
                 <value>n</value>
               </choice>
             </attribute>
@@ -3196,12 +3197,16 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
           <a:documentation>décimal formlaté : 01, 02…</a:documentation>
           <value>upper-roman</value>
           <a:documentation>I II III</a:documentation>
-          <value>I.</value>
+          <value>I</value>
           <a:documentation>I. II. III.</a:documentation>
+          <value>a</value>
+          <a:documentation>alphabet latin minuscule : a, b, c…</a:documentation>
           <value>lower-latin</value>
           <a:documentation>alphabet latin minuscule : a, b, c…</a:documentation>
           <value>lower-alpha</value>
           <a:documentation>alphabétique minuscule : a, b, c…</a:documentation>
+          <value>A</value>
+          <a:documentation>alphabet latin majuscule : A, B, C…</a:documentation>
           <value>upper-latin</value>
           <a:documentation>alphabet latin majuscule : A, B, C…</a:documentation>
           <value>upper-alpha</value>
