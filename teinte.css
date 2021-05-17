@@ -1763,7 +1763,7 @@ a.bookmark:hover {
 
 div.center,
 p.center,
-blockquote.center>* {
+blockquote.center > * {
   text-align: center;
   text-indent: 0;
   margin-left: auto;
@@ -1776,15 +1776,16 @@ blockquote.center>* {
   display: table;
 }
 
+.center h1,
+.center h2,
+.center h3,
+.center h4,
+.center .l,
 .center p {
   text-align: inherit;
   text-indent: 0;
 }
 
-.center l {
-  text-align: inherit;
-  text-indent: 0;
-}
 
 span.center {
   display: block;

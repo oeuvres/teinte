@@ -550,6 +550,7 @@ Interpret TEI header as html.
       <xsl:text>)</xsl:text>
     </span>
   </xsl:template>
+  <!-- What for ?
   <xsl:template match="*[tei:surname]" mode="txt">
     <xsl:variable name="txt">
       <xsl:apply-templates select="."/>
@@ -565,6 +566,7 @@ Interpret TEI header as html.
       </xsl:for-each>
     </span>
   </xsl:template>
+  -->
   <xsl:template match="tei:imprint">
     <span>
       <xsl:call-template name="headatts"/>

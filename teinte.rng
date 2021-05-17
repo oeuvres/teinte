@@ -587,6 +587,7 @@
             <ref name="date"/>
             <ref name="placeName"/>
             <ref name="point"/>
+            <ref name="surname"/>
           </choice>
         </zeroOrMore>
       </element>
