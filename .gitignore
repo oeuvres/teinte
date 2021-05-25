@@ -1,5 +1,4 @@
 *.bak
 .DS_Store
-common
-latex
+work/
 

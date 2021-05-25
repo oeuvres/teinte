@@ -78,7 +78,7 @@ Gobal TEI parameters and variables are divided in different categories
           </xsl:otherwise>
         </xsl:choose>
       </xsl:when>
-      <xsl:otherwise>2016</xsl:otherwise>
+      <xsl:otherwise/>
     </xsl:choose>
   </xsl:param>
   <!-- Choose an output format (has been used for epub) -->
