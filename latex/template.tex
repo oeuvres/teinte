@@ -1,24 +1,46 @@
-% memoir and 
-\documentclass[11pt,a4paper,twoside,french]{book}
+% memoir and koma does not work well for section titles and columns, waiting for LaTeX3
+\documentclass[10pt,twoside,french]{book}
 \makeatletter % @@@
 
+% before geometry and cols
+\usepackage{xcolor}
+\definecolor{shadecolor}{gray}{0.95}
+\definecolor{bghi}{gray}{0.5}
+
+% specific A4
+\usepackage{multicol}
+\usepackage[%
+  a4paper,
+  outer=1cm,
+  inner=2cm,
+  tmargin=1.5cm,
+  bmargin=1.5cm,
+]{geometry}
+\setlength{\columnsep}{2cm}
+\setlength{\columnseprule}{0.2pt}
+\def{\columnseprulecolor}{\gray}
+
+
 % latex packages and their configuration
+% \usepackage{colortbl} % table colors
+\usepackage{tcolorbox}
 \usepackage{etoolbox}
-\usepackage{colortbl}
 \usepackage{wrapfig}
+\RequirePackage{fix-cm}
 \usepackage{ifxetex}
+
+% indents
 \usepackage[%
   indentfirst=false,
   rightmargin=0pt,
-  leftmargin=12pt
+  leftmargin=1.5em
 ]{quoting}
-\setlength{\parindent}{17pt}
-\usepackage{multicol}
-\setlength{\columnsep}{2.2em}
-\usepackage[a4paper,twoside,lmargin=1cm,rmargin=1cm,tmargin=1.5cm,bmargin=2cm,marginparwidth=0.75in]{geometry}
+\setlength{\parindent}{1.5em}
+\setlength{\parskip}{0pt}
+
+
 \usepackage{framed}
 \usepackage{lettrine}
-\definecolor{shadecolor}{gray}{0.95}
 \usepackage{longtable}
 % \usepackage[normalem]{ulem} % Package multicol Warning: May not work
 \usepackage{graphicx}
@@ -30,23 +52,22 @@
   {\RequirePackage{color}}
 \ifxetex
   \usepackage{fontspec}
-  \setmainfont[Ligatures=TeX, % recommended
+  \defaultfontfeatures{Scale = MatchLowercase}
+  \setmainfont[%
+    Scale=1.05,
+    Ligatures={Common, TeX},
     % UprightFont={* Light},
     BoldFont={* SemiBold},
-    ItalicFont={* SemiBold Italic}]
-  {Open Sans}
+    ItalicFont={* SemiBold Italic}
+  ]{Open Sans}
   \setsansfont{Bitter} 
   \usepackage{xunicode}
   \defaultfontfeatures{Ligatures={TeX}}
   \usepackage{polyglossia} % non-break space french punct
   \setmainlanguage{french}
-  % \setmainfont{Arial}
   \catcode`⃥=\active \def⃥{\textbackslash}
   \catcode`❴=\active \def❴{\{}
   \catcode`❵=\active \def❵{\}}
-  \def\textJapanese{\fontspec{Noto Sans CJK JP}}
-  \def\textChinese{\fontspec{Noto Sans CJK SC}}
-  \def\textKorean{\fontspec{Noto Sans CJK KR}}
   \setmonofont{DejaVu Sans Mono}
 \else
   \IfFileExists{utf8x.def}%
@@ -72,6 +93,7 @@
   \usepackage{times}
 \fi
 
+\newcommand*\showfontsize{\f@size{} point}
 
 \def\exampleFont{\ttfamily\small}
 \DeclareTextSymbol{\textpi}{OML}{25}
@@ -165,6 +187,7 @@
 % footnotes
 \renewcommand*{\marginfont}{\itshape\footnotesize}
 \patchcmd{\@footnotetext}{\footnotesize}{\small}{}{}
+\renewcommand\footnoterule{\vspace*{0.3cm}\hrule height 0.1pt width 3cm \vspace*{0.3cm}}
 
 \def\Gin@extensions{.pdf,.png,.jpg,.mps,.tif}
 
@@ -185,7 +208,7 @@
 
 \renewcommand\chapter{%
   \if@openright\cleardoublepage\else\clearpage\fi
-  \thispagestyle{plain}%
+  \thispagestyle{plain} % no fancy
   \global\@topnum\z@
   \@afterindentfalse
   \secdef\@chapter\@schapter
@@ -216,25 +239,44 @@
      {\reset@font\normalsize\bfseries}
 }
 
-\setcounter{secnumdepth}{-2} % no counters for hierarchy
+\setcounter{secnumdepth}{-2} % no counters for hierarchy titles
 \setcounter{tocdepth}{5}
 
-\usepackage{titlesec}
-
-\titleformat{\chapter}[display]
-  {\huge\bfseries}
+\usepackage[explicit]{titlesec} % NO implicit !
+\tcbuselibrary{skins}
+\usetikzlibrary{calc}
+\usetikzlibrary{shadows}
+\titleformat{name=\chapter}[display]
+  {\Large\bfseries\color{bghi}}
   {\thechapter}
   {35pt}
-  {}
+  {#1} % explicit
   [\vspace{0.1ex}{\titlerule[0.1pt]}]
 \titlespacing*{\chapter}{0pt}{-35pt}{0pt}[0pt]
 
-\titleformat{\section}[hang]
-  {\large\bfseries\sffamily} % filright
-  {\thesection}
+\newtcolorbox{sectionbox}{%
+  enhanced,
+  width=\linewidth,
+  colback=white,
+  % coltext=white,
+  colframe=black,
+  frame hidden,
+  boxrule=0.1pt,
+  left=3pt,
+  right=3pt,
+  top=0pt,
+  bottom=0pt,
+  halign=flush right,
+  lifted shadow={-0.3pt}{-2mm}{3mm}{0.1mm}{bghi}
+}
+\titleformat{name=\section}[hang]
+  {\large\bfseries} % filright ?
+  {} % \thesection
   {}
-  {}[{\titlerule[0.1pt]}]
-\titlespacing{\section}{0pt}{1.5em}{1em}{}
+% {\colorbox{bghi}{\parbox{\dimexpr\linewidth-2\fboxsep}{#1}}}
+  {\begin{sectionbox}{#1}\end{sectionbox}}
+
+\titlespacing{\section}{0pt}{1.5em}{-10pt}{} % done by colorbox
 
 \def\tableofcontents{\subsection{\contentsname}\@starttoc{toc}} % title of the toc in the toc
 
@@ -258,8 +300,6 @@
     \endlist}
 
 
-\parskip0pt
-\parindent1em
 \def\Panel#1#2#3#4{\multicolumn{#3}{){\columncolor{#2}}#4}{#1}}
 \newenvironment{reflist}{%
   \begin{raggedright}\begin{list}{}
@@ -329,15 +369,23 @@
 \usepackage{fancyvrb}
 \usepackage{fancyhdr}
 \usepackage[fit]{truncate}
-\fvset{frame=single,numberblanklines=false,xleftmargin=5mm,xrightmargin=5mm}
+\fvset{frame=single,numberblanklines=false,xleftmargin=5mm,xrightmargin=5mm} % verbatim code
+% redefine plain
+\fancypagestyle{plain}{%
+  \fancyhf{}% clear all header and footer fields
+  \fancyfoot[RO,LE]{\thepage} % except the center
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
 \pagestyle{fancy}
-% \renewcommand{\chaptermark}[1]{\markboth{#1}{}}
 \fancyhf{} 
 \setlength{\headheight}{14pt}
 \renewcommand{\headrulewidth}{0.1pt}
-\fancyhead[RO,RE]{\nouppercase{\truncate{0.5\headwidth}{\leftmark}}} % Chapter title
-\fancyhead[LO,LE]{\nouppercase{\truncate{0.5\headwidth}{\TheID}}} % Chapter title
-\fancyfoot[CO,CE]{\thepage}
+\fancyhead{} % reset head
+\fancyfoot{} % reset foot
+\fancyhead[RO,RE]{\color{bghi}\nouppercase{\truncate{0.5\headwidth}{\leftmark}}} % Chapter title
+\fancyhead[CO,CE]{\thepage}
+\fancyhead[LO,LE]{\color{bghi}\nouppercase{\truncate{0.5\headwidth}{\TheID}}} % Chapter title
 % last page hasn't work
 % \fancypagestyle{plain}{\fancyhead{}\renewcommand{\headrulewidth}{0pt}}
 
