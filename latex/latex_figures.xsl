@@ -116,7 +116,6 @@ A light version for XSLT1, with local improvements.
   
   <xsl:template match="tei:table">
     <xsl:call-template name="tei:makeHyperTarget"/>
-    <xsl:text> \par </xsl:text>
     <xsl:choose>
       <xsl:when test="ancestor::tei:table or $longtables='false'">
         <xsl:text>\begin{tabular}</xsl:text>

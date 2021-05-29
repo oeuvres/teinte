@@ -15,7 +15,6 @@ https://github.com/TEIC/Stylesheets/tree/dev/latex
 A light version for XSLT1, with local improvements.
 2021, frederic.glorieux@fictif.org
   -->
-  <xsl:import href="../xsl/common.xsl"/>
   <xsl:template match="*" mode="innertext">
     <xsl:apply-templates select="."/>
   </xsl:template>
@@ -24,36 +23,17 @@ A light version for XSLT1, with local improvements.
   </xsl:template>
   <xsl:template match="tei:teiCorpus/tei:TEI">
     <xsl:apply-templates/>
-    <xsl:text>&#10;\par\noindent\rule{\textwidth}{2pt}&#10;\par </xsl:text>
+    <xsl:text>\noindent\rule{\textwidth}{2pt}&#10;\par&#10;</xsl:text>
   </xsl:template>
   <xsl:template name="mainDocument">
-
+    
     <xsl:apply-templates/>
     <!-- latexEnd before endnotes ? -->
     <xsl:if test="key('ENDNOTES',1)">
       <xsl:text>&#10;\theendnotes</xsl:text>
     </xsl:if>
-    <xsl:text>&#10;\end{document}&#10;</xsl:text>
   </xsl:template>
-  <xsl:template name="latexOther">
-    <!--
-    <xsl:text>\def\TheFullDate{</xsl:text>
-    <xsl:text>}&#10;</xsl:text>
-    -->
-    <xsl:text>\def\TheID{</xsl:text>
-    <xsl:value-of select="$docid"/>
-    <xsl:text>\makeatother </xsl:text>
-    <xsl:text>}&#10;\def\TheDate{</xsl:text>
-    <xsl:value-of select="$docdate"/>
-    <xsl:text>}&#10;\title{</xsl:text>
-    <xsl:value-of select="$doctitle"/>
-    <xsl:text>}&#10;\author{</xsl:text>
-    <xsl:value-of select="$byline"/>
-    <xsl:text>}</xsl:text>
-    <xsl:text>\makeatletter </xsl:text>
-    <xsl:call-template name="latexBegin"/>
-    <xsl:text>\makeatother </xsl:text>
-  </xsl:template>
+
   <xsl:template match="tei:teiHeader"/>
   <xsl:template match="tei:back">
     <xsl:if test="not(preceding::tei:back)">
@@ -82,7 +62,28 @@ A light version for XSLT1, with local improvements.
     <xsl:apply-templates/>
     <xsl:text>}&#10;</xsl:text>
   </xsl:template>
-  <xsl:template match="tei:div|tei:div1|tei:div2|tei:div3|tei:div4|tei:div5">
+  <!-- Hierarchies -->
+  <xsl:template match="tei:div">
+    <xsl:variable name="level">
+      <xsl:call-template name="level"/>
+    </xsl:variable>   
+    <xsl:choose>
+      <!--  restart columns -->
+      <xsl:when test="$documentclass = 'book' and $level &lt;= 0">
+        <xsl:text>&#10;\begin{multicols}{2}&#10;[&#10;</xsl:text>
+        <xsl:apply-templates select="tei:head"/>
+        <xsl:apply-templates select="tei:argument"/>
+        <xsl:text>]&#10;</xsl:text>
+        <xsl:apply-templates select="*[not(self::tei:head)][not(self::tei:argument)]"/>
+        <xsl:text>&#10;\end{multicols}</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates/>
+      </xsl:otherwise>
+    </xsl:choose>
+    
+  </xsl:template>
+  <xsl:template match="tei:div1|tei:div2|tei:div3|tei:div4|tei:div5">
     <xsl:apply-templates/>
   </xsl:template>
   <xsl:template match="tei:divGen[@type='toc']"> \tableofcontents </xsl:template>
@@ -110,7 +111,7 @@ A light version for XSLT1, with local improvements.
       <xsl:when test="parent::tei:group">
         <xsl:apply-templates/>
       </xsl:when>
-      <xsl:otherwise> \par \hrule \begin{quote} \begin{small} <xsl:apply-templates mode="innertext"/> \end{small} \end{quote} \hrule \par </xsl:otherwise>
+      <xsl:otherwise>\hrule \begin{quote} \begin{small} <xsl:apply-templates mode="innertext"/> \end{small} \end{quote} \hrule \par&#10;</xsl:otherwise>
     </xsl:choose>
   </xsl:template>
   <xsl:template match="tei:titlePage"> \begin{titlepage} <xsl:apply-templates/> \end{titlepage} \cleardoublepage </xsl:template>

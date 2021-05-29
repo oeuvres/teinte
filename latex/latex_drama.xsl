@@ -160,10 +160,9 @@ of this software, even if advised of the possibility of such damage.
       <desc>Process element stage</desc>
    </doc>
   <xsl:template match="tei:stage">
-      <xsl:text>&#10;\par&#10;</xsl:text>
       <xsl:text>\textit{</xsl:text>
       <xsl:apply-templates/>
-      <xsl:text>}\par </xsl:text>
+      <xsl:text>}\par&#10;</xsl:text>
   </xsl:template>
   <doc xmlns="http://www.oxygenxml.com/ns/doc/xsl">
       <desc>Process element sp/tei:stage</desc>

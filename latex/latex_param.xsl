@@ -11,9 +11,13 @@ https://github.com/TEIC/Stylesheets/tree/dev/latex
 A light version for XSLT1, with local improvements.
 2021, frederic.glorieux@fictif.org
   -->
+  <!-- keys used for tests -->
   <xsl:key name="ENDNOTES" match="tei:note[@place='end']" use="1"/>
   <xsl:key name="FOOTNOTES" match="tei:note[not(@place) or @place='bottom']" use="1"/>
   <xsl:key name="TREES" match="tei:eTree[not(ancestor::tei:eTree)]" use="1"/>
+  <xsl:key name="APP" match="tei:app" use="1"/>
+  <xsl:key name="CHAPTERS" match="tei:div[@type='chapter' or @type='article']" use="generate-id()"/>
+  
   <doc xmlns="http://www.oxygenxml.com/ns/doc/xsl" class="numbering" type="boolean">
     <desc>Automatically number sections</desc>
   </doc>
@@ -85,7 +89,7 @@ A light version for XSLT1, with local improvements.
   <doc xmlns="http://www.oxygenxml.com/ns/doc/xsl" class="layout" type="string">
     <desc>Which environment to use for quotes (quote, quotation, quoting, ...)</desc>
   </doc>
-  <xsl:param name="quoteEnv">quote</xsl:param>
+  <xsl:param name="quoteEnv">quoting</xsl:param>
   
 
   <xsl:param name="longtables">true</xsl:param>

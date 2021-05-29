@@ -12,15 +12,17 @@ else if (php_sapi_name() == "cli") Latex::cli();
 class Latex {
   protected $dom;
   protected $srcfile;
-  protected $proc;
+  static protected $template;
+  static protected $proc;
   // escape all text nodes 
-  protected static $latex_esc = array(
+  static protected $latex_esc = array(
     '@\s+@u' => ' ',
     '@&amp;@u' => '\$1',
     '@[%$#_{}]@u' => '\$1',
     '@~@u' => '\textasciitilde',
-    '@^@u' => '\textasciicircum',
-    '@\@u' => '\textbackslash',
+    '@\^@u' => '\textasciicircum',
+    '@\\\@u' => '\textbackslash',
+    '@(\[.*?\])@u' => '{$1}', // for <head> or <argument>  
   );
   
   public function __construct() {
@@ -28,11 +30,15 @@ class Latex {
     $this->dom->preserveWhiteSpace = false;
     $this->dom->formatOutput=true;
     $this->dom->substituteEntities=true;
-    $xsl = new DOMDocument("1.0", "UTF-8");
-    $xsl->load(dirname(__FILE__));
-    $this->proc = new XSLTProcessor();
-    $this->proc->importStyleSheet($xsl);
-
+    if (!self::$proc) {
+      $xsl = new DOMDocument("1.0", "UTF-8");
+      $xsl->load(dirname(__FILE__).'/latex.xsl');
+      self::$proc = new XSLTProcessor();
+      self::$proc->importStyleSheet($xsl);
+    }
+    if (!self::$template) {
+      self::$template = file_get_contents(dirname(__FILE__)."/template.tex");
+    }
   }
   
   function load($srcfile)
@@ -54,9 +60,15 @@ class Latex {
     $this->dom = $dom;
   }
   /** generate tex and pdf */
-  static function export($dstfile) 
+  function export($dstfile) 
   {
-    $proc->transformToUri($this->dom, $dstfile);
+    $tei = self::$proc->transformToXml($this->dom);
+    $tex = str_replace(
+      array('%tei%'), 
+      array($tei),
+      self::$template
+    );
+    file_put_contents($dstfile, $tex);
   }
   
   public static function cli() 
@@ -79,10 +91,12 @@ usage    : php -f latex.php (dstdir/)? srcdir/*.xml\n");
     $latex = new Latex();
     while($glob = array_shift($_SERVER['argv']) ) {
       foreach(glob($glob) as $srcfile) {
-        $dstname = $dstdir . pathinfo( $srcfile, PATHINFO_FILENAME);
+        $filename = pathinfo($srcfile, PATHINFO_FILENAME);
+        if ($dstdir) $dstname = $dstdir.$filename;
+        else $dstname = dirname($srcfile).'/'.$filename;
         $latex->load($srcfile);
-        echo "$srcfile > $dst\n";
-        // self::export($dstname.'.tex');
+        echo "$srcfile > $dstname(.tex|.pdf)\n";
+        $latex->export($dstname.'.tex');
       }
     }
 

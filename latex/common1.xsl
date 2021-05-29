@@ -9,15 +9,16 @@
   version="1.0"
 >
   <!-- 
-  TEI common xslt 1
+  some S. Rahtz TEI common templates ported to xslt 1
   -->
-  <xsl:key name="APP" match="tei:app" use="1"/>
   
   <xsl:template name="tei:findLanguage">
-    <xsl:param name="context"/>
-    <xsl:for-each select="$context">
-      <xsl:value-of select="ancestor-or-self::*[@xml:lang][1]/@xml:lang"/>
-    </xsl:for-each>
+    <xsl:param name="context" select="."/>
+    <xsl:if test="$context">
+      <xsl:for-each select="$context">
+        <xsl:value-of select="ancestor-or-self::*[@xml:lang][1]/@xml:lang"/>
+      </xsl:for-each>
+    </xsl:if>
   </xsl:template>
   
   <xsl:template name="tei:i18n">
@@ -31,7 +32,7 @@
   </xsl:template>
   
   <xsl:template name="tei:resolveURI">
-    <xsl:param name="context"/>
+    <xsl:param name="context" select="."/>
     <xsl:param name="target"/>
     <!-- Could be better here -->
     <xsl:value-of select="normalize-space($target)"/>
@@ -99,11 +100,6 @@
   <!-- Is given an element and defines whether or not this element is to be rendered inline. -->
   <xsl:template name="tei:isInline">
     <xsl:param name="element" select="."/>
-    <xsl:variable name="prev">
-      <xsl:for-each select="preceding-sibling::*[1]">
-        <xsl:call-template name="tei:isInline"/>
-      </xsl:for-each>
-    </xsl:variable>   
     <xsl:choose>
       <xsl:when test="count($element) = 0">true</xsl:when>
       <xsl:otherwise>
@@ -114,21 +110,22 @@
             <xsl:when test="parent::tei:body"/>
             <xsl:when test="parent::tei:front"/>
             <xsl:when test="parent::tei:back"/>
+            <xsl:when test="parent::tei:list"/>
+            <xsl:when test="parent::tei:figure"/>
             <xsl:when test="self::tei:body"/>
             <xsl:when test="self::tei:front"/>
             <xsl:when test="self::tei:back"/>
             <xsl:when test="not(self::*)">true</xsl:when>
             <xsl:when test="parent::tei:bibl/parent::tei:q">true</xsl:when>
-            <xsl:when test="tei:match(@rend,'inline') and not(tei:p or tei:l)">true</xsl:when>
+            <xsl:when test="contains(@rend,'inline') and not(tei:p or tei:l)">true</xsl:when>
             <xsl:when test="self::tei:note[@place='display']"/>
             <xsl:when test="self::tei:note[@place='block']"/>
-            <xsl:when test="self::tei:note[tei:isEndNote(.)]">true</xsl:when>
-            <xsl:when test="self::tei:note[tei:isFootNote(.)]">true</xsl:when>
-            <xsl:when test="tei:match(@rend,'display') or tei:match(@rend,'block')"/>
+            <xsl:when test="self::tei:note">true</xsl:when>
+            <xsl:when test="contains(@rend,'display') or contains(@rend,'block')"/>
             <xsl:when test="@type='display' or @type='block'"/>
             <xsl:when test="tei:table or tei:figure or tei:list or tei:lg    or tei:q/tei:l or tei:l or tei:p or tei:biblStruct or tei:sp or tei:floatingText"/>
             <xsl:when test="self::tei:cit[not(@rend)]">true</xsl:when>
-            <xsl:when test="parent::tei:cit[tei:match(@rend,'display')]"/>
+            <xsl:when test="parent::tei:cit[contains(@rend,'display')]"/>
             <xsl:when test="parent::tei:cit and (tei:p or tei:l)"/>
             <xsl:when test="parent::tei:cit and parent::cit/tei:bibl"/>
             <xsl:when test="self::tei:docAuthor and parent::tei:byline">true</xsl:when>
@@ -144,7 +141,6 @@
             <xsl:when test="self::tei:am">true</xsl:when>
             <xsl:when test="self::tei:att">true</xsl:when>
             <xsl:when test="self::tei:author">true</xsl:when>
-            <xsl:when test="self::tei:bibl and $prev = ''"/>
             <xsl:when test="self::tei:bibl and not(parent::tei:listBibl)">true</xsl:when>
             <xsl:when test="self::tei:biblScope">true</xsl:when>
             <xsl:when test="self::tei:br">true</xsl:when>

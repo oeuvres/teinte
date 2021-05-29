@@ -17,6 +17,7 @@ A light version for XSLT1, with local improvements.
   -->
   
   <xsl:import href="common1.xsl"/>
+  <xsl:import href="common_core.xsl"/>
   <xsl:import href="latex_core.xsl"/>
   <xsl:import href="latex_misc.xsl"/>
   <xsl:import href="latex_drama.xsl"/>
@@ -260,6 +261,7 @@ A light version for XSLT1, with local improvements.
     <xsl:text>\\\rule[0.5ex]{\textwidth}{0.5pt}</xsl:text>
   </xsl:template>
 
+  <!-- ?? -->
   <xsl:template name="makeBlock">
     <xsl:param name="style"/>
     <xsl:value-of select="concat('\begin{', $style, '}')"/>

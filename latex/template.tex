@@ -1,14 +1,46 @@
-\documentclass[11pt,twoside,french]{book}\makeatletter
+% memoir and 
+\documentclass[11pt,a4paper,twoside,french]{book}
+\makeatletter % @@@
 
-\IfFileExists{xcolor.sty}%
-  {\RequirePackage{xcolor}}%
-  {\RequirePackage{color}}
+% latex packages and their configuration
+\usepackage{etoolbox}
 \usepackage{colortbl}
 \usepackage{wrapfig}
 \usepackage{ifxetex}
+\usepackage[%
+  indentfirst=false,
+  rightmargin=0pt,
+  leftmargin=12pt
+]{quoting}
+\setlength{\parindent}{17pt}
+\usepackage{multicol}
+\setlength{\columnsep}{2.2em}
+\usepackage[a4paper,twoside,lmargin=1cm,rmargin=1cm,tmargin=1.5cm,bmargin=2cm,marginparwidth=0.75in]{geometry}
+\usepackage{framed}
+\usepackage{lettrine}
+\definecolor{shadecolor}{gray}{0.95}
+\usepackage{longtable}
+% \usepackage[normalem]{ulem} % Package multicol Warning: May not work
+\usepackage{graphicx}
+\usepackage{marginnote}
+
+% conditional packages (xetex)
+\IfFileExists{xcolor.sty}%
+  {\RequirePackage{xcolor}}%
+  {\RequirePackage{color}}
 \ifxetex
   \usepackage{fontspec}
+  \setmainfont[Ligatures=TeX, % recommended
+    % UprightFont={* Light},
+    BoldFont={* SemiBold},
+    ItalicFont={* SemiBold Italic}]
+  {Open Sans}
+  \setsansfont{Bitter} 
   \usepackage{xunicode}
+  \defaultfontfeatures{Ligatures={TeX}}
+  \usepackage{polyglossia} % non-break space french punct
+  \setmainlanguage{french}
+  % \setmainfont{Arial}
   \catcode`⃥=\active \def⃥{\textbackslash}
   \catcode`❴=\active \def❴{\{}
   \catcode`❵=\active \def❵{\}}
@@ -16,7 +48,6 @@
   \def\textChinese{\fontspec{Noto Sans CJK SC}}
   \def\textKorean{\fontspec{Noto Sans CJK KR}}
   \setmonofont{DejaVu Sans Mono}
-  \usepackage[cyr]{aeguill} %Guillemet français   
 \else
   \IfFileExists{utf8x.def}%
    {\usepackage[utf8x]{inputenc}
@@ -40,6 +71,8 @@
   \IfFileExists{tipa.sty}{\usepackage{tipa}}{}
   \usepackage{times}
 \fi
+
+
 \def\exampleFont{\ttfamily\small}
 \DeclareTextSymbol{\textpi}{OML}{25}
 \usepackage{relsize}
@@ -72,6 +105,8 @@
 \gdef\arraybackslash{\let\\=\@arraycr}
 \def\@textsubscript#1{{\m@th\ensuremath{_{\mbox{\fontsize\sf@size\z@#1}}}}}
 \def\Panel#1#2#3#4{\multicolumn{#3}{){\columncolor{#2}}#4}{#1}}
+
+% TEI commands
 \def\abbr{}
 \def\corr{}
 \def\expan{}
@@ -104,6 +139,8 @@
 \newenvironment{msItem}{\vskip 6pt}{\par}
 \newenvironment{rubric}{}{}
 \newenvironment{titlePart}{}{\par }
+\newenvironment{blabel}{\begin{center}\begin{bfseries}}{\end{bfseries}\end{center}}
+
 
 \newcolumntype{L}[1]{){\raggedright\arraybackslash}p{#1}}
 \newcolumntype{C}[1]{){\centering\arraybackslash}p{#1}}
@@ -122,43 +159,21 @@
 \mathcode`\_=\string"8000
 \catcode`\_=12\relax
 
-\usepackage[a4paper,twoside,lmargin=1in,rmargin=1in,tmargin=1in,bmargin=1in,marginparwidth=0.75in]{geometry}
-\usepackage{framed}
-
-\definecolor{shadecolor}{gray}{0.95}
-\usepackage{longtable}
-\usepackage[normalem]{ulem}
-\usepackage{fancyvrb}
-\usepackage{fancyhdr}
-\usepackage{graphicx}
-\usepackage{marginnote}
 
 \renewcommand{\@cite}[1]{#1}
 
-
+% footnotes
 \renewcommand*{\marginfont}{\itshape\footnotesize}
+\patchcmd{\@footnotetext}{\footnotesize}{\small}{}{}
 
 \def\Gin@extensions{.pdf,.png,.jpg,.mps,.tif}
 
-  \pagestyle{fancy}
 
-\usepackage[
-  bookmarks       = true,
-  bookmarksopen   = true,
-  unicode,
-  pdftitle={%pdftitle%},
-  pdfauthor={%pdfauthor%},
-  pdfdisplaydoctitle
-]{hyperref}
-\hyperbaseurl{}
 
-	 \paperwidth210mm
-	 \paperheight297mm
-              
+
 \def\@pnumwidth{1.55em}
 \def\@tocrmarg {2.55em}
 \def\@dotsep{4.5}
-\setcounter{tocdepth}{3}
 \clubpenalty=8000
 \emergencystretch 3em
 \hbadness=4000
@@ -168,73 +183,61 @@
 \vbadness=4000
 \widowpenalty=10000
 
-\renewcommand\section{\@startsection {section}{1}{\z@}%
+\renewcommand\chapter{%
+  \if@openright\cleardoublepage\else\clearpage\fi
+  \thispagestyle{plain}%
+  \global\@topnum\z@
+  \@afterindentfalse
+  \secdef\@chapter\@schapter
+}
+\renewcommand\section{\@startsection{section}{1}{\z@}%
      {-1.75ex \@plus -0.5ex \@minus -.2ex}%
      {0.5ex \@plus .2ex}%
-     {\reset@font\Large\bfseries\sffamily}}
+     {\reset@font\Large\bfseries}
+}
 \renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
      {-1.75ex\@plus -0.5ex \@minus- .2ex}%
      {0.5ex \@plus .2ex}%
-     {\reset@font\Large\sffamily}}
+     {\reset@font\Large}
+}
 \renewcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
      {-1.5ex\@plus -0.35ex \@minus -.2ex}%
      {0.5ex \@plus .2ex}%
-     {\reset@font\large\sffamily}}
+     {\reset@font\large}
+}
 \renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
      {-1ex \@plus-0.35ex \@minus -0.2ex}%
      {0.5ex \@plus .2ex}%
-     {\reset@font\normalsize\sffamily}}
+     {\reset@font\normalsize}
+}
 \renewcommand\subparagraph{\@startsection{subparagraph}{5}{\parindent}%
      {1.5ex \@plus1ex \@minus .2ex}%
      {-1em}%
-     {\reset@font\normalsize\bfseries}}
+     {\reset@font\normalsize\bfseries}
+}
 
+\setcounter{secnumdepth}{-2} % no counters for hierarchy
+\setcounter{tocdepth}{5}
 
-\def\l@section#1#2{\addpenalty{\@secpenalty} \addvspace{1.0em plus 1pt}
- \@tempdima 1.5em \begingroup
- \parindent \z@ \rightskip \@pnumwidth 
- \parfillskip -\@pnumwidth 
- \bfseries \leavevmode #1\hfil \hbox to\@pnumwidth{\hss #2}\par
- \endgroup}
-\def\l@subsection{\@dottedtocline{2}{1.5em}{2.3em}}
-\def\l@subsubsection{\@dottedtocline{3}{3.8em}{3.2em}}
-\def\l@paragraph{\@dottedtocline{4}{7.0em}{4.1em}}
-\def\l@subparagraph{\@dottedtocline{5}{10em}{5em}}
-\@ifundefined{c@section}{\newcounter{section}}{}
-\@ifundefined{c@chapter}{\newcounter{chapter}}{}
-\newif\if@mainmatter 
-\@mainmattertrue
-\def\chaptername{Chapter}
-\def\frontmatter{%
-  \pagenumbering{roman}
-  \def\thechapter{\@roman\c@chapter}
-  \def\theHchapter{\roman{chapter}}
-  \def\thesection{\@roman\c@section}
-  \def\theHsection{\roman{section}}
-  \def\@chapapp{}%
-}
-\def\mainmatter{%
-  \cleardoublepage
-  \def\thechapter{\@arabic\c@chapter}
-  \setcounter{chapter}{0}
-  \setcounter{section}{0}
-  \pagenumbering{arabic}
-  \setcounter{secnumdepth}{6}
-  \def\@chapapp{\chaptername}%
-  \def\theHchapter{\arabic{chapter}}
-  \def\thesection{\@arabic\c@section}
-  \def\theHsection{\arabic{section}}
-}
-\def\backmatter{%
-  \cleardoublepage
-  \setcounter{chapter}{0}
-  \setcounter{section}{0}
-  \setcounter{secnumdepth}{2}
-  \def\@chapapp{\appendixname}%
-  \def\thechapter{\@Alph\c@chapter}
-  \def\theHchapter{\Alph{chapter}}
-  \appendix
-}
+\usepackage{titlesec}
+
+\titleformat{\chapter}[display]
+  {\huge\bfseries}
+  {\thechapter}
+  {35pt}
+  {}
+  [\vspace{0.1ex}{\titlerule[0.1pt]}]
+\titlespacing*{\chapter}{0pt}{-35pt}{0pt}[0pt]
+
+\titleformat{\section}[hang]
+  {\large\bfseries\sffamily} % filright
+  {\thesection}
+  {}
+  {}[{\titlerule[0.1pt]}]
+\titlespacing{\section}{0pt}{1.5em}{1em}{}
+
+\def\tableofcontents{\subsection{\contentsname}\@starttoc{toc}} % title of the toc in the toc
+
 \newenvironment{bibitemlist}[1]{%
    \list{\@biblabel{\@arabic\c@enumiv}}%
        {\settowidth\labelwidth{\@biblabel{#1}}%
@@ -254,7 +257,7 @@
     {\@latex@warning{Empty `bibitemlist' environment}}%
     \endlist}
 
-\def\tableofcontents{\section*{\contentsname}\@starttoc{toc}}
+
 \parskip0pt
 \parindent1em
 \def\Panel#1#2#3#4{\multicolumn{#3}{){\columncolor{#2}}#4}{#1}}
@@ -290,11 +293,13 @@
   \hspace{-0.75in}{\bfseries\fontsize{16pt}{18pt}\selectfont#2}%
   }{}
       \def\TheFullDate{2021 (revised: 2021-05-24T17:10:30Z)}
-\def\TheID{\makeatother }
-\def\TheDate{2021}
+
+% For title page
+\def\TheID{Victor Hugo, 1852, Napoléon le petit}
+\def\TheDate{1852}
 \title{Napoléon le petit}
-\author{}\makeatletter 
-\makeatletter
+\author{Victor Hugo}
+
 \newcommand*{\cleartoleftpage}{%
   \clearpage
     \if@twoside
@@ -306,8 +311,8 @@
     \fi
   \fi
 }
-\makeatother
-\makeatletter
+
+
 \thispagestyle{empty}
 \markright{\@title}\markboth{\@title}{\@author}
 \renewcommand\small{\@setfontsize\small{9pt}{11pt}\abovedisplayskip 8.5\p@ plus3\p@ minus4\p@
@@ -319,31 +324,71 @@
                \parsep 2\p@ plus\p@ minus\p@
                \itemsep 1pt}
 }
-\makeatother
+
+
+\usepackage{fancyvrb}
+\usepackage{fancyhdr}
+\usepackage[fit]{truncate}
 \fvset{frame=single,numberblanklines=false,xleftmargin=5mm,xrightmargin=5mm}
+\pagestyle{fancy}
+% \renewcommand{\chaptermark}[1]{\markboth{#1}{}}
 \fancyhf{} 
 \setlength{\headheight}{14pt}
-\fancyhead[LE]{\bfseries\leftmark} 
-\fancyhead[RO]{\bfseries\rightmark} 
-\fancyfoot[RO]{}
-\fancyfoot[CO]{\thepage}
-\fancyfoot[LO]{\TheID}
-\fancyfoot[LE]{}
-\fancyfoot[CE]{\thepage}
-\fancyfoot[RE]{\TheID}
-\hypersetup{citebordercolor=0.75 0.75 0.75,linkbordercolor=0.75 0.75 0.75,urlbordercolor=0.75 0.75 0.75,bookmarksnumbered=true}
-\fancypagestyle{plain}{\fancyhead{}\renewcommand{\headrulewidth}{0pt}}\makeatother 
+\renewcommand{\headrulewidth}{0.1pt}
+\fancyhead[RO,RE]{\nouppercase{\truncate{0.5\headwidth}{\leftmark}}} % Chapter title
+\fancyhead[LO,LE]{\nouppercase{\truncate{0.5\headwidth}{\TheID}}} % Chapter title
+\fancyfoot[CO,CE]{\thepage}
+% last page hasn't work
+% \fancypagestyle{plain}{\fancyhead{}\renewcommand{\headrulewidth}{0pt}}
+
+\usepackage{pgfornament}
+
+
+\usepackage{hyperref} % supposed to be the last one
+\hypersetup{
+  % pdftex, % no effect
+  pdftitle={Victor Hugo, 1852, Napoléon le petit},
+  % pdfauthor={Your name here},
+  % pdfsubject={Your subject here},
+  % pdfkeywords={keyword1, keyword2},
+  bookmarksnumbered=true,
+  bookmarksopen=true,
+  bookmarksopenlevel=1,
+  pdfstartview=Fit,
+  % linktocpage=true, % toc, link only on page no 
+  pdfpagemode=UseOutlines,    % pdf toc
+  % pdfpagelayout=TwoPageRight,
+  citebordercolor=0.75 0.75 0.75,
+  linkbordercolor=0.75 0.75 0.75,
+  urlbordercolor=0.75 0.75 0.75,
+  colorlinks=true,
+  allcolors=black,
+}
+\hyperbaseurl{}
+\usepackage{hypcap}
+\usepackage{bookmark}
+
+\makeatother % @@@
+
 \begin{document}
 
+% \raggedbottom % may correct warning: Underfull \vbox (badness 10000)
+
 \makeatletter
-\noindent\parbox[b]{.75\textwidth}{\fontsize{14pt}{16pt}\bfseries\raggedright\sffamily\selectfont \@title}
-\vskip20pt
-\par\noindent{\fontsize{11pt}{13pt}\sffamily\itshape\raggedright\selectfont\@author\hfill\TheDate}
-\vspace{18pt}
+\noindent\parbox[b]{.75\textwidth}{\fontsize{13pt}{15pt}\bfseries\raggedright\selectfont\@author{, }\TheDate}
+\vskip10pt
+\par\noindent{\fontsize{19pt}{21pt}\itshape\raggedright\selectfont\@title}
+\vspace{0pt}
 \makeatother
+\par\noindent\rule{\textwidth}{0.4pt}
+\vspace{15pt}
 \let\tabcellsep& 
 
+\begin{multicols}{2}
+\tableofcontents
+\end{multicols}
 
 %tei%
 
+\end{document}
 
