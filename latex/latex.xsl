@@ -247,7 +247,7 @@ A light version for XSLT1, with local improvements.
           <xsl:value-of select="concat('{\', local-name(), ' ')"/>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:value-of select="concat('{\', $style[1], ' ')"/>
+          <xsl:value-of select="concat('{\', substring-before(concat($style, ' '), ' '), ' ')"/>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>

@@ -13,21 +13,21 @@ else if (php_sapi_name() == "cli") Teidoc::cli();
 class Teidoc
 {
   /** TEI/XML DOM Document to process */
-  private $_dom;
+  private $dom;
   /** Xpath processor */
-  private $_xpath;
+  private $xpath;
   /** filepath */
-  private $_file;
+  private $file;
   /** filename without extension */
-  private $_filename;
+  private $filename;
   /** file freshness */
-  private $_filemtime;
+  private $filemtime;
   /** file size */
-  private $_filesize;
+  private $filesize;
   /** XSLTProcessors */
-  private static $_trans = array();
+  private static $trans = array();
   /** A file where  */
-  private $_logger;
+  private $logger;
   /** formats */
   public static $ext = array(
     'article' => '_art.html',
@@ -44,26 +44,26 @@ class Teidoc
   public function __construct($tei, $logger=null)
   {
     if (is_a($tei, 'DOMDocument')) {
-      $this->_dom = $tei;
+      $this->dom = $tei;
     }
     else if(is_string($tei)) { // maybe file or url
-      $this->_file = $tei;
-      $this->_filemtime = filemtime($tei);
-      $this->_filesize = filesize($tei); // ?? URL ?
-      $this->_filename = pathinfo($tei, PATHINFO_FILENAME);
+      $this->file = $tei;
+      $this->filemtime = filemtime($tei);
+      $this->filesize = filesize($tei); // ?? URL ?
+      $this->filename = pathinfo($tei, PATHINFO_FILENAME);
       // loading error, do something ?
-      if (!$this->_dom($tei)) throw new Exception("BAD XML");
+      if (!$this->dom($tei)) throw new Exception("BAD XML");
     }
     else {
       throw new Exception('Teinte, what is it? '.print_r($tei, true));
     }
-    $this->_logger = $logger;
+    $this->logger = $logger;
     $this->xpath();
   }
 
   public function isEmpty()
   {
-    return !$this->_dom;
+    return !$this->dom;
   }
 
  /**
@@ -71,50 +71,65 @@ class Teidoc
   */
   public function xpath()
   {
-    if ($this->_xpath) return $this->_xpath;
-    $this->_xpath = new DOMXpath($this->_dom);
-    $this->_xpath->registerNamespace('tei', "http://www.tei-c.org/ns/1.0");
-    return $this->_xpath;
+    if ($this->xpath) return $this->xpath;
+    $this->xpath = new DOMXpath($this->dom);
+    $this->xpath->registerNamespace('tei', "http://www.tei-c.org/ns/1.0");
+    return $this->xpath;
   }
   /**
    * Get the filename (with no extention)
    */
    public function filename($filename=null)
    {
-     if ($filename) $this->_filename = $filename;
-     return $this->_filename;
+     if ($filename) $this->filename = $filename;
+     return $this->filename;
    }
   /**
    * Read a readonly property
    */
   public function filemtime($filemtime=null)
   {
-    if ($filemtime) $this->_filemtime = $filemtime;
-    return $this->_filemtime;
+    if ($filemtime) $this->filemtime = $filemtime;
+    return $this->filemtime;
   }
   /**
    * For a readonly property
    */
   public function filesize($filesize=null)
   {
-    if ($filesize) $this->_filesize = $filesize;
-    return $this->_filesize;
+    if ($filesize) $this->filesize = $filesize;
+    return $this->filesize;
   }
   /**
    * For a readonly property
    */
   public function file()
   {
-    return $this->_file;
+    return $this->file;
   }
   /**
    * Book metadata
    */
   public function meta()
   {
+    $meta = self::meta(null, $this->xpath);
+    $meta['code'] = pathinfo($this->file, PATHINFO_FILENAME);
+    $meta['filename'] = $this->filename();
+    $meta['filemtime'] = $this->filemtime();
+    $meta['filesize'] = $this->filesize();
+    return $meta;
+  }
+  
+  /**
+   * Return an array of metadata from a dom document
+   */
+  public static function metaDom($dom, $xpath=null)
+  {
+    if($xpath == null) $xpath = new DOMXpath($dom);
+    $xpath->registerNamespace('tei', "http://www.tei-c.org/ns/1.0");
+
     $meta = array();
-    $meta['code'] = pathinfo($this->_file, PATHINFO_FILENAME);
-    $nl = $this->_xpath->query("/*/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author");
+    $nl = $xpath->query("/*/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author");
     $meta['author'] = array();
     $meta['byline'] = null;
     $first = true;
@@ -132,7 +147,7 @@ class Teidoc
     }
     // editors
     $meta['editby'] = null;
-    $nl = $this->_xpath->query("/*/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:editor");
+    $nl = $xpath->query("/*/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:editor");
     $first = true;
     foreach ($nl as $node) {
       $value = $node->getAttribute("key");
@@ -143,19 +158,19 @@ class Teidoc
       $meta['editby'] .= $value;
     }
     // title
-    $nl = $this->_xpath->query("/*/tei:teiHeader//tei:title");
+    $nl = $xpath->query("/*/tei:teiHeader//tei:title");
     if ($nl->length) $meta['title'] = $nl->item(0)->textContent;
     else $meta['title'] = null;
     // publisher
-    $nl = $this->_xpath->query("/*/tei:teiHeader/tei:fileDesc/tei:publicationStmt/tei:publisher");
+    $nl = $xpath->query("/*/tei:teiHeader/tei:fileDesc/tei:publicationStmt/tei:publisher");
     if ($nl->length) $meta['publisher'] = $nl->item(0)->textContent;
     else $meta['publisher'] = null;
     // identifier
-    $nl = $this->_xpath->query("/*/tei:teiHeader/tei:fileDesc/tei:publicationStmt/tei:idno");
+    $nl = $xpath->query("/*/tei:teiHeader/tei:fileDesc/tei:publicationStmt/tei:idno");
     if ($nl->length) $meta['identifier'] = $nl->item(0)->textContent;
     else $meta['identifier'] = null;
     // dates
-    $nl = $this->_xpath->query("/*/tei:teiHeader/tei:profileDesc/tei:creation/tei:date");
+    $nl = $xpath->query("/*/tei:teiHeader/tei:profileDesc/tei:creation/tei:date");
     // loop on dates
     $meta['created'] = null;
     $meta['issued'] = null;
@@ -176,13 +191,10 @@ class Teidoc
     }
     if (!$meta['issued'] && isset($value) && is_numeric($value)) $meta['issued'] = $value;
     $meta['source'] = null;
-    $meta['filename'] = $this->filename();
-    $meta['filemtime'] = $this->filemtime();
-    $meta['filesize'] = $this->filesize();
 
 
     return $meta;
-  }
+  } 
   /**
    *
    */
@@ -215,7 +227,7 @@ class Teidoc
       $destfile,
       array(
         'root'=> 'article',
-        'folder' => basename(dirname($this->_file)),
+        'folder' => basename(dirname($this->file)),
      )
    );
   }
@@ -242,7 +254,7 @@ class Teidoc
       $destfile,
       array(
         'theme'=> $theme,
-        'folder' => basename(dirname($this->_file)),
+        'folder' => basename(dirname($this->file)),
      )
    );
   }
@@ -251,28 +263,28 @@ class Teidoc
    */
   public function markdown($destfile=null)
   {
-    return $this->transform(dirname(__FILE__).'/xsl/tei2md.xsl', $destfile, array('filename' => $this->_filename));
+    return $this->transform(dirname(__FILE__).'/xsl/tei2md.xsl', $destfile, array('filename' => $this->filename));
   }
   /**
    * Output iramuteq text
    */
   public function iramuteq($destfile=null)
   {
-    return $this->transform(dirname(__FILE__).'/xsl/tei2iramuteq.xsl', $destfile, array('filename' => $this->_filename));
+    return $this->transform(dirname(__FILE__).'/xsl/tei2iramuteq.xsl', $destfile, array('filename' => $this->filename));
   }
   /**
    * Output txm XML
    */
   public function txm($destfile=null)
   {
-    return $this->transform(dirname(__FILE__).'/xsl/tei4txm.xsl', $destfile, array('filename' => $this->_filename));
+    return $this->transform(dirname(__FILE__).'/xsl/tei4txm.xsl', $destfile, array('filename' => $this->filename));
   }
   /**
    * Output naked text
    */
   public function naked($destfile=null)
   {
-    $txt = $this->transform(dirname(__FILE__).'/xsl/tei2naked.xsl', null, array('filename' => $this->_filename));
+    $txt = $this->transform(dirname(__FILE__).'/xsl/tei2naked.xsl', null, array('filename' => $this->filename));
     /* TRÈS MAUVAISE IDÉE
     $txt = preg_replace(
       array(
@@ -308,8 +320,8 @@ class Teidoc
   public function images($hrefdir=null, $dstdir=null)
   {
     if ($dstdir) $dstdir=rtrim($dstdir, '/\\').'/';
-    // $dom = $this->_dom->cloneNode(true); // do not clone, keep the change of links
-    $dom = $this->_dom;
+    // $dom = $this->dom->cloneNode(true); // do not clone, keep the change of links
+    $dom = $this->dom;
     $count = 1;
     $nl = $dom->getElementsByTagNameNS('http://www.tei-c.org/ns/1.0', 'graphic');
     $pad = strlen(''.$nl->count());
@@ -338,9 +350,9 @@ class Teidoc
     // test if coming fron the internet
     if (substr($src, 0, 4) == 'http');
     // test if relative file path
-    else if (file_exists($test=dirname($this->_file).'/'.$src)) $src=$test;
+    else if (file_exists($test=dirname($this->file).'/'.$src)) $src=$test;
     // vendor specific etc/filename.jpg
-    else if (isset(self::$_pars['srcdir']) && file_exists($test=self::$_pars['srcdir'].self::$_pars['filename'].'/'.substr($src, strpos($src, '/')+1))) $src=$test;
+    else if (isset(self::$pars['srcdir']) && file_exists($test=self::$pars['srcdir'].self::$pars['filename'].'/'.substr($src, strpos($src, '/')+1))) $src=$test;
     // if not file exists, escape and alert (?)
     else if (!file_exists($src)) {
       $this->log("Image not found: ".$src);
@@ -348,7 +360,7 @@ class Teidoc
     }
     $srcparts=pathinfo($src);
     // check if image name starts by filename, if not, force it
-    if (substr($srcparts['filename'], 0, strlen($this->_filename)) !== $this->_filename) $srcparts['filename'] = $this->_filename.'_'.$count;
+    if (substr($srcparts['filename'], 0, strlen($this->filename)) !== $this->filename) $srcparts['filename'] = $this->filename.'_'.$count;
 
     // test first if dst dir provides for copy
     if (isset($dstdir)) {
@@ -416,10 +428,10 @@ class Teidoc
   {
     $key = realpath($xslfile);
     // cache compiled xsl
-    if (!isset(self::$_trans[$key])) {
+    if (!isset(self::$trans[$key])) {
       // renew the processor
-      self::$_trans[$key] = new XSLTProcessor();
-      $trans = self::$_trans[$key];
+      self::$trans[$key] = new XSLTProcessor();
+      $trans = self::$trans[$key];
       $trans->registerPHPFunctions();
       // allow generation of <xsl:document>
       if (defined('XSL_SECPREFS_NONE')) $prefs = XSL_SECPREFS_NONE;
@@ -432,7 +444,7 @@ class Teidoc
       $dom->load($xslfile);
       $trans->importStyleSheet($dom);
     }
-    $trans = self::$_trans[$key];
+    $trans = self::$trans[$key];
     // add params
     if(isset($pars) && count($pars)) {
       foreach ($pars as $key => $value) {
@@ -441,19 +453,19 @@ class Teidoc
     }
     // return a DOM document for efficient piping
     if (is_a($dest, 'DOMDocument')) {
-      $ret = $trans->transformToDoc($this->_dom);
+      $ret = $trans->transformToDoc($this->dom);
     }
     else if ($dest) {
       if (!is_dir(dirname($dest))) {
         if (!@mkdir(dirname($dest), 0775, true)) exit(dirname($dest)." impossible à créer.\n");
         @chmod(dirname($dest), 0775);  // let @, if www-data is not owner but allowed to write
       }
-      $trans->transformToURI($this->_dom, $dest);
+      $trans->transformToURI($this->dom, $dest);
       $ret = $dest;
     }
     // no dst file, return String
     else {
-      $ret =$trans->transformToXML($this->_dom);
+      $ret =$trans->transformToXML($this->dom);
     }
     // reset parameters ! or they will kept on next transform if transformer is reused
     if(isset($pars) && count($pars)) {
@@ -466,11 +478,11 @@ class Teidoc
    */
   private function _dom($xmlfile)
   {
-    $this->_dom = new DOMDocument();
-    $this->_dom->preserveWhiteSpace = false;
-    $this->_dom->formatOutput=true;
-    $this->_dom->substituteEntities=true;
-    $ret = $this->_dom->load($xmlfile, LIBXML_NOENT | LIBXML_NONET | LIBXML_NSCLEAN | LIBXML_NOCDATA | LIBXML_NOWARNING);
+    $this->dom = new DOMDocument();
+    $this->dom->preserveWhiteSpace = false;
+    $this->dom->formatOutput=true;
+    $this->dom->substituteEntities=true;
+    $ret = $this->dom->load($xmlfile, LIBXML_NOENT | LIBXML_NONET | LIBXML_NSCLEAN | LIBXML_NOCDATA | LIBXML_NOWARNING);
     return $ret;
   }
   /**
@@ -478,7 +490,7 @@ class Teidoc
    */
   public function dom()
   {
-    return $this->_dom;
+    return $this->dom;
   }
 
   /**
@@ -486,7 +498,7 @@ class Teidoc
    */
   public function log($errstr)
   {
-    if (is_resource($this->_logger)) fwrite($this->_logger, htmlspecialchars($errstr)."\n");
+    if (is_resource($this->logger)) fwrite($this->logger, htmlspecialchars($errstr)."\n");
   }
 
   /**

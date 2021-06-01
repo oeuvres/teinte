@@ -70,12 +70,12 @@ A light version for XSLT1, with local improvements.
     <xsl:choose>
       <!--  restart columns -->
       <xsl:when test="$documentclass = 'book' and $level &lt;= 0">
-        <xsl:text>&#10;\begin{multicols}{2}&#10;[&#10;</xsl:text>
         <xsl:apply-templates select="tei:head"/>
+        <xsl:apply-templates select="tei:epigraph"/>
         <xsl:apply-templates select="tei:argument"/>
-        <xsl:text>]&#10;</xsl:text>
-        <xsl:apply-templates select="*[not(self::tei:head)][not(self::tei:argument)]"/>
-        <xsl:text>&#10;\end{multicols}</xsl:text>
+        <xsl:text>&#10;\begin{multicols}{2}&#10;</xsl:text>
+        <xsl:apply-templates select="*[not(self::tei:head)][not(self::tei:argument)][not(self::tei:epigraph)]"/>
+        <xsl:text>&#10;\end{multicols}&#10;&#10;</xsl:text>
       </xsl:when>
       <xsl:otherwise>
         <xsl:apply-templates/>

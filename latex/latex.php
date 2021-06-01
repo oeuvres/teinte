@@ -1,4 +1,5 @@
 <?php 
+include dirname(dirname(__FILE__)).'/teidoc.php';
 set_time_limit(-1);
 // included file, do nothing
 if (isset($_SERVER['SCRIPT_FILENAME']) && basename($_SERVER['SCRIPT_FILENAME']) != basename(__FILE__));
@@ -13,16 +14,16 @@ class Latex {
   protected $dom;
   protected $srcfile;
   static protected $template;
-  static protected $proc;
+  static protected $latex_xsl;
+  static protected $latex_meta_xsl;
   // escape all text nodes 
   static protected $latex_esc = array(
     '@\s+@u' => ' ',
-    '@&amp;@u' => '\$1',
-    '@[%$#_{}]@u' => '\$1',
+    '@\\\@u' => '\textbackslash', // avant les échappements
+    '@(&amp;)@u' => '\\\$1',
+    '@([%\$#_{}])@u' => '\\\$1',
     '@~@u' => '\textasciitilde',
     '@\^@u' => '\textasciicircum',
-    '@\\\@u' => '\textbackslash',
-    '@(\[.*?\])@u' => '{$1}', // for <head> or <argument>  
   );
   
   public function __construct() {
@@ -30,11 +31,17 @@ class Latex {
     $this->dom->preserveWhiteSpace = false;
     $this->dom->formatOutput=true;
     $this->dom->substituteEntities=true;
-    if (!self::$proc) {
+    if (!self::$latex_xsl) {
       $xsl = new DOMDocument("1.0", "UTF-8");
       $xsl->load(dirname(__FILE__).'/latex.xsl');
-      self::$proc = new XSLTProcessor();
-      self::$proc->importStyleSheet($xsl);
+      self::$latex_xsl = new XSLTProcessor();
+      self::$latex_xsl->importStyleSheet($xsl);
+    }
+    if (!self::$latex_meta_xsl) {
+      $xsl = new DOMDocument("1.0", "UTF-8");
+      $xsl->load(dirname(__FILE__).'/latex_meta.xsl');
+      self::$latex_meta_xsl = new XSLTProcessor();
+      self::$latex_meta_xsl->importStyleSheet($xsl);
     }
     if (!self::$template) {
       self::$template = file_get_contents(dirname(__FILE__)."/template.tex");
@@ -62,13 +69,15 @@ class Latex {
   /** generate tex and pdf */
   function export($dstfile) 
   {
-    $tei = self::$proc->transformToXml($this->dom);
+    $meta = self::$latex_meta_xsl->transformToXml($this->dom);
+    $tei = self::$latex_xsl->transformToXml($this->dom);
     $tex = str_replace(
-      array('%tei%'), 
-      array($tei),
+      array('%meta%', '%tei%'), 
+      array($meta, $tei),
       self::$template
     );
     file_put_contents($dstfile, $tex);
+    //  latexmk -xelatex -quiet -f vaneigem1967_savoir-vivre.tex 
   }
   
   public static function cli() 

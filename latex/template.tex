@@ -1,42 +1,56 @@
 % memoir and koma does not work well for section titles and columns, waiting for LaTeX3
-\documentclass[10pt,twoside,french]{book}
+\documentclass[11pt,twoside,french]{book}
+\RequirePackage{fix-cm}
+% \usepackage[fontsize=10.5pt]{scrextend}
 \makeatletter % @@@
 
 % before geometry and cols
 \usepackage{xcolor}
 \definecolor{shadecolor}{gray}{0.95}
+\definecolor{borderline}{gray}{0.8}
 \definecolor{bghi}{gray}{0.5}
 
 % specific A4
 \usepackage{multicol}
 \usepackage[%
   a4paper,
-  outer=1cm,
-  inner=2cm,
-  tmargin=1.5cm,
-  bmargin=1.5cm,
+  inner=1cm, % do not presume recto/verso printing
+  outer=1cm, 
+  top=2cm,
+  bottom=1.5cm,
+  marginparsep=0pt,
 ]{geometry}
 \setlength{\columnsep}{2cm}
-\setlength{\columnseprule}{0.2pt}
-\def{\columnseprulecolor}{\gray}
-
-
-% latex packages and their configuration
-% \usepackage{colortbl} % table colors
-\usepackage{tcolorbox}
-\usepackage{etoolbox}
-\usepackage{wrapfig}
-\RequirePackage{fix-cm}
-\usepackage{ifxetex}
-
+\setlength{\columnseprule}{0.1pt}
+% \def{\columnseprulecolor}{\gray}
 % indents
+\setlength{\parindent}{1.5em}
+\setlength{\parskip}{0pt}
+
+\usepackage{tcolorbox}
+
 \usepackage[%
   indentfirst=false,
   rightmargin=0pt,
+  vskip=1em,
+  noorphanfirst=true,
+  noorphanafter=true,
   leftmargin=1.5em
 ]{quoting}
-\setlength{\parindent}{1.5em}
-\setlength{\parskip}{0pt}
+\tcolorboxenvironment{quoting}{%
+  blanker,
+  breakable,
+  enlarge left by=0.3em,
+  borderline west={0.3em}{-0.5em}{borderline}
+}
+% \renewcommand{\baselinestretch}{0.95}
+
+% latex packages and their configuration
+% \usepackage{colortbl} % table colors
+\usepackage{etoolbox}
+\usepackage{wrapfig}
+\usepackage{ifxetex}
+
 
 
 \usepackage{framed}
@@ -54,10 +68,9 @@
   \usepackage{fontspec}
   \defaultfontfeatures{Scale = MatchLowercase}
   \setmainfont[%
-    Scale=1.05,
     Ligatures={Common, TeX},
     % UprightFont={* Light},
-    BoldFont={* SemiBold},
+    % BoldFont={* SemiBold},
     ItalicFont={* SemiBold Italic}
   ]{Open Sans}
   \setsansfont{Bitter} 
@@ -93,8 +106,6 @@
   \usepackage{times}
 \fi
 
-\newcommand*\showfontsize{\f@size{} point}
-
 \def\exampleFont{\ttfamily\small}
 \DeclareTextSymbol{\textpi}{OML}{25}
 \usepackage{relsize}
@@ -129,17 +140,33 @@
 \def\Panel#1#2#3#4{\multicolumn{#3}{){\columncolor{#2}}#4}{#1}}
 
 % TEI commands
+
 \def\abbr{}
+\newenvironment{argument}{\vskip2em\large\parindent0pt}{\vskip2em}
+\newenvironment{biblfree}{}{\ifvmode\par\fi }
+\newenvironment{bibl}{}{}
+\newenvironment{blabel}{\begin{center}\begin{bfseries}}{\end{bfseries}\end{center}}
+\newenvironment{byline}{\vskip6pt\itshape\fontsize{16pt}{18pt}\selectfont}{\par }
+\newenvironment{citbibl}{}{\ifvmode\par\fi }
 \def\corr{}
+\newenvironment{docAuthor}{\ifvmode\vskip4pt\fontsize{16pt}{18pt}\selectfont\fi\itshape}{\ifvmode\par\fi }
+\newenvironment{docDate}{}{\ifvmode\par\fi }
+\newenvironment{docImprint}{\vskip6pt}{\ifvmode\par\fi }
+\newenvironment{docTitle}{\vskip6pt\bfseries\fontsize{18pt}{22pt}\selectfont}{\par }
 \def\expan{}
 \def\gap{}
+\usepackage{verse} % <l>
+\setlength{\poemindent}{0pt}
+\newenvironment{msHead}{\vskip6pt}{\par}
+\newenvironment{msItem}{\vskip6pt}{\par}
 \def\orig{}
-\def\reg{}
-\def\ref{}
-\def\sic{}
+\def\orgName{}
 \def\persName{}\def\name{}
 \def\placeName{}
-\def\orgName{}
+\def\reg{}
+\def\ref{}
+\newenvironment{rubric}{}{}
+\def\sic{}
 \def\textcal#1{{\fontspec{Lucida Calligraphy}#1}}
 \def\textgothic#1{{\fontspec{Lucida Blackletter}#1}}
 \def\textlarge#1{{\large #1}}
@@ -149,19 +176,7 @@
 \def\textsubscript#1{\@textsubscript{\selectfont#1}}
 \def\textxi{\ensuremath{\xi}}
 \def\titlem{\itshape}
-\newenvironment{biblfree}{}{\ifvmode\par\fi }
-\newenvironment{bibl}{}{}
-\newenvironment{byline}{\vskip6pt\itshape\fontsize{16pt}{18pt}\selectfont}{\par }
-\newenvironment{citbibl}{}{\ifvmode\par\fi }
-\newenvironment{docAuthor}{\ifvmode\vskip4pt\fontsize{16pt}{18pt}\selectfont\fi\itshape}{\ifvmode\par\fi }
-\newenvironment{docDate}{}{\ifvmode\par\fi }
-\newenvironment{docImprint}{\vskip 6pt}{\ifvmode\par\fi }
-\newenvironment{docTitle}{\vskip6pt\bfseries\fontsize{18pt}{22pt}\selectfont}{\par }
-\newenvironment{msHead}{\vskip 6pt}{\par}
-\newenvironment{msItem}{\vskip 6pt}{\par}
-\newenvironment{rubric}{}{}
 \newenvironment{titlePart}{}{\par }
-\newenvironment{blabel}{\begin{center}\begin{bfseries}}{\end{bfseries}\end{center}}
 
 
 \newcolumntype{L}[1]{){\raggedright\arraybackslash}p{#1}}
@@ -247,11 +262,11 @@
 \usetikzlibrary{calc}
 \usetikzlibrary{shadows}
 \titleformat{name=\chapter}[display]
-  {\Large\bfseries\color{bghi}}
+  {\LARGE\bfseries\raggedleft\color{bghi}}
   {\thechapter}
   {35pt}
   {#1} % explicit
-  [\vspace{0.1ex}{\titlerule[0.1pt]}]
+  [\vspace{0.1ex}] % {\titlerule[0.1pt]}
 \titlespacing*{\chapter}{0pt}{-35pt}{0pt}[0pt]
 
 \newtcolorbox{sectionbox}{%
@@ -267,7 +282,7 @@
   top=0pt,
   bottom=0pt,
   halign=flush right,
-  lifted shadow={-0.3pt}{-2mm}{3mm}{0.1mm}{bghi}
+  lifted shadow={-0.5pt}{-2mm}{3mm}{0.1mm}{bghi}
 }
 \titleformat{name=\section}[hang]
   {\large\bfseries} % filright ?
@@ -334,11 +349,6 @@
   }{}
       \def\TheFullDate{2021 (revised: 2021-05-24T17:10:30Z)}
 
-% For title page
-\def\TheID{Victor Hugo, 1852, Napoléon le petit}
-\def\TheDate{1852}
-\title{Napoléon le petit}
-\author{Victor Hugo}
 
 \newcommand*{\cleartoleftpage}{%
   \clearpage
@@ -353,39 +363,37 @@
 }
 
 
+
+
+% Meta extracted from the TEI source, for title page and runing heads
+%meta%
+
 \thispagestyle{empty}
-\markright{\@title}\markboth{\@title}{\@author}
-\renewcommand\small{\@setfontsize\small{9pt}{11pt}\abovedisplayskip 8.5\p@ plus3\p@ minus4\p@
-\belowdisplayskip \abovedisplayskip
-\abovedisplayshortskip \z@ plus2\p@
-\belowdisplayshortskip 4\p@ plus2\p@ minus2\p@
-\def\@listi{\leftmargin\leftmargini
-               \topsep 2\p@ plus1\p@ minus1\p@
-               \parsep 2\p@ plus\p@ minus\p@
-               \itemsep 1pt}
-}
+\markright{\@title}
+\markboth{\@title}{\@author}
 
-
+% page models
 \usepackage{fancyvrb}
 \usepackage{fancyhdr}
 \usepackage[fit]{truncate}
 \fvset{frame=single,numberblanklines=false,xleftmargin=5mm,xrightmargin=5mm} % verbatim code
+\renewcommand{\headrulewidth}{0.2pt}%
 % redefine plain
 \fancypagestyle{plain}{%
   \fancyhf{}% clear all header and footer fields
-  \fancyfoot[RO,LE]{\thepage} % except the center
-  \renewcommand{\headrulewidth}{0pt}%
-  \renewcommand{\footrulewidth}{0pt}%
+  \fancyhead[LO,LE]{\color{bghi}\nouppercase{\truncate{0.9\headwidth}{\shortref}}}
+  \fancyhead[RO,RE]{\thepage}
 }
-\pagestyle{fancy}
-\fancyhf{} 
-\setlength{\headheight}{14pt}
-\renewcommand{\headrulewidth}{0.1pt}
-\fancyhead{} % reset head
-\fancyfoot{} % reset foot
-\fancyhead[RO,RE]{\color{bghi}\nouppercase{\truncate{0.5\headwidth}{\leftmark}}} % Chapter title
-\fancyhead[CO,CE]{\thepage}
-\fancyhead[LO,LE]{\color{bghi}\nouppercase{\truncate{0.5\headwidth}{\TheID}}} % Chapter title
+\pagestyle{fancy}{%
+  \fancyhf{} 
+  \setlength{\headheight}{14pt}
+  \renewcommand{\headrulewidth}{0.1pt}
+  \fancyhead{} % reset head
+  \fancyfoot{} % reset foot
+  \fancyhead[RO,RE]{\color{bghi}\nouppercase{\truncate{0.48\headwidth}{\leftmark}}} % Chapter title
+  \fancyhead[CO,CE]{\thepage}
+  \fancyhead[LO,LE]{\color{bghi}\nouppercase{\truncate{0.48\headwidth}{\shortref}}}
+}
 % last page hasn't work
 % \fancypagestyle{plain}{\fancyhead{}\renewcommand{\headrulewidth}{0pt}}
 
@@ -395,7 +403,7 @@
 \usepackage{hyperref} % supposed to be the last one
 \hypersetup{
   % pdftex, % no effect
-  pdftitle={Victor Hugo, 1852, Napoléon le petit},
+  pdftitle={\@author, \@date, \@title},
   % pdfauthor={Your name here},
   % pdfsubject={Your subject here},
   % pdfkeywords={keyword1, keyword2},
@@ -416,14 +424,16 @@
 \usepackage{hypcap}
 \usepackage{bookmark}
 
+\newcommand*\showfontsize{\f@size{} point}
 \makeatother % @@@
 
 \begin{document}
 
 % \raggedbottom % may correct warning: Underfull \vbox (badness 10000)
 
+
 \makeatletter
-\noindent\parbox[b]{.75\textwidth}{\fontsize{13pt}{15pt}\bfseries\raggedright\selectfont\@author{, }\TheDate}
+\noindent\parbox[b]{.75\textwidth}{\fontsize{13pt}{15pt}\bfseries\raggedright\selectfont\@author{, }\date}
 \vskip10pt
 \par\noindent{\fontsize{19pt}{21pt}\itshape\raggedright\selectfont\@title}
 \vspace{0pt}

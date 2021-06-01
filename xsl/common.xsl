@@ -392,7 +392,7 @@ Gobal TEI parameters and variables are divided in different categories
       </xsl:when>
     </xsl:choose>
   </xsl:template>
-  <!-- Get a year from a date tag with different possible attributes -->
+  <!-- Get a year from a date tag with different possible attributes (TODO, negative dates) -->
   <xsl:template match="*" mode="year" name="year">
     <xsl:choose>
       <xsl:when test="@when">

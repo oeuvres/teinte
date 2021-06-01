@@ -690,14 +690,14 @@ A light version for XSLT1, with local improvements.
         <xsl:apply-templates/>
       </xsl:when>
       <xsl:when test="$isInline = ''">
-        <xsl:text>\begin{</xsl:text>
+        <xsl:text>&#10;&#10;\begin{</xsl:text>
         <xsl:value-of select="$quoteEnv"/>
         <xsl:text>}</xsl:text>
         <xsl:call-template name="tei:makeHyperTarget"/>
-        <xsl:apply-templates select="*"/>
+        <xsl:apply-templates/>
         <xsl:text>\end{</xsl:text>
         <xsl:value-of select="$quoteEnv"/>
-        <xsl:text>}</xsl:text>
+        <xsl:text>}&#10;&#10;</xsl:text>
       </xsl:when>
       <xsl:otherwise>
         <xsl:apply-templates/>
@@ -756,42 +756,42 @@ A light version for XSLT1, with local improvements.
     <xsl:value-of select="$unit"/>
     <xsl:text>}</xsl:text>
   </xsl:template>
-    <!-- If verseNumbering is requested, counts all the verse lines since the last container (<gi xmlns="">div1</gi> by default) and labels every fifth verse using a LaTeX box 3 ems wide. -->
+    <!-- If $verseNumbering, something will be done with a specific latex package, todo -->
   <xsl:template match="tei:l">
     <xsl:choose>
-      <xsl:when test="$verseNumbering = 'true'">
-        <xsl:variable name="id" select="generate-id()"/>
-        <xsl:variable name="pos">
-          <xsl:for-each select="ancestor::*[name() = $resetVerseLineNumbering]//l">
-            <xsl:if test="generate-id() = $id">
-              <xsl:value-of select="position()"/>
-            </xsl:if>
-          </xsl:for-each>
-        </xsl:variable>
+      <xsl:when test="parent::tei:lg">
         <xsl:choose>
-          <xsl:when test="$pos mod $everyHowManyLines = 0">
-            <xsl:text>\leftline{\makebox[3em][r]{</xsl:text>
-            <xsl:value-of select="$pos"/>
-            <xsl:text>}\quad{}</xsl:text>
+          <xsl:when test="following-sibling::tei:l">
             <xsl:apply-templates/>
-            <xsl:text>}</xsl:text>
+            <xsl:text>\\&#10;</xsl:text>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:text>&#10;\leftline{\makebox[3em][r]{}\quad{}</xsl:text>
             <xsl:apply-templates/>
-            <xsl:text>}</xsl:text>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:when>
-      <xsl:when test="ancestor::tei:quote and following-sibling::tei:l"> <xsl:apply-templates/>\\ </xsl:when>
-      <xsl:when test="parent::tei:sp">
-        <xsl:apply-templates/>
-        <xsl:text>\hfill\\</xsl:text>
-      </xsl:when>
       <xsl:otherwise>
-        <xsl:text>&#10;\leftline{</xsl:text>
-        <xsl:apply-templates/>
-        <xsl:text>}</xsl:text>
+        <xsl:variable name="next" select="following-sibling::tei:l"/>
+        <xsl:variable name="prev" select="preceding-sibling::tei:l"/>
+        <xsl:choose>
+          <xsl:when test="not($prev) and $next">
+            <xsl:text>&#10;\begin{verse}&#10;</xsl:text>
+            <xsl:apply-templates/>
+            <xsl:text>\\&#10;</xsl:text>
+          </xsl:when>
+          <xsl:when test="$prev and not($next)">
+            <xsl:apply-templates/>
+            <xsl:text>\\&#10;\end{verse}&#10;</xsl:text>
+          </xsl:when>
+          <xsl:when test="$next and $next =''">
+            <xsl:apply-templates/>
+            <xsl:text>\\!&#10;&#10;</xsl:text>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:apply-templates/>
+            <xsl:text>\\&#10;</xsl:text>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>

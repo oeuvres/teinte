@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xsl:transform version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:tei="http://www.tei-c.org/ns/1.0" exclude-result-prefixes="tei">
+<xsl:transform version="1.0" 
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+  xmlns:tei="http://www.tei-c.org/ns/1.0" 
+  exclude-result-prefixes="tei">
   <!-- 
 TEI Styleshest for LaTeX, forked from Sebastian Rahtz
 https://github.com/TEIC/Stylesheets/tree/dev/latex
