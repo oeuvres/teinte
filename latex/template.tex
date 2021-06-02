@@ -1,31 +1,36 @@
 % memoir and koma does not work well for section titles and columns, waiting for LaTeX3
-\documentclass[11pt,twoside,french]{book}
+\documentclass[11pt,twoside,french,dvipsnames]{book}
 \RequirePackage{fix-cm}
 % \usepackage[fontsize=10.5pt]{scrextend}
+% \renewcommand{\baselinestretch}{0.95}
+\linespread{0.85}
 \makeatletter % @@@
 
 % before geometry and cols
 \usepackage{xcolor}
 \definecolor{shadecolor}{gray}{0.95}
-\definecolor{borderline}{gray}{0.8}
+\colorlet{borderline}{BrickRed!30!}
 \definecolor{bghi}{gray}{0.5}
 
 % specific A4
 \usepackage{multicol}
 \usepackage[%
   a4paper,
-  inner=1cm, % do not presume recto/verso printing
-  outer=1cm, 
-  top=2cm,
+  inner=1.1cm, % do not presume recto/verso printing
+  outer=1.1cm, 
+  top=1.8cm,
   bottom=1.5cm,
   marginparsep=0pt,
 ]{geometry}
 \setlength{\columnsep}{2cm}
-\setlength{\columnseprule}{0.1pt}
-% \def{\columnseprulecolor}{\gray}
+\setlength{\columnseprule}{0.2pt}
+\renewcommand{\columnseprulecolor}{\color{BrickRed}}
 % indents
 \setlength{\parindent}{1.5em}
 \setlength{\parskip}{0pt}
+
+% ornaments
+% \usepackage{background} % doesn’t work with xetek
 
 \usepackage{tcolorbox}
 
@@ -37,24 +42,27 @@
   noorphanafter=true,
   leftmargin=1.5em
 ]{quoting}
-\tcolorboxenvironment{quoting}{%
+\newtcolorbox{quotebox}{%
   blanker,
   breakable,
   enlarge left by=0.3em,
   borderline west={0.3em}{-0.5em}{borderline}
 }
-% \renewcommand{\baselinestretch}{0.95}
-
+% with or without quoting, tcolorbox, framed (leftbar), and mdframed breaks bad between cols ans pages
+% tcolorbox put footnotes in box
+\newenvironment{myquote}%
+  {\begin{quoting}}%
+  {\end{quoting}}
 % latex packages and their configuration
 % \usepackage{colortbl} % table colors
 \usepackage{etoolbox}
 \usepackage{wrapfig}
+\usepackage{ragged2e}
 \usepackage{ifxetex}
 
 
 
 \usepackage{framed}
-\usepackage{lettrine}
 \usepackage{longtable}
 % \usepackage[normalem]{ulem} % Package multicol Warning: May not work
 \usepackage{graphicx}
@@ -69,10 +77,15 @@
   \defaultfontfeatures{Scale = MatchLowercase}
   \setmainfont[%
     Ligatures={Common, TeX},
-    % UprightFont={* Light},
-    % BoldFont={* SemiBold},
-    ItalicFont={* SemiBold Italic}
-  ]{Open Sans}
+    % UprightFont={* Light}, % emph in emph
+    ItalicFont={* Semibold Italic}
+  ]{Lato}
+  \newfontfamily{\fontlight}[
+    UprightFont={* Light},
+    ItalicFont={* Light Italic},
+    BoldFont={* Medium},
+    BoldItalicFont={* Medium Italic}
+  ]{Lato}
   \setsansfont{Bitter} 
   \usepackage{xunicode}
   \defaultfontfeatures{Ligatures={TeX}}
@@ -139,15 +152,25 @@
 \def\@textsubscript#1{{\m@th\ensuremath{_{\mbox{\fontsize\sf@size\z@#1}}}}}
 \def\Panel#1#2#3#4{\multicolumn{#3}{){\columncolor{#2}}#4}{#1}}
 
-% TEI commands
+% generic typo commands
+\newfontfamily\syms{DejaVu Sans}
+\DeclareTextFontCommand{\textsyms}{\syms}
+\newcommand{\astermono}{\medskip\centerline{\color{BrickRed}\large\selectfont{\syms ✻}}\medskip\par}%
+\newcommand{\astertri}{\bigskip\centerline{\color{BrickRed}\large\selectfont{\syms ✻\,✻\,✻}\medskip\par}}%
+\newcommand{\asterism}{\bigskip\par\noindent\parbox{\linewidth}{\centering\color{BrickRed}\large{\syms ✻}\\{\syms ✻}\hskip 0.75em{\syms ✻}}\bigskip\par}%
+\usepackage{enumitem}
+\setlist{noitemsep,wide,leftmargin=*, labelindent=0pt} % labelindent=\parindent,leftmargin=*
+\setlist[itemize]{label=—}
 
+% TEI commands
+% be careful of environment in environment (ex: div/quote/bibl)
 \def\abbr{}
-\newenvironment{argument}{\vskip2em\large\parindent0pt}{\vskip2em}
+\newenvironment{argument}{\large\fontlight\parindent0pt}{\vskip1.5em}
 \newenvironment{biblfree}{}{\ifvmode\par\fi }
 \newenvironment{bibl}{}{}
 \newenvironment{blabel}{\begin{center}\begin{bfseries}}{\end{bfseries}\end{center}}
 \newenvironment{byline}{\vskip6pt\itshape\fontsize{16pt}{18pt}\selectfont}{\par }
-\newenvironment{citbibl}{}{\ifvmode\par\fi }
+\newenvironment{citbibl}{\ifvmode\hfill\fi}{\ifvmode\par\fi }
 \def\corr{}
 \newenvironment{docAuthor}{\ifvmode\vskip4pt\fontsize{16pt}{18pt}\selectfont\fi\itshape}{\ifvmode\par\fi }
 \newenvironment{docDate}{}{\ifvmode\par\fi }
@@ -156,7 +179,7 @@
 \def\expan{}
 \def\gap{}
 \usepackage{verse} % <l>
-\setlength{\poemindent}{0pt}
+\setlength{\leftmargini}{-1em}
 \newenvironment{msHead}{\vskip6pt}{\par}
 \newenvironment{msItem}{\vskip6pt}{\par}
 \def\orig{}
@@ -229,29 +252,29 @@
   \secdef\@chapter\@schapter
 }
 \renewcommand\section{\@startsection{section}{1}{\z@}%
-     {-1.75ex \@plus -0.5ex \@minus -.2ex}%
-     {0.5ex \@plus .2ex}%
-     {\reset@font\Large\bfseries}
+  {-1.75ex \@plus -0.5ex \@minus -.2ex}%
+  {0.5ex \@plus .2ex}%
+  {\reset@font\Large\bfseries}
 }
 \renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
-     {-1.75ex\@plus -0.5ex \@minus- .2ex}%
-     {0.5ex \@plus .2ex}%
-     {\reset@font\Large}
+  {-1.75ex\@plus -0.5ex \@minus- .2ex}%
+  {0.5ex \@plus .2ex}%
+  {\reset@font\Large\color{BrickRed}}
 }
 \renewcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
-     {-1.5ex\@plus -0.35ex \@minus -.2ex}%
-     {0.5ex \@plus .2ex}%
-     {\reset@font\large}
+  {-1.5ex\@plus -0.35ex \@minus -.2ex}%
+  {0.5ex \@plus .2ex}%
+  {\reset@font\large}
 }
 \renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
-     {-1ex \@plus-0.35ex \@minus -0.2ex}%
-     {0.5ex \@plus .2ex}%
-     {\reset@font\normalsize}
+  {-1ex \@plus-0.35ex \@minus -0.2ex}%
+  {0.5ex \@plus .2ex}%
+  {\reset@font\normalsize}
 }
 \renewcommand\subparagraph{\@startsection{subparagraph}{5}{\parindent}%
-     {1.5ex \@plus1ex \@minus .2ex}%
-     {-1em}%
-     {\reset@font\normalsize\bfseries}
+  {1.5ex \@plus1ex \@minus .2ex}%
+  {-1em}%
+  {\reset@font\normalsize\bfseries}
 }
 
 \setcounter{secnumdepth}{-2} % no counters for hierarchy titles
@@ -261,13 +284,15 @@
 \tcbuselibrary{skins}
 \usetikzlibrary{calc}
 \usetikzlibrary{shadows}
-\titleformat{name=\chapter}[display]
-  {\LARGE\bfseries\raggedleft\color{bghi}}
-  {\thechapter}
-  {35pt}
-  {#1} % explicit
-  [\vspace{0.1ex}] % {\titlerule[0.1pt]}
-\titlespacing*{\chapter}{0pt}{-35pt}{0pt}[0pt]
+\titleformat
+  {name=\chapter}
+  [display]
+  {\huge\bfseries\raggedleft\color{BrickRed}}
+  {}
+  {0pt}
+  {\vspace{1em}#1} % explicit
+  [\vspace{1em}] % {\titlerule[0.1pt]}
+\titlespacing*{\chapter}{0pt}{-30pt}{0pt}[0pt]
 
 \newtcolorbox{sectionbox}{%
   enhanced,
@@ -282,7 +307,7 @@
   top=0pt,
   bottom=0pt,
   halign=flush right,
-  lifted shadow={-0.5pt}{-2mm}{3mm}{0.1mm}{bghi}
+  lifted shadow={-0.5pt}{-2mm}{3mm}{0.1mm}{BrickRed}
 }
 \titleformat{name=\section}[hang]
   {\large\bfseries} % filright ?
@@ -296,23 +321,25 @@
 \def\tableofcontents{\subsection{\contentsname}\@starttoc{toc}} % title of the toc in the toc
 
 \newenvironment{bibitemlist}[1]{%
-   \list{\@biblabel{\@arabic\c@enumiv}}%
-       {\settowidth\labelwidth{\@biblabel{#1}}%
-        \leftmargin\labelwidth
-        \advance\leftmargin\labelsep
-        \@openbib@code
-        \usecounter{enumiv}%
-        \let\p@enumiv\@empty
-        \renewcommand\theenumiv{\@arabic\c@enumiv}%
-	}%
+ \list{\@biblabel{\@arabic\c@enumiv}}%
+ {%
+    \settowidth\labelwidth{\@biblabel{#1}}%
+    \leftmargin\labelwidth
+    \advance\leftmargin\labelsep
+    \@openbib@code
+    \usecounter{enumiv}%
+    \let\p@enumiv\@empty
+    \renewcommand\theenumiv{\@arabic\c@enumiv}%
+  }
   \sloppy
   \clubpenalty4000
   \@clubpenalty \clubpenalty
   \widowpenalty4000%
-  \sfcode`\.\@m}%
-  {\def\@noitemerr
-    {\@latex@warning{Empty `bibitemlist' environment}}%
-    \endlist}
+  \sfcode`\.\@m
+}%
+{\def\@noitemerr
+  {\@latex@warning{Empty `bibitemlist' environment}}%
+\endlist}
 
 
 \def\Panel#1#2#3#4{\multicolumn{#3}{){\columncolor{#2}}#4}{#1}}
@@ -378,21 +405,22 @@
 \usepackage[fit]{truncate}
 \fvset{frame=single,numberblanklines=false,xleftmargin=5mm,xrightmargin=5mm} % verbatim code
 \renewcommand{\headrulewidth}{0.2pt}%
+\let\oldheadrule\headrule% Copy \headrule into \oldheadrule
+\renewcommand{\headrule}{\color{BrickRed}\oldheadrule}% Add colour to \he
 % redefine plain
 \fancypagestyle{plain}{%
   \fancyhf{}% clear all header and footer fields
-  \fancyhead[LO,LE]{\color{bghi}\nouppercase{\truncate{0.9\headwidth}{\shortref}}}
+  \fancyhead[LO,LE]{\nouppercase{\truncate{0.9\headwidth}{\shortref}}}
   \fancyhead[RO,RE]{\thepage}
 }
 \pagestyle{fancy}{%
   \fancyhf{} 
-  \setlength{\headheight}{14pt}
-  \renewcommand{\headrulewidth}{0.1pt}
+  % \setlength{\headheight}{16pt}
   \fancyhead{} % reset head
   \fancyfoot{} % reset foot
-  \fancyhead[RO,RE]{\color{bghi}\nouppercase{\truncate{0.48\headwidth}{\leftmark}}} % Chapter title
+  \fancyhead[RO,RE]{\nouppercase{\truncate{0.45\headwidth}{\leftmark}}} % Chapter title
   \fancyhead[CO,CE]{\thepage}
-  \fancyhead[LO,LE]{\color{bghi}\nouppercase{\truncate{0.48\headwidth}{\shortref}}}
+  \fancyhead[LO,LE]{\nouppercase{\truncate{0.45\headwidth}{\shortref}}}
 }
 % last page hasn't work
 % \fancypagestyle{plain}{\fancyhead{}\renewcommand{\headrulewidth}{0pt}}
@@ -433,7 +461,7 @@
 
 
 \makeatletter
-\noindent\parbox[b]{.75\textwidth}{\fontsize{13pt}{15pt}\bfseries\raggedright\selectfont\@author{, }\date}
+\noindent\parbox[b]{.75\textwidth}{\fontsize{13pt}{15pt}\bfseries\raggedright\selectfont\@author{, }\@date}
 \vskip10pt
 \par\noindent{\fontsize{19pt}{21pt}\itshape\raggedright\selectfont\@title}
 \vspace{0pt}

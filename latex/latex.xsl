@@ -167,32 +167,32 @@ A light version for XSLT1, with local improvements.
       <xsl:call-template name="tei:findLanguage"/>
     </xsl:variable>
     <xsl:choose>
-      <xsl:when test="$class = 'titlem' and starts-with($lang, 'ja')">
+      <xsl:when test="contains($class, 'titlem') and starts-with($lang, 'ja')">
         <xsl:text>{\textJapanese {</xsl:text>
         <xsl:copy-of select="$content"/>
         <xsl:text>}}</xsl:text>
       </xsl:when>
-      <xsl:when test="$class = 'titlem' and starts-with($lang, 'ko')">
+      <xsl:when test="contains($class, 'titlem') and starts-with($lang, 'ko')">
         <xsl:text>{\textKorean {</xsl:text>
         <xsl:copy-of select="$content"/>
         <xsl:text>}}</xsl:text>
       </xsl:when>
-      <xsl:when test="$class = 'titlem' and starts-with($lang, 'zh')">
+      <xsl:when test="contains($class, 'titlem') and starts-with($lang, 'zh')">
         <xsl:text>{\textChinese {</xsl:text>
         <xsl:copy-of select="$content"/>
         <xsl:text>}}</xsl:text>
       </xsl:when>
-      <xsl:when test="$class = 'titlem'">
-        <xsl:text>\textit{</xsl:text>
+      <xsl:when test="contains($class, 'titlem')">
+        <xsl:text>\emph{</xsl:text>
         <xsl:copy-of select="$content"/>
         <xsl:text>}</xsl:text>
       </xsl:when>
-      <xsl:when test="$class = 'titlej'">
-        <xsl:text>\textit{</xsl:text>
+      <xsl:when test="contains($class, 'titlej')">
+        <xsl:text>\emph{</xsl:text>
         <xsl:copy-of select="$content"/>
         <xsl:text>}</xsl:text>
       </xsl:when>
-      <xsl:when test="$class = 'titlea'">
+      <xsl:when test="contains($class, 'titlea')">
         <xsl:text>‘</xsl:text>
         <xsl:copy-of select="$content"/>
         <xsl:text>’</xsl:text>
@@ -213,41 +213,42 @@ A light version for XSLT1, with local improvements.
     <xsl:variable name="lang">
       <xsl:call-template name="tei:findLanguage"/>
     </xsl:variable>
+    <xsl:variable name="st" select="normalize-space($style)"/>
     <xsl:value-of select="$before"/>
     <xsl:call-template name="tei:makeHyperTarget"/>
     <xsl:variable name="decl">
       <xsl:choose>
-        <xsl:when test="contains(' add unclear bibl docAuthor titlem italic mentioned term foreign ', concat(' ',$style,' '))">
+        <xsl:when test="contains(' add unclear bibl docAuthor titlem italic mentioned term foreign ', concat(' ',$st,' '))">
           <xsl:choose>
             <xsl:when test="starts-with($lang, 'ja')">{\textJapanese </xsl:when>
             <xsl:when test="starts-with($lang, 'ko')">{\textKorean </xsl:when>
             <xsl:when test="starts-with($lang, 'zh')">{\textChinese </xsl:when>
-            <xsl:otherwise>\textit{</xsl:otherwise>
+            <xsl:otherwise>\emph{</xsl:otherwise>
           </xsl:choose>
         </xsl:when>
-        <xsl:when test="$style = 'supplied'">
+        <xsl:when test="$st = 'supplied'">
           <xsl:text/>
         </xsl:when>
-        <xsl:when test="$style = 'bold'">
+        <xsl:when test="$st = 'bold'">
           <xsl:text>\textbf{</xsl:text>
         </xsl:when>
-        <xsl:when test="$style = 'strikethrough'">
+        <xsl:when test="$st = 'strikethrough'">
           <xsl:text>\sout{</xsl:text>
         </xsl:when>
-        <xsl:when test="$style = 'sup'">
+        <xsl:when test="$st = 'sup'">
           <xsl:text>\textsuperscript{</xsl:text>
         </xsl:when>
-        <xsl:when test="$style = 'sub'">
+        <xsl:when test="$st = 'sub'">
           <xsl:text>\textsubscript{</xsl:text>
         </xsl:when>
         <xsl:when test="local-name() = 'label'">
           <xsl:text>\textbf{</xsl:text>
         </xsl:when>
-        <xsl:when test="not($style)">
+        <xsl:when test="$st = ''">
           <xsl:value-of select="concat('{\', local-name(), ' ')"/>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:value-of select="concat('{\', substring-before(concat($style, ' '), ' '), ' ')"/>
+          <xsl:value-of select="concat('{\', substring-before(concat($st, ' '), ' '), ' ')"/>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
@@ -268,6 +269,20 @@ A light version for XSLT1, with local improvements.
     <xsl:call-template name="tei:makeHyperTarget"/>
     <xsl:apply-templates/>
     <xsl:value-of select="concat('\end{', $style, '}')"/>
+  </xsl:template>
+  
+  <xsl:template name="makeItem">
+    <xsl:text>&#10;\item</xsl:text>
+    <xsl:if test="@n">[<xsl:value-of select="@n"/>]</xsl:if>
+    <xsl:text> </xsl:text>
+    <xsl:call-template name="tei:makeHyperTarget"/>
+    <xsl:call-template name="rendering"/>
+  </xsl:template>
+  <xsl:template name="makeLabelItem">
+    <xsl:text>&#10;\item</xsl:text>
+    <xsl:if test="@n">[<xsl:value-of select="@n"/>]</xsl:if>
+    <xsl:text> </xsl:text>
+    <xsl:call-template name="rendering"/>
   </xsl:template>
 
   <xsl:template name="makeSection">

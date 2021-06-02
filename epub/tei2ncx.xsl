@@ -198,14 +198,32 @@
       <xsl:with-param name="depth" select="$depth - 1"/>
     </xsl:call-template>
   </xsl:template>
+  <!-- section container -->
+  <!--
+  <xsl:template match="tei:back | tei:body | tei:front" mode="opf">
+    <xsl:param name="type"/>
+    <xsl:choose>
+      <xsl:when test="tei:p | tei:l | tei:list | tei:argument | tei:table | tei:docTitle | tei:docAuthor">
+        <xsl:call-template name="item">
+          <xsl:with-param name="type" select="$type"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:when test="descendant::*[key('split', generate-id())]">
+        <xsl:apply-templates select="tei:argument  | tei:div | tei:div0 | tei:div1 |  tei:castList | tei:epilogue | tei:performance | tei:prologue | tei:set | tei:titlePage" mode="opf">
+          <xsl:with-param name="type" select="$type"/>
+        </xsl:apply-templates>
+      </xsl:when>
+    </xsl:choose>
+  </xsl:template>
+  -->
   <xsl:template match="tei:back | tei:body | tei:front" mode="ncx">
     <xsl:param name="depth"/>
-    <xsl:variable name="children" select="tei:argument  | tei:div | tei:div0 | tei:div1 |  tei:castList | tei:epilogue | tei:performance | tei:prologue | tei:set | tei:titlePage[normalize-space(.) != '']"/>
+    <xsl:variable name="children" select="(tei:div | tei:div0 | tei:div1 |  tei:castList | tei:epilogue | tei:performance | tei:prologue | tei:set )[normalize-space(.) != '']"/>
     <xsl:choose>
+      <!-- No sections -->
       <xsl:when test="count($children) &lt; 1 and self::tei:body">
         <xsl:call-template name="navPoint"/>
       </xsl:when>
-      <xsl:when test="count($children) &lt; 1"/>
       <xsl:when test="normalize-space(.) = ''"/>
       <!-- La Vendetta -->
       <xsl:when test="count($children) = 1">
@@ -229,17 +247,20 @@
           </xsl:choose>
         </xsl:for-each>
       </xsl:when>     
+      <!-- simple content ? -->
+      <xsl:when test="tei:p | tei:l | tei:list | tei:argument | tei:table | tei:docTitle | tei:docAuthor">
+        <xsl:call-template name="navPoint">
+          <xsl:with-param name="depth" select="0"/>
+          <xsl:with-param name="title">
+            <xsl:call-template name="title"/>
+          </xsl:with-param>
+        </xsl:call-template>
+      </xsl:when>
       <!-- div content -->
       <xsl:when test="descendant::*[key('split', generate-id())]">
         <xsl:apply-templates select="tei:argument  | tei:div | tei:div0 | tei:div1 |  tei:castList | tei:epilogue | tei:performance | tei:prologue | tei:set | tei:titlePage[normalize-space(.) != '']" mode="ncx">
           <xsl:with-param name="depth" select="$depth - 1"/>
         </xsl:apply-templates>
-      </xsl:when>
-      <!-- simple content ? -->
-      <xsl:when test="tei:p | tei:l | tei:list | tei:argument | tei:table | tei:docTitle | tei:docAuthor">
-        <xsl:call-template name="navPoint">
-          <xsl:with-param name="depth" select="0"/>
-        </xsl:call-template>
       </xsl:when>
     </xsl:choose>
   </xsl:template>

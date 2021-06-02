@@ -301,7 +301,6 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
           <xsl:call-template name="a"/>
         </li>
       </xsl:when>
-      <xsl:when test="count($children) &lt; 1"/>
       <xsl:when test="count($children) = 1">
         <li>
           <xsl:variable name="title">
@@ -322,7 +321,7 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
         </li>
       </xsl:when>
       <!-- simple content ? -->
-      <xsl:when test="not(tei:castList | tei:div | tei:div1 | tei:titlePage)">
+      <xsl:when test="not(tei:castList | tei:div | tei:div1)">
         <li>
           <xsl:call-template name="a"/>
         </li>

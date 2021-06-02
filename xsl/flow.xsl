@@ -370,7 +370,7 @@ Sections
       </xsl:apply-templates>
     </fieldset>
   </xsl:template>
-  <!-- Contains blocks, but are no sections -->
+  <!-- Contains blocks, but are not sections -->
   <xsl:template match="tei:argument | tei:closer | tei:def | tei:docTitle | tei:entry | tei:form | tei:postscript  | tei:entry/tei:xr | tei:opener">
     <xsl:param name="from"/>
     <xsl:if test=". != ''">

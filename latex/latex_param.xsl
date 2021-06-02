@@ -90,24 +90,10 @@ A light version for XSLT1, with local improvements.
   </doc>
   <xsl:param name="resetVerseLineNumbering">div1</xsl:param>
   <doc xmlns="http://www.oxygenxml.com/ns/doc/xsl" class="layout" type="string">
-    <desc>Which environment to use for quotes (quote, quotation, quoting, ...)</desc>
+    <desc>Which environment to use for quotes (quote, quotation, quoting, ...)?</desc>
   </doc>
-  <xsl:param name="quoteEnv">quoting</xsl:param>
+  <xsl:param name="quoteEnv">myquote</xsl:param>
   
 
   <xsl:param name="longtables">true</xsl:param>
-
-  <xsl:template name="makeItem">
-    <xsl:text>&#10;\item</xsl:text>
-    <xsl:if test="@n">[<xsl:value-of select="@n"/>]</xsl:if>
-    <xsl:text> </xsl:text>
-    <xsl:call-template name="tei:makeHyperTarget"/>
-    <xsl:call-template name="rendering"/>
-  </xsl:template>
-  <xsl:template name="makeLabelItem">
-    <xsl:text>&#10;\item</xsl:text>
-    <xsl:if test="@n">[<xsl:value-of select="@n"/>]</xsl:if>
-    <xsl:text> </xsl:text>
-    <xsl:call-template name="rendering"/>
-  </xsl:template>
 </xsl:transform>

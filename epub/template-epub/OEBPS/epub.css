@@ -31,7 +31,6 @@ body {
   font-family: Georgia, Amasis, Malabar, serif;
   -moz-hyphens: auto;
   -webkit-hyphens: auto;
-  adobe-hyphenate: auto;
   hyphens: auto;
 }
 
@@ -128,8 +127,6 @@ blockquote {
 
 h3,
 h4 {
-  margin-left: 1.5em;
-  text-indent: -1.5em;
   text-align: left;
   margin-left: 1.5rem;
   text-indent: -1.5rem;
@@ -137,7 +134,6 @@ h4 {
 
 ul,
 ol {
-  padding-left: 1.5em;
   margin-left: 0;
   padding-left: 1.5rem;
 }
@@ -148,14 +144,12 @@ li {
 }
 
 .dialogue li {
-  text-indent: 0.5em;
   text-indent: 0.5rem;
 }
 
 p {
   margin: 0;
   text-align: justify;
-  text-indent: 1.5em;
   text-indent: 1.5rem;
 }
 
@@ -174,7 +168,7 @@ p.p.no {
 }
 small.no,
 small.milestone {
-  font-weight: monospace;
+  font-family: monospace;
   font-weight: normal;
   color: #800;
   font-style: normal;
@@ -183,8 +177,6 @@ small.milestone {
 
 div.l {
   text-align: left;
-  text-indent: -1.5em;
-  padding-left: 1.5em;
   text-indent: -1.5rem;
   padding-left: 1.5rem;
 }
@@ -217,15 +209,12 @@ mark:target,
 b.mark:target {
   border-bottom: 3px #CCCCCC solid;
   background-color: #FFFFEE;
-  border-radius-top-left: 0;
+  border-top-left-radius: 0;
 }
 
 section:target {
-  background: transparent !important;
   border-left: none;
 }
-
-a:target {}
 
 a {
   text-decoration: none;
@@ -247,8 +236,6 @@ a img {
   border: none;
 }
 
-a:visited {}
-
 nav a {
   border-bottom: none;
 }
@@ -263,13 +250,13 @@ address {
 }
 
 article {
-  margin-top: 1em;
+  margin-top: 1rem;
 }
 
 aside header {
   border: none;
-  padding-right: 1em;
-  margin: 1em 0 3em 0;
+  padding-right: 1rem;
+  margin: 1rem 0 3rem 0;
 }
 
 big {
@@ -285,7 +272,7 @@ blockquote {
 }
 
 blockquote p {
-  text-indent: 1em;
+  text-indent: 1rem;
   margin-top: 0;
   margin-bottom: 0;
 }
@@ -295,7 +282,7 @@ caption {
   color: #000000;
   font-weight: bold;
   text-align: left;
-  padding: 4px 2em 2px 2em;
+  padding: 4px 2rem 2px 2rem;
 }
 
 cite {
@@ -337,12 +324,12 @@ dl.dl dt {
 dl.dl dd {
   text-align: justify;
   color: #333;
-  margin-top: 0em;
-  margin-bottom: 0.5em;
+  margin-top: 0rem;
+  margin-bottom: 0.5rem;
 }
 
 fieldset {
-  margin: 2em 0 1em 0;
+  margin: 2rem 0 1rem 0;
   padding: 0 1ex 1ex 1ex;
 }
 
@@ -427,7 +414,6 @@ h6 {
   line-height: 1.1;
   clear: both;
   -webkit-hyphens: none;
-  adobe-hyphenate: none;
   -moz-hyphens: none;
   hyphens: none;
   page-break-after: avoid;
@@ -441,9 +427,8 @@ h1 {
   margin-right: auto;
   font-size: 1.5em;
   font-weight: normal;
-  margin-top: 2em;
-  margin-bottom: 1em;
-  padding-top: 1em;
+  margin-bottom: 1rem;
+  padding-top: 1rem;
   margin-top: 0;
 }
 
@@ -479,21 +464,21 @@ h2 {
   margin-left: auto;
   margin-right: auto;
   font-size: 1.17em;
-  margin-top: 1em;
-  margin-bottom: 1em;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 h3 {
   font-size: 1em;
   font-weight: bold;
-  margin-top: 1em;
-  margin-bottom: 1ex;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 h4 {
   font-size: 1em;
-  margin-top: 1em;
-  margin-bottom: 1ex;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
   text-align: left;
 }
 
@@ -562,11 +547,11 @@ li pre {
 }
 
 li blockquote {
-  margin: 1em 0 1em 0;
+  margin: 1rem 0 1rem 0;
 }
 
 li blockquote p {
-  text-indent: 1.5em;
+  text-indent: 1.5rem;
 }
 
 legend {
@@ -640,12 +625,6 @@ sub {
   vertical-align: sub;
 }
 
-textarea {
-  width: 100%;
-  height: 20em;
-  display: block;
-}
-
 table a {
   border: none;
 }
@@ -664,7 +643,7 @@ tfoot {
 
 /** TEI elements, in TEI element name order, before type modifier in next block */
 .argument {
-  margin: 0 0 1em 0;
+  margin: 0 0 1rem 0;
   text-indent: 0;
   font-style: italic;
   text-align: justify;
@@ -685,7 +664,7 @@ div.author {
 }
 
 .availability {
-  margin: 2em 0;
+  margin: 2rem 0;
   text-align: justify;
 }
 
@@ -696,7 +675,7 @@ li.bibl {
 
 /* like li.witness */
 blockquote .bibl {
-  margin-left: 2em;
+  margin-left: 2rem;
   display: block;
 }
 
@@ -729,9 +708,6 @@ small.l-n {
   text-decoration: none;
   border: none;
 }
-
-a.ed,
-a.pb {}
 
 .pb {
   font-weight: normal;
@@ -774,7 +750,7 @@ h1.collection {
 
 .dateline {
   text-align: right;
-  margin: 2em 0 0 0;
+  margin: 2rem 0 0 0;
 }
 
 .drama>.opener>.dateline,
@@ -784,7 +760,7 @@ h1.collection {
 .poem>.opener>.dateline,
 .press>.opener>.dateline,
 .treatise>.opener>.dateline {
-  margin: 0.5em 2em 0.5em 0;
+  margin: 0.5rem 2rem 0.5rem 0;
 }
 
 .drama>.closer>.dateline,
@@ -794,15 +770,15 @@ h1.collection {
 .poem>.closer>.dateline,
 .press>.closer>.dateline,
 .treatise>.closer>.dateline {
-  margin: 0.5em 2em 0.5em 0;
+  margin: 0.5rem 2rem 0.5rem 0;
 }
 
 .letter>.dateline {
-  margin: 0.5em 2em 0.5em 0;
+  margin: 0.5rem 2rem 0.5rem 0;
 }
 
 section.div {
-  padding-top: 3em;
+  padding-top: 3rem;
 }
 
 h1.desc {
@@ -813,11 +789,11 @@ h1.desc {
 }
 
 /* <titlePart type="desc"> */
-/* .body > .div {border-bottom: 1px #CCCCCC solid; padding-bottom: 3em; } */
+/* .body > .div {border-bottom: 1px #CCCCCC solid; padding-bottom: 3gem; } */
 .titlePart.main {
   font-size: 150%;
-  margin-top: 1.5em;
-  margin-bottom: 1em;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .docAuthor {
@@ -832,14 +808,12 @@ h1.desc {
   text-align: center;
   margin-left: auto;
   margin-right: auto;
-  margin-top: 1em;
-  margin-bottom: 1em;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
-.editionStmt {}
-
 .entry>* {
-  margin-left: 2em;
+  margin-left: 2rem;
 }
 
 .entry>.form {
@@ -866,7 +840,7 @@ h1.desc {
 .figure {
   line-height: 1.1;
   font-size: 85%;
-  margin: 1em 0 1em 0;
+  margin: 1rem 0 1rem 0;
   background: #EEE;
   border: solid 1px #999;
   text-align: center;
@@ -896,7 +870,7 @@ h1.desc {
 
 .fileDesc>.titleStmt {
   text-align: center;
-  margin: 0 0 5em 0;
+  margin: 0 0 5rem 0;
   line-height: 1.5;
 }
 
@@ -915,8 +889,8 @@ h1.desc {
 }
 
 .footnotes {
-  margin-top: 3em;
-  margin-bottom: 1em;
+  margin-top: 3rem;
+  margin-bottom: 1rem;
 }
 
 hr.footnotes {
@@ -945,7 +919,7 @@ t div.l dfn.gloss {
   line-height: 1.1;
   text-align: left;
   float: right;
-  margin-left: 25em;
+  margin-left: 25rem;
   width: 250px;
   font-size: small;
   background-color: #F3F3F3;
@@ -963,16 +937,14 @@ div.gloss {
   text-indent: 0;
 }
 
-div.l {}
-
 div.l.center {
   padding-left: 0;
 }
 
 /*
-.l.part-M { margin-left: 3em; text-indent: 0; padding-left: 0; }
-.l.part-F { margin-left: 6em; text-indent: 0; padding-left: 0; }
-.l.part-Y { text-indent: 3em; }
+.l.part-M { margin-left: 3rem; text-indent: 0; padding-left: 0; }
+.l.part-F { margin-left: 6rem; text-indent: 0; padding-left: 0; }
+.l.part-Y { text-indent: 3rem; }
 */
 .lb {
   color: grey;
@@ -981,7 +953,7 @@ div.l.center {
 
 p.label,
 div.label {
-  margin: 0.7em 0;
+  margin: 0.7rem 0;
   line-height: 1.1;
   text-align: center;
   text-indent: 0;
@@ -989,11 +961,16 @@ div.label {
   font-weight: bold;
 }
 
+p .speaker {
+  font-weight: normal;
+  font-variant: small-caps;
+}
+
 div.note,
 aside.note {
   font-size: 85%;
   line-height: 1.15;
-  margin-top: 1em;
+  margin-top: 1rem;
   text-align: justify;
 }
 
@@ -1004,7 +981,7 @@ section>div.note {
 
 .note p {
   margin: 0;
-  text-indent: 1em;
+  text-indent: 1rem;
 }
 
 .note p.noindent {
@@ -1028,12 +1005,12 @@ p.note {
 }
 
 .note-page {
-  font-size: 0.8em;
+  font-size: 0.8rem;
 }
 
 .note-margin-left {
   float: left;
-  margin-left: -2em;
+  margin-left: -2rem;
   margin-right: 1ex;
 }
 
@@ -1063,7 +1040,7 @@ a.noteback:hover {
 
 a.noteback {
   font-size: 85%;
-  margin-right: 1em;
+  margin-right: 1rem;
 }
 
 .num {
@@ -1078,7 +1055,7 @@ a.noteback {
 }
 
 .footnotes .page {
-  margin-top: 1em;
+  margin-top: 1rem;
 }
 
 .footnotes .page .note {
@@ -1088,8 +1065,8 @@ a.noteback {
 
 div.salute,
 p.salute {
-  margin: 1em 0 1em 4em;
-  text-indent: 0em;
+  margin: 1rem 0 1rem 4rem;
+  text-indent: 0rem;
   font-style: italic;
   text-align: right;
 }
@@ -1100,8 +1077,8 @@ p.salute {
 }
 
 .signed {
-  margin-top: 1em;
-  margin-bottom: 2em;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
   text-indent: 0;
   text-align: right;
 }
@@ -1119,7 +1096,7 @@ p.salute {
 
 div.speaker,
 p.speaker {
-  margin-top: 1.2em;
+  margin-top: 1.2rem;
   margin-bottom: 0;
   font-weight: normal;
   text-indent: 0;
@@ -1181,12 +1158,10 @@ h6.sub {
   padding-top: 0;
 }
 
-.scene h2 {
+.scene .h2 {
   font-weight: normal;
   font-style: italic;
 }
-
-.sourceDesc {}
 
 .subtitle {
   font-style: italic;
@@ -1195,7 +1170,7 @@ h6.sub {
   margin-left: auto;
   margin-right: auto;
   font-size: 200%;
-  margin-bottom: 2em;
+  margin-bottom: 2rem;
 }
 
 section section .subtitle {
@@ -1226,11 +1201,11 @@ i .title,
 
 .titlePage {
   text-align: center;
-  margin-top: 3em;
+  margin-top: 3rem;
   page-break-before: right;
 }
 
-.titlePage h1.sub {
+.titlePage .sub {
   font-weight: normal;
   margin-top: 0;
   padding-top: 0;
@@ -1247,33 +1222,32 @@ i .title,
 }
 
 .titlePage p {
-  margin-top: 1em;
-  margin-bottom: 1em;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 .titlePage .argument {
   font-style: normal;
-  margin: 1em auto 1em auto;
+  margin: 1rem auto 1rem auto;
   text-align: center;
 }
 
 .titlePage .byline {
   font-weight: bold;
-  margin-top: 4em;
-  margin-top: 4em;
+  margin-top: 4rem;
   margin-left: auto;
   margin-right: auto;
   text-align: center;
 }
 
 .titlePage .docAuthor {
-  margin-top: 1em;
-  margin-bottom: 1em;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 .titlePage figure {
   border: none;
-  margin-top: 5em;
+  margin-top: 5rem;
   font-weight: normal;
 }
 
@@ -1286,13 +1260,11 @@ i .title,
   font-size: 65%;
 }
 
-.titlePage .docDate {}
-
 .trailer {
   font-style: italic;
   text-align: center;
   text-indent: 0;
-  margin-top: 2em;
+  margin-top: 2rem;
 }
 
 li.witness {
@@ -1416,8 +1388,8 @@ span.exquote {
 
 /* seg[@type='exquote'] */
 .hanging {
-  margin-left: 1.5em;
-  text-indent: -1.5em
+  margin-left: 1.5rem;
+  text-indent: -1.5rem
 }
 
 .i,
@@ -1489,13 +1461,13 @@ ul.menu {
 
 /* automatic */
 .indent {
-  text-indent: 2em;
+  text-indent: 2rem;
 }
 
 div.ornament {
   line-height: 0.95;
   letter-spacing: 0.6em;
-  margin: 1em 5em;
+  margin: 1rem 5rem;
   text-align: center;
   margin-left: auto;
   margin-right: auto;
@@ -1503,13 +1475,12 @@ div.ornament {
 
 .page-break-before {
   page-break-before: always;
-  height: 2em;
   height: 2rem;
 }
 
 .page-spacer {
-  margin-top: 6em;
-  height: 5em;
+  margin-top: 6rem;
+  height: 5rem;
   border-top: 1px #CCCCCC solid;
 }
 
@@ -1518,7 +1489,7 @@ div.ornament {
 }
 
 p.right {
-  margin-bottom: 1em;
+  margin-bottom: 1rem;
 }
 
 div.right {
@@ -1533,7 +1504,7 @@ section.preface {
 
 .sb {
   font-size: 200%;
-  margin: 1em;
+  margin: 1rem;
   text-indent: 0;
 }
 
@@ -1654,6 +1625,6 @@ ul.tree ul {
 }
 
 .upper-roman>li {
-  margin-top: 1em;
-  margin-bottom: 1em;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }

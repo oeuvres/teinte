@@ -32,7 +32,7 @@ Epub parameters
   <!-- Name of page where to project inline footnotes -->
   <xsl:param name="fnpage">
     <xsl:choose>
-      <xsl:when test="//tei:note">_footnotes</xsl:when>
+      <xsl:when test="//tei:note">endnotes</xsl:when>
     </xsl:choose>
   </xsl:param>
 </xsl:transform>

@@ -13,7 +13,18 @@ https://github.com/TEIC/Stylesheets/tree/dev/latex
 2. http://www.opensource.org/licenses/BSD-2-Clause
 
 A light version for XSLT1, with local improvements.
-2021, frederic.glorieux@fictif.org
+2021, Frederic.Glorieux@fictif.org
+
+Sebastian define in this sheet a logic for most <tag>, for all formats.
+For now in Teinte, it is only used for latex generation. Maybe one day
+this logic could be generalized.
+Idea is to interpret the context of a tag (ex: <bibl>),
+to send a parameter (ex: "citbibl", "biblFree"),
+to a genereric formatting command ("makeBlock" or "makeInline").
+It works quite well for Latex with dedicated TEI environments and commands,
+maybe it could be nice for html with a good generic CSS, 
+it is dangerous for docx where nesting may produce lots of surprises
+(example : <bibl>, in a <note>, in a <quote>).
   -->
   <xsl:output indent="no"/>
   

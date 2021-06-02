@@ -23,7 +23,7 @@ LGPL http://www.gnu.org/licenses/lgpl.html
   </metadata>
   <!-- required -->
   <manifest>
-    <item href="Styles/epub.css" id="stylesheet" media-type="text/css"/>
+    <item href="epub.css" id="stylesheet" media-type="text/css"/>
     <item href="colophon.xhtml" media-type="application/xhtml+xml" id="colophon"/>
   </manifest>
   <!-- required -->

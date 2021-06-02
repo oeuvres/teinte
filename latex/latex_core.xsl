@@ -26,24 +26,22 @@ A light version for XSLT1, with local improvements.
   <xsl:variable name="postQuote"> »</xsl:variable>
   <!-- TODO, handle dinkus etc… -->
   <xsl:template match="tei:ab">
+    <xsl:variable name="norm" select="normalize-space(.)"/>
+    <xsl:variable name="dinkus" select="boolean(translate($norm, '  *⁂', '') = '')"/>
     <xsl:choose>
-      <xsl:when test="@type = 'dinkus'">
-        <xsl:choose>
-          <xsl:when test="normalize-space(.) = '*'">
-            <xsl:text>&#10;\bigskip\par{\large\centerline{*\medskip}}\par&#10;</xsl:text>
-          </xsl:when>
-          <xsl:when test="tei:lb or normalize-space(.) = '⁂'">
-            <xsl:text>&#10;\bigskip\par\noindent\parbox{\linewidth}{\centering\large{*}\\[-4pt]{*}\hskip 0.75em{*}}\bigskip\par&#10;</xsl:text>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:text>&#10;\bigskip\par\centerline{*\,*\,*}\medskip\par&#10;</xsl:text>
-          </xsl:otherwise>
-        </xsl:choose>
+      <xsl:when test="$norm = '*'">
+        <xsl:text>&#10;\astermono&#10;&#10;</xsl:text>
+      </xsl:when>
+      <xsl:when test="($dinkus and tei:lb) or $norm = '⁂'">
+        <xsl:text>&#10;\asterism&#10;&#10;</xsl:text>
+      </xsl:when>
+      <xsl:when test="$dinkus">
+        <xsl:text>&#10;\astertri&#10;&#10;</xsl:text>
       </xsl:when>
       <xsl:when test="@type = 'ornament'">
-        <xsl:text>&#10;\begin{center}&#10;</xsl:text>
+        <xsl:text>&#10;\begin{center}</xsl:text>
         <xsl:apply-templates/>
-        <xsl:text>\end{center}&#10;</xsl:text>
+        <xsl:text>\end{center}&#10;&#10;</xsl:text>
       </xsl:when>
       <xsl:otherwise>
         <xsl:apply-templates/>
@@ -51,7 +49,7 @@ A light version for XSLT1, with local improvements.
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-  <!-- Who clal that mode cite ? -->
+  <!-- Who call that mode cite ? -->
   <xsl:template match="tei:bibl" mode="cite">
     <xsl:apply-templates select="text()[1]"/>
   </xsl:template>
@@ -265,7 +263,10 @@ A light version for XSLT1, with local improvements.
   </xsl:template>
   <xsl:template name="rendering">
     <xsl:choose>
-      <xsl:when test="normalize-space(@rend) != ''">
+      <xsl:when test="not(@rend) or normalize-space(@rend) = ''">
+        <xsl:apply-templates/>
+      </xsl:when>
+      <xsl:otherwise>
         <xsl:variable name="tokens">
           <xsl:choose>
             <xsl:when test="function-available(str:tokenize)">
@@ -356,7 +357,7 @@ A light version for XSLT1, with local improvements.
         <xsl:if test="$cmd != ''">
           <xsl:value-of select="substring('}}}}}}}}}}}}}}}}}}}}}}}}}', 1, string-length($cmd) - string-length(translate($cmd, '{', '')))"/>
         </xsl:if>
-      </xsl:when>
+      </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
 
@@ -442,7 +443,7 @@ A light version for XSLT1, with local improvements.
       <xsl:otherwise>
         <xsl:text>\begin{itemize}</xsl:text>
         <xsl:apply-templates/>
-        <xsl:text>&#10;\end{itemize} </xsl:text>
+        <xsl:text>&#10;\end{itemize}&#10;</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -689,13 +690,14 @@ A light version for XSLT1, with local improvements.
         <xsl:call-template name="tei:makeHyperTarget"/>
         <xsl:apply-templates/>
       </xsl:when>
+      <!-- block -->
       <xsl:when test="$isInline = ''">
-        <xsl:text>&#10;&#10;\begin{</xsl:text>
+        <xsl:text>&#10;\begin{</xsl:text>
         <xsl:value-of select="$quoteEnv"/>
-        <xsl:text>}</xsl:text>
+        <xsl:text>}&#10;</xsl:text>
         <xsl:call-template name="tei:makeHyperTarget"/>
         <xsl:apply-templates/>
-        <xsl:text>\end{</xsl:text>
+        <xsl:text>&#10;\end{</xsl:text>
         <xsl:value-of select="$quoteEnv"/>
         <xsl:text>}&#10;&#10;</xsl:text>
       </xsl:when>
