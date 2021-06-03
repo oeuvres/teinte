@@ -1,16 +1,18 @@
 % memoir and koma does not work well for section titles and columns, waiting for LaTeX3
-\documentclass[11pt,twoside,french,dvipsnames]{book}
-\RequirePackage{fix-cm}
-% \usepackage[fontsize=10.5pt]{scrextend}
-% \renewcommand{\baselinestretch}{0.95}
-\linespread{0.85}
+\documentclass[twoside,french,dvipsnames]{book}
+\usepackage[no-math]{fontspec}
 \makeatletter % @@@
 
-% before geometry and cols
+% before geometry, colors
+\RequirePackage{fix-cm}
 \usepackage{xcolor}
 \definecolor{shadecolor}{gray}{0.95}
-\colorlet{borderline}{BrickRed!30!}
 \definecolor{bghi}{gray}{0.5}
+\definecolor{rubric}{HTML}{902c20}
+\colorlet{borderline}{rubric!30!} % definecolor need exact code
+
+% ornaments
+% \usepackage{graphicx}
 
 % specific A4
 \usepackage{multicol}
@@ -24,10 +26,40 @@
 ]{geometry}
 \setlength{\columnsep}{2cm}
 \setlength{\columnseprule}{0.2pt}
-\renewcommand{\columnseprulecolor}{\color{BrickRed}}
+\renewcommand{\columnseprulecolor}{\color{rubric}}
 % indents
 \setlength{\parindent}{1.5em}
 \setlength{\parskip}{0pt}
+
+% Xetex only, Fonts
+\usepackage{xunicode}
+\defaultfontfeatures{Scale = MatchLowercase}
+\defaultfontfeatures{Ligatures={TeX}}
+\usepackage[default]{lato}
+\usepackage{DejaVuSans}
+\setmainfont[%
+  ItalicFont={* Semibold Italic}
+]{Lato}
+\usepackage[fontsize=10pt]{scrextend} % OK for lato (53 c.)
+% \renewcommand{\baselinestretch}{0.95} % old doc ?
+% \linespread{0.90} % too compact
+
+\newfontfamily{\fontlight}[
+  UprightFont={* Light},
+  ItalicFont={* Light Italic},
+  BoldFont={* Medium},
+  BoldItalicFont={* Medium Italic}
+]{Lato}
+\newfontfamily\syms{DejaVu Sans} % Ensure a font for dingBats
+\setsansfont{Bitter} 
+\setmonofont{DejaVu Sans Mono}
+\usepackage{polyglossia} % non-break space french punct
+\setmainlanguage{french}
+% ??
+\catcode`⃥=\active \def⃥{\textbackslash}
+\catcode`❴=\active \def❴{\{}
+\catcode`❵=\active \def❵{\}}
+
 
 % ornaments
 % \usepackage{background} % doesn’t work with xetek
@@ -58,7 +90,6 @@
 \usepackage{etoolbox}
 \usepackage{wrapfig}
 \usepackage{ragged2e}
-\usepackage{ifxetex}
 
 
 
@@ -72,160 +103,78 @@
 \IfFileExists{xcolor.sty}%
   {\RequirePackage{xcolor}}%
   {\RequirePackage{color}}
-\ifxetex
-  \usepackage{fontspec}
-  \defaultfontfeatures{Scale = MatchLowercase}
-  \setmainfont[%
-    Ligatures={Common, TeX},
-    % UprightFont={* Light}, % emph in emph
-    ItalicFont={* Semibold Italic}
-  ]{Lato}
-  \newfontfamily{\fontlight}[
-    UprightFont={* Light},
-    ItalicFont={* Light Italic},
-    BoldFont={* Medium},
-    BoldItalicFont={* Medium Italic}
-  ]{Lato}
-  \setsansfont{Bitter} 
-  \usepackage{xunicode}
-  \defaultfontfeatures{Ligatures={TeX}}
-  \usepackage{polyglossia} % non-break space french punct
-  \setmainlanguage{french}
-  \catcode`⃥=\active \def⃥{\textbackslash}
-  \catcode`❴=\active \def❴{\{}
-  \catcode`❵=\active \def❵{\}}
-  \setmonofont{DejaVu Sans Mono}
-\else
-  \IfFileExists{utf8x.def}%
-   {\usepackage[utf8x]{inputenc}
-      \PrerenderUnicode{–}
-    }%
-   {\usepackage[utf8]{inputenc}}
-  \usepackage{babel}
-  \usepackage[T1]{fontenc}
-  \usepackage{float}
-  \usepackage[]{ucs}
-  \uc@dclc{8421}{default}{\textbackslash }
-  \uc@dclc{10100}{default}{\{}
-  \uc@dclc{10101}{default}{\}}
-  \uc@dclc{8491}{default}{\AA{}}
-  \uc@dclc{8239}{default}{\,}
-  \uc@dclc{20154}{default}{ }
-  \uc@dclc{10148}{default}{>}
-  \def\textschwa{\rotatebox{-90}{e}}
-  \def\textJapanese{}
-  \def\textChinese{}
-  \IfFileExists{tipa.sty}{\usepackage{tipa}}{}
-  \usepackage{times}
-\fi
 
-\def\exampleFont{\ttfamily\small}
-\DeclareTextSymbol{\textpi}{OML}{25}
-\usepackage{relsize}
-\RequirePackage{array}
-\def\@testpach{\@chclass
- \ifnum \@lastchclass=6 \@ne \@chnum \@ne \else
-  \ifnum \@lastchclass=7 5 \else
-   \ifnum \@lastchclass=8 \tw@ \else
-    \ifnum \@lastchclass=9 \thr@@
-   \else \z@
-   \ifnum \@lastchclass = 10 \else
-   \edef\@nextchar{\expandafter\string\@nextchar}%
-   \@chnum
-   \if \@nextchar c\z@ \else
-    \if \@nextchar l\@ne \else
-     \if \@nextchar r\tw@ \else
-   \z@ \@chclass
-   \if\@nextchar |\@ne \else
-    \if \@nextchar !6 \else
-     \if \@nextchar @7 \else
-      \if \@nextchar (8 \else
-       \if \@nextchar )9 \else
-  10
-  \@chnum
-  \if \@nextchar m\thr@@\else
-   \if \@nextchar p4 \else
-    \if \@nextchar b5 \else
-   \z@ \@chclass \z@ \@preamerr \z@ \fi \fi \fi \fi
-   \fi \fi  \fi  \fi  \fi  \fi  \fi \fi \fi \fi \fi \fi}
-\gdef\arraybackslash{\let\\=\@arraycr}
-\def\@textsubscript#1{{\m@th\ensuremath{_{\mbox{\fontsize\sf@size\z@#1}}}}}
-\def\Panel#1#2#3#4{\multicolumn{#3}{){\columncolor{#2}}#4}{#1}}
+% Debug
+\newcommand\thefontsize{The current font size is: \f@size pt}
 
 % generic typo commands
-\newfontfamily\syms{DejaVu Sans}
 \DeclareTextFontCommand{\textsyms}{\syms}
-\newcommand{\astermono}{\medskip\centerline{\color{BrickRed}\large\selectfont{\syms ✻}}\medskip\par}%
-\newcommand{\astertri}{\bigskip\centerline{\color{BrickRed}\large\selectfont{\syms ✻\,✻\,✻}\medskip\par}}%
-\newcommand{\asterism}{\bigskip\par\noindent\parbox{\linewidth}{\centering\color{BrickRed}\large{\syms ✻}\\{\syms ✻}\hskip 0.75em{\syms ✻}}\bigskip\par}%
+\newcommand{\astermono}{\medskip\centerline{\color{rubric}\large\selectfont{\syms ✻}}\medskip\par}%
+\newcommand{\astertri}{\bigskip\centerline{\color{rubric}\large\selectfont{\syms ✻\,✻\,✻}\medskip\par}}%
+\newcommand{\asterism}{\bigskip\par\noindent\parbox{\linewidth}{\centering\color{rubric}\large{\syms ✻}\\{\syms ✻}\hskip 0.75em{\syms ✻}}\bigskip\par}%
 \usepackage{enumitem}
 \setlist{noitemsep,wide,leftmargin=*, labelindent=0pt} % labelindent=\parindent,leftmargin=*
 \setlist[itemize]{label=—}
 
-% TEI commands
-% be careful of environment in environment (ex: div/quote/bibl)
-\def\abbr{}
+%
+% generated from TEI
+%
+\usepackage{verse} % <l>
+\setlength{\leftmargini}{-1em} % work ?
+
+% common font redefinition in LaTex
+\DeclareTextFontCommand{\textlarge}{\large}
+\DeclareTextFontCommand{\textsmall}{\small}
+
+% commands, inlines
+\newcommand\abbr{}
+\newcommand\corr{}
+\newcommand\expan{}
+\newcommand\gap{}
+\newcommand\orig{}
+\newcommand\orgName{}
+\newcommand\persName{}
+\newcommand\name{}
+\newcommand\placeName{}
+\newcommand\reg{}
+% \newcommand\ref{} % already defined
+\newcommand\sic{}
+
+% commands, blocks
+\newcommand{\byline}[1]{\vskip2em{\RaggedLeft{#1}\par}\vskip1em}
+\newcommand{\dateline}[1]{\vskip1em{\RaggedLeft{#1}\par}\vskip2em}
+\newcommand{\salute}[1]{\vskip2em{#1}\par\vskip1em}
+
+% environment  be careful of environment in environment (ex: div/quote/bibl)
 \newenvironment{argument}{\large\fontlight\parindent0pt}{\vskip1.5em}
 \newenvironment{biblfree}{}{\ifvmode\par\fi }
+
+% should probably become commands
 \newenvironment{bibl}{}{}
 \newenvironment{blabel}{\begin{center}\begin{bfseries}}{\end{bfseries}\end{center}}
-\newenvironment{byline}{\vskip6pt\itshape\fontsize{16pt}{18pt}\selectfont}{\par }
 \newenvironment{citbibl}{\ifvmode\hfill\fi}{\ifvmode\par\fi }
-\def\corr{}
 \newenvironment{docAuthor}{\ifvmode\vskip4pt\fontsize{16pt}{18pt}\selectfont\fi\itshape}{\ifvmode\par\fi }
 \newenvironment{docDate}{}{\ifvmode\par\fi }
 \newenvironment{docImprint}{\vskip6pt}{\ifvmode\par\fi }
 \newenvironment{docTitle}{\vskip6pt\bfseries\fontsize{18pt}{22pt}\selectfont}{\par }
-\def\expan{}
-\def\gap{}
-\usepackage{verse} % <l>
-\setlength{\leftmargini}{-1em}
 \newenvironment{msHead}{\vskip6pt}{\par}
 \newenvironment{msItem}{\vskip6pt}{\par}
-\def\orig{}
-\def\orgName{}
-\def\persName{}\def\name{}
-\def\placeName{}
-\def\reg{}
-\def\ref{}
-\newenvironment{rubric}{}{}
-\def\sic{}
-\def\textcal#1{{\fontspec{Lucida Calligraphy}#1}}
-\def\textgothic#1{{\fontspec{Lucida Blackletter}#1}}
-\def\textlarge#1{{\large #1}}
-\def\textoverbar#1{\ensuremath{\overline{#1}}}
-\def\textquoted#1{‘#1’}
-\def\textsmall#1{{\small #1}}
-\def\textsubscript#1{\@textsubscript{\selectfont#1}}
-\def\textxi{\ensuremath{\xi}}
-\def\titlem{\itshape}
 \newenvironment{titlePart}{}{\par }
 
 
-\newcolumntype{L}[1]{){\raggedright\arraybackslash}p{#1}}
-\newcolumntype{C}[1]{){\centering\arraybackslash}p{#1}}
-\newcolumntype{R}[1]{){\raggedleft\arraybackslash}p{#1}}
-\newcolumntype{P}[1]{){\arraybackslash}p{#1}}
-\newcolumntype{B}[1]{){\arraybackslash}b{#1}}
-\newcolumntype{M}[1]{){\arraybackslash}m{#1}}
-\definecolor{label}{gray}{0.75}
-\def\unusedattribute#1{\sout{\textcolor{label}{#1}}}
-\DeclareRobustCommand*{\xref}{\hyper@normalise\xref@}
-\def\xref@#1#2{\hyper@linkurl{#2}{#1}}
-\begingroup
-\catcode`\_=\active
-\gdef_#1{\ensuremath{\sb{\mathrm{#1}}}}
-\endgroup
-\mathcode`\_=\string"8000
-\catcode`\_=12\relax
 
-
-\renewcommand{\@cite}[1]{#1}
+% \renewcommand{\@cite}[1]{#1}
 
 % footnotes
-\renewcommand*{\marginfont}{\itshape\footnotesize}
-\patchcmd{\@footnotetext}{\footnotesize}{\small}{}{}
+% \renewcommand*{\marginfont}{\itshape\footnotesize}
+% \patchcmd{\@footnotetext}{\footnotesize}{\small}{}{}
 \renewcommand\footnoterule{\vspace*{0.3cm}\hrule height 0.1pt width 3cm \vspace*{0.3cm}}
+\patchcmd{\@footnotetext}{\reset@font}{\fontfamily{phv}\selectfont}{}{}
+\patchcmd{\@makefntext}{\hss\@makefnmark}{\@makefnmark}{}{}
+\setlength\footnotesep{1.5\footnotesep} % footnote separator
+\renewcommand{\thefootnote}{\bfseries\textcolor{rubric}{\arabic{footnote}}} % color for footnote marks
+\renewcommand\@makefntext[1]{\parindent 1.5em \noindent \hb@xt@1.8em{\hss{\normalfont\@thefnmark . }}#1} % no superscipt in foot
+
 
 \def\Gin@extensions{.pdf,.png,.jpg,.mps,.tif}
 
@@ -244,12 +193,22 @@
 \vbadness=4000
 \widowpenalty=10000
 
+% \let\@chapterimage\relax
+\newcommand\chapterimage{%
+  \begin{figure}\end{figure}
+    \centering
+    \def\svgwidth{\columnwidth}
+    \scalebox{1}{1}{\input{bandeau.pdf_tex}}
+  \end{figure}
+}
+
 \renewcommand\chapter{%
   \if@openright\cleardoublepage\else\clearpage\fi
   \thispagestyle{plain} % no fancy
   \global\@topnum\z@
   \@afterindentfalse
   \secdef\@chapter\@schapter
+  %\chapterimage
 }
 \renewcommand\section{\@startsection{section}{1}{\z@}%
   {-1.75ex \@plus -0.5ex \@minus -.2ex}%
@@ -259,7 +218,7 @@
 \renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
   {-1.75ex\@plus -0.5ex \@minus- .2ex}%
   {0.5ex \@plus .2ex}%
-  {\reset@font\Large\color{BrickRed}}
+  {\reset@font\Large\color{rubric}}
 }
 \renewcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
   {-1.5ex\@plus -0.35ex \@minus -.2ex}%
@@ -287,7 +246,7 @@
 \titleformat
   {name=\chapter}
   [display]
-  {\huge\bfseries\raggedleft\color{BrickRed}}
+  {\huge\bfseries\raggedleft\color{rubric}}
   {}
   {0pt}
   {\vspace{1em}#1} % explicit
@@ -307,7 +266,7 @@
   top=0pt,
   bottom=0pt,
   halign=flush right,
-  lifted shadow={-0.5pt}{-2mm}{3mm}{0.1mm}{BrickRed}
+  lifted shadow={-0.5pt}{-2mm}{3mm}{0.1mm}{rubric}
 }
 \titleformat{name=\section}[hang]
   {\large\bfseries} % filright ?
@@ -406,7 +365,7 @@
 \fvset{frame=single,numberblanklines=false,xleftmargin=5mm,xrightmargin=5mm} % verbatim code
 \renewcommand{\headrulewidth}{0.2pt}%
 \let\oldheadrule\headrule% Copy \headrule into \oldheadrule
-\renewcommand{\headrule}{\color{BrickRed}\oldheadrule}% Add colour to \he
+\renewcommand{\headrule}{\color{rubric}\oldheadrule}% Add colour to \he
 % redefine plain
 \fancypagestyle{plain}{%
   \fancyhf{}% clear all header and footer fields
@@ -431,7 +390,7 @@
 \usepackage{hyperref} % supposed to be the last one
 \hypersetup{
   % pdftex, % no effect
-  pdftitle={\@author, \@date, \@title},
+  pdftitle={\@author. \@date, \@title},
   % pdfauthor={Your name here},
   % pdfsubject={Your subject here},
   % pdfkeywords={keyword1, keyword2},
@@ -452,12 +411,9 @@
 \usepackage{hypcap}
 \usepackage{bookmark}
 
-\newcommand*\showfontsize{\f@size{} point}
 \makeatother % @@@
 
 \begin{document}
-
-% \raggedbottom % may correct warning: Underfull \vbox (badness 10000)
 
 
 \makeatletter
@@ -465,16 +421,15 @@
 \vskip10pt
 \par\noindent{\fontsize{19pt}{21pt}\itshape\raggedright\selectfont\@title}
 \vspace{0pt}
-\makeatother
 \par\noindent\rule{\textwidth}{0.4pt}
 \vspace{15pt}
 \let\tabcellsep& 
 
-\begin{multicols}{2}
-\tableofcontents
-\end{multicols}
+% \fontname\font, \f@size pt, \scshape{Small Caps ?}
+\makeatother
 
 %tei%
+
 
 \end{document}
 

@@ -26,7 +26,14 @@ A light version for XSLT1, with local improvements.
     <xsl:text>\noindent\rule{\textwidth}{2pt}&#10;\par&#10;</xsl:text>
   </xsl:template>
   <xsl:template name="mainDocument">
-    
+    <xsl:if test="count(//tei:div|//tei:div1) &gt; 1 ">
+      <xsl:text xml:space="preserve">
+\begin{multicols}{2}
+\tableofcontents
+\end{multicols}
+
+</xsl:text>    
+    </xsl:if>
     <xsl:apply-templates/>
     <!-- latexEnd before endnotes ? -->
     <xsl:if test="key('ENDNOTES',1)">
@@ -56,11 +63,6 @@ A light version for XSLT1, with local improvements.
     <xsl:text>&#10;&#10;\begin{quote}</xsl:text>
     <xsl:apply-templates/>
     <xsl:text>\end{quote}&#10;</xsl:text>
-  </xsl:template>
-  <xsl:template match="tei:dateline">
-    <xsl:text>\rightline{</xsl:text>
-    <xsl:apply-templates/>
-    <xsl:text>}&#10;</xsl:text>
   </xsl:template>
   <!-- Hierarchies -->
   <xsl:template match="tei:div">

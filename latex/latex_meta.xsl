@@ -34,8 +34,14 @@ Latex from TEI, metadata for preamble
     <xsl:text>\author{</xsl:text>
     <xsl:for-each select="/*/tei:teiHeader/tei:fileDesc/tei:titleStmt[1]">
       <xsl:for-each select="tei:author|tei:principal">
-        <xsl:if test="position() &gt; 1"> \and </xsl:if>
-        <xsl:apply-templates select="."/>
+        <xsl:choose>
+          <xsl:when test="position() = 1"/>
+          <xsl:when test="position() = last()"> \&amp; </xsl:when>
+          <xsl:otherwise>, </xsl:otherwise>
+        </xsl:choose>
+        <xsl:apply-templates select=".">
+          <xsl:with-param name="short" select="true()"/>
+        </xsl:apply-templates>
       </xsl:for-each>
     </xsl:for-each>
     <xsl:text>}&#10;</xsl:text>
@@ -44,46 +50,42 @@ Latex from TEI, metadata for preamble
     <xsl:variable name="author1">
       <xsl:for-each select="(/*/tei:teiHeader/tei:fileDesc/tei:titleStmt)[1]">
         <xsl:for-each select="(tei:author|tei:principal)[1]">
-          <xsl:choose>
-            <xsl:when test="normalize-space(.) != ''">
-              <xsl:value-of select="normalize-space(.)"/>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:value-of select="normalize-space(@key)"/>
-            </xsl:otherwise>
-          </xsl:choose>
+          <xsl:apply-templates select=".">
+            <xsl:with-param name="short" select="true()"/>
+          </xsl:apply-templates>
         </xsl:for-each>
       </xsl:for-each>
     </xsl:variable>
     <xsl:if test="$author1 != ''">
-      <xsl:text>\textsc{</xsl:text>
-      <xsl:value-of select="
-        normalize-space(
-        substring-before(concat(
-        substring-before(concat($author1, '('), '('),
-        ','), ',')
-        )
-        "/>
-      <xsl:text>}</xsl:text>
-      <xsl:text>, </xsl:text>
+      <xsl:value-of select="$author1"/>
+      <xsl:text>. </xsl:text>
     </xsl:if>
     <xsl:if test="$year != ''">
       <xsl:value-of select="$year"/>
       <xsl:text>, </xsl:text>
     </xsl:if>
-    <xsl:text>\textit{</xsl:text>
+    <xsl:text>\emph{</xsl:text>
     <xsl:value-of select="$title"/>
     <xsl:text>}</xsl:text>
     <xsl:text>}&#10;</xsl:text>
   </xsl:template>
 
   <xsl:template match="tei:author | tei:principal">
+    <xsl:param name="short"/>
     <xsl:choose>
       <xsl:when test="normalize-space(.) != ''">
         <xsl:apply-templates/>
       </xsl:when>
       <xsl:when test="@key">
-        <xsl:value-of select="normalize-space(substring-before(concat(@key, '('), '('))"/>
+        <xsl:variable name="key" select="normalize-space(substring-before(concat(@key, '('), '('))"/>
+        <xsl:choose>
+          <xsl:when test="$short != ''">
+            <xsl:value-of select="substring-before(concat($key, ','), ',')"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$key"/>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:when>
     </xsl:choose>
   </xsl:template>
@@ -123,9 +125,8 @@ Latex from TEI, metadata for preamble
   </xsl:template>
 
   <xsl:template match="tei:surname">
-    <xsl:text>\textsc{</xsl:text>
+    <!-- Small caps are usually bad in modern TeX -->
     <xsl:apply-templates/>
-    <xsl:text>}</xsl:text>
   </xsl:template>
 
   <!-- Default, do nothing -->

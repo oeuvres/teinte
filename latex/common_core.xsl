@@ -29,25 +29,6 @@ it is dangerous for docx where nesting may produce lots of surprises
   <xsl:output indent="no"/>
   
   
-  <xsl:template match="tei:argument">
-    <xsl:call-template name="makeBlock">
-      <xsl:with-param name="style">argument</xsl:with-param>
-    </xsl:call-template>
-  </xsl:template>
-  
-  <xsl:template match="tei:salute">
-    <xsl:choose>
-      <xsl:when test="parent::tei:closer">
-        <xsl:apply-templates/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:call-template name="makeBlock">
-          <xsl:with-param name="style">salute</xsl:with-param>
-        </xsl:call-template>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
-  
   <xsl:template match="tei:sic">
     <xsl:choose>
       <xsl:when test="parent::tei:choice"> </xsl:when>
@@ -132,11 +113,6 @@ it is dangerous for docx where nesting may produce lots of surprises
     </xsl:choose>
   </xsl:template>
   
-  <xsl:template match="tei:signed">
-    <xsl:call-template name="makeBlock">
-      <xsl:with-param name="style">signed</xsl:with-param>
-    </xsl:call-template>
-  </xsl:template>
   
   <xsl:template match="tei:item">
     <xsl:choose>
@@ -624,9 +600,6 @@ it is dangerous for docx where nesting may produce lots of surprises
     <xsl:apply-templates/>
     <xsl:text>. </xsl:text>
   </xsl:template>
-  <xsl:template match="tei:byline">
-    <xsl:apply-templates/>
-  </xsl:template>
   <xsl:template match="tei:pubPlace">
     <xsl:apply-templates/>
     <xsl:choose>
@@ -870,14 +843,7 @@ it is dangerous for docx where nesting may produce lots of surprises
   <xsl:template match="tei:note" mode="plain"/>
   <xsl:template match="tei:app" mode="plain"/>
   <xsl:template match="tei:pb" mode="plain"/>
-  <xsl:template match="tei:lb" mode="plain">
-    <xsl:choose>
-      <xsl:when test="@type='hyphenInWord'"/>
-      <xsl:otherwise>
-        <xsl:text> </xsl:text>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
+
   <xsl:template match="tei:figure" mode="plain">
     <xsl:text>[</xsl:text>
     <!-- i18n -->
@@ -906,7 +872,7 @@ it is dangerous for docx where nesting may produce lots of surprises
       </xsl:when>
       <xsl:when test="contains(@rend,'-') or @type='hyphenInWord'">
         <xsl:text>-</xsl:text>
-        <xsl:call-template name="lineBreak"/>
+        <xsl:call-template name="lb"/>
       </xsl:when>
       <xsl:when test="contains(@rend,'above')">
         <xsl:text>⌜</xsl:text>
@@ -914,15 +880,17 @@ it is dangerous for docx where nesting may produce lots of surprises
       <xsl:when test="contains(@rend,'below')">
         <xsl:text>⌞</xsl:text>
       </xsl:when>
+      <!-- last linebreak of series ? do something ?
       <xsl:when test="normalize-space(following-sibling::node()) = '' or normalize-space(preceding-sibling::node())"/>
+      -->
       <xsl:when test="contains(@rend,'show')">
-        <xsl:call-template name="lineBreak"/>
+        <xsl:call-template name="lb"/>
       </xsl:when>
       <xsl:when test="contains(@rend,'paragraph')">
         <xsl:call-template name="lineBreakAsPara"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:call-template name="lineBreak"/>
+        <xsl:call-template name="lb"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>

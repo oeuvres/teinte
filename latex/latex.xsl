@@ -15,7 +15,7 @@ https://github.com/TEIC/Stylesheets/tree/dev/latex
 A light version for XSLT1, with local improvements.
 2021, frederic.glorieux@fictif.org
   -->
-  
+  <xsl:import href="../xsl/common.xsl"/>
   <xsl:import href="common1.xsl"/>
   <xsl:import href="common_core.xsl"/>
   <xsl:import href="latex_core.xsl"/>
@@ -109,8 +109,34 @@ A light version for XSLT1, with local improvements.
     tei:vMerge tei:vNot tei:vRange tei:valItem
     tei:valList tei:vocal
     "/>
-  
 
+
+  <!-- A environment to group blocks -->
+  <xsl:template name="makeGroup">
+    <xsl:param name="style" select="local-name()"/>
+    <xsl:text>&#10;\begin{</xsl:text>
+    <xsl:value-of select="$style"/>
+    <xsl:text>}</xsl:text>
+    <xsl:call-template name="tei:makeHyperTarget"/>
+    <xsl:apply-templates/>
+    <xsl:text>\end{</xsl:text>
+    <xsl:value-of select="$style"/>
+    <xsl:text>}&#10;&#10;</xsl:text>
+  </xsl:template>
+  
+  
+  <!-- Simple semantic block with a command -->
+  <xsl:template name="makeBlock">
+    <xsl:param name="style" select="local-name()"/>
+    <xsl:text>&#10;</xsl:text>
+    <xsl:call-template name="tei:makeHyperTarget"/>
+    <xsl:text>\</xsl:text>
+    <xsl:value-of select="local-name()"/>
+    <xsl:text>{</xsl:text>
+    <xsl:apply-templates/>
+    <xsl:text>}&#10;</xsl:text>
+  </xsl:template>
+  
 
   <xsl:template match="processing-instruction()[name(.) = 'tex']">
     <xsl:value-of select="."/>
@@ -262,14 +288,6 @@ A light version for XSLT1, with local improvements.
     <xsl:text>\\\rule[0.5ex]{\textwidth}{0.5pt}</xsl:text>
   </xsl:template>
 
-  <!-- ?? -->
-  <xsl:template name="makeBlock">
-    <xsl:param name="style"/>
-    <xsl:value-of select="concat('\begin{', $style, '}')"/>
-    <xsl:call-template name="tei:makeHyperTarget"/>
-    <xsl:apply-templates/>
-    <xsl:value-of select="concat('\end{', $style, '}')"/>
-  </xsl:template>
   
   <xsl:template name="makeItem">
     <xsl:text>&#10;\item</xsl:text>

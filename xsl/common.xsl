@@ -748,14 +748,11 @@ Un tel numéro peut etre très utile pour
     </xsl:choose>
   </xsl:template>
   <!--
-<h3>mode="title" (titre long)</h3>
+mode="title"
 
-<p>
-Ce mode permet de traverser un arbre jusqu'à trouver un élément satisfaisant pour le titrer (souvent <head>).
-Une fois cet elément trouvé, le contenu est procédé en mode texte afin de passer les notes,
-résoudre les césures, ou les alternatives éditoriales.
-</p>
-<p>Utiliser pour la génération de tables des matières, epub toc.ncx, ou site nav.html, index.html</p>
+This mode get a good candidate title for tocs (ex: without notes).
+Some simple formatting is preserved as HTML (italics, superscript…).
+Could be correct for a text only version in <xsl:value-of select=""/>
   -->
   <xsl:template match="tei:elementSpec" mode="title">
     <xsl:value-of select="@ident"/>

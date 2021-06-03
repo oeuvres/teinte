@@ -53,6 +53,17 @@ A light version for XSLT1, with local improvements.
   <xsl:template match="tei:bibl" mode="cite">
     <xsl:apply-templates select="text()[1]"/>
   </xsl:template>
+  <!-- Semantic blocks  -->
+  <xsl:template match="tei:byline | tei:dateline | tei:salute | tei:signed">
+    <xsl:call-template name="makeBlock"/>
+  </xsl:template>
+  
+  <xsl:template match="tei:argument">
+    <xsl:call-template name="makeGroup"/>
+  </xsl:template>
+  
+  
+  
   <xsl:template match="tei:cit">
     <xsl:choose>
       <xsl:when test="
@@ -153,7 +164,7 @@ A light version for XSLT1, with local improvements.
   </xsl:template>
   -->
   <xsl:template match="tei:emph">
-    <xsl:text>\textit{</xsl:text>
+    <xsl:text>\emph{</xsl:text>
     <xsl:apply-templates/>
     <xsl:text>}</xsl:text>
   </xsl:template>
@@ -223,19 +234,22 @@ A light version for XSLT1, with local improvements.
             </xsl:choose>
           </xsl:otherwise>
         </xsl:choose>
-        <xsl:choose>
-          <!-- 
-          -->
-          <xsl:when test="
-              parent::tei:body or ancestor::tei:floatingText
-              or (ancestor::tei:back and $numberBackHeadings = '')
-              or (not($numberHeadings = 'true') and ancestor::tei:body)
-              or (ancestor::tei:front and $numberFrontHeadings = '')
-              or parent::tei:div[contains(@rend, 'nonumber')]
-              "><xsl:text> </xsl:text></xsl:when>
-          <!-- Numbering ? -->
-          <xsl:otherwise>[{<xsl:apply-templates/>}]</xsl:otherwise>
-        </xsl:choose>
+        <!-- 
+Old logic of numbering, let Latex consumer choose, but get 
+parent::tei:body or ancestor::tei:floatingText
+or (ancestor::tei:back and $numberBackHeadings = '')
+or (not($numberHeadings = 'true') and ancestor::tei:body)
+or (ancestor::tei:front and $numberFrontHeadings = '')
+or parent::tei:div[contains(@rend, 'nonumber')]
+
+\chapter[toc-title text only]{title with maybe notes}
+        -->
+        <xsl:text>[</xsl:text>
+        <xsl:variable name="title">
+          <xsl:apply-templates select="." mode="title"/>
+        </xsl:variable>
+        <xsl:value-of select="normalize-space($title)"/>
+        <xsl:text>]</xsl:text>
         <xsl:text>{</xsl:text>
         <xsl:apply-templates/>
         <xsl:text>}</xsl:text>
@@ -248,13 +262,11 @@ A light version for XSLT1, with local improvements.
     </xsl:choose>
     <xsl:text>&#10;</xsl:text>
   </xsl:template>
-  <xsl:template match="tei:head" mode="makeheading">
-    <xsl:apply-templates/>
-  </xsl:template>
-  
+
+
   
   <xsl:template match="tei:gloss">
-    <xsl:text> \textit{</xsl:text>
+    <xsl:text>\emph{</xsl:text>
     <xsl:apply-templates/>
     <xsl:text>}</xsl:text>
   </xsl:template>
@@ -408,7 +420,7 @@ A light version for XSLT1, with local improvements.
     </xsl:choose>
   </xsl:template>
 
-  <xsl:template name="lineBreak">
+  <xsl:template name="lb">
     <xsl:text>{\hskip1pt}\\{}</xsl:text>
   </xsl:template>
   <xsl:template name="lineBreakAsPara">
@@ -595,11 +607,15 @@ A light version for XSLT1, with local improvements.
     <xsl:if test="count(key('APP', 1)) &gt; 0">
       <xsl:text>&#10;\pend&#10;</xsl:text>
     </xsl:if>
-    <xsl:text>\par&#10;</xsl:text>
+    <!-- Especially at the end of a footnote or a quote, this command produce a bad empty line -->
+    <xsl:if test="following-sibling::*">
+      <xsl:text>\par</xsl:text>
+    </xsl:if>
+    <xsl:text>&#10;</xsl:text>
   </xsl:template>
   
   <xsl:template name="numberParagraph">
-    <xsl:text>\textit{\footnotesize[</xsl:text>
+    <xsl:text>\emph{\footnotesize[</xsl:text>
     <xsl:number/>
     <xsl:text>]} </xsl:text>
   </xsl:template>
@@ -686,9 +702,16 @@ A light version for XSLT1, with local improvements.
       <xsl:call-template name="tei:isInline"/>
     </xsl:variable>
     <xsl:choose>
-      <xsl:when test="parent::tei:cit">
+      <!-- Inline, shall we tag ? -->
+      <xsl:when test="isInline != ''">
+        <xsl:apply-templates/>
+      </xsl:when>
+      <xsl:when test="parent::tei:cit or parent::tei:note">
         <xsl:call-template name="tei:makeHyperTarget"/>
         <xsl:apply-templates/>
+        <xsl:if test="following-sibling::*">
+          <xsl:text>\par&#10;</xsl:text>
+        </xsl:if>
       </xsl:when>
       <!-- block -->
       <xsl:when test="$isInline = ''">

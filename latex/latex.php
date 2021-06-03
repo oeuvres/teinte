@@ -71,6 +71,7 @@ class Latex {
   {
     $meta = self::$latex_meta_xsl->transformToXml($this->dom);
     $tei = self::$latex_xsl->transformToXml($this->dom);
+    
     $tex = str_replace(
       array('%meta%', '%tei%'), 
       array($meta, $tei),
