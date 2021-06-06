@@ -3,7 +3,11 @@
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:tei="http://www.tei-c.org/ns/1.0"
   exclude-result-prefixes="tei"
->
+
+  xmlns:str="http://exslt.org/strings"
+  xmlns:exslt="http://exslt.org/common" 
+  extension-element-prefixes="str exslt"
+  >
   <!-- 
 TEI Styleshest for LaTeX, forked from Sebastian Rahtz
 https://github.com/TEIC/Stylesheets/tree/dev/latex
@@ -16,7 +20,8 @@ A light version for XSLT1, with local improvements.
 2021, frederic.glorieux@fictif.org
   -->
   <xsl:template match="tei:cell">
-    <xsl:if test="preceding-sibling::tei:cell">\tabcellsep </xsl:if>
+    <!-- \tabcellsep -->
+    <xsl:if test="preceding-sibling::tei:cell"> &amp; </xsl:if>
     <xsl:choose>
       <xsl:when test="@role='label'">
         <xsl:text>\Panel{</xsl:text>
@@ -37,6 +42,7 @@ A light version for XSLT1, with local improvements.
           <xsl:when test="@align='centre'">c</xsl:when>
           <xsl:when test="@align='center'">c</xsl:when>
           <xsl:when test="@align='left'">l</xsl:when>
+          <xsl:when test="@acols">c</xsl:when>
           <xsl:otherwise>l</xsl:otherwise>
         </xsl:choose>
         <xsl:text>}</xsl:text>
@@ -114,20 +120,44 @@ A light version for XSLT1, with local improvements.
     <xsl:text>}</xsl:text>
   </xsl:template>
   
+  
+  <!-- rewrite a better  -->
   <xsl:template match="tei:table">
+    <xsl:param name="type" select="@type"/>
     <xsl:call-template name="tei:makeHyperTarget"/>
-    <xsl:choose>
-      <xsl:when test="ancestor::tei:table or $longtables='false'">
-        <xsl:text>\begin{tabular}</xsl:text>
-        <xsl:call-template name="makeTable"/>
-        <xsl:text>\end{tabular}</xsl:text>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:text>&#10;\begin{longtable}</xsl:text>
-        <xsl:call-template name="makeTable"/>
-        <xsl:text>\end{longtable} \par&#10; </xsl:text>
-      </xsl:otherwise>
-    </xsl:choose>
+    <!-- specific environment, to let consumer choose its table environment -->
+    <xsl:text>&#10;\tableopen{</xsl:text>
+    <xsl:value-of select="$type"/>
+    <xsl:text>}&#10;</xsl:text>
+    <!-- command for table is needed here -->
+    <xsl:text>\begin{tabularx}{\linewidth}&#10;</xsl:text>
+    <!-- prologue { | m{5em} | m{1cm}| m{1cm} | }  -->
+    <!-- Find the longest row -->
+    <xsl:text>{|</xsl:text>
+    <xsl:for-each select="tei:row">
+      <xsl:sort data-type="number" order="descending" select="count(tei:cell)"/>
+      <xsl:if test="position() = 1">
+        <xsl:for-each select="tei:cell">
+          <!-- column type ? -->
+          <xsl:choose>
+            <xsl:when test="position() = 1">l</xsl:when>
+            <xsl:otherwise>X</xsl:otherwise>
+          </xsl:choose>
+          <xsl:text>|</xsl:text>
+        </xsl:for-each>
+      </xsl:if>
+    </xsl:for-each>
+    <xsl:text>}&#10;\hline</xsl:text>
+    <xsl:for-each select="tei:row">
+      <xsl:for-each select="tei:cell">
+        <xsl:apply-templates select="."/>
+      </xsl:for-each>
+      <xsl:text> \\&#10;\hline&#10;</xsl:text>
+    </xsl:for-each>
+    <xsl:text>\end{tabularx}&#10;</xsl:text>
+    <xsl:text>\tableclose{</xsl:text>
+    <xsl:value-of select="$type"/>
+    <xsl:text>}&#10;&#10;</xsl:text>
   </xsl:template>
   
   <xsl:template match="tei:table[contains(@rend, 'display')]" mode="xref">
@@ -413,6 +443,7 @@ A light version for XSLT1, with local improvements.
             </xsl:if>
           </xsl:for-each>
         </xsl:variable>
+        <!-- Careful, may not  -->
         <xsl:for-each select="$row/cell">
           <cell col="{position()}">
             <xsl:value-of select="."/>

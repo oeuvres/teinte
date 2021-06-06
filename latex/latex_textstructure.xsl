@@ -75,9 +75,9 @@ A light version for XSLT1, with local improvements.
         <xsl:apply-templates select="tei:head"/>
         <xsl:apply-templates select="tei:epigraph"/>
         <xsl:apply-templates select="tei:argument"/>
-        <xsl:text>&#10;\begin{multicols}{2}&#10;</xsl:text>
+        <xsl:text>&#10;\chapteropen&#10;</xsl:text>
         <xsl:apply-templates select="*[not(self::tei:head)][not(self::tei:argument)][not(self::tei:epigraph)]"/>
-        <xsl:text>&#10;\end{multicols}&#10;&#10;</xsl:text>
+        <xsl:text>\chapterclose&#10;&#10;</xsl:text>
       </xsl:when>
       <xsl:otherwise>
         <xsl:apply-templates/>

@@ -92,7 +92,7 @@ A light version for XSLT1, with local improvements.
   <doc xmlns="http://www.oxygenxml.com/ns/doc/xsl" class="layout" type="string">
     <desc>Which environment to use for quotes (quote, quotation, quoting, ...)?</desc>
   </doc>
-  <xsl:param name="quoteEnv">myquote</xsl:param>
+  <xsl:param name="quoteEnv">blockquote</xsl:param>
   
 
   <xsl:param name="longtables">true</xsl:param>

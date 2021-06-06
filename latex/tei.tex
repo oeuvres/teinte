@@ -1,0 +1,175 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% <TEI> generic (LaTeX names generated) %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This template is inserted in a specific design
+
+\makeatletter % <@@@
+% Metadata inserted by a program, from the TEI source, for title page and runing heads
+%meta%
+
+\usepackage{etoolbox} % patch commands
+\usepackage{enumitem} % <list>
+\usepackage{tabularx} % <table>
+\usepackage{verse} % <l>
+\usepackage{hyperref} % supposed to be the last one, :o) except for the one to follow
+\hyperbaseurl{}
+\hypersetup{extension = }
+\hypersetup{
+  % pdftex, % no effect
+  pdftitle={\shortref},
+  % pdfauthor={Your name here},
+  % pdfsubject={Your subject here},
+  % pdfkeywords={keyword1, keyword2},
+  bookmarksnumbered=true,
+  bookmarksopen=true,
+  bookmarksopenlevel=1,
+  pdfstartview=Fit,
+  % linktocpage=true, % toc, link only on page no 
+  pdfpagemode=UseOutlines,    % pdf toc
+  % pdfpagelayout=TwoPageRight,
+  citebordercolor=0.75 0.75 0.75,
+  linkbordercolor=0.75 0.75 0.75,
+  urlbordercolor=0.75 0.75 0.75,
+  colorlinks=true,
+  allcolors=black,
+}
+\usepackage{bookmark} % after hyperref
+
+% TOTEST
+% \usepackage{hypcap} % links in caption ?
+% \usepackage{xparse} % not yet used
+% \usepackage{marginnote}
+
+
+% Copied from Rahtz but not understood
+\def\@pnumwidth{1.55em}
+\def\@tocrmarg {2.55em}
+\def\@dotsep{4.5}
+\clubpenalty=8000
+\emergencystretch 3em
+\hbadness=4000
+\hyphenpenalty=400
+\pretolerance=750
+\tolerance=2000
+\vbadness=4000
+\widowpenalty=10000
+\def\Gin@extensions{.pdf,.png,.jpg,.mps,.tif}
+
+% Generic colors
+\newcommand{\colorprovide}[2]{\@ifundefinedcolor{#1}{\colorlet{#1}{#2}}{}}
+\colorprovide{rubric}{red}
+
+% generic typo commands
+\@ifundefined{rubric}{\newcommand{\syms}{}}
+\@ifundefined{syms}{\newcommand{\syms}{}} % this may not work outside XeTeX context because of ✻
+\newcommand{\astermono}{\medskip\centerline{\color{rubric}\large\selectfont{\syms ✻}}\medskip\par}%
+\newcommand{\astertri}{\bigskip\centerline{\color{rubric}\large\selectfont{\syms ✻\,✻\,✻}\medskip\par}}%
+\newcommand{\asterism}{\bigskip\par\noindent\parbox{\linewidth}{\centering\color{rubric}\large{\syms ✻}\\{\syms ✻}\hskip 0.75em{\syms ✻}}\bigskip\par}%
+\setlist{noitemsep,wide,leftmargin=*, labelindent=0pt} % labelindent=\parindent,leftmargin=*
+\setlist[itemize]{label=—}
+
+
+% General typo
+\DeclareTextFontCommand{\textlarge}{\large}
+\DeclareTextFontCommand{\textsmall}{\small}
+
+
+% commands, inlines
+\newcommand\abbr{}
+\newcommand\corr{}
+\newcommand\expan{}
+\newcommand\gap{}
+\newcommand\orig{}
+\newcommand\orgName{}
+\newcommand\persName{}
+\newcommand\name{}
+\newcommand\placeName{}
+\newcommand\reg{}
+% \newcommand\ref{} % already defined
+\newcommand\sic{}
+
+% commands, blocks
+\newcommand{\byline}[1]{\vskip2em{\RaggedLeft{#1}\par}\vskip1em}
+\newcommand{\dateline}[1]{\vskip1em{\RaggedLeft{#1}\par}\vskip2em}
+\newcommand{\salute}[1]{\vskip2em{#1}\par\vskip1em}
+
+% environments for blocks (should probably become commands)
+\newenvironment{bibl}{}{}
+\newenvironment{blabel}{\begin{center}\begin{bfseries}}{\end{bfseries}\end{center}}
+\newenvironment{citbibl}{\ifvmode\hfill\fi}{\ifvmode\par\fi }
+\newenvironment{docAuthor}{\ifvmode\vskip4pt\fontsize{16pt}{18pt}\selectfont\fi\itshape}{\ifvmode\par\fi }
+\newenvironment{docDate}{}{\ifvmode\par\fi }
+\newenvironment{docImprint}{\vskip6pt}{\ifvmode\par\fi }
+\newenvironment{docTitle}{\vskip6pt\bfseries\fontsize{18pt}{22pt}\selectfont}{\par }
+\newenvironment{msHead}{\vskip6pt}{\par}
+\newenvironment{msItem}{\vskip6pt}{\par}
+\newenvironment{titlePart}{}{\par }
+
+
+% environments for block containers
+\newenvironment{argument}{\fontlight\parindent0pt}{\vskip1.5em}
+\newenvironment{biblfree}{}{\ifvmode\par\fi }
+\newenvironment{bibitemlist}[1]{%
+  \list{\@biblabel{\@arabic\c@enumiv}}%
+  {%
+    \settowidth\labelwidth{\@biblabel{#1}}%
+    \leftmargin\labelwidth
+    \advance\leftmargin\labelsep
+    \@openbib@code
+    \usecounter{enumiv}%
+    \let\p@enumiv\@empty
+    \renewcommand\theenumiv{\@arabic\c@enumiv}%
+  }
+  \sloppy
+  \clubpenalty4000
+  \@clubpenalty \clubpenalty
+  \widowpenalty4000%
+  \sfcode`\.\@m
+}%
+{\def\@noitemerr
+  {\@latex@warning{Empty `bibitemlist' environment}}%
+\endlist}
+\usepackage[%
+  indentfirst=false,
+  rightmargin=0pt,
+  vskip=1em,
+  noorphanfirst=true,
+  noorphanafter=true,
+  leftmargin=\parindent
+]{quoting}
+\newenvironment{blockquote}% may be used for ornaments
+  {\begin{quoting}}
+  {\end{quoting}}
+
+% table () is preceded and finished by custom command
+\newcommand{\tableopen}[1]{% pdf@strcmp
+  \ifnum\strcmp{#1}{wide}=0%
+    {}
+  \else\ifnum\strcmp{#1}{long}=0
+    {}
+  \else
+    {}
+  \fi\fi
+}
+\newcommand{\tableclose}[1]{% pdf@strcmp
+  \ifnum\strcmp{#1}{wide}=0%
+    {}
+  \else\ifnum\strcmp{#1}{long}=0
+    {}
+  \else
+    {}
+  \fi\fi
+}
+
+
+% text structure
+\newcommand\chapteropen{} % maybe useful for multicol settings
+\newcommand\chapterclose{} % maybe useful for multicol settings
+\usepackage[explicit]{titlesec} % NO implicit !, wear titles
+\setcounter{secnumdepth}{-2} % no counters for hierarchy titles
+\setcounter{tocdepth}{5}
+
+\makeatother % /@@@>
+%%%%%%%%%%%%%%
+% </TEI> end %
+%%%%%%%%%%%%%%

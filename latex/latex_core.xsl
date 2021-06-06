@@ -179,12 +179,12 @@ A light version for XSLT1, with local improvements.
 5 	\subparagraph{subparagraph}
   -->
   <xsl:template name="level">
-    <xsl:variable name="chapter" select="ancestor::*[key('CHAPTERS',generate-id(.))][1]"/>
+    <xsl:variable name="chapter" select="ancestor-or-self::*[key('CHAPTERS',generate-id(.))][1]"/>
     <xsl:choose>
       <xsl:when test="$chapter">
-        <xsl:value-of select="count(ancestor::tei:div[ancestor::*[count(.|$chapter) = 1]])"/>
+        <xsl:value-of select="count(ancestor-or-self::tei:div[ancestor::*[count(.|$chapter) = 1]])"/>
       </xsl:when>
-      <xsl:when test="ancestor::tei:div[1]/descendant::*[key('CHAPTERS',generate-id(.))]">-1</xsl:when>
+      <xsl:when test="ancestor-or-self::tei:div[1]/descendant::*[key('CHAPTERS',generate-id(.))]">-1</xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="count(ancestor-or-self::tei:div) - 1"/>
       </xsl:otherwise>
@@ -197,12 +197,10 @@ A light version for XSLT1, with local improvements.
       <xsl:when test="parent::tei:castList"/>
       <xsl:when test="parent::tei:figure"/>
       <xsl:when test="parent::tei:list"/>
-      <xsl:when test="parent::tei:lg"> \subsection*{<xsl:apply-templates/>} </xsl:when>
-      <xsl:when test="parent::tei:front or parent::tei:body or parent::tei:back"> \section*{<xsl:apply-templates/>} </xsl:when>
+      <xsl:when test="parent::tei:lg">\subsection*{<xsl:apply-templates/>}&#10;</xsl:when>
+      <xsl:when test="parent::tei:front or parent::tei:body or parent::tei:back">\section*{<xsl:apply-templates/>}&#10;</xsl:when>
       <xsl:when test="parent::tei:table"/>
       <xsl:otherwise>
-        <!-- 
-        -->
         <xsl:variable name="level">
           <xsl:call-template name="level"/>
         </xsl:variable>
@@ -258,9 +256,9 @@ or parent::tei:div[contains(@rend, 'nonumber')]
           <xsl:value-of select="../@xml:id"/>
           <xsl:text>}</xsl:text>
         </xsl:if>
+        <xsl:text>&#10;</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
-    <xsl:text>&#10;</xsl:text>
   </xsl:template>
 
 
@@ -274,9 +272,12 @@ or parent::tei:div[contains(@rend, 'nonumber')]
     <xsl:call-template name="rendering"/>
   </xsl:template>
   <xsl:template name="rendering">
+    <xsl:variable name="cont">
+      <xsl:apply-templates/>
+    </xsl:variable>
     <xsl:choose>
       <xsl:when test="not(@rend) or normalize-space(@rend) = ''">
-        <xsl:apply-templates/>
+        <xsl:copy-of select="$cont"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:variable name="tokens">
@@ -350,7 +351,7 @@ or parent::tei:div[contains(@rend, 'nonumber')]
         <xsl:value-of select="$cmd"/>
         <xsl:choose>
           <xsl:when test="$decls = ''">
-            <xsl:apply-templates/>
+            <xsl:copy-of select="$cont"/>
           </xsl:when>
           <!-- declaration to enclose -->
           <xsl:otherwise>
@@ -360,7 +361,7 @@ or parent::tei:div[contains(@rend, 'nonumber')]
             <xsl:value-of select="$decls"/>
             <!-- matches($decls, '[a-z]$') ? -->
             <xsl:text> </xsl:text>
-            <xsl:apply-templates/>
+            <xsl:copy-of select="$cont"/>
             <xsl:if test="$cmd = ''">
               <xsl:text>}</xsl:text>
             </xsl:if>
@@ -603,11 +604,12 @@ or parent::tei:div[contains(@rend, 'nonumber')]
     <xsl:if test="$numberParagraphs = 'true'">
       <xsl:call-template name="numberParagraph"/>
     </xsl:if>
-    <xsl:apply-templates/>
+    <!-- Case of par rendering -->
+    <xsl:call-template name="rendering"/>
     <xsl:if test="count(key('APP', 1)) &gt; 0">
       <xsl:text>&#10;\pend&#10;</xsl:text>
     </xsl:if>
-    <!-- Especially at the end of a footnote or a quote, this command produce a bad empty line -->
+    <!-- Especially at the end of a footnote or a quote, \par produce a bad empty line -->
     <xsl:if test="following-sibling::*">
       <xsl:text>\par</xsl:text>
     </xsl:if>
@@ -698,12 +700,22 @@ or parent::tei:div[contains(@rend, 'nonumber')]
   </xsl:template>
 
   <xsl:template match="tei:quote">
-    <xsl:variable name="isInline">
+    <xsl:variable name="inline">
       <xsl:call-template name="tei:isInline"/>
+    </xsl:variable>
+    <xsl:variable name="begin">
+      <xsl:text>\begin{</xsl:text>
+      <xsl:value-of select="$quoteEnv"/>
+      <xsl:text>}&#10;</xsl:text>
+    </xsl:variable>
+    <xsl:variable name="end">
+      <xsl:text>\end{</xsl:text>
+      <xsl:value-of select="$quoteEnv"/>
+      <xsl:text>}&#10;</xsl:text>
     </xsl:variable>
     <xsl:choose>
       <!-- Inline, shall we tag ? -->
-      <xsl:when test="isInline != ''">
+      <xsl:when test="$inline">
         <xsl:apply-templates/>
       </xsl:when>
       <xsl:when test="parent::tei:cit or parent::tei:note">
@@ -713,19 +725,57 @@ or parent::tei:div[contains(@rend, 'nonumber')]
           <xsl:text>\par&#10;</xsl:text>
         </xsl:if>
       </xsl:when>
-      <!-- block -->
-      <xsl:when test="$isInline = ''">
-        <xsl:text>&#10;\begin{</xsl:text>
-        <xsl:value-of select="$quoteEnv"/>
-        <xsl:text>}&#10;</xsl:text>
+      <!-- Contains verses, all elements should be blocks. Verse environment doesn’t like to be inside quoting -->
+      <xsl:when test="tei:l | tei:lg">
+        <xsl:text>&#10;</xsl:text>
         <xsl:call-template name="tei:makeHyperTarget"/>
-        <xsl:apply-templates/>
-        <xsl:text>&#10;\end{</xsl:text>
-        <xsl:value-of select="$quoteEnv"/>
-        <xsl:text>}&#10;&#10;</xsl:text>
+        <xsl:for-each select="*">
+          <!-- Before block -->
+          <xsl:choose>
+            <!-- quote starting by verse do nothing -->
+            <xsl:when test="(self::tei:l or self::tei:lg) and position() = 1"/>
+            <!-- non verse opening, begin quote -->
+            <xsl:when test="position() = 1">
+              <xsl:value-of select="$begin"/>
+            </xsl:when>
+            <!-- Non verse inside quote, do nothing, let verse know -->
+            <xsl:when test="not(self::tei:l) and not(self::tei:lg)"/>
+            <!-- Not first verse of a series, do nothing -->
+            <xsl:when test="preceding-sibling::*[1][self::tei:l or self::tei:lg]"/>
+            <!-- First verse of a series, preceded by a non verse block, end quote environment  -->
+            <xsl:otherwise>
+              <xsl:value-of select="$end"/>
+            </xsl:otherwise>
+          </xsl:choose>
+          <xsl:apply-templates/>
+          <!-- After block -->
+          <xsl:choose>
+            <!-- quote closing by verse, do nothing -->
+            <xsl:when test="position() = last() and (self::tei:l or self::tei:lg)"/>
+            <!-- quote closing with a non verse block, end -->
+            <xsl:when test="position() = last()">
+              <xsl:value-of select="$end"/>
+            </xsl:when>
+            <!-- Not end, not verse, do nothing -->
+            <xsl:when test="not(self::tei:l) and not(self::tei:lg)"/>
+            <!-- verse followed by verse, do nothing -->
+            <xsl:when test="preceding-sibling::*[1][self::tei:l or self::tei:lg]"/>
+            <!-- Should be last verse a series, followed by something else to enclose in quote -->
+            <xsl:otherwise>
+              <xsl:value-of select="$begin"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:for-each>
+        <xsl:text>&#10;</xsl:text>
       </xsl:when>
+      <!-- Block or multi block -->
       <xsl:otherwise>
+        <xsl:text>&#10;</xsl:text>
+        <xsl:call-template name="tei:makeHyperTarget"/>
+        <xsl:value-of select="$begin"/>
         <xsl:apply-templates/>
+        <xsl:value-of select="$end"/>
+        <xsl:text>&#10;</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -783,40 +833,35 @@ or parent::tei:div[contains(@rend, 'nonumber')]
   </xsl:template>
     <!-- If $verseNumbering, something will be done with a specific latex package, todo -->
   <xsl:template match="tei:l">
+    <xsl:variable name="next" select="following-sibling::*[1][self::tei:l]"/>
+    <xsl:variable name="prev" select="preceding-sibling::*[1][self::tei:l]"/>
     <xsl:choose>
-      <xsl:when test="parent::tei:lg">
-        <xsl:choose>
-          <xsl:when test="following-sibling::tei:l">
-            <xsl:apply-templates/>
-            <xsl:text>\\&#10;</xsl:text>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:apply-templates/>
-          </xsl:otherwise>
-        </xsl:choose>
+      <!-- empty verse as stanza separator, do notinh -->
+      <xsl:when test="normalize-space(.) = ''"/>
+      <!-- Start of poem (if not <lg>) -->
+      <xsl:when test="not($prev) and $next and not(parent::tei:lg)">
+        <xsl:text>&#10;\begin{verse}&#10;</xsl:text>
+        <xsl:apply-templates/>
+        <xsl:text>\\&#10;</xsl:text>
+      </xsl:when>
+      <!-- End of poem (if not <lg>) -->
+      <xsl:when test="$prev and not($next) and not(parent::tei:lg)">
+        <xsl:apply-templates/>
+        <xsl:text>\\&#10;\end{verse}&#10;</xsl:text>
+      </xsl:when>
+      <!-- End of stanza (with <lg>) -->
+      <xsl:when test="$prev and not($next)">
+        <xsl:apply-templates/>
+        <xsl:text>\\!</xsl:text>
+      </xsl:when>
+      <!-- End of stanza given by empty verse -->
+      <xsl:when test="$next and $next =''">
+        <xsl:apply-templates/>
+        <xsl:text>\\!&#10;&#10;</xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:variable name="next" select="following-sibling::tei:l"/>
-        <xsl:variable name="prev" select="preceding-sibling::tei:l"/>
-        <xsl:choose>
-          <xsl:when test="not($prev) and $next">
-            <xsl:text>&#10;\begin{verse}&#10;</xsl:text>
-            <xsl:apply-templates/>
-            <xsl:text>\\&#10;</xsl:text>
-          </xsl:when>
-          <xsl:when test="$prev and not($next)">
-            <xsl:apply-templates/>
-            <xsl:text>\\&#10;\end{verse}&#10;</xsl:text>
-          </xsl:when>
-          <xsl:when test="$next and $next =''">
-            <xsl:apply-templates/>
-            <xsl:text>\\!&#10;&#10;</xsl:text>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:apply-templates/>
-            <xsl:text>\\&#10;</xsl:text>
-          </xsl:otherwise>
-        </xsl:choose>
+        <xsl:apply-templates/>
+        <xsl:text>\\&#10;</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -826,6 +871,40 @@ or parent::tei:div[contains(@rend, 'nonumber')]
     <xsl:text>}</xsl:text>
   </xsl:template>
 
+  <xsl:template match="tei:lg">
+    <xsl:choose>
+      <xsl:when test="count(key('APP',1))&gt;0">
+        <xsl:variable name="c" select="(count(tei:l)+1) div 2"/>
+        <xsl:text>\setstanzaindents{1,1,0}</xsl:text>
+        <xsl:text>\setcounter{stanzaindentsrepetition}{</xsl:text>
+        <xsl:value-of select="$c"/>
+        <xsl:text>}</xsl:text>
+        <xsl:text>\stanza&#10;</xsl:text>
+        <xsl:for-each select="tei:l">
+          <xsl:if test="parent::tei:lg/@xml:lang='Av'">{\itshape </xsl:if>
+          <xsl:apply-templates/>
+          <xsl:if test="parent::tei:lg/@xml:lang='Av'">}</xsl:if>
+          <xsl:if test="following-sibling::tei:l">
+            <xsl:text>&amp;</xsl:text>
+          </xsl:if>
+        </xsl:for-each>
+        <xsl:text>\&amp;&#10;</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <!-- TODO if label inside between verses -->
+        <xsl:variable name="next" select="following-sibling::*[1][self::tei:lg]"/>
+        <xsl:variable name="prev" select="preceding-sibling::*[1][self::tei:lg]"/>
+        <xsl:if test="not($prev)">
+          <xsl:text>&#10;\begin{verse}&#10;</xsl:text>
+        </xsl:if>
+        <xsl:apply-templates/>
+        <xsl:if test="not($next)">
+          <xsl:text>&#10;\end{verse}&#10;</xsl:text>
+        </xsl:if>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  
   <xsl:template match="tei:p[contains(@rend, 'center')]">
     <xsl:text>&#10;\begin{center}&#10;</xsl:text>
     <xsl:apply-templates/>

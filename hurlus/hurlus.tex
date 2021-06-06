@@ -1,0 +1,26 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% LaTeX model for hurlus print %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[french,twoside]{book}
+\usepackage[%
+  papersize={105mm, 297mm},
+  a4paper,
+  inner=15mm, % recto/verso printing for booklet
+  outer=10mm, 
+  top=18mm,
+  bottom=10mm,
+  marginparsep=0pt,
+]{geometry}
+\usepackage[french]{babel}
+\usepackage{blindtext}
+
+\input{../latex/tei}
+
+\begin{document}
+
+\blinddocument
+
+%tei%
+
+
+\end{document}

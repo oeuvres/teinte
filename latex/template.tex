@@ -1,21 +1,37 @@
-% memoir and koma does not work well for section titles and columns, waiting for LaTeX3
-\documentclass[twoside,french,dvipsnames]{book}
-\usepackage[no-math]{fontspec}
+% Dependencies for this design, XeLaTeX only (for OpenTypes)
+\RequirePackage{fix-cm}
+\RequirePackage[no-math]{fontspec}
+\RequirePackage{multicol}
+\RequirePackage[dvipsnames]{xcolor}
+\RequirePackage{color}
+\RequirePackage{tcolorbox} % used for section ornament, be careful in multicol for vertical alignments
+\RequirePackage{polyglossia} % non-break space french punct, bug Warning: "Failed to patch part"
+
+
+% TO TEST, maybe useful one day
+% \RequirePackage{wrapfig}
+% \RequirePackage{ragged2e}
+
+% TESTED, bad
+% \RequirePackage{background} % doesn’t work with xetek
+% \RequirePackage{longtable} % doesn’t work in multicol
+% \RequirePackage[normalem]{ulem} % Package multicol Warning: May not work
+% \RequirePackage{framed} % doesn’t work in multicol
+
+% memoir and koma does not work well for section titles and columns
+\documentclass[french,oneside]{book} % not twoside, openany (default for report)
+% packaged needing a documentclass context
+
+
 \makeatletter % @@@
 
 % before geometry, colors
-\RequirePackage{fix-cm}
-\usepackage{xcolor}
+\definecolor{rubric}{HTML}{902c20} % the tonic
+\colorlet{borderline}{rubric!30!} % definecolor need exact code
 \definecolor{shadecolor}{gray}{0.95}
 \definecolor{bghi}{gray}{0.5}
-\definecolor{rubric}{HTML}{902c20}
-\colorlet{borderline}{rubric!30!} % definecolor need exact code
-
-% ornaments
-% \usepackage{graphicx}
 
 % specific A4
-\usepackage{multicol}
 \usepackage[%
   a4paper,
   inner=1.1cm, % do not presume recto/verso printing
@@ -30,101 +46,119 @@
 % indents
 \setlength{\parindent}{1.5em}
 \setlength{\parskip}{0pt}
+% try to redefine quoting environment
+\PassOptionsToPackage{utf8}{inputenc}
 
 % Xetex only, Fonts
-\usepackage{xunicode}
 \defaultfontfeatures{Scale = MatchLowercase}
 \defaultfontfeatures{Ligatures={TeX}}
-\usepackage[default]{lato}
-\usepackage{DejaVuSans}
-\setmainfont[%
-  ItalicFont={* Semibold Italic}
-]{Lato}
-\usepackage[fontsize=10pt]{scrextend} % OK for lato (53 c.)
+% XeLaTeX is hard on small caps, lots have not
+% \usepackage{Rosario} % bad shape, nosmallcaps, some weights, 10pt
+\usepackage[]{roboto} % SmallCaps, Regular is a bit bold
+% \usepackage{fira} % not in TexLive2020 
+\usepackage{lato} % quite nice, weights, nosmallcaps, 10pt
+% \usepackage{noto} % SmallCaps, 9.5pt
+\setmainfont{Roboto Light}[%
+  ItalicFont={Roboto Italic},
+  % SmallCapsFont=Noto Sans,
+  % SmallCapsFeatures={Letters=SmallCaps} % ensure sc enable for otf
+]
+\usepackage[fontsize=10pt]{scrextend} % 10pt for lato (53 c.)
+% \newfontinstance\scshape[Letters=SmallCaps,Scale=1.15]{Crimson}
 % \renewcommand{\baselinestretch}{0.95} % old doc ?
-% \linespread{0.90} % too compact
+% \linespread{0.90} % too compact, keep font natural
 
-\newfontfamily{\fontlight}[
-  UprightFont={* Light},
-  ItalicFont={* Light Italic},
-  BoldFont={* Medium},
-  BoldItalicFont={* Medium Italic}
-]{Lato}
-\newfontfamily\syms{DejaVu Sans} % Ensure a font for dingBats
-\setsansfont{Bitter} 
+\usepackage{DejaVuSans}
+\setsansfont{Roboto Condensed}
+\newfontfamily{\fontlight}{DejaVu Sans} % for abstract
+\newfontfamily\syms{DejaVu Sans} % Ensure a font for dingBats (no in Lato or Noto))
 \setmonofont{DejaVu Sans Mono}
-\usepackage{polyglossia} % non-break space french punct
 \setmainlanguage{french}
-% ??
-\catcode`⃥=\active \def⃥{\textbackslash}
-\catcode`❴=\active \def❴{\{}
-\catcode`❵=\active \def❵{\}}
 
 
-% ornaments
-% \usepackage{background} % doesn’t work with xetek
+% footnotes
+% \renewcommand*{\marginfont}{\itshape\footnotesize}
+% \patchcmd{\@footnotetext}{\footnotesize}{\small}{}{}
+\renewcommand\footnoterule{\vspace*{0.3cm}\hrule height 0.1pt width 3cm \vspace*{0.3cm}}
+\patchcmd{\@footnotetext}{\reset@font}{\fontfamily{phv}\selectfont}{}{}
+\patchcmd{\@makefntext}{\hss\@makefnmark}{\@makefnmark}{}{}
+\setlength\footnotesep{1.5\footnotesep} % footnote separator
+\renewcommand{\thefootnote}{\bfseries\textcolor{rubric}{\arabic{footnote}}} % color for footnote marks
+\renewcommand\@makefntext[1]{\parindent 1.5em \noindent \hb@xt@1.8em{\hss{\normalfont\@thefnmark . }}#1} % no superscipt in foot
 
-\usepackage{tcolorbox}
 
-\usepackage[%
-  indentfirst=false,
-  rightmargin=0pt,
-  vskip=1em,
-  noorphanfirst=true,
-  noorphanafter=true,
-  leftmargin=1.5em
-]{quoting}
-\newtcolorbox{quotebox}{%
-  blanker,
-  breakable,
-  enlarge left by=0.3em,
-  borderline west={0.3em}{-0.5em}{borderline}
+% Metadata inserted, from the TEI source, for title page and runing heads
+
+%meta%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% <TEI> generic (LaTeX names generated) %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{etoolbox} % patch commands
+\usepackage{enumitem} % <list>
+\usepackage{tabularx} % <table>
+\usepackage{verse} % <l>
+\usepackage{hyperref} % supposed to be the last one, :o) except for the one to follow
+\hyperbaseurl{}
+\hypersetup{extension = }
+\hypersetup{
+  % pdftex, % no effect
+  pdftitle={\shortref},
+  % pdfauthor={Your name here},
+  % pdfsubject={Your subject here},
+  % pdfkeywords={keyword1, keyword2},
+  bookmarksnumbered=true,
+  bookmarksopen=true,
+  bookmarksopenlevel=1,
+  pdfstartview=Fit,
+  % linktocpage=true, % toc, link only on page no 
+  pdfpagemode=UseOutlines,    % pdf toc
+  % pdfpagelayout=TwoPageRight,
+  citebordercolor=0.75 0.75 0.75,
+  linkbordercolor=0.75 0.75 0.75,
+  urlbordercolor=0.75 0.75 0.75,
+  colorlinks=true,
+  allcolors=black,
 }
-% with or without quoting, tcolorbox, framed (leftbar), and mdframed breaks bad between cols ans pages
-% tcolorbox put footnotes in box
-\newenvironment{myquote}%
-  {\begin{quoting}}%
-  {\end{quoting}}
-% latex packages and their configuration
-% \usepackage{colortbl} % table colors
-\usepackage{etoolbox}
-\usepackage{wrapfig}
-\usepackage{ragged2e}
+\usepackage{bookmark} % after hyperref
+
+% TOTEST
+% \usepackage{hypcap} % links in caption ?
+% \usepackage{xparse} % not yet used
+% \usepackage{marginnote}
 
 
+% Copied from Rahtz but not understood
+\def\@pnumwidth{1.55em}
+\def\@tocrmarg {2.55em}
+\def\@dotsep{4.5}
+\clubpenalty=8000
+\emergencystretch 3em
+\hbadness=4000
+\hyphenpenalty=400
+\pretolerance=750
+\tolerance=2000
+\vbadness=4000
+\widowpenalty=10000
+\def\Gin@extensions{.pdf,.png,.jpg,.mps,.tif}
 
-\usepackage{framed}
-\usepackage{longtable}
-% \usepackage[normalem]{ulem} % Package multicol Warning: May not work
-\usepackage{graphicx}
-\usepackage{marginnote}
-
-% conditional packages (xetex)
-\IfFileExists{xcolor.sty}%
-  {\RequirePackage{xcolor}}%
-  {\RequirePackage{color}}
-
-% Debug
-\newcommand\thefontsize{The current font size is: \f@size pt}
 
 % generic typo commands
-\DeclareTextFontCommand{\textsyms}{\syms}
+
+\@ifundefined{syms}{\newcommand{\syms}{}} % this may not work outside XeTeX context because of ✻
 \newcommand{\astermono}{\medskip\centerline{\color{rubric}\large\selectfont{\syms ✻}}\medskip\par}%
 \newcommand{\astertri}{\bigskip\centerline{\color{rubric}\large\selectfont{\syms ✻\,✻\,✻}\medskip\par}}%
 \newcommand{\asterism}{\bigskip\par\noindent\parbox{\linewidth}{\centering\color{rubric}\large{\syms ✻}\\{\syms ✻}\hskip 0.75em{\syms ✻}}\bigskip\par}%
-\usepackage{enumitem}
 \setlist{noitemsep,wide,leftmargin=*, labelindent=0pt} % labelindent=\parindent,leftmargin=*
 \setlist[itemize]{label=—}
 
-%
-% generated from TEI
-%
-\usepackage{verse} % <l>
-\setlength{\leftmargini}{-1em} % work ?
 
-% common font redefinition in LaTex
+% General typo
 \DeclareTextFontCommand{\textlarge}{\large}
 \DeclareTextFontCommand{\textsmall}{\small}
+
 
 % commands, inlines
 \newcommand\abbr{}
@@ -145,11 +179,7 @@
 \newcommand{\dateline}[1]{\vskip1em{\RaggedLeft{#1}\par}\vskip2em}
 \newcommand{\salute}[1]{\vskip2em{#1}\par\vskip1em}
 
-% environment  be careful of environment in environment (ex: div/quote/bibl)
-\newenvironment{argument}{\large\fontlight\parindent0pt}{\vskip1.5em}
-\newenvironment{biblfree}{}{\ifvmode\par\fi }
-
-% should probably become commands
+% environments for blocks (should probably become commands)
 \newenvironment{bibl}{}{}
 \newenvironment{blabel}{\begin{center}\begin{bfseries}}{\end{bfseries}\end{center}}
 \newenvironment{citbibl}{\ifvmode\hfill\fi}{\ifvmode\par\fi }
@@ -162,95 +192,159 @@
 \newenvironment{titlePart}{}{\par }
 
 
+% environments for block containers
+\newenvironment{argument}{\fontlight\parindent0pt}{\vskip1.5em}
+\newenvironment{biblfree}{}{\ifvmode\par\fi }
+\newenvironment{bibitemlist}[1]{%
+  \list{\@biblabel{\@arabic\c@enumiv}}%
+  {%
+    \settowidth\labelwidth{\@biblabel{#1}}%
+    \leftmargin\labelwidth
+    \advance\leftmargin\labelsep
+    \@openbib@code
+    \usecounter{enumiv}%
+    \let\p@enumiv\@empty
+    \renewcommand\theenumiv{\@arabic\c@enumiv}%
+  }
+  \sloppy
+  \clubpenalty4000
+  \@clubpenalty \clubpenalty
+  \widowpenalty4000%
+  \sfcode`\.\@m
+}%
+{\def\@noitemerr
+  {\@latex@warning{Empty `bibitemlist' environment}}%
+\endlist}
+\usepackage[%
+  indentfirst=false,
+  rightmargin=0pt,
+  vskip=1em,
+  noorphanfirst=true,
+  noorphanafter=true,
+  leftmargin=\parindent
+]{quoting}
+\newenvironment{blockquote}% may be used for ornaments
+  {\begin{quoting}}
+  {\end{quoting}}
 
-% \renewcommand{\@cite}[1]{#1}
-
-% footnotes
-% \renewcommand*{\marginfont}{\itshape\footnotesize}
-% \patchcmd{\@footnotetext}{\footnotesize}{\small}{}{}
-\renewcommand\footnoterule{\vspace*{0.3cm}\hrule height 0.1pt width 3cm \vspace*{0.3cm}}
-\patchcmd{\@footnotetext}{\reset@font}{\fontfamily{phv}\selectfont}{}{}
-\patchcmd{\@makefntext}{\hss\@makefnmark}{\@makefnmark}{}{}
-\setlength\footnotesep{1.5\footnotesep} % footnote separator
-\renewcommand{\thefootnote}{\bfseries\textcolor{rubric}{\arabic{footnote}}} % color for footnote marks
-\renewcommand\@makefntext[1]{\parindent 1.5em \noindent \hb@xt@1.8em{\hss{\normalfont\@thefnmark . }}#1} % no superscipt in foot
-
-
-\def\Gin@extensions{.pdf,.png,.jpg,.mps,.tif}
-
-
-
-
-\def\@pnumwidth{1.55em}
-\def\@tocrmarg {2.55em}
-\def\@dotsep{4.5}
-\clubpenalty=8000
-\emergencystretch 3em
-\hbadness=4000
-\hyphenpenalty=400
-\pretolerance=750
-\tolerance=2000
-\vbadness=4000
-\widowpenalty=10000
-
-% \let\@chapterimage\relax
-\newcommand\chapterimage{%
-  \begin{figure}\end{figure}
-    \centering
-    \def\svgwidth{\columnwidth}
-    \scalebox{1}{1}{\input{bandeau.pdf_tex}}
-  \end{figure}
+% table () is preceded and finished by custom command
+\newcommand{\tableopen}[1]{% pdf@strcmp
+  \ifnum\strcmp{#1}{wide}=0%
+    {}
+  \else\ifnum\strcmp{#1}{long}=0
+    {}
+  \else
+    {}
+  \fi\fi
+}
+\newcommand{\tableclose}[1]{% pdf@strcmp
+  \ifnum\strcmp{#1}{wide}=0%
+    {}
+  \else\ifnum\strcmp{#1}{long}=0
+    {}
+  \else
+    {}
+  \fi\fi
 }
 
-\renewcommand\chapter{%
-  \if@openright\cleardoublepage\else\clearpage\fi
-  \thispagestyle{plain} % no fancy
-  \global\@topnum\z@
-  \@afterindentfalse
-  \secdef\@chapter\@schapter
-  %\chapterimage
-}
-\renewcommand\section{\@startsection{section}{1}{\z@}%
-  {-1.75ex \@plus -0.5ex \@minus -.2ex}%
-  {0.5ex \@plus .2ex}%
-  {\reset@font\Large\bfseries}
-}
-\renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
-  {-1.75ex\@plus -0.5ex \@minus- .2ex}%
-  {0.5ex \@plus .2ex}%
-  {\reset@font\Large\color{rubric}}
-}
-\renewcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
-  {-1.5ex\@plus -0.35ex \@minus -.2ex}%
-  {0.5ex \@plus .2ex}%
-  {\reset@font\large}
-}
-\renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
-  {-1ex \@plus-0.35ex \@minus -0.2ex}%
-  {0.5ex \@plus .2ex}%
-  {\reset@font\normalsize}
-}
-\renewcommand\subparagraph{\@startsection{subparagraph}{5}{\parindent}%
-  {1.5ex \@plus1ex \@minus .2ex}%
-  {-1em}%
-  {\reset@font\normalsize\bfseries}
-}
 
+% text structure
+\newcommand\chapteropen{} % maybe useful for multicol settings
+\newcommand\chapterclose{} % maybe useful for multicol settings
+\usepackage[explicit]{titlesec} % NO implicit !, wear titles
 \setcounter{secnumdepth}{-2} % no counters for hierarchy titles
 \setcounter{tocdepth}{5}
 
-\usepackage[explicit]{titlesec} % NO implicit !
+
+%%%%%%%%%%%%%%
+% </TEI> end %
+%%%%%%%%%%%%%%
+
+% \renewcommand{\@cite}[1]{#1}
+
+
+
+%%% TEI overrides
+
+% A4 two cols for chapters
+\renewcommand\chapteropen{%
+  \begin{multicols}{2}%
+}
+\renewcommand\chapterclose{%
+  \par\medskip\noindent
+  \end{multicols} 
+  % \resizebox{\textwidth}{!}{\includegraphics[width=\columnwidth]{bandeau1.pdf}}
+}
+
+\renewcommand{\tableopen}[1]{% pdf@strcmp
+  \ifnum\strcmp{#1}{wide}=0%
+    {%
+      \end{multicols} 
+      \begin{center}
+    }
+  \else\ifnum\strcmp{#1}{long}=0
+    {}
+  \else
+    {}
+  \fi\fi
+}
+\renewcommand{\tableclose}[1]{% pdf@strcmp
+  \ifnum\strcmp{#1}{wide}=0%
+    {%
+      \end{center}
+      \begin{multicols}{2}%
+    }
+  \else\ifnum\strcmp{#1}{long}=0
+    {}
+  \else
+    {}
+  \fi\fi
+}
+
+
+% page models
+\usepackage{fancyvrb}
+\usepackage{fancyhdr}
+\usepackage[fit]{truncate}
+\markright{\@title}
+\markboth{\@title}{\@author}
+
+% here it is one side design, no need to define LO,LE
+\fancypagestyle{plain}{% apply to chapter
+  \fancyhf{}% clear all header and footer fields
+  \setlength\headheight{16pt}
+  \fancyhead[L]{\truncate{0.9\headwidth}{\shortref}}
+  \fancyhead[R]{\thepage}
+}
+\fancypagestyle{fancy}{%
+  \fancyhf{}
+  \setlength{\headheight}{16pt}
+  \let\oldheadrule\headrule % Copy \headrule into \oldheadrule
+  \renewcommand{\headrule}{\color{rubric}\oldheadrule}% Add colour to \he
+  \fancyhead{} % reset head
+  \fancyfoot{} % reset foot
+  \fancyhead[L]{\color{rubric}{\truncate{0.45\headwidth}{\shortref}}}
+  \fancyhead[C]{{\thepage}}
+  \fancyhead[R]{\color{rubric}{\nouppercase{\truncate{0.45\headwidth}{\leftmark}}}} % Chapter title
+}
+
+
+
+
 \tcbuselibrary{skins}
 \usetikzlibrary{calc}
 \usetikzlibrary{shadows}
-\titleformat
-  {name=\chapter}
-  [display]
-  {\huge\bfseries\raggedleft\color{rubric}}
-  {}
-  {0pt}
-  {\vspace{1em}#1} % explicit
-  [\vspace{1em}] % {\titlerule[0.1pt]}
+\titleformat % delicate tuning, image has produce line-height problems in title on 2 lines 
+  {name=\chapter} % command
+  [display] % shape
+  {\vspace{16pt}\raggedleft} % format
+  {} % label
+  {0pt} % separator between n
+  {%
+    % \noindent\resizebox{\textwidth}{!}{\includegraphics[width=\columnwidth]{bandeau.pdf}}
+    % \vspace{16pt}
+  } % before code
+  [{\color{rubric}\huge\bfseries\sffamily #1}\vspace{16pt}] % after code
 \titlespacing*{\chapter}{0pt}{-30pt}{0pt}[0pt]
 
 \newtcolorbox{sectionbox}{%
@@ -269,164 +363,42 @@
   lifted shadow={-0.5pt}{-2mm}{3mm}{0.1mm}{rubric}
 }
 \titleformat{name=\section}[hang]
-  {\large\bfseries} % filright ?
+  {\large\bfseries\sffamily} % filright ?
   {} % \thesection
   {}
 % {\colorbox{bghi}{\parbox{\dimexpr\linewidth-2\fboxsep}{#1}}}
-  {\begin{sectionbox}{#1}\end{sectionbox}}
+  {\begin{sectionbox}{#1}\end{sectionbox}
+}
 
 \titlespacing{\section}{0pt}{1.5em}{-10pt}{} % done by colorbox
 
 \def\tableofcontents{\subsection{\contentsname}\@starttoc{toc}} % title of the toc in the toc
 
-\newenvironment{bibitemlist}[1]{%
- \list{\@biblabel{\@arabic\c@enumiv}}%
- {%
-    \settowidth\labelwidth{\@biblabel{#1}}%
-    \leftmargin\labelwidth
-    \advance\leftmargin\labelsep
-    \@openbib@code
-    \usecounter{enumiv}%
-    \let\p@enumiv\@empty
-    \renewcommand\theenumiv{\@arabic\c@enumiv}%
-  }
-  \sloppy
-  \clubpenalty4000
-  \@clubpenalty \clubpenalty
-  \widowpenalty4000%
-  \sfcode`\.\@m
-}%
-{\def\@noitemerr
-  {\@latex@warning{Empty `bibitemlist' environment}}%
-\endlist}
-
-
-\def\Panel#1#2#3#4{\multicolumn{#3}{){\columncolor{#2}}#4}{#1}}
-\newenvironment{reflist}{%
-  \begin{raggedright}\begin{list}{}
-  {%
-   \setlength{\topsep}{0pt}%
-   \setlength{\rightmargin}{0.25in}%
-   \setlength{\itemsep}{0pt}%
-   \setlength{\itemindent}{0pt}%
-   \setlength{\parskip}{0pt}%
-   \setlength{\parsep}{2pt}%
-   \def\makelabel##1{\itshape ##1}}%
-  }
-  {\end{list}\end{raggedright}}
-\newenvironment{sansreflist}{%
-  \begin{raggedright}\begin{list}{}
-  {%
-   \setlength{\topsep}{0pt}%
-   \setlength{\rightmargin}{0.25in}%
-   \setlength{\itemindent}{0pt}%
-   \setlength{\parskip}{0pt}%
-   \setlength{\itemsep}{0pt}%
-   \setlength{\parsep}{2pt}%
-   \def\makelabel##1{\upshape\sffamily ##1}}%
-  }
-  {\end{list}\end{raggedright}}
-\newenvironment{specHead}[2]%
- {\vspace{20pt}\hrule\vspace{10pt}%
-  \phantomsection\label{#1}\markright{#2}%
-
-  \pdfbookmark[2]{#2}{#1}%
-  \hspace{-0.75in}{\bfseries\fontsize{16pt}{18pt}\selectfont#2}%
-  }{}
-      \def\TheFullDate{2021 (revised: 2021-05-24T17:10:30Z)}
-
-
-\newcommand*{\cleartoleftpage}{%
-  \clearpage
-    \if@twoside
-    \ifodd\c@page
-      \hbox{}\newpage
-      \if@twocolumn
-        \hbox{}\newpage
-      \fi
-    \fi
-  \fi
-}
 
 
 
 
-% Meta extracted from the TEI source, for title page and runing heads
-%meta%
-
-\thispagestyle{empty}
-\markright{\@title}
-\markboth{\@title}{\@author}
-
-% page models
-\usepackage{fancyvrb}
-\usepackage{fancyhdr}
-\usepackage[fit]{truncate}
-\fvset{frame=single,numberblanklines=false,xleftmargin=5mm,xrightmargin=5mm} % verbatim code
-\renewcommand{\headrulewidth}{0.2pt}%
-\let\oldheadrule\headrule% Copy \headrule into \oldheadrule
-\renewcommand{\headrule}{\color{rubric}\oldheadrule}% Add colour to \he
-% redefine plain
-\fancypagestyle{plain}{%
-  \fancyhf{}% clear all header and footer fields
-  \fancyhead[LO,LE]{\nouppercase{\truncate{0.9\headwidth}{\shortref}}}
-  \fancyhead[RO,RE]{\thepage}
-}
-\pagestyle{fancy}{%
-  \fancyhf{} 
-  % \setlength{\headheight}{16pt}
-  \fancyhead{} % reset head
-  \fancyfoot{} % reset foot
-  \fancyhead[RO,RE]{\nouppercase{\truncate{0.45\headwidth}{\leftmark}}} % Chapter title
-  \fancyhead[CO,CE]{\thepage}
-  \fancyhead[LO,LE]{\nouppercase{\truncate{0.45\headwidth}{\shortref}}}
-}
-% last page hasn't work
-% \fancypagestyle{plain}{\fancyhead{}\renewcommand{\headrulewidth}{0pt}}
-
-\usepackage{pgfornament}
-
-
-\usepackage{hyperref} % supposed to be the last one
-\hypersetup{
-  % pdftex, % no effect
-  pdftitle={\@author. \@date, \@title},
-  % pdfauthor={Your name here},
-  % pdfsubject={Your subject here},
-  % pdfkeywords={keyword1, keyword2},
-  bookmarksnumbered=true,
-  bookmarksopen=true,
-  bookmarksopenlevel=1,
-  pdfstartview=Fit,
-  % linktocpage=true, % toc, link only on page no 
-  pdfpagemode=UseOutlines,    % pdf toc
-  % pdfpagelayout=TwoPageRight,
-  citebordercolor=0.75 0.75 0.75,
-  linkbordercolor=0.75 0.75 0.75,
-  urlbordercolor=0.75 0.75 0.75,
-  colorlinks=true,
-  allcolors=black,
-}
-\hyperbaseurl{}
-\usepackage{hypcap}
-\usepackage{bookmark}
+%%%
 
 \makeatother % @@@
 
+
 \begin{document}
+\pagestyle{fancy}
+\thispagestyle{empty}
 
-
-\makeatletter
-\noindent\parbox[b]{.75\textwidth}{\fontsize{13pt}{15pt}\bfseries\raggedright\selectfont\@author{, }\@date}
+\makeatletter% @@@
+\noindent\parbox[b]{.75\textwidth}{\fontsize{13pt}{15pt}\color{rubric}\bfseries\raggedright\selectfont\@author{, }\@date}
 \vskip10pt
-\par\noindent{\fontsize{19pt}{21pt}\itshape\raggedright\selectfont\@title}
+\par\noindent{\fontsize{19pt}{21pt}\color{rubric}\itshape\raggedright\selectfont\@title}
 \vspace{0pt}
 \par\noindent\rule{\textwidth}{0.4pt}
 \vspace{15pt}
 \let\tabcellsep& 
 
-% \fontname\font, \f@size pt, \scshape{Small Caps ?}
-\makeatother
+% \fontname\font, \f@size pt, \textsc{Les règles du jeu}
+\makeatother% @@@
+
 
 %tei%
 

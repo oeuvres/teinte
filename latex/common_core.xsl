@@ -732,7 +732,7 @@ it is dangerous for docx where nesting may produce lots of surprises
       <xsl:when test="@place='comment'">
         <xsl:call-template name="commentNote"/>
       </xsl:when>
-      <xsl:when test="@place='inline' and $inline = ''">
+      <xsl:when test="@place='inline' and not($inline)">
         <xsl:call-template name="displayNote"/>
       </xsl:when>
       <xsl:when test="@place='inline'">
@@ -745,10 +745,10 @@ it is dangerous for docx where nesting may produce lots of surprises
       <xsl:when test="@place='margin' or @place='marginal'">
         <xsl:call-template name="marginalNote"/>
       </xsl:when>
-      <xsl:when test="$inline = '' or tei:q">
+      <xsl:when test="not($inline) or tei:q">
         <xsl:call-template name="displayNote"/>
       </xsl:when>
-      <xsl:when test="@place = 'foot' or @place = 'bottom' or (not(@place) and $inline != '')">
+      <xsl:when test="@place = 'foot' or @place = 'bottom' or (not(@place) and $inline)">
         <xsl:call-template name="footNote"/>
       </xsl:when>
       <xsl:when test="@place">
@@ -795,7 +795,7 @@ it is dangerous for docx where nesting may produce lots of surprises
     </xsl:variable>
     <xsl:choose>
       <xsl:when test="parent::tei:cit[contains(@rend,'display')] or
-		      (parent::tei:cit and tei:p) or $inline != ''">
+		      (parent::tei:cit and tei:p) or $inline">
         <xsl:call-template name="makeInline">
           <xsl:with-param name="style">citbibl</xsl:with-param>
         </xsl:call-template>
@@ -805,7 +805,7 @@ it is dangerous for docx where nesting may produce lots of surprises
           <xsl:with-param name="style">citbibl</xsl:with-param>
         </xsl:call-template>
       </xsl:when>
-      <xsl:when test="$inline = ''">
+      <xsl:when test="not($inline)">
         <xsl:call-template name="makeBlock">
           <xsl:with-param name="style">biblfree</xsl:with-param>
         </xsl:call-template>
@@ -1007,7 +1007,7 @@ it is dangerous for docx where nesting may produce lots of surprises
       <xsl:call-template name="tei:isInline"/>
     </xsl:variable>   
     <xsl:choose>
-      <xsl:when test="$inline != ''">
+      <xsl:when test="$inline">
         <xsl:call-template name="makeInline">
           <xsl:with-param name="style" select="@type"/>
         </xsl:call-template>
