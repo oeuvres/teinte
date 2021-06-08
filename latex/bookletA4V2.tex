@@ -1,0 +1,43 @@
+\documentclass[
+  landscape,
+]{article}
+\usepackage[a3paper]{geometry}
+\usepackage{pdfpages}
+\usepackage{luatexbase}
+
+\iffalse
+% /MediaBox [0 0 595.2756 841.8898] -- A4 portrait
+    % pdf.setpageattributes('/Rotate 180')
+  for i,v in pairs(arg) do
+    tex.print("\string[" .. i .. "]" .. v .. "\\")
+  end
+\fi
+
+\directlua{%
+  luatexbase.add_to_callback('finish_pdfpage',
+  function()
+    local atts = '/MediaBox [297.64 0 892.92 841.89]'
+    if (math.mod(tex.count['c@page'] + 1, 2) == 0) then
+      atts = atts .. '  /Rotate 180'
+    end
+    pdf.setpageattributes(atts)
+  end,
+  'Andreas Matthias <andreas.matthias@gmail.com> gift: my dirty hack')
+}
+\def\pdf{\directlua{%
+  tex.print("\string"..arg[2])
+}}
+
+\begin{document}
+
+
+\includepdf[
+  pages=-,
+  booklet,
+  frame,
+  % landscape,
+  noautoscale,
+  % nup=2x1,
+]{\pdf}
+
+\end{document}

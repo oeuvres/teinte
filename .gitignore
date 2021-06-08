@@ -1,4 +1,12 @@
 *.bak
 .DS_Store
 work/
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.xdv
+*.swp
+*.dvi
+*.toc
 

@@ -1,24 +1,156 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% LaTeX model for hurlus print %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\documentclass[french,twoside]{book}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% LaTeX model for hurlus booklets print %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage{fix-cm}
+\documentclass[french,twoside,notitlepage]{book}
 \usepackage[%
   papersize={105mm, 297mm},
-  a4paper,
-  inner=15mm, % recto/verso printing for booklet
+  % a5paper,
+  inner=10mm, % recto/verso printing for booklet
   outer=10mm, 
   top=18mm,
   bottom=10mm,
   marginparsep=0pt,
 ]{geometry}
-\usepackage[french]{babel}
-\usepackage{blindtext}
 
-\input{../latex/tei}
+%%%%%%%%%%%%%%
+% Alignments %
+%%%%%%%%%%%%%%
+
+\setlength{\columnsep}{2cm}
+\setlength{\arrayrulewidth}{0.2pt}
+% \setlength{\columnseprule}{0.2pt}
+\setlength{\parskip}{0pt} % classical para with no margin
+\setlength{\parindent}{1.5em}
+
+%%%%%%%%%%
+% Colors %
+%%%%%%%%%%
+\usepackage[dvipsnames]{xcolor}
+\definecolor{rubric}{HTML}{902c20} % the tonic
+\colorlet{borderline}{rubric!30!} % definecolor need exact code
+\definecolor{shadecolor}{gray}{0.95}
+\definecolor{bghi}{gray}{0.5}
+
+%%%%%%%%%%%%%
+% footnotes %
+%%%%%%%%%%%%%
+\makeatletter
+% \renewcommand*{\marginfont}{\itshape\footnotesize}
+% \patchcmd{\@footnotetext}{\footnotesize}{\small}{}{}
+\renewcommand\footnoterule{\vspace*{0.3cm}\hrule height \arrayrulewidth width 3cm \vspace*{0.3cm}}
+\usepackage{patchcmd} % obsolete
+% \patchcmd{\@footnotetext}{\reset@font}{\fontfamily{phv}\selectfont}{}{}
+% \patchcmd{\@makefntext}{\hss\@makefnmark}{\@makefnmark}{}{}
+\setlength\footnotesep{1.5\footnotesep} % footnote separator
+\renewcommand{\thefootnote}{\bfseries\textcolor{rubric}{\arabic{footnote}}} % color for footnote marks
+\renewcommand\@makefntext[1]{\parindent 1.5em \noindent \hb@xt@1.8em{\hss{\normalfont\@thefnmark . }}#1} % no superscipt in foot
+\makeatother
+
+
+%%%%%%%%%
+% Fonts %
+%%%%%%%%%
+
+\usepackage[no-math]{fontspec}
+\defaultfontfeatures{Scale = MatchLowercase}
+\defaultfontfeatures{Ligatures={TeX}}
+\usepackage[]{roboto} % SmallCaps, Regular is a bit bold
+\setmainfont{Roboto Light}[%
+  ItalicFont={Roboto Italic},
+]
+\usepackage[fontsize=9.5pt]{scrextend} % 10pt for lato (53 c.)
+% \linespread{0.90} % too compact, keep font natural
+\usepackage{DejaVuSans}
+\setsansfont{Roboto Condensed}
+\newfontfamily{\fontlight}{DejaVu Sans} % for abstract
+\newfontfamily\syms{DejaVu Sans} % Ensure a font for dingBats (no in Lato or Noto))
+\setmonofont{DejaVu Sans Mono}
+
+%%%%%%%%
+% MISC %
+%%%%%%%%
+
+\usepackage{polyglossia} % non-break space french punct, bug Warning: "Failed to patch part"
+\setmainlanguage{french}
+\PassOptionsToPackage{utf8}{inputenc}
+
+
+\input{../latex/teinte}
+
+
+% here it is one side design, no need to define LO,LE
+\fancypagestyle{plain}{% apply to chapter
+  \fancyhf{}% clear all header and footer fields
+  \setlength\headheight{16pt}
+  \fancyhead[L]{\truncate{0.9\headwidth}{\shortref}}
+  \fancyhead[R]{\thepage}
+}
+\fancypagestyle{fancy}{%
+  \fancyhf{}
+  \setlength{\headheight}{16pt}
+  \let\oldheadrule\headrule % Copy \headrule into \oldheadrule
+  \renewcommand{\headrule}{\color{rubric}\oldheadrule}% Add colour to \he
+  \fancyhead{} % reset head
+  \fancyfoot{} % reset foot
+  \fancyhead[LO]{\color{rubric}{\truncate{0.45\headwidth}{\shortref}}} % book ref
+  \fancyhead[RE]{\color{rubric}{\nouppercase{\truncate{0.45\headwidth}{\leftmark}}}} % Chapter title
+  \fancyhead[RO,LE]{{\thepage}}
+}
+
+\titleformat % delicate tuning, image has produce line-height problems in title on 2 lines 
+  {name=\chapter} % command
+  [display] % shape
+  {\vspace{16pt}\raggedleft} % format
+  {} % label
+  {0pt} % separator between n
+  {% before code
+    \noindent\resizebox{\textwidth}{!}{\includegraphics[width=\columnwidth]{bandeau.pdf}}
+    % \vspace{16pt}
+  }
+  [{\color{rubric}\huge\bfseries\sffamily #1}\vspace{16pt}] % after code
+
+\titlespacing*{\chapter}{0pt}{-30pt}{0pt}[0pt]
+
+\iffalse
+\titlespacing{\section}{0pt}{1.5em}{-10pt}{}
+\fi
+
+\titleformat{name=\section}[hang]
+  {\color{rubric}\large\bfseries\sffamily} % filright ?
+  {} % \thesection
+  {}
+  {#1}
+}
+
+
 
 \begin{document}
+\pagestyle{fancy}
+\thispagestyle{empty}
 
-\blinddocument
+
+\makeatletter
+\noindent\parbox[b]{.75\textwidth}{\fontsize{13pt}{15pt}\color{rubric}\bfseries\raggedright\selectfont\@author{, }\@date}
+\vskip10pt
+\par\noindent{\fontsize{19pt}{21pt}\color{rubric}\itshape\raggedright\selectfont\@title}
+\vspace{0pt}
+\par\noindent\rule{\textwidth}{0.4pt}
+\vspace{15pt}
+\let\tabcellsep&
+% \fontname\font, \f@size pt, \textsc{Les règles du jeu}
+\makeatother
+
+\ifdev
+\fontname\font — ̇\textsc{Les règles du jeu}
+
+
+\makeatletter\@starttoc{toc}\makeatother % toc without new page
+
+
+\Blinddocument
+\fi
 
 %tei%
 

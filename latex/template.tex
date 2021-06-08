@@ -1,82 +1,54 @@
-% Dependencies for this design, XeLaTeX only (for OpenTypes)
-\RequirePackage{fix-cm}
-\RequirePackage[no-math]{fontspec}
-\RequirePackage{multicol}
-\RequirePackage[dvipsnames]{xcolor}
-\RequirePackage{color}
-\RequirePackage{tcolorbox} % used for section ornament, be careful in multicol for vertical alignments
-\RequirePackage{polyglossia} % non-break space french punct, bug Warning: "Failed to patch part"
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% A LaTeX template example for Teinte %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% memory of experience, to not reproduce and waste time
 
-% TO TEST, maybe useful one day
-% \RequirePackage{wrapfig}
-% \RequirePackage{ragged2e}
 
 % TESTED, bad
 % \RequirePackage{background} % doesn’t work with xetek
 % \RequirePackage{longtable} % doesn’t work in multicol
 % \RequirePackage[normalem]{ulem} % Package multicol Warning: May not work
 % \RequirePackage{framed} % doesn’t work in multicol
+% \RequirePackage{tcolorbox} % be careful in multicol for vertical alignments
+% memoir and koma does not work well with columns
 
-% memoir and koma does not work well for section titles and columns
+% XeLaTeX is hard on small caps, lots have not, memory
+% \usepackage{Rosario} % bad shape, nosmallcaps, some weights, 10pt
+% \usepackage{fira} % not in TexLive2020 
+% \usepackage{noto} % SmallCaps, 9.5pt, but Roboto better
+% \usepackage{lato} % quite nice, weights, but nosmallcaps, 10pt
+% \renewcommand{\baselinestretch}{0.95} % old doc ?
+
+% TO TEST, maybe useful one day
+% \RequirePackage{wrapfig}
+% \RequirePackage{ragged2e}
+
+
+
+\RequirePackage{fix-cm} % to declared before all
 \documentclass[french,oneside]{book} % not twoside, openany (default for report)
-% packaged needing a documentclass context
-
-
-\makeatletter % @@@
-
-% before geometry, colors
-\definecolor{rubric}{HTML}{902c20} % the tonic
-\colorlet{borderline}{rubric!30!} % definecolor need exact code
-\definecolor{shadecolor}{gray}{0.95}
-\definecolor{bghi}{gray}{0.5}
-
 % specific A4
 \usepackage[%
+  top=18mm,
+  bottom=10mm,
   a4paper,
   inner=1.1cm, % do not presume recto/verso printing
   outer=1.1cm, 
-  top=1.8cm,
-  bottom=1.5cm,
   marginparsep=0pt,
 ]{geometry}
+
+%%%%%%%%%%%%%%
+% Alignments %
+%%%%%%%%%%%%%%
+
 \setlength{\columnsep}{2cm}
-\setlength{\columnseprule}{0.2pt}
-\renewcommand{\columnseprulecolor}{\color{rubric}}
-% indents
+\setlength{\arrayrulewidth}{0.2pt}
+% \setlength{\columnseprule}{0.2pt}
+\setlength{\parskip}{0pt} % classical para with no margin
 \setlength{\parindent}{1.5em}
-\setlength{\parskip}{0pt}
-% try to redefine quoting environment
-\PassOptionsToPackage{utf8}{inputenc}
-
-% Xetex only, Fonts
-\defaultfontfeatures{Scale = MatchLowercase}
-\defaultfontfeatures{Ligatures={TeX}}
-% XeLaTeX is hard on small caps, lots have not
-% \usepackage{Rosario} % bad shape, nosmallcaps, some weights, 10pt
-\usepackage[]{roboto} % SmallCaps, Regular is a bit bold
-% \usepackage{fira} % not in TexLive2020 
-\usepackage{lato} % quite nice, weights, nosmallcaps, 10pt
-% \usepackage{noto} % SmallCaps, 9.5pt
-\setmainfont{Roboto Light}[%
-  ItalicFont={Roboto Italic},
-  % SmallCapsFont=Noto Sans,
-  % SmallCapsFeatures={Letters=SmallCaps} % ensure sc enable for otf
-]
-\usepackage[fontsize=10pt]{scrextend} % 10pt for lato (53 c.)
-% \newfontinstance\scshape[Letters=SmallCaps,Scale=1.15]{Crimson}
-% \renewcommand{\baselinestretch}{0.95} % old doc ?
-% \linespread{0.90} % too compact, keep font natural
-
-\usepackage{DejaVuSans}
-\setsansfont{Roboto Condensed}
-\newfontfamily{\fontlight}{DejaVu Sans} % for abstract
-\newfontfamily\syms{DejaVu Sans} % Ensure a font for dingBats (no in Lato or Noto))
-\setmonofont{DejaVu Sans Mono}
-\setmainlanguage{french}
-
-
 % footnotes
+\makeatletter
 % \renewcommand*{\marginfont}{\itshape\footnotesize}
 % \patchcmd{\@footnotetext}{\footnotesize}{\small}{}{}
 \renewcommand\footnoterule{\vspace*{0.3cm}\hrule height 0.1pt width 3cm \vspace*{0.3cm}}
@@ -85,6 +57,45 @@
 \setlength\footnotesep{1.5\footnotesep} % footnote separator
 \renewcommand{\thefootnote}{\bfseries\textcolor{rubric}{\arabic{footnote}}} % color for footnote marks
 \renewcommand\@makefntext[1]{\parindent 1.5em \noindent \hb@xt@1.8em{\hss{\normalfont\@thefnmark . }}#1} % no superscipt in foot
+\makeatother
+
+%%%%%%%%%%
+% Colors %
+%%%%%%%%%%
+\usepackage[dvipsnames]{xcolor}
+\definecolor{rubric}{HTML}{902c20} % the tonic
+\colorlet{borderline}{rubric!30!} % definecolor need exact code
+\definecolor{shadecolor}{gray}{0.95}
+\definecolor{bghi}{gray}{0.5}
+\renewcommand{\columnseprulecolor}{\color{rubric}}
+% try to redefine quoting environment
+\PassOptionsToPackage{utf8}{inputenc}
+
+%%%%%%%%%
+% Fonts %
+%%%%%%%%%
+
+\usepackage[no-math]{fontspec}
+\defaultfontfeatures{Scale = MatchLowercase}
+\defaultfontfeatures{Ligatures={TeX}}
+\usepackage[]{roboto} % SmallCaps, Regular is a bit bold
+\setmainfont{Roboto Light}[%
+  ItalicFont={Roboto Italic},
+]
+\usepackage[fontsize=10pt]{scrextend} % 10pt for lato (53 c.)
+% \linespread{0.90} % too compact, keep font natural
+\usepackage{DejaVuSans}
+\setsansfont{Roboto Condensed}
+\newfontfamily{\fontlight}{DejaVu Sans} % for abstract
+\newfontfamily\syms{DejaVu Sans} % Ensure a font for dingBats (no in Lato or Noto))
+\setmonofont{DejaVu Sans Mono}
+
+%%%%%%%%
+% MISC %
+%%%%%%%%
+
+\usepackage{polyglossia} % non-break space french punct, bug Warning: "Failed to patch part"
+\setmainlanguage{french}
 
 
 % Metadata inserted, from the TEI source, for title page and runing heads
@@ -228,7 +239,7 @@
   {\end{quoting}}
 
 % table () is preceded and finished by custom command
-\newcommand{\tableopen}[1]{% pdf@strcmp
+\newcommand{\tableopen}[1]{% 
   \ifnum\strcmp{#1}{wide}=0%
     {}
   \else\ifnum\strcmp{#1}{long}=0
@@ -237,7 +248,7 @@
     {}
   \fi\fi
 }
-\newcommand{\tableclose}[1]{% pdf@strcmp
+\newcommand{\tableclose}[1]{% 
   \ifnum\strcmp{#1}{wide}=0%
     {}
   \else\ifnum\strcmp{#1}{long}=0
@@ -260,54 +271,13 @@
 % </TEI> end %
 %%%%%%%%%%%%%%
 
-% \renewcommand{\@cite}[1]{#1}
-
-
-
 %%% TEI overrides
-
-% A4 two cols for chapters
-\renewcommand\chapteropen{%
-  \begin{multicols}{2}%
-}
-\renewcommand\chapterclose{%
-  \par\medskip\noindent
-  \end{multicols} 
-  % \resizebox{\textwidth}{!}{\includegraphics[width=\columnwidth]{bandeau1.pdf}}
-}
-
-\renewcommand{\tableopen}[1]{% pdf@strcmp
-  \ifnum\strcmp{#1}{wide}=0%
-    {%
-      \end{multicols} 
-      \begin{center}
-    }
-  \else\ifnum\strcmp{#1}{long}=0
-    {}
-  \else
-    {}
-  \fi\fi
-}
-\renewcommand{\tableclose}[1]{% pdf@strcmp
-  \ifnum\strcmp{#1}{wide}=0%
-    {%
-      \end{center}
-      \begin{multicols}{2}%
-    }
-  \else\ifnum\strcmp{#1}{long}=0
-    {}
-  \else
-    {}
-  \fi\fi
-}
 
 
 % page models
-\usepackage{fancyvrb}
-\usepackage{fancyhdr}
-\usepackage[fit]{truncate}
-\markright{\@title}
-\markboth{\@title}{\@author}
+\makeatletter
+\def\tableofcontents{\subsection{\contentsname}\@starttoc{toc}} % title of the toc in the toc
+\makeatother
 
 % here it is one side design, no need to define LO,LE
 \fancypagestyle{plain}{% apply to chapter
@@ -328,9 +298,6 @@
   \fancyhead[R]{\color{rubric}{\nouppercase{\truncate{0.45\headwidth}{\leftmark}}}} % Chapter title
 }
 
-
-
-
 \tcbuselibrary{skins}
 \usetikzlibrary{calc}
 \usetikzlibrary{shadows}
@@ -347,21 +314,6 @@
   [{\color{rubric}\huge\bfseries\sffamily #1}\vspace{16pt}] % after code
 \titlespacing*{\chapter}{0pt}{-30pt}{0pt}[0pt]
 
-\newtcolorbox{sectionbox}{%
-  enhanced,
-  width=\linewidth,
-  colback=white,
-  % coltext=white,
-  colframe=black,
-  frame hidden,
-  boxrule=0.1pt,
-  left=3pt,
-  right=3pt,
-  top=0pt,
-  bottom=0pt,
-  halign=flush right,
-  lifted shadow={-0.5pt}{-2mm}{3mm}{0.1mm}{rubric}
-}
 \titleformat{name=\section}[hang]
   {\large\bfseries\sffamily} % filright ?
   {} % \thesection
@@ -372,22 +324,55 @@
 
 \titlespacing{\section}{0pt}{1.5em}{-10pt}{} % done by colorbox
 
-\def\tableofcontents{\subsection{\contentsname}\@starttoc{toc}} % title of the toc in the toc
 
 
+% A4 two cols specific
+\usepackage{multicol}
+\renewcommand{\columnseprulecolor}{\color{rubric}}
+\renewcommand\chapteropen{%
+  \begin{multicols}{2}%
+}
+\renewcommand\chapterclose{%
+  \par\medskip\noindent
+  \end{multicols} 
+  % \resizebox{\textwidth}{!}{\includegraphics[width=\columnwidth]{bandeau1.pdf}}
+}
+
+\renewcommand{\tableopen}[1]{%
+  \ifnum\strcmp{#1}{wide}=0%
+    {%
+      \end{multicols} 
+      \begin{center}
+    }
+  \else\ifnum\strcmp{#1}{long}=0
+    {}
+  \else
+    {}
+  \fi\fi
+}
+\renewcommand{\tableclose}[1]{%
+  \ifnum\strcmp{#1}{wide}=0%
+    {%
+      \end{center}
+      \begin{multicols}{2}%
+    }
+  \else\ifnum\strcmp{#1}{long}=0
+    {}
+  \else
+    {}
+  \fi\fi
+}
 
 
 
 %%%
-
-\makeatother % @@@
 
 
 \begin{document}
 \pagestyle{fancy}
 \thispagestyle{empty}
 
-\makeatletter% @@@
+\makeatletter
 \noindent\parbox[b]{.75\textwidth}{\fontsize{13pt}{15pt}\color{rubric}\bfseries\raggedright\selectfont\@author{, }\@date}
 \vskip10pt
 \par\noindent{\fontsize{19pt}{21pt}\color{rubric}\itshape\raggedright\selectfont\@title}
@@ -397,7 +382,7 @@
 \let\tabcellsep& 
 
 % \fontname\font, \f@size pt, \textsc{Les règles du jeu}
-\makeatother% @@@
+\makeatother
 
 
 %tei%
