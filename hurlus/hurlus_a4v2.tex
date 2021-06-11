@@ -27,6 +27,8 @@
 %%%%%%%%%%
 % Colors %
 %%%%%%%%%%
+% before Teinte macros
+
 \usepackage[dvipsnames]{xcolor}
 \definecolor{rubric}{HTML}{902c20} % the tonic
 \colorlet{borderline}{rubric!30!} % definecolor need exact code
@@ -52,7 +54,6 @@
 %%%%%%%%%
 % Fonts %
 %%%%%%%%%
-
 \usepackage[no-math]{fontspec}
 \defaultfontfeatures{Scale = MatchLowercase}
 \defaultfontfeatures{Ligatures={TeX}}
@@ -79,34 +80,33 @@
 
 \input{../latex/teinte}
 
-
-% here it is one side design, no need to define LO,LE
-\fancypagestyle{plain}{% apply to chapter
-  \fancyhf{}% clear all header and footer fields
-  \setlength\headheight{16pt}
-  \fancyhead[L]{\truncate{0.9\headwidth}{\shortref}}
-  \fancyhead[R]{\thepage}
-}
+\renewcommand{\pn}[1]{\vskip 5pt\noindent{\sffamily\footnotesize\bfseries\color{rubric} #1.}} % <p n="3"/>
+\renewcommand{\headrulewidth}{\arrayrulewidth}
+\renewcommand{\headrule}{\color{rubric}\hrule}
 \fancypagestyle{fancy}{%
   \fancyhf{}
   \setlength{\headheight}{16pt}
-  \let\oldheadrule\headrule % Copy \headrule into \oldheadrule
-  \renewcommand{\headrule}{\color{rubric}\oldheadrule}% Add colour to \he
   \fancyhead{} % reset head
   \fancyfoot{} % reset foot
-  \fancyhead[LO]{\color{rubric}{\truncate{0.45\headwidth}{\shortref}}} % book ref
-  \fancyhead[RE]{\color{rubric}{\nouppercase{\truncate{0.45\headwidth}{\leftmark}}}} % Chapter title
-  \fancyhead[RO,LE]{{\thepage}}
+  \fancyhead[LO]{\truncate{0.9\headwidth}{\nouppercase{\sffamily\shortref}}} % book ref
+  \fancyhead[RE]{\truncate{0.9\headwidth}{\nouppercase{\sffamily\leftmark}}} % Chapter title
+  \fancyhead[RO,LE]{\thepage}
+}
+\fancypagestyle{plain}{% apply to chapter
+  \fancyhf{}% clear all header and footer fields
+  \setlength{\headheight}{16pt}
+  \fancyhead[L]{\truncate{0.9\headwidth}{\sffamily \shortref}}
+  \fancyhead[R]{\thepage}
 }
 
 \titleformat % delicate tuning, image has produce line-height problems in title on 2 lines 
   {name=\chapter} % command
-  [display] % shape
-  {\vspace{16pt}\raggedleft} % format
+  % [display] % shape
+  {\vspace{16pt}\centering} % format
   {} % label
   {0pt} % separator between n
   {% before code
-    \noindent\resizebox{\textwidth}{!}{\includegraphics[width=\columnwidth]{bandeau.pdf}}
+    \noindent\resizebox{\textwidth}{!}{\includegraphics[width=\columnwidth]{img/bandeau.pdf}}
     % \vspace{16pt}
   }
   [{\color{rubric}\huge\bfseries\sffamily #1}\vspace{16pt}] % after code
@@ -115,15 +115,19 @@
 
 \iffalse
 \titlespacing{\section}{0pt}{1.5em}{-10pt}{}
+% bandeau avec texte au milieu
+\noindent\centerline{\includegraphics[width=\columnwidth]{img/bandeau.pdf}}\vspace{-28pt}
+\centerline{\fontsize{20pt}{35pt}\addfontfeature{LetterSpace=15}\color{white}\bfseries \contour{black}{Hurlus-lez-Textes}}\vspace{25pt}
 \fi
 
-\titleformat{name=\section}[hang]
-  {\color{rubric}\large\bfseries\sffamily} % filright ?
+\titleformat
+  {name=\section}
+  % [hang]
+  {\color{rubric}\large\bfseries\sffamily\raggedleft} % filright ?
   {} % \thesection
   {}
   {#1}
-}
-
+\usepackage{contour}
 
 
 \begin{document}
@@ -132,23 +136,23 @@
 
 
 \makeatletter
-\noindent\parbox[b]{.75\textwidth}{\fontsize{13pt}{15pt}\color{rubric}\bfseries\raggedright\selectfont\@author{, }\@date}
+\begin{center}
+\includegraphics[width=\columnwidth]{img/bandeau.pdf}\vspace{15pt}
+{\fontsize{19pt}{20pt}\addfontfeature{LetterSpace=25}\bfseries{\@author}}\par
+\parbox{\fontsize{12pt}\selectfont\@date}\par
 \vskip10pt
-\par\noindent{\fontsize{19pt}{21pt}\color{rubric}\itshape\raggedright\selectfont\@title}
-\vspace{0pt}
-\par\noindent\rule{\textwidth}{0.4pt}
-\vspace{15pt}
-\let\tabcellsep&
-% \fontname\font, \f@size pt, \textsc{Les règles du jeu}
+{\fontsize{19pt}{21pt}\selectfont\sffamily\emph{\@title}}
 \makeatother
-
-\ifdev
-\fontname\font — ̇\textsc{Les règles du jeu}
-
+\vskip15pt
+\centerline{\fontsize{8pt}{}\selectfont\color{rubric} {hurlus.fr, tiré le \today}}
+{\color{rubric} \hline}
+\vskip15pt
+\end{center} 
 
 \makeatletter\@starttoc{toc}\makeatother % toc without new page
 
-
+\ifdev % autotext in dev mode
+\fontname\font — \textsc{Les règles du jeu}
 \Blinddocument
 \fi
 

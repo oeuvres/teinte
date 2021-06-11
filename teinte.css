@@ -77,7 +77,6 @@ div.stage {
 .bookmark,
 .cb,
 .pb,
-.ed,
 small.l,
 small.l-n,
 .noteref,
@@ -933,8 +932,6 @@ a.pb:hover {
 }
 
 small.ed {
-  color: grey;
-  font-size: 11px;
 }
 
 .choice {
@@ -1694,18 +1691,15 @@ p.p {
 
 p.p.no {
   text-indent: 0;
-  margin-bottom: 1rem;
+  margin-top: 1rem;
 }
 
 .milestone.no::before {
   content: "\a";
   white-space: pre;
 }
-small.no,
-small.milestone {
-  font-weight: monospace;
+small.no {
   font-weight: 900;
-  color: #800;
   font-style: normal;
   width: 3rem;
 }

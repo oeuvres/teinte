@@ -60,10 +60,29 @@ Latex from TEI, metadata for preamble
       <xsl:value-of select="$author1"/>
       <xsl:text>. </xsl:text>
     </xsl:if>
-    <xsl:if test="$year != ''">
-      <xsl:value-of select="$year"/>
-      <xsl:text>, </xsl:text>
-    </xsl:if>
+    <xsl:variable name="date" select="/*/tei:teiHeader/tei:profileDesc/tei:creation[1]/tei:date[1]"/>
+    <xsl:choose>
+      <xsl:when test="$date[@from and @to]">
+        <xsl:call-template name="year">
+          <xsl:with-param name="string" select="$date/@from"/>
+        </xsl:call-template>
+        <xsl:text>–</xsl:text>
+        <xsl:call-template name="year">
+          <xsl:with-param name="string" select="$date/@to"/>
+        </xsl:call-template>
+        <xsl:text>. </xsl:text>
+      </xsl:when>
+      <xsl:when test="$date[@when]">
+        <xsl:call-template name="year">
+          <xsl:with-param name="string" select="$date/@when"/>
+        </xsl:call-template>
+        <xsl:text>. </xsl:text>
+      </xsl:when>
+      <xsl:when test="$year != ''">
+        <xsl:value-of select="$year"/>
+        <xsl:text>. </xsl:text>
+      </xsl:when>
+    </xsl:choose>
     <xsl:text>\emph{</xsl:text>
     <xsl:value-of select="$title"/>
     <xsl:text>}</xsl:text>
@@ -90,7 +109,7 @@ Latex from TEI, metadata for preamble
     </xsl:choose>
   </xsl:template>
   
-  <xsl:template match="tei:date" mode="year" name="year">
+  <xsl:template match="tei:date" mode="year">
     <xsl:variable name="year">
       <xsl:choose>
         <xsl:when test="normalize-space(@when) != ''">
@@ -114,12 +133,24 @@ Latex from TEI, metadata for preamble
       <xsl:when test="$year = ''">
         <xsl:value-of select="normalize-space(.)"/>
       </xsl:when>
-      <xsl:when test="starts-with($year, '-')">
+      <xsl:otherwise>
+        <xsl:call-template name="year">
+          <xsl:with-param name="string" select="$year"/>
+        </xsl:call-template>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  
+  <xsl:template name="year">
+    <xsl:param name="string" select="@when"/>
+    <xsl:choose>
+      <xsl:when test="normalize-space($string) = ''"/>
+      <xsl:when test="starts-with($string, '-')">
         <xsl:text>-</xsl:text>
-        <xsl:value-of select="0 + substring-before(concat(substring($year, 2), '-'), '-')"/>
+        <xsl:value-of select="0 + substring-before(concat(substring($string, 2), '-'), '-')"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="0 + substring-before(concat($year, '-'), '-')"/>
+        <xsl:value-of select="0 + substring-before(concat($string, '-'), '-')"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>

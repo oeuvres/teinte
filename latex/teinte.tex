@@ -9,18 +9,8 @@
 %meta%
 
 
-% If things have not been defined before
-\newcommand{\colorprovide}[2]{\@ifundefinedcolor{#1}{\colorlet{#1}{#2}}{}}
-\colorprovide{rubric}{red}
-\@ifundefined{syms}{\newcommand{\syms}{}}{}
-\newif\ifdev
-\@ifundefined{shortref}{% No meta defined, maybe dev mode
-  \newcommand{\shortref}{Titre court ?}
-  \title{Titre de test}
-  \author{Auteur en cours}
-  \devtrue
-}{}
 
+\usepackage[nodayofweek]{datetime}
 \usepackage{enumitem} % <list>
 \usepackage{etoolbox} % patch commands
 \usepackage{fancyvrb}
@@ -65,21 +55,20 @@
 % TESTED
 % \usepackage{sectsty} % \chapterfont OBSOLETE
 
+% If things have not been defined before
+\newcommand{\colorprovide}[2]{\@ifundefinedcolor{#1}{\colorlet{#1}{#2}}{}}
+\colorprovide{rubric}{red}
+\colorprovide{silver}{Gray}
+\@ifundefined{syms}{\newcommand{\syms}{}}{}
+\newif\ifdev
+\@ifundefined{shortref}{% No meta defined, maybe dev mode
+  \newcommand{\shortref}{Titre court ?}
+  \title{Un titre de test assez long pour vérifier le comportement d’une maquette}
+  \author{Auteur}
+  \devtrue
+}{}
 
-% Copied from Rahtz but not understood
-\def\@pnumwidth{1.55em}
-\def\@tocrmarg {2.55em}
-\def\@dotsep{4.5}
-\clubpenalty=8000
-\emergencystretch 3em
-\hbadness=4000
-\hyphenpenalty=400
-\pretolerance=750
-\tolerance=2000
-\vbadness=4000
-\widowpenalty=10000
-\def\Gin@extensions{.pdf,.png,.jpg,.mps,.tif}
-% \renewcommand{\@cite}[1]{#1} % biblio
+
 
 
 % generic typo commands
@@ -98,6 +87,7 @@
 % commands, inlines
 \newcommand\abbr{}
 \newcommand\corr{}
+\newcommand{\ed}[1]{ {\color{silver}\sffamily\footnotesize (#1)} } % <milestone ed="1688"/>
 \newcommand\expan{}
 \newcommand\gap{}
 \newcommand\orig{}
@@ -105,6 +95,7 @@
 \newcommand\persName{}
 \newcommand\name{}
 \newcommand\placeName{}
+\newcommand{\pn}[1]{\noindent\sffamily\textbf{#1.} } % <p n="3"/>
 \newcommand\reg{}
 % \newcommand\ref{} % already defined
 \newcommand\sic{}
@@ -196,6 +187,23 @@
 \setcounter{tocdepth}{5} % deep toc
 \markright{\@title} % ???
 \markboth{\@title}{\@author} % ???
+
+
+% Copied from Rahtz but not understood
+\def\@pnumwidth{1.55em}
+\def\@tocrmarg {2.55em}
+\def\@dotsep{4.5}
+\clubpenalty=8000
+\emergencystretch 3em
+\hbadness=4000
+\hyphenpenalty=400
+\pretolerance=750
+\tolerance=2000
+\vbadness=4000
+\widowpenalty=10000
+\def\Gin@extensions{.pdf,.png,.jpg,.mps,.tif}
+% \renewcommand{\@cite}[1]{#1} % biblio
+
 
 \makeatother % /@@@>
 %%%%%%%%%%%%%%

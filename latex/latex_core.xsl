@@ -527,6 +527,38 @@ or parent::tei:div[contains(@rend, 'nonumber')]
     <xsl:text>&#10;</xsl:text>
   </xsl:template>
   
+  <xsl:template match="tei:milestone">
+    <xsl:choose>
+      <xsl:when test="contains(@rend,'hr')">
+        <xsl:call-template name="horizontalRule"/>
+      </xsl:when>
+      <xsl:when test="@unit='line'">
+        <xsl:text> </xsl:text>
+      </xsl:when>
+      <!-- Display an edition marker for the span. -->
+      <xsl:when test="@ed">
+        <xsl:text>\ed{</xsl:text>
+        <xsl:value-of select="@ed"/>
+        <xsl:text>}</xsl:text>
+      </xsl:when>
+      <!-- Unpredictable, do nothing -->
+      <xsl:when test="@unit='unnumbered'"/>
+      <xsl:otherwise>
+        <xsl:call-template name="makeInline">
+          <xsl:with-param name="style" select="@type"/>
+          <xsl:with-param name="before">
+            <xsl:if test="not(@unit='unspecified')">
+              <xsl:value-of select="@unit"/>
+              <xsl:text> </xsl:text>
+            </xsl:if>
+          </xsl:with-param>
+          <xsl:with-param name="after" select="@n"/>
+        </xsl:call-template>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  
+  
   <xsl:template name="marginalNote">
     <xsl:choose>
       <xsl:when test="
@@ -601,6 +633,11 @@ or parent::tei:div[contains(@rend, 'nonumber')]
   <xsl:template match="tei:p">
     <xsl:call-template name="tei:makeHyperTarget"/>
     <xsl:if test="preceding-sibling::*[1][not(self::tei:p)]">\noindent </xsl:if>
+    <xsl:if test="@n != ''">
+      <xsl:text>\pn{</xsl:text>
+      <xsl:value-of select="@n"/>
+      <xsl:text>}</xsl:text>
+    </xsl:if>
     <xsl:if test="$numberParagraphs = 'true'">
       <xsl:call-template name="numberParagraph"/>
     </xsl:if>
@@ -680,11 +717,11 @@ or parent::tei:div[contains(@rend, 'nonumber')]
   </xsl:template>
 
   <xsl:template match="tei:q | tei:said">
-    <xsl:variable name="isInline">
+    <xsl:variable name="inline">
       <xsl:call-template name="tei:isInline"/>
     </xsl:variable>
     <xsl:choose>
-      <xsl:when test="$isInline = ''">
+      <xsl:when test="$inline = ''">
         <xsl:text>&#10;\begin{</xsl:text>
         <xsl:value-of select="$quoteEnv"/>
         <xsl:text>}</xsl:text>
@@ -715,7 +752,7 @@ or parent::tei:div[contains(@rend, 'nonumber')]
     </xsl:variable>
     <xsl:choose>
       <!-- Inline, shall we tag ? -->
-      <xsl:when test="$inline">
+      <xsl:when test="$inline != ''">
         <xsl:apply-templates/>
       </xsl:when>
       <xsl:when test="parent::tei:cit or parent::tei:note">

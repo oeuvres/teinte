@@ -1,31 +1,26 @@
 <?php 
 include dirname(dirname(__FILE__)).'/teidoc.php';
 set_time_limit(-1);
-// included file, do nothing
-if (isset($_SERVER['SCRIPT_FILENAME']) && basename($_SERVER['SCRIPT_FILENAME']) != basename(__FILE__));
-else if (isset($_SERVER['ORIG_SCRIPT_FILENAME']) && realpath($_SERVER['ORIG_SCRIPT_FILENAME']) != realpath(__FILE__));
-// direct command line call, work
-else if (php_sapi_name() == "cli") Latex::cli();
+if (isset($argv[0]) && realpath($argv[0]) == realpath(__FILE__)) Latex::cli(); // direct CLI
 
 /**
- * Transform a 
+ * Transform an XML/TEI file in LaTeX
  */
 class Latex {
-  protected $dom;
+  protected $dom; // dom prepared for TeX (escapings)
   protected $srcfile;
-  static protected $template;
   static protected $latex_xsl;
   static protected $latex_meta_xsl;
   // escape all text nodes 
   static protected $latex_esc = array(
     '@\s+@u' => ' ',
-    '@\\\@u' => '\textbackslash', // avant les échappements
+    '@\\\@u' => '\textbackslash', //before adding \ for escapings
     '@(&amp;)@u' => '\\\$1',
     '@([%\$#_{}])@u' => '\\\$1',
     '@~@u' => '\textasciitilde',
     '@\^@u' => '\textasciicircum',
   );
-  
+
   public function __construct() {
     $this->dom = new DOMDocument("1.0", "UTF-8");
     $this->dom->preserveWhiteSpace = false;
@@ -43,10 +38,79 @@ class Latex {
       self::$latex_meta_xsl = new XSLTProcessor();
       self::$latex_meta_xsl->importStyleSheet($xsl);
     }
-    if (!self::$template) {
-      self::$template = file_get_contents(dirname(__FILE__)."/template.tex");
-    }
   }
+
+  static function isPathAbs($path)
+  {
+    if (!$path) return false;
+    if ($path[0] === DIRECTORY_SEPARATOR || preg_match('~\A[A-Z]:(?![^/\\\\])~i',$path) > 0) return true;
+    return false;
+  }
+
+  /**
+   * resolve tex inclusions and image links
+   * 
+   * $texfile: ! path to a tex file
+   * $workdir: ? destination dir place where the tex will be processed.
+   * $grafdir: ? a path where to put graphics, relative to workdir or absolute.
+   *    
+   * If resources are found, they are copied in grafdir, and tex is rewrite in consequence.
+   * No suport for \graphicspath{⟨dir⟩+}
+   */
+  static function includes($texfile, $workdir=null, $grafdir="")
+  {
+    $srcdir = dirname($texfile);
+    if ($srcdir) $srcdir = rtrim($srcdir, '/\\').'/';
+    if ($workdir) $workdir = rtrim($workdir, '/\\').'/';
+    if ($grafdir) $grafdir = rtrim($grafdir, '/\\').'/';
+    $tex = file_get_contents($texfile);
+
+    // rewrite graphix links and copy resources
+    // \includegraphics[width=\columnwidth]{bandeau.pdf}
+    $grafabs = null;
+    if ($workdir) {
+      // same folder
+      if (!$grafdir);
+      // absolute path
+      else if (self::isPathAbs($grafdir)){
+        $grafabs = $grafdir;
+      }
+      else {
+        $grafabs = $workdir.$grafdir;
+      }
+    } 
+    $tex = preg_replace_callback(
+      '@(\\\includegraphics[^{]*){(.*?)}@',
+      function($matches) use($srcdir, $workdir, $grafdir, $grafabs) {
+        $imgfile = $matches[2];
+        if (!self::isPathAbs($grafdir)) $imgfile = $srcdir.$imgfile;
+        $imgbname = basename($imgfile);
+        $replace = $matches[0];
+        if (!file_exists($imgfile)) {
+          fwrite(STDERR, "graphics not found: $imgfile\n");
+        }
+        else if ($workdir) {
+          if (!is_dir($grafabs)) mkdir($grafabs, 0777, true); // create img folder only if needed
+          copy($imgfile, $grafabs.$imgbname);
+          $replace = $matches[1].'{'.$grafdir.$imgbname.'}';
+        }
+        return $replace;
+      },
+      $tex
+    );
+    // \input{../latex/teinte}
+    $tex = preg_replace_callback(
+      '@\\\input *{(.*?)}@',
+      function($matches) use($srcdir, $workdir, $grafdir) {
+        $inc = $srcdir.$matches[1].'.tex';
+        return self::includes($inc, $workdir, $grafdir);
+      },
+      $tex
+    );
+
+    return $tex;
+  }
+
   
   function load($srcfile)
   {
@@ -58,27 +122,38 @@ class Latex {
   {
     $xml = preg_replace(array_keys(self::$latex_esc), array_values(self::$latex_esc), $xml);
     $this->dom->loadXML($xml,  LIBXML_NOENT | LIBXML_NONET | LIBXML_NOWARNING ); // no warn for <?xml-model
+    // Latex escaping could be done by xpath, but regexp seems safe
+    // $xpath = new DOMXPath($dom);
+    // $textnodes = $xpath->query('//text()');
   }
-  function dom($dom)
+
+
+
+  /** 
+   * Setup pdf compilation : generate a tex from tei
+   * $skelfile is a requested tex template
+   */
+  function setup($skelfile) 
   {
-    $xpath = new DOMXPath($dom);
-    $textnodes = $xpath->query('//text()');
-    // TODO, replace text nodes
-    $this->dom = $dom;
-  }
-  /** generate tex and pdf */
-  function export($dstfile) 
-  {
+    // tmp directory, will be kept for a while for debug
+    // temp_name is unique by file, avoid parallel
+    $filename = pathinfo($this->srcfile, PATHINFO_FILENAME);
+    $workdir = sys_get_temp_dir().'/teinte/'.$filename.'/';
+    if (!is_dir($workdir)) mkdir($workdir, 0777, true);
+    // resolve includes and graphics of template
+    $tex = Latex::includes($skelfile, $workdir, $filename.'/');
+
     $meta = self::$latex_meta_xsl->transformToXml($this->dom);
     $tei = self::$latex_xsl->transformToXml($this->dom);
     
     $tex = str_replace(
       array('%meta%', '%tei%'), 
       array($meta, $tei),
-      self::$template
+      $tex,
     );
-    file_put_contents($dstfile, $tex);
-    //  latexmk -xelatex -quiet -f vaneigem1967_savoir-vivre.tex 
+    $texfile = $workdir.$filename.'.tex';
+    file_put_contents($texfile, $tex);
+    return $texfile;
   }
   
   public static function cli() 

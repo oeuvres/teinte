@@ -52,7 +52,7 @@ class Teidoc
       $this->filesize = filesize($tei); // ?? URL ?
       $this->filename = pathinfo($tei, PATHINFO_FILENAME);
       // loading error, do something ?
-      if (!$this->dom($tei)) throw new Exception("BAD XML");
+      if (!$this->load($tei)) throw new Exception("BAD XML: ".$tei."\n");
     }
     else {
       throw new Exception('Teinte, what is it? '.print_r($tei, true));
@@ -112,7 +112,7 @@ class Teidoc
    */
   public function meta()
   {
-    $meta = self::meta(null, $this->xpath);
+    $meta = self::metaDom(null, $this->xpath);
     $meta['code'] = pathinfo($this->file, PATHINFO_FILENAME);
     $meta['filename'] = $this->filename();
     $meta['filemtime'] = $this->filemtime();
@@ -476,7 +476,7 @@ class Teidoc
   /**
    * Set and build a dom privately
    */
-  private function _dom($xmlfile)
+  private function load($xmlfile)
   {
     $this->dom = new DOMDocument();
     $this->dom->preserveWhiteSpace = false;

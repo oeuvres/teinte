@@ -1351,12 +1351,16 @@ Tables
           <xsl:text>. </xsl:text>
         </small>
       </xsl:when>
-      <xsl:otherwise>
-        <span>
-          <xsl:call-template name="atts"/>
-          <xsl:value-of select="@n"/>
-        </span>
-      </xsl:otherwise>
+      <xsl:when test="@ed">
+        <xsl:text> </xsl:text>
+        <small class="milestone ed">
+          <xsl:text>(</xsl:text>
+          <xsl:value-of select="@ed"/>
+          <xsl:text>)</xsl:text>
+        </small>
+        <xsl:text> </xsl:text>
+      </xsl:when>
+      <xsl:otherwise/>
     </xsl:choose>
   </xsl:template>
 
