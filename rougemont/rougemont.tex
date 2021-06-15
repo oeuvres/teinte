@@ -1,0 +1,259 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% LaTeX model for Rougemont chapters and articles %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Needed before document class
+\RequirePackage{pdftexcmds} % needed for tests expressions
+\RequirePackage{fix-cm} % correct units
+
+% Define mode
+\def\mode{a4}
+
+\newif\ifaiv % a4
+\newif\ifav % a5
+\ifnum\strcmp{\mode}{a5}=0{\avtrue}
+\else{\aivtrue}
+\fi
+
+\ifav % do not enclose with {}
+  \documentclass[french]{article}
+  \usepackage[%
+  a5paper,
+  inner=10mm,
+  outer=10mm, 
+  top=18mm,
+  bottom=10mm,
+  marginparsep=0pt,
+  ]{geometry}
+\else
+  \documentclass[twocolumn]{article}
+  \usepackage[%
+    a4paper,
+    inner=10mm,
+    outer=10mm, 
+    top=25mm,
+    bottom=18mm,
+    marginparsep=0pt,
+  ]{geometry}
+  \setlength{\columnsep}{20mm}
+\fi
+
+%%%%%%%%%%%%%%
+% Alignments %
+%%%%%%%%%%%%%%
+% set after geometry
+\setlength{\arrayrulewidth}{0.2pt}
+\setlength{\columnseprule}{\arrayrulewidth} % twocol
+\setlength{\parskip}{0pt} % classical para with no margin
+\setlength{\parindent}{1.5em}
+
+%%%%%%%%%%
+% Colors %
+%%%%%%%%%%
+% before Teinte macros
+\usepackage[dvipsnames]{xcolor}
+\definecolor{rubric}{HTML}{cf1408} % the tonic
+\colorlet{borderline}{rubric!10!} % definecolor need exact code
+\definecolor{shadecolor}{gray}{0.95}
+
+%%%%%%%%%%%%%%%%%
+% Teinte macros %
+%%%%%%%%%%%%%%%%%
+\input{../latex/teinte}
+
+%%%%%%%%%%%%%
+% footnotes %
+%%%%%%%%%%%%%
+\makeatletter
+% \renewcommand*{\marginfont}{\itshape\footnotesize}
+% \patchcmd{\@footnotetext}{\footnotesize}{\small}{}{}
+\renewcommand\footnoterule{\vspace*{0.3cm}\hrule height \arrayrulewidth width 3cm \vspace*{0.3cm}}
+\usepackage{patchcmd} % obsolete
+% \patchcmd{\@footnotetext}{\reset@font}{\fontfamily{phv}\selectfont}{}{}
+% \patchcmd{\@makefntext}{\hss\@makefnmark}{\@makefnmark}{}{}
+\setlength\footnotesep{1.5\footnotesep} % footnote separator
+\renewcommand{\thefootnote}{\bfseries\textcolor{rubric}{\arabic{footnote}}} % color for footnote marks
+\renewcommand\@makefntext[1]{\parindent 1.5em \noindent \hb@xt@1.8em{\hss{\normalfont\@thefnmark . }}#1} % no superscipt in foot
+\makeatother
+
+%%%%%%%%%
+% Fonts %
+%%%%%%%%%
+\usepackage[]{roboto} % SmallCaps, Regular is a bit bold
+\setmainfont{Roboto Light}[%
+  % BoldFont = {Roboto}, % bof
+  % ItalicFont={Roboto Condensed Light Italic},
+]
+\usepackage[fontsize=10pt]{scrextend}
+% \linespread{0.90} % too compact, keep font natural
+\setsansfont{Roboto Condensed Light}
+
+%%%%%%%%
+% MISC %
+%%%%%%%%
+
+\setdefaultlanguage[frenchpart=false]{french} % bug on part
+
+\iffalse
+\fi
+
+\mdfdefinestyle{blockquote}{
+  linecolor=borderline,
+  topline=false,
+  bottomline=false,
+  rightline=false,
+  leftline=true,
+  rightmargin=0pt,
+  innerrightmargin=0pt,
+  leftmargin=0pt,
+  linewidth=0.5em,
+  innerleftmargin=1em,
+  footnoteinside=true,
+  font=\fontsize{9.5pt}{10.5pt}\selectfont,
+}
+\mdfdefinestyle{borderbox}{
+  backgroundcolor=rubric!1!,
+  footnoteinside=true,
+  linecolor=rubric,
+  font=\fontsize{9.5pt}{10.5pt}\selectfont,
+}
+\usepackage[breakable]{tcolorbox}
+\newtcolorbox{quotebox}{
+  breakable, % kill footnotes callback
+  % colback=red!5!white,
+  % colframe=red!75!black,
+}
+
+
+\newenvironment{quotebar}{%
+  \def\FrameCommand{{\color{borderline}\vrule width 0.5em} \hspace{0.9em}}%
+  \MakeFramed {\advance\hsize-\width \FrameRestore}}%
+ {\endMakeFramed}
+
+
+
+\renewenvironment{blockquote}% may be used for ornaments
+  {%
+    \fontsize{9.5pt}{10.5pt}\selectfont
+    \savenotes
+    % \begin{leftbar}
+    \begin{quotebar}
+    % \begin{mdframed}[style=blockquote]
+    % \begin{quotebox}
+  } 
+  {%
+    \end{quotebar}
+    % \end{leftbar}
+    \spewnotes
+    % \end{mdframed}
+    % \end{quotebox}
+  } 
+
+\renewenvironment{borderbox}% a framed box out of flow
+  {%
+    \bigskip
+    \begin{mdframed}[style=borderbox]
+  } 
+  {%
+    \end{mdframed}
+    \medskip
+  } 
+
+
+\renewcommand{\pn}[1]{\vskip 5pt\noindent{\sffamily\footnotesize\bfseries\color{rubric} #1.}} % <p n="3"/>
+\renewcommand{\headrulewidth}{\arrayrulewidth}
+% \renewcommand{\headrule}{\color{rubric}\hrule}
+\fancypagestyle{fancy}{%
+  \fancyhf{}
+  \setlength{\headheight}{16pt}
+  \fancyhead{} % reset head
+  \fancyfoot{} % reset foot
+  \fancyhead[L]{\truncate{0.45\headwidth}{\nouppercase{\sffamily\elbibl}}} % book ref
+  \fancyhead[R]{\truncate{0.45\headwidth}{\nouppercase{\sffamily\eltitle}}} % Chapter title
+  \fancyhead[C]{\thepage}
+}
+\fancypagestyle{plain}{% apply to chapter
+  \fancyhf{}% clear all header and footer fields
+  \setlength{\headheight}{16pt}
+  \fancyhead[L]{\truncate{0.9\headwidth}{\sffamily \elbibl}}
+  \fancyhead[R]{\thepage}
+}
+
+\titleformat % delicate tuning, image has produce line-height problems in title on 2 lines 
+  {name=\chapter} % command
+  % [display] % shape
+  {\vspace{16pt}\centering} % format
+  {} % label
+  {0pt} % separator between n
+  {% before code
+    \noindent\resizebox{\textwidth}{!}{\includegraphics[width=\columnwidth]{img/bandeau.pdf}}
+    % \vspace{16pt}
+  }
+  [{\color{rubric}\huge\bfseries #1}\vspace{16pt}] % after code
+
+\titlespacing*{\chapter}{0pt}{-30pt}{0pt}[0pt]
+
+\iffalse
+\titlespacing{\section}{0pt}{1.5em}{-10pt}{}
+% bandeau avec texte au milieu
+\noindent\centerline{\includegraphics[width=\columnwidth]{img/bandeau.pdf}}\vspace{-28pt}
+\centerline{\fontsize{20pt}{35pt}\addfontfeature{LetterSpace=15}\color{white}\bfseries \contour{black}{Hurlus-lez-Textes}}\vspace{25pt}
+\fi
+
+\titleformat
+  {name=\section}
+  % [hang]
+  {\color{rubric}\large\bfseries\raggedleft} % filright ?
+  {} % \thesection
+  {}
+  {#1}
+
+
+% toclof format
+\makeatletter
+  \renewcommand{\@cftmaketoctitle}{}
+  \setlength{\cftbeforesecskip}{\z@ \@plus.2\p@}
+\makeatother
+\renewcommand{\cftsecfont}{\small\relax}
+\renewcommand{\cftsubsecfont}{\small\relax}
+\renewcommand{\cftsecdotsep}{\cftdotsep}
+\renewcommand{\cftsecpagefont}{\normalfont}
+\renewcommand{\cftsecleader}{\normalfont\cftdotfill{\cftsecdotsep}} 
+
+\begin{document}
+\pagestyle{fancy}
+\thispagestyle{empty}
+
+% A4
+\twocolumn[{
+  \begin{center}
+  {\fontsize{19pt}{20pt}\addfontfeature{LetterSpace=25}\elauthor}\par
+  \vskip10pt
+  {\large{\elbook} (\eldate)}
+  \vskip10pt
+  {\color{rubric}\Large\bfseries{\eltitle}}
+  \end{center}
+  \vskip15pt
+  {\hline}
+  \vskip30pt
+}]
+
+\tableofcontents
+\vskip30pt
+
+\ifdev % autotext in dev mode
+  \fontname\font — \textsc{Les règles du jeu}\par
+  Ligatures enabled: fi fl ffi ffl\par
+  Ligatures disabled: f\kern0pti f\kern0ptl f\kern0ptf\kern0pti f\kern0ptf\kern0ptl\par
+  \astermono
+  \lipsum[20-21]\footnote{\blindtext}
+  \asterism
+  \blindtext\footnote{\blindtext}
+  \astertri
+  \blindtext\footnote{\blindtext}
+  \Blinddocument
+\fi
+
+%text%
+
+
+\end{document}

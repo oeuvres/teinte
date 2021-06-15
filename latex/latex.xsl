@@ -32,7 +32,8 @@ A light version for XSLT1, with local improvements.
   <xsl:param name="spaceCharacter">\hspace*{6pt}</xsl:param>
 
 
-  <xsl:strip-space elements="tei:additional tei:adminInfo
+  <xsl:strip-space elements="
+    tei:additional tei:adminInfo
     tei:altGrp tei:altIdentifier tei:analytic
     tei:app tei:appInfo tei:application
     tei:arc tei:argument tei:attDef
@@ -111,7 +112,7 @@ A light version for XSLT1, with local improvements.
     "/>
 
 
-  <!-- A environment to group blocks -->
+  <!-- An environment to group blocks -->
   <xsl:template name="makeGroup">
     <xsl:param name="style" select="local-name()"/>
     <xsl:text>&#10;\begin{</xsl:text>
@@ -268,7 +269,7 @@ A light version for XSLT1, with local improvements.
           <xsl:text>\textsubscript{</xsl:text>
         </xsl:when>
         <xsl:when test="local-name() = 'label'">
-          <xsl:text>\textbf{</xsl:text>
+          <xsl:text>\labelchar{</xsl:text>
         </xsl:when>
         <xsl:when test="$st = ''">
           <xsl:value-of select="concat('{\', local-name(), ' ')"/>

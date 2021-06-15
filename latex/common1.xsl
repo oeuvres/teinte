@@ -116,7 +116,10 @@
       <xsl:otherwise>
         <xsl:for-each select="$element">
           <xsl:choose>
+            <!-- Children of <div>, block -->
             <xsl:when test="parent::tei:div"/>
+            <!-- Brother of a block, block -->
+            <xsl:when test="../tei:p|../tei:l|../tei:lg|../tei:list|../tei:table"/>
             <xsl:when test="parent::tei:titlePage"/>
             <xsl:when test="parent::tei:body"/>
             <xsl:when test="parent::tei:front"/>
@@ -191,7 +194,8 @@
             <xsl:when test="self::tei:idno">true</xsl:when>
             <xsl:when test="self::tei:imprint">true</xsl:when>
             <xsl:when test="self::tei:institution">true</xsl:when>
-            <xsl:when test="self::tei:label[not(parent::tei:list)]">true</xsl:when>
+            <xsl:when test="self::tei:label[parent::tei:list]"/>
+            <xsl:when test="self::tei:label">true</xsl:when>
             <xsl:when test="self::tei:locus">true</xsl:when>
             <xsl:when test="self::tei:mentioned">true</xsl:when>
             <xsl:when test="self::tei:monogr">true</xsl:when>

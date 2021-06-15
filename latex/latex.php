@@ -22,10 +22,6 @@ class Latex {
   );
 
   public function __construct() {
-    $this->dom = new DOMDocument("1.0", "UTF-8");
-    $this->dom->preserveWhiteSpace = false;
-    $this->dom->formatOutput=true;
-    $this->dom->substituteEntities=true;
     if (!self::$latex_xsl) {
       $xsl = new DOMDocument("1.0", "UTF-8");
       $xsl->load(dirname(__FILE__).'/latex.xsl');
@@ -111,23 +107,37 @@ class Latex {
     return $tex;
   }
 
+  /**
+   * Escape XML/TEI for LaTeX
+   */
+  static function dom($srcfile)
+  {
+    $dom = new DOMDocument("1.0", "UTF-8");
+    $dom->preserveWhiteSpace = false;
+    $dom->formatOutput=true;
+    $dom->substituteEntities=true;
+    $xml = file_get_contents($srcfile);
+    $xml = preg_replace(array_keys(self::$latex_esc), array_values(self::$latex_esc), $xml);
+    $dom->loadXML($xml,  LIBXML_NOENT | LIBXML_NONET | LIBXML_NOWARNING ); // no warn for <?xml-model
+    return $dom;
+  }
   
   function load($srcfile)
   {
     $this->srcfile = $srcfile;
     $xml = file_get_contents($srcfile);
-    $this->loadXML($xml);
+    $this->$dom = self::dom($srcfile);
   }
-  function loadXML($xml)
+
+  static function workdir($teifile)
   {
-    $xml = preg_replace(array_keys(self::$latex_esc), array_values(self::$latex_esc), $xml);
-    $this->dom->loadXML($xml,  LIBXML_NOENT | LIBXML_NONET | LIBXML_NOWARNING ); // no warn for <?xml-model
-    // Latex escaping could be done by xpath, but regexp seems safe
-    // $xpath = new DOMXPath($dom);
-    // $textnodes = $xpath->query('//text()');
+    // tmp directory, will be kept for a while for debug
+    // temp_name is unique by file, avoid parallel
+    $filename = pathinfo($teifile, PATHINFO_FILENAME);
+    $workdir = sys_get_temp_dir().'/teinte/'.$filename.'/';
+    if (!is_dir($workdir)) mkdir($workdir, 0777, true);
+    return $workdir;
   }
-
-
 
   /** 
    * Setup pdf compilation : generate a tex from tei
@@ -135,20 +145,16 @@ class Latex {
    */
   function setup($skelfile) 
   {
-    // tmp directory, will be kept for a while for debug
-    // temp_name is unique by file, avoid parallel
-    $filename = pathinfo($this->srcfile, PATHINFO_FILENAME);
-    $workdir = sys_get_temp_dir().'/teinte/'.$filename.'/';
-    if (!is_dir($workdir)) mkdir($workdir, 0777, true);
+    $workdir = self::workdir($this->srcfile);
     // resolve includes and graphics of template
     $tex = Latex::includes($skelfile, $workdir, $filename.'/');
 
     $meta = self::$latex_meta_xsl->transformToXml($this->dom);
-    $tei = self::$latex_xsl->transformToXml($this->dom);
+    $text = self::$latex_xsl->transformToXml($this->dom);
     
     $tex = str_replace(
-      array('%meta%', '%tei%'), 
-      array($meta, $tei),
+      array('%meta%', '%text%'), 
+      array($meta, $text),
       $tex,
     );
     $texfile = $workdir.$filename.'.tex';

@@ -406,7 +406,8 @@ or parent::tei:div[contains(@rend, 'nonumber')]
   <xsl:template match="tei:label">
     <xsl:variable name="inline">
       <xsl:call-template name="tei:isInline"/>
-    </xsl:variable>   
+    </xsl:variable>
+    <xsl:variable name="rend" select="concat(' ', normalize-space(@rend), ' ')"/>
     <xsl:choose>
       <xsl:when test="$inline != ''">
         <xsl:call-template name="makeInline">
@@ -414,13 +415,23 @@ or parent::tei:div[contains(@rend, 'nonumber')]
         </xsl:call-template>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:text>\begin{blabel}&#10;</xsl:text>
+        <xsl:text>\begin{labelblock}</xsl:text>
+        <!-- unsafe
+        <xsl:text>[</xsl:text>
+        <xsl:choose>
+          <xsl:when test="contains($rend, ' i ')">\it</xsl:when>
+          <xsl:when test="contains($rend, ' it')">\it</xsl:when>
+          <xsl:otherwise>\bf</xsl:otherwise>
+        </xsl:choose>
+        <xsl:text>]</xsl:text>
+        -->
+        <xsl:text>&#10;</xsl:text>
         <xsl:apply-templates/>
-        <xsl:text>&#10;\end{blabel}\par&#10;</xsl:text>
+        <xsl:text>&#10;\end{labelblock}&#10;</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-
+  
   <xsl:template name="lb">
     <xsl:text>{\hskip1pt}\\{}</xsl:text>
   </xsl:template>
@@ -558,6 +569,11 @@ or parent::tei:div[contains(@rend, 'nonumber')]
     </xsl:choose>
   </xsl:template>
   
+  <xsl:template match="tei:num/text()">
+    <xsl:text>\textsc{</xsl:text>
+    <xsl:value-of select="."/>
+    <xsl:text>}</xsl:text>
+  </xsl:template>
   
   <xsl:template name="marginalNote">
     <xsl:choose>
@@ -632,7 +648,12 @@ or parent::tei:div[contains(@rend, 'nonumber')]
   
   <xsl:template match="tei:p">
     <xsl:call-template name="tei:makeHyperTarget"/>
-    <xsl:if test="preceding-sibling::*[1][not(self::tei:p)]">\noindent </xsl:if>
+    <xsl:variable name="prev" select="preceding-sibling::*[not(self::tei:pb)][not(self::tei:cb)][1]"/>
+    <xsl:choose>
+      <xsl:when test="not(preceding-sibling::*)">\noindent </xsl:when>
+      <xsl:when test="contains(@rend, 'center') or contains(@rend, 'right')">\noindent </xsl:when>
+      <xsl:when test="name($prev) != 'p' or contains($prev/@rend, 'right')  or contains($prev/@rend, 'center')">\noindent </xsl:when>
+    </xsl:choose>
     <xsl:if test="@n != ''">
       <xsl:text>\pn{</xsl:text>
       <xsl:value-of select="@n"/>
@@ -711,7 +732,9 @@ or parent::tei:div[contains(@rend, 'nonumber')]
       <xsl:when test="@facs">
         <xsl:value-of select="concat('% image:', tei:resolveURI(., @facs), '&#10;')"/>
       </xsl:when>
-      <xsl:otherwise> </xsl:otherwise>
+      <xsl:otherwise>
+        <xsl:text> </xsl:text>
+      </xsl:otherwise>
     </xsl:choose>
     <xsl:call-template name="tei:makeHyperTarget"/>
   </xsl:template>
@@ -740,6 +763,7 @@ or parent::tei:div[contains(@rend, 'nonumber')]
     <xsl:variable name="inline">
       <xsl:call-template name="tei:isInline"/>
     </xsl:variable>
+    <xsl:variable name="rend" select="concat(' ', @rend, ' ')"/>
     <xsl:variable name="begin">
       <xsl:text>\begin{</xsl:text>
       <xsl:value-of select="$quoteEnv"/>
@@ -784,7 +808,7 @@ or parent::tei:div[contains(@rend, 'nonumber')]
               <xsl:value-of select="$end"/>
             </xsl:otherwise>
           </xsl:choose>
-          <xsl:apply-templates/>
+          <xsl:apply-templates select="."/>
           <!-- After block -->
           <xsl:choose>
             <!-- quote closing by verse, do nothing -->
@@ -796,7 +820,7 @@ or parent::tei:div[contains(@rend, 'nonumber')]
             <!-- Not end, not verse, do nothing -->
             <xsl:when test="not(self::tei:l) and not(self::tei:lg)"/>
             <!-- verse followed by verse, do nothing -->
-            <xsl:when test="preceding-sibling::*[1][self::tei:l or self::tei:lg]"/>
+            <xsl:when test="following-sibling::*[1][self::tei:l or self::tei:lg]"/>
             <!-- Should be last verse a series, followed by something else to enclose in quote -->
             <xsl:otherwise>
               <xsl:value-of select="$begin"/>
@@ -804,6 +828,14 @@ or parent::tei:div[contains(@rend, 'nonumber')]
           </xsl:choose>
         </xsl:for-each>
         <xsl:text>&#10;</xsl:text>
+      </xsl:when>
+      <!-- framed border -->
+      <xsl:when test="contains($rend, ' border ')">
+        <xsl:text>&#10;</xsl:text>
+        <xsl:call-template name="tei:makeHyperTarget"/>
+        <xsl:text>\begin{borderbox}&#10;</xsl:text>
+        <xsl:apply-templates/>
+        <xsl:text>\end{borderbox}&#10;&#10;</xsl:text>
       </xsl:when>
       <!-- Block or multi block -->
       <xsl:otherwise>

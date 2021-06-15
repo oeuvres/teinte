@@ -4,33 +4,81 @@
 % This template is inserted in a specific design
 
 \makeatletter % <@@@
-% Metadata inserted by a program, from the TEI source, for title page and runing heads
 
-%meta%
-
-
-
+\usepackage{blindtext} % generate text for testing
 \usepackage[nodayofweek]{datetime}
+\usepackage{DejaVuSans}
 \usepackage{enumitem} % <list>
 \usepackage{etoolbox} % patch commands
 \usepackage{fancyvrb}
 \usepackage{fancyhdr}
+\usepackage{fontspec} % XeLaTeX mandatory for fonts
+\usepackage{footnote} % requested to collect footnotes in framed of tables
+\usepackage{footnote} % hack to collect footnotes in minipage etc.
+\usepackage{framed} % bordering correct with footnote hack
 \usepackage{graphicx}
 \usepackage{lipsum} % generate text for testing
-\usepackage{blindtext} % generate text for testing
+\usepackage[framemethod=tikz,]{mdframed} % maybe used for frame with footnotes inside
+\usepackage{polyglossia} % non-break space french punct, bug Warning: "Failed to patch part"
+\usepackage{ragged2e}
 \usepackage{tabularx} % <table>
 \usepackage[explicit]{titlesec} % NO implicit !, wear titles
+\usepackage{tocloft}
 \usepackage[fit]{truncate} % used im runing titles
+\usepackage{unicode-math}
 \usepackage{verse} % <l>
 \usepackage{xcolor}
 \usepackage{xparse} % recommanded
-
 \usepackage{hyperref} % supposed to be the last one, :o) except for the one to follow
+% TOTEST
+% \usepackage{hypcap} % links in caption ?
+% \usepackage{marginnote}
+% TESTED
+% \usepackage{background} % doesn’t work with xetek
+% \usepackage[color, leftbars]{changebar} % 2 cols doc, impossible to keep bar left
+% \usepackage[utf8x]{inputenc} % inputenc package ignored with utf8 based engines
+% \usepackage{firamath} % unavailable in Ubuntu 21-04
+% \usepackage{flushend} % bad for last notes, supposed flush end of columns
+% \usepackage{multicol} % not compatible with too much packages (longtable, framed, memoir…)
+% \usepackage{sectsty} % \chapterfont OBSOLETE
+% \usepackage[breakable]{tcolorbox} % text styling gone, footnote hack not kept with breakable
+
+
+\defaultfontfeatures{
+  % Mapping=tex-text, % no effect seen
+  Scale=MatchLowercase,
+  Ligatures={TeX,Common},
+}
+
+% Metadata inserted by a program, from the TEI source, for title page and runing heads
+%meta%
+
+
+% If things have not been defined before
+\newcommand{\colorprovide}[2]{\@ifundefinedcolor{#1}{\colorlet{#1}{#2}}{}}
+\colorprovide{rubric}{red}
+\colorprovide{silver}{Gray}
+\@ifundefined{syms}{\newfontfamily\syms{DejaVu Sans}}{}
+\newif\ifdev
+\@ifundefined{elbibl}{% No meta defined, maybe dev mode
+  \newcommand{\elbibl}{Titre court ?}
+  \newcommand{\elbook}{Titre du livre source ?}
+  \newcommand{\elurl}{http://oeuvres.github.io/elbook/2}
+  \author{Éric Lœchien}
+  \title{Un titre de test assez long pour vérifier le comportement d’une maquette}
+  \date{1566}
+  \devtrue
+}{}
+\let\eltitle\@title
+\let\elauthor\@author
+\let\eldate\@date
+
+
 \hyperbaseurl{}
 \hypersetup{extension = }
 \hypersetup{
   % pdftex, % no effect
-  pdftitle={\shortref},
+  pdftitle={\elbibl},
   % pdfauthor={Your name here},
   % pdfsubject={Your subject here},
   % pdfkeywords={keyword1, keyword2},
@@ -49,31 +97,13 @@
 }
 \usepackage{bookmark} % after hyperref
 
-% TOTEST
-% \usepackage{hypcap} % links in caption ?
-% \usepackage{marginnote}
-% TESTED
-% \usepackage{sectsty} % \chapterfont OBSOLETE
-
-% If things have not been defined before
-\newcommand{\colorprovide}[2]{\@ifundefinedcolor{#1}{\colorlet{#1}{#2}}{}}
-\colorprovide{rubric}{red}
-\colorprovide{silver}{Gray}
-\@ifundefined{syms}{\newcommand{\syms}{}}{}
-\newif\ifdev
-\@ifundefined{shortref}{% No meta defined, maybe dev mode
-  \newcommand{\shortref}{Titre court ?}
-  \title{Un titre de test assez long pour vérifier le comportement d’une maquette}
-  \author{Auteur}
-  \devtrue
-}{}
 
 
 
 
 % generic typo commands
 \newcommand{\astermono}{\medskip\centerline{\color{rubric}\large\selectfont{\syms ✻}}\medskip\par}%
-\newcommand{\astertri}{\bigskip\centerline{\color{rubric}\large\selectfont{\syms ✻\,✻\,✻}\medskip\par}}%
+\newcommand{\astertri}{\medskip\par\centerline{\color{rubric}\large\selectfont{\syms ✻\,✻\,✻}}\medskip\par}%
 \newcommand{\asterism}{\bigskip\par\noindent\parbox{\linewidth}{\centering\color{rubric}\large{\syms ✻}\\{\syms ✻}\hskip 0.75em{\syms ✻}}\bigskip\par}%
 \setlist{noitemsep,wide,leftmargin=*, labelindent=0pt} % labelindent=\parindent,leftmargin=*
 \setlist[itemize]{label=—}
@@ -90,6 +120,7 @@
 \newcommand{\ed}[1]{ {\color{silver}\sffamily\footnotesize (#1)} } % <milestone ed="1688"/>
 \newcommand\expan{}
 \newcommand\gap{}
+\newcommand{\labelchar}[1]{{\color{rubric}\bf #1}}
 \newcommand\orig{}
 \newcommand\orgName{}
 \newcommand\persName{}
@@ -105,14 +136,24 @@
 \newcommand{\dateline}[1]{\vskip1em{\RaggedLeft{#1}\par}\vskip2em}
 \newcommand{\salute}[1]{\vskip2em{#1}\par\vskip1em}
 
-% environments for blocks (should probably become commands)
+% environments for blocks (some may become commands)
 \newenvironment{bibl}{}{}
-\newenvironment{blabel}{\begin{center}\begin{bfseries}}{\end{bfseries}\end{center}}
+\newenvironment{borderbox}{}{} % framing content
 \newenvironment{citbibl}{\ifvmode\hfill\fi}{\ifvmode\par\fi }
 \newenvironment{docAuthor}{\ifvmode\vskip4pt\fontsize{16pt}{18pt}\selectfont\fi\itshape}{\ifvmode\par\fi }
 \newenvironment{docDate}{}{\ifvmode\par\fi }
 \newenvironment{docImprint}{\vskip6pt}{\ifvmode\par\fi }
 \newenvironment{docTitle}{\vskip6pt\bfseries\fontsize{18pt}{22pt}\selectfont}{\par }
+\newenvironment{labelblock}
+  {%
+    \medskip
+    \begin{center}
+    \bfseries
+    }
+  {%
+    \end{center}
+    \medskip
+  }
 \newenvironment{msHead}{\vskip6pt}{\par}
 \newenvironment{msItem}{\vskip6pt}{\par}
 \newenvironment{titlePart}{}{\par }
@@ -143,11 +184,11 @@
 \endlist}
 \usepackage[%
   indentfirst=false,
-  rightmargin=0pt,
   vskip=1em,
   noorphanfirst=true,
   noorphanafter=true,
-  leftmargin=\parindent
+  leftmargin=\parindent,
+  rightmargin=0pt,
 ]{quoting}
 \newenvironment{blockquote}% may be used for ornaments
   {\begin{quoting}}
@@ -187,20 +228,25 @@
 \setcounter{tocdepth}{5} % deep toc
 \markright{\@title} % ???
 \markboth{\@title}{\@author} % ???
+\renewcommand\tableofcontents{\@starttoc{toc}}
 
-
+% orphans and widows
+\clubpenalty=9996
+\widowpenalty=9999
+\brokenpenalty=4991
+\predisplaypenalty=10000
+\postdisplaypenalty=1549
+\displaywidowpenalty=1602
+\hyphenpenalty=400
 % Copied from Rahtz but not understood
 \def\@pnumwidth{1.55em}
 \def\@tocrmarg {2.55em}
 \def\@dotsep{4.5}
-\clubpenalty=8000
 \emergencystretch 3em
 \hbadness=4000
-\hyphenpenalty=400
 \pretolerance=750
 \tolerance=2000
 \vbadness=4000
-\widowpenalty=10000
 \def\Gin@extensions{.pdf,.png,.jpg,.mps,.tif}
 % \renewcommand{\@cite}[1]{#1} % biblio
 

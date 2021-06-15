@@ -1002,23 +1002,6 @@ it is dangerous for docx where nesting may produce lots of surprises
     </xsl:choose>
   </xsl:template>
   
-  <xsl:template match="tei:label">
-    <xsl:variable name="inline">
-      <xsl:call-template name="tei:isInline"/>
-    </xsl:variable>   
-    <xsl:choose>
-      <xsl:when test="$inline != ''">
-        <xsl:call-template name="makeInline">
-          <xsl:with-param name="style" select="@type"/>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:call-template name="makeBlock">
-          <xsl:with-param name="style" select="local-name()"/>
-        </xsl:call-template>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
   
   <xsl:template match="tei:docAuthor" mode="author">
     <xsl:apply-templates/>
