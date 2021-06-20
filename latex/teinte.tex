@@ -6,6 +6,7 @@
 \makeatletter % <@@@
 
 \usepackage{blindtext} % generate text for testing
+\usepackage{contour} % rounding words
 \usepackage[nodayofweek]{datetime}
 \usepackage{DejaVuSans}
 \usepackage{enumitem} % <list>
@@ -17,12 +18,14 @@
 \usepackage{footnote} % hack to collect footnotes in minipage etc.
 \usepackage{framed} % bordering correct with footnote hack
 \usepackage{graphicx}
+\usepackage{lettrine}
 \usepackage{lipsum} % generate text for testing
 \usepackage[framemethod=tikz,]{mdframed} % maybe used for frame with footnotes inside
 \usepackage{polyglossia} % non-break space french punct, bug Warning: "Failed to patch part"
 \usepackage{ragged2e}
 \usepackage{tabularx} % <table>
 \usepackage[explicit]{titlesec} % NO implicit !, wear titles
+\usepackage{tikz} % ornaments
 \usepackage{tocloft}
 \usepackage[fit]{truncate} % used im runing titles
 \usepackage{unicode-math}
@@ -63,6 +66,7 @@
 \@ifundefined{elbibl}{% No meta defined, maybe dev mode
   \newcommand{\elbibl}{Titre court ?}
   \newcommand{\elbook}{Titre du livre source ?}
+  \newcommand{\elabstract}{Résumé\par}
   \newcommand{\elurl}{http://oeuvres.github.io/elbook/2}
   \author{Éric Lœchien}
   \title{Un titre de test assez long pour vérifier le comportement d’une maquette}
@@ -86,7 +90,7 @@
   bookmarksopen=true,
   bookmarksopenlevel=1,
   pdfstartview=Fit,
-  % linktocpage=true, % toc, link only on page no 
+  % linktocpage=true, % toc, link only on page no
   pdfpagemode=UseOutlines,    % pdf toc
   % pdfpagelayout=TwoPageRight,
   citebordercolor=0.75 0.75 0.75,
@@ -116,11 +120,21 @@
 
 % commands, inlines
 \newcommand\abbr{}
+\newcommand{\autour}[1]{\tikz[baseline=(X.base)]\node [draw=rubric,thin,rectangle,inner sep=1.5pt, rounded corners=3pt] (X) {#1};}
 \newcommand\corr{}
 \newcommand{\ed}[1]{ {\color{silver}\sffamily\footnotesize (#1)} } % <milestone ed="1688"/>
 \newcommand\expan{}
 \newcommand\gap{}
+\renewcommand{\LettrineFontHook}{\color{rubric}\mdseries\ttfamily}
+\newcommand{\initial}[2]{\lettrine[lines=3, loversize=0.3, lhang=0.3]{#1}{#2}}
+\newcommand{\initialiv}[2]{%
+  \let\oldLFH\LettrineFontHook
+  \renewcommand{\LettrineFontHook}{\color{rubric}\ttfamily}
+  \lettrine[lines=5]{#1}{#2}
+  \let\LettrineFontHook\oldLFH
+}
 \newcommand{\labelchar}[1]{{\color{rubric}\bf #1}}
+\newcommand{\milestone}[1]{\autour{\footnotesize\color{rubric} #1}} % <milestone n="4"/>
 \newcommand\orig{}
 \newcommand\orgName{}
 \newcommand\persName{}
@@ -132,12 +146,12 @@
 \newcommand\sic{}
 
 % commands, blocks
-\newcommand{\byline}[1]{\vskip2em{\RaggedLeft{#1}\par}\vskip1em}
-\newcommand{\dateline}[1]{\vskip1em{\RaggedLeft{#1}\par}\vskip2em}
-\newcommand{\salute}[1]{\vskip2em{#1}\par\vskip1em}
+\newcommand{\byline}[1]{\bigskip{\RaggedLeft{#1}\par}\bigskip}
+\newcommand{\bibl}[1]{\footnotesize\RaggedLeft{#1}\par}
+\newcommand{\dateline}[1]{\medskip{\RaggedLeft{#1}\par}\bigskip}
+\newcommand{\salute}[1]{\bigskip{#1}\par\medskip}
 
 % environments for blocks (some may become commands)
-\newenvironment{bibl}{}{}
 \newenvironment{borderbox}{}{} % framing content
 \newenvironment{citbibl}{\ifvmode\hfill\fi}{\ifvmode\par\fi }
 \newenvironment{docAuthor}{\ifvmode\vskip4pt\fontsize{16pt}{18pt}\selectfont\fi\itshape}{\ifvmode\par\fi }
@@ -148,8 +162,9 @@
   {%
     \medskip
     \begin{center}
+    \sffamily
     \bfseries
-    }
+  }
   {%
     \end{center}
     \medskip
@@ -190,7 +205,7 @@
   leftmargin=\parindent,
   rightmargin=0pt,
 ]{quoting}
-\newenvironment{blockquote}% may be used for ornaments
+\newenvironment{quoteblock}% may be used for ornaments
   {\begin{quoting}}
   {\end{quoting}}
 

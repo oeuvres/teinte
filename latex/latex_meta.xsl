@@ -9,7 +9,9 @@ Latex from TEI, metadata for preamble
 
 2021, frederic.glorieux@fictif.org
   -->
+  <xsl:import href="latex_flow.xsl"/>
   <xsl:output method="text" encoding="utf8"/>
+  
   
   <xsl:template match="/">
     <xsl:call-template name="meta"/>
@@ -42,7 +44,6 @@ Latex from TEI, metadata for preamble
         <xsl:call-template name="year">
           <xsl:with-param name="string" select="$el/@to"/>
         </xsl:call-template>
-        <xsl:text>. </xsl:text>
       </xsl:when>
       <xsl:when test="$el[@when]">
         <xsl:call-template name="year">
@@ -98,7 +99,7 @@ Latex from TEI, metadata for preamble
     <xsl:text>\author{</xsl:text>
     <xsl:value-of select="$latexAuthor"/>
     <xsl:text>}&#10;</xsl:text>
-    <xsl:text>\def\elbibl{</xsl:text>    
+    <xsl:text>\def\elbibl{</xsl:text>
     <xsl:if test="$latexAuthor != ''">
       <xsl:value-of select="$latexAuthor"/>
       <xsl:text>. </xsl:text>
@@ -122,6 +123,11 @@ Latex from TEI, metadata for preamble
       </xsl:for-each>
     </xsl:variable>
     -->
+    <xsl:if test="/*/tei:teiHeader/tei:profileDesc/tei:abstract">
+      <xsl:text>\def\elabstract{%&#10;</xsl:text>
+      <xsl:apply-templates select="/*/tei:teiHeader/tei:profileDesc/tei:abstract/node()"/>
+      <xsl:text>&#10;}&#10;</xsl:text>
+    </xsl:if>
   </xsl:template>
 
     

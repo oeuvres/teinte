@@ -15,6 +15,9 @@ https://github.com/TEIC/Stylesheets/tree/dev/latex
 A light version for XSLT1, with local improvements.
 2021, frederic.glorieux@fictif.org
   -->
+  <!-- Deprecated, should be handle at LaTeX level -->
+  <xsl:param name="documentclass">book</xsl:param>
+  
   <xsl:template match="*" mode="innertext">
     <xsl:apply-templates select="."/>
   </xsl:template>
@@ -92,6 +95,76 @@ A light version for XSLT1, with local improvements.
     </xsl:if>
     <xsl:apply-templates/>
   </xsl:template>
+  
+  <xsl:template match="tei:head">
+    <xsl:choose>
+      <xsl:when test="parent::tei:castList"/>
+      <xsl:when test="parent::tei:figure"/>
+      <xsl:when test="parent::tei:list"/>
+      <xsl:when test="parent::tei:lg">\subsection*{<xsl:apply-templates/>}&#10;</xsl:when>
+      <xsl:when test="parent::tei:front or parent::tei:body or parent::tei:back">\section*{<xsl:apply-templates/>}&#10;</xsl:when>
+      <xsl:when test="parent::tei:table"/>
+      <xsl:otherwise>
+        <xsl:variable name="level">
+          <xsl:call-template name="level"/>
+        </xsl:variable>
+        <xsl:text>\</xsl:text>
+        <xsl:choose>
+          <xsl:when test="$documentclass = 'book'">
+            <xsl:choose>
+              <xsl:when test="$level &lt; 0">part</xsl:when>
+              <xsl:when test="$level = 0">chapter</xsl:when>
+              <xsl:when test="$level = 1">section</xsl:when>
+              <xsl:when test="$level = 2">subsection</xsl:when>
+              <xsl:when test="$level = 3">subsubsection</xsl:when>
+              <xsl:when test="$level = 4">paragraph</xsl:when>
+              <xsl:when test="$level = 5">subparagraph</xsl:when>
+              <xsl:when test="$level &gt; 5">subparagraph</xsl:when>
+              <xsl:otherwise>section</xsl:otherwise>
+            </xsl:choose>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:choose>
+              <xsl:when test="$level &lt; 0">part</xsl:when>
+              <xsl:when test="$level = 0">section</xsl:when>
+              <xsl:when test="$level = 1">subsection</xsl:when>
+              <xsl:when test="$level = 2">subsubsection</xsl:when>
+              <xsl:when test="$level = 3">paragraph</xsl:when>
+              <xsl:when test="$level = 4">subparagraph</xsl:when>
+              <xsl:when test="$level &gt; 4">subparagraph</xsl:when>
+              <xsl:otherwise>section</xsl:otherwise>
+            </xsl:choose>
+          </xsl:otherwise>
+        </xsl:choose>
+        <!-- 
+Old logic of numbering, let Latex consumer choose, but get 
+parent::tei:body or ancestor::tei:floatingText
+or (ancestor::tei:back and $numberBackHeadings = '')
+or (not($numberHeadings = 'true') and ancestor::tei:body)
+or (ancestor::tei:front and $numberFrontHeadings = '')
+or parent::tei:div[contains(@rend, 'nonumber')]
+
+\chapter[toc-title text only]{title with maybe notes}
+        -->
+        <xsl:text>[</xsl:text>
+        <xsl:variable name="title">
+          <xsl:apply-templates select="." mode="title"/>
+        </xsl:variable>
+        <xsl:value-of select="normalize-space($title)"/>
+        <xsl:text>]</xsl:text>
+        <xsl:text>{</xsl:text>
+        <xsl:apply-templates/>
+        <xsl:text>}</xsl:text>
+        <xsl:if test="../@xml:id">
+          <xsl:text>\label{</xsl:text>
+          <xsl:value-of select="../@xml:id"/>
+          <xsl:text>}</xsl:text>
+        </xsl:if>
+        <xsl:text>&#10;</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  
   <xsl:template match="tei:opener">
     <xsl:text>&#10;&#10;\begin{quote}</xsl:text>
     <xsl:apply-templates/>
@@ -118,4 +191,26 @@ A light version for XSLT1, with local improvements.
     <xsl:apply-templates mode="biblio" select="//tei:ref[@type='cite'] | //tei:ptr[@type='cite']"/>
   </xsl:template>
 
+  <!-- Calculate a level 
+-1 	\part{part}
+0 	\chapter{chapter}
+1 	\section{section}
+2 	\subsection{subsection}
+3 	\subsubsection{subsubsection}
+4 	\paragraph{paragraph}
+5 	\subparagraph{subparagraph}
+  -->
+  <xsl:template name="level">
+    <xsl:variable name="chapter" select="ancestor-or-self::*[key('CHAPTERS',generate-id(.))][1]"/>
+    <xsl:choose>
+      <xsl:when test="$chapter">
+        <xsl:value-of select="count(ancestor-or-self::tei:div[ancestor::*[count(.|$chapter) = 1]])"/>
+      </xsl:when>
+      <xsl:when test="ancestor-or-self::tei:div[1]/descendant::*[key('CHAPTERS',generate-id(.))]">-1</xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="count(ancestor-or-self::tei:div) - 1"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  
 </xsl:transform>

@@ -215,7 +215,6 @@
             <xsl:when test="self::tei:pubPlace">true</xsl:when>
             <xsl:when test="self::tei:lb or self::pb">true</xsl:when>
             <xsl:when test="self::tei:quote and tei:lb"/>
-            <xsl:when test="self::tei:quote and $autoBlockQuote='true' and string-length(.) &gt; $autoBlockQuoteLength"/>
             <xsl:when test="self::tei:q">true</xsl:when>
             <xsl:when test="self::tei:quote">true</xsl:when>
             <xsl:when test="self::tei:ref">true</xsl:when>

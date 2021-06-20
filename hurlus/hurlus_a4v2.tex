@@ -3,14 +3,14 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \RequirePackage{fix-cm}
-\documentclass[french,twoside,notitlepage]{book}
+\RequirePackage{pdftexcmds} % needed for tests expressions
+\documentclass[french,twoside]{book} % ,notitlepage
 \usepackage[%
   papersize={105mm, 297mm},
-  % a5paper,
   inner=10mm, % recto/verso printing for booklet
-  outer=10mm, 
+  outer=10mm,
   top=18mm,
-  bottom=10mm,
+  bottom=18mm,
   marginparsep=0pt,
 ]{geometry}
 
@@ -30,10 +30,15 @@
 % before Teinte macros
 
 \usepackage[dvipsnames]{xcolor}
-\definecolor{rubric}{HTML}{cf1408} % the tonic
+\definecolor{rubric}{HTML}{902c20} % the tonic
 \colorlet{borderline}{rubric!30!} % definecolor need exact code
 \definecolor{shadecolor}{gray}{0.95}
 \definecolor{bghi}{gray}{0.5}
+
+%%%%%%%%%%%%%%%%%
+% Teinte macros %
+%%%%%%%%%%%%%%%%%
+\input{../latex/teinte}
 
 %%%%%%%%%%%%%
 % footnotes %
@@ -54,31 +59,43 @@
 %%%%%%%%%
 % Fonts %
 %%%%%%%%%
-\usepackage[no-math]{fontspec}
-\defaultfontfeatures{Scale = MatchLowercase}
-\defaultfontfeatures{Ligatures={TeX}}
 \usepackage[]{roboto} % SmallCaps, Regular is a bit bold
 \setmainfont{Roboto Light}[%
-  ItalicFont={Roboto Italic},
+  % ItalicFont={Roboto Italic},
 ]
 \usepackage[fontsize=9.5pt]{scrextend} % 10pt for lato (53 c.)
 % \linespread{0.90} % too compact, keep font natural
-\usepackage{DejaVuSans}
-\setsansfont{Roboto Condensed}
+\setsansfont{Roboto Condensed Light}[%
+  BoldFont={Roboto Condensed},
+]
 \newfontfamily{\fontlight}{DejaVu Sans} % for abstract
-\newfontfamily\syms{DejaVu Sans} % Ensure a font for dingBats (no in Lato or Noto))
-\setmonofont{DejaVu Sans Mono}
 
 %%%%%%%%
 % MISC %
 %%%%%%%%
 
-\usepackage{polyglossia} % non-break space french punct, bug Warning: "Failed to patch part"
-\setmainlanguage{french}
-\PassOptionsToPackage{utf8}{inputenc}
+\setdefaultlanguage[frenchpart=false]{french} % bug on part
 
 
-\input{../latex/teinte}
+\newenvironment{quotebar}{%
+    \def\FrameCommand{{\color{rubric!10!}\vrule width 0.5em} \hspace{0.9em}}%
+    \def\OuterFrameSep{\itemsep} % séparateur vertical
+    \MakeFramed {\advance\hsize-\width \FrameRestore}
+  }%
+  {%
+    \endMakeFramed
+  }
+\renewenvironment{quoteblock}% may be used for ornaments
+  {%
+    \small
+    \savenotes
+    \begin{quotebar}
+  }
+  {%
+    \end{quotebar}
+    \spewnotes
+  }
+
 
 \renewcommand{\pn}[1]{\vskip 5pt\noindent{\sffamily\footnotesize\bfseries\color{rubric} #1.}} % <p n="3"/>
 \renewcommand{\headrulewidth}{\arrayrulewidth}
@@ -88,20 +105,20 @@
   \setlength{\headheight}{16pt}
   \fancyhead{} % reset head
   \fancyfoot{} % reset foot
-  \fancyhead[LO]{\truncate{0.9\headwidth}{\nouppercase{\sffamily\shortref}}} % book ref
+  \fancyhead[LO]{\truncate{0.9\headwidth}{\nouppercase{\sffamily\elbibl}}} % book ref
   \fancyhead[RE]{\truncate{0.9\headwidth}{\nouppercase{\sffamily\leftmark}}} % Chapter title
   \fancyhead[RO,LE]{\thepage}
 }
 \fancypagestyle{plain}{% apply to chapter
   \fancyhf{}% clear all header and footer fields
   \setlength{\headheight}{16pt}
-  \fancyhead[L]{\truncate{0.9\headwidth}{\sffamily \shortref}}
+  \fancyhead[L]{\truncate{0.9\headwidth}{\sffamily \elbibl}}
   \fancyhead[R]{\thepage}
 }
 
-\titleformat % delicate tuning, image has produce line-height problems in title on 2 lines 
-  {name=\chapter} % command
-  % [display] % shape
+% delicate tuning, image has produce line-height problems in title on 2 lines
+\titleformat{name=\chapter} % command
+  [display] % shape
   {\vspace{16pt}\centering} % format
   {} % label
   {0pt} % separator between n
@@ -120,34 +137,36 @@
 \centerline{\fontsize{20pt}{35pt}\addfontfeature{LetterSpace=15}\color{white}\bfseries \contour{black}{Hurlus-lez-Textes}}\vspace{25pt}
 \fi
 
-\titleformat
-  {name=\section}
-  % [hang]
+\titleformat{name=\section}
+  [block]
   {\color{rubric}\large\bfseries\sffamily\raggedleft} % filright ?
   {} % \thesection
-  {}
-  {#1}
-\usepackage{contour}
-
+  {} % separator
+  {\color{rubric}\hrule}
+  [#1]
 
 \begin{document}
 \pagestyle{fancy}
 \thispagestyle{empty}
 
 
-\makeatletter
 \begin{center}
-\includegraphics[width=\columnwidth]{img/bandeau.pdf}\vspace{15pt}
-{\fontsize{19pt}{20pt}\addfontfeature{LetterSpace=25}\bfseries{\@author}}\par
-\parbox{\fontsize{12pt}\selectfont\@date}\par
-\vskip10pt
-{\fontsize{19pt}{21pt}\selectfont\sffamily\emph{\@title}}
-\makeatother
-\vskip15pt
-\centerline{\fontsize{8pt}{}\selectfont\color{rubric} {hurlus.fr, tiré le \today}}
-{\color{rubric} \hline}
-\vskip15pt
-\end{center} 
+\includegraphics[width=\columnwidth]{img/bandeau.pdf}\par
+\bigskip
+{\Large\addfontfeature{LetterSpace=25}\bfseries{\elauthor}}\par
+\smallskip
+{\large\eldate}\par
+\bigskip
+{\Large\selectfont\sffamily\emph{\eltitle}}\par
+\bigskip
+{\Large\sffamily{ LIVRE À PRIX LIBRE,\\DEMANDEZ AU COMPTOIR}}\par
+\bigskip
+\centerline{\small\color{rubric} {hurlus.fr, tiré le \today}}\par
+{\hline\par}
+\bigskip
+\end{center}
+\elabstract
+\bigskip
 
 \makeatletter\@starttoc{toc}\makeatother % toc without new page
 
@@ -156,7 +175,7 @@
 \Blinddocument
 \fi
 
-%tei%
+%text%
 
 
 \end{document}

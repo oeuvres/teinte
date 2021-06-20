@@ -17,10 +17,16 @@ https://github.com/TEIC/Stylesheets/tree/dev/latex
 2. http://www.opensource.org/licenses/BSD-2-Clause
 
 A light version for XSLT1, with local improvements.
+Should work as an import (or include) to generate flow latex,
+for example: abstract.
 2021, frederic.glorieux@fictif.org
   -->
-  <xsl:import href="latex_param.xsl"/>
-  <xsl:import href="common1.xsl"/>
+  <xsl:import href="tei_common.xsl"/>
+  <xsl:import href="latex_common.xsl"/>
+  <xsl:param name="quoteEnv">quoteblock</xsl:param>
+  <!-- TODO hadle LaTeX side -->
+  <xsl:param name="pbStyle"/>
+
   <!-- TODO, move params -->
   <xsl:variable name="preQuote">« </xsl:variable>
   <xsl:variable name="postQuote"> »</xsl:variable>
@@ -49,6 +55,48 @@ A light version for XSLT1, with local improvements.
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
+  
+  <xsl:template match="tei:bibl">
+    <xsl:variable name="inline">
+      <xsl:call-template name="tei:isInline"/>
+    </xsl:variable>
+    <xsl:choose>
+      <xsl:when test="parent::tei:cit[contains(@rend,'display')] or
+        (parent::tei:cit and tei:p) or $inline != ''">
+        <xsl:call-template name="makeInline">
+          <xsl:with-param name="style">citbibl</xsl:with-param>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:when test="parent::tei:q/parent::tei:head or parent::tei:q[contains(@rend,'inline')]">
+        <xsl:call-template name="makeBlock">
+          <xsl:with-param name="style">citbibl</xsl:with-param>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:when test="$inline = ''">
+        <xsl:call-template name="makeBlock">
+          <xsl:with-param name="style">biblfree</xsl:with-param>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:call-template name="makeInline">
+          <xsl:with-param name="style">
+            <xsl:text>bibl</xsl:text>
+          </xsl:with-param>
+          <xsl:with-param name="before">
+            <xsl:if test="parent::tei:cit">
+              <xsl:text> (</xsl:text>
+            </xsl:if>
+          </xsl:with-param>
+          <xsl:with-param name="after">
+            <xsl:if test="parent::tei:cit">
+              <xsl:text>)</xsl:text>
+            </xsl:if>
+          </xsl:with-param>
+        </xsl:call-template>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  
   <!-- Who call that mode cite ? -->
   <xsl:template match="tei:bibl" mode="cite">
     <xsl:apply-templates select="text()[1]"/>
@@ -169,100 +217,7 @@ A light version for XSLT1, with local improvements.
     <xsl:text>}</xsl:text>
   </xsl:template>
   
-  <!-- Calculate a level 
--1 	\part{part}
-0 	\chapter{chapter}
-1 	\section{section}
-2 	\subsection{subsection}
-3 	\subsubsection{subsubsection}
-4 	\paragraph{paragraph}
-5 	\subparagraph{subparagraph}
-  -->
-  <xsl:template name="level">
-    <xsl:variable name="chapter" select="ancestor-or-self::*[key('CHAPTERS',generate-id(.))][1]"/>
-    <xsl:choose>
-      <xsl:when test="$chapter">
-        <xsl:value-of select="count(ancestor-or-self::tei:div[ancestor::*[count(.|$chapter) = 1]])"/>
-      </xsl:when>
-      <xsl:when test="ancestor-or-self::tei:div[1]/descendant::*[key('CHAPTERS',generate-id(.))]">-1</xsl:when>
-      <xsl:otherwise>
-        <xsl:value-of select="count(ancestor-or-self::tei:div) - 1"/>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
-  
-  
-  <xsl:template match="tei:head">
-    <xsl:choose>
-      <xsl:when test="parent::tei:castList"/>
-      <xsl:when test="parent::tei:figure"/>
-      <xsl:when test="parent::tei:list"/>
-      <xsl:when test="parent::tei:lg">\subsection*{<xsl:apply-templates/>}&#10;</xsl:when>
-      <xsl:when test="parent::tei:front or parent::tei:body or parent::tei:back">\section*{<xsl:apply-templates/>}&#10;</xsl:when>
-      <xsl:when test="parent::tei:table"/>
-      <xsl:otherwise>
-        <xsl:variable name="level">
-          <xsl:call-template name="level"/>
-        </xsl:variable>
-        <xsl:text>\</xsl:text>
-        <xsl:choose>
-          <xsl:when test="$documentclass = 'book'">
-            <xsl:choose>
-              <xsl:when test="$level &lt; 0">part</xsl:when>
-              <xsl:when test="$level = 0">chapter</xsl:when>
-              <xsl:when test="$level = 1">section</xsl:when>
-              <xsl:when test="$level = 2">subsection</xsl:when>
-              <xsl:when test="$level = 3">subsubsection</xsl:when>
-              <xsl:when test="$level = 4">paragraph</xsl:when>
-              <xsl:when test="$level = 5">subparagraph</xsl:when>
-              <xsl:when test="$level &gt; 5">subparagraph</xsl:when>
-              <xsl:otherwise>section</xsl:otherwise>
-            </xsl:choose>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:choose>
-              <xsl:when test="$level &lt; 0">part</xsl:when>
-              <xsl:when test="$level = 0">section</xsl:when>
-              <xsl:when test="$level = 1">subsection</xsl:when>
-              <xsl:when test="$level = 2">subsubsection</xsl:when>
-              <xsl:when test="$level = 3">paragraph</xsl:when>
-              <xsl:when test="$level = 4">subparagraph</xsl:when>
-              <xsl:when test="$level &gt; 4">subparagraph</xsl:when>
-              <xsl:otherwise>section</xsl:otherwise>
-            </xsl:choose>
-          </xsl:otherwise>
-        </xsl:choose>
-        <!-- 
-Old logic of numbering, let Latex consumer choose, but get 
-parent::tei:body or ancestor::tei:floatingText
-or (ancestor::tei:back and $numberBackHeadings = '')
-or (not($numberHeadings = 'true') and ancestor::tei:body)
-or (ancestor::tei:front and $numberFrontHeadings = '')
-or parent::tei:div[contains(@rend, 'nonumber')]
 
-\chapter[toc-title text only]{title with maybe notes}
-        -->
-        <xsl:text>[</xsl:text>
-        <xsl:variable name="title">
-          <xsl:apply-templates select="." mode="title"/>
-        </xsl:variable>
-        <xsl:value-of select="normalize-space($title)"/>
-        <xsl:text>]</xsl:text>
-        <xsl:text>{</xsl:text>
-        <xsl:apply-templates/>
-        <xsl:text>}</xsl:text>
-        <xsl:if test="../@xml:id">
-          <xsl:text>\label{</xsl:text>
-          <xsl:value-of select="../@xml:id"/>
-          <xsl:text>}</xsl:text>
-        </xsl:if>
-        <xsl:text>&#10;</xsl:text>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
-
-
-  
   <xsl:template match="tei:gloss">
     <xsl:text>\emph{</xsl:text>
     <xsl:apply-templates/>
@@ -373,6 +328,24 @@ or parent::tei:div[contains(@rend, 'nonumber')]
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
+  <xsl:template match="tei:hi[starts-with(@rend, 'initial')]">
+    <xsl:param name="text" select="normalize-space(.)"/>
+    <xsl:variable name="cmd">
+      <xsl:choose>
+        <xsl:when test="@rend = 'initial2'">\initial</xsl:when>
+        <xsl:when test="@rend = 'initial4'">\initialiv</xsl:when>
+        <xsl:otherwise>\initial</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:value-of select="$cmd"/>
+    <xsl:text>{</xsl:text>
+    <xsl:value-of select="substring($text, 1, 1)"/>
+    <xsl:text>}</xsl:text>
+    <xsl:text>{</xsl:text>
+    <xsl:value-of select="substring($text, 2)"/>
+    <xsl:text>}</xsl:text>
+  </xsl:template>
+  
 
   <xsl:template match="tei:lb[@type = 'line']"> \hline </xsl:template>
 
@@ -540,9 +513,11 @@ or parent::tei:div[contains(@rend, 'nonumber')]
   
   <xsl:template match="tei:milestone">
     <xsl:choose>
+      <!-- <hr/> as a milestone ? To think
       <xsl:when test="contains(@rend,'hr')">
         <xsl:call-template name="horizontalRule"/>
       </xsl:when>
+      -->
       <xsl:when test="@unit='line'">
         <xsl:text> </xsl:text>
       </xsl:when>
@@ -551,6 +526,15 @@ or parent::tei:div[contains(@rend, 'nonumber')]
         <xsl:text>\ed{</xsl:text>
         <xsl:value-of select="@ed"/>
         <xsl:text>}</xsl:text>
+      </xsl:when>
+      <xsl:when test="@n">
+        <xsl:if test="preceding-sibling::node()">
+          <xsl:text> </xsl:text>
+        </xsl:if>
+        <xsl:text>\milestone{</xsl:text>
+        <xsl:value-of select="@n"/>
+        <xsl:text>}</xsl:text>
+        <xsl:text> </xsl:text>
       </xsl:when>
       <!-- Unpredictable, do nothing -->
       <xsl:when test="@unit='unnumbered'"/>
@@ -659,9 +643,11 @@ or parent::tei:div[contains(@rend, 'nonumber')]
       <xsl:value-of select="@n"/>
       <xsl:text>}</xsl:text>
     </xsl:if>
+    <!-- Paragraph auto numbering ?
     <xsl:if test="$numberParagraphs = 'true'">
       <xsl:call-template name="numberParagraph"/>
     </xsl:if>
+    -->
     <!-- Case of par rendering -->
     <xsl:call-template name="rendering"/>
     <xsl:if test="count(key('APP', 1)) &gt; 0">
@@ -688,10 +674,10 @@ or parent::tei:div[contains(@rend, 'nonumber')]
   <xsl:template match="tei:pb">
     <!-- string " Page " is now managed through the i18n file -->
     <xsl:choose>
-      <xsl:when test="$pagebreakStyle = 'active'">
+      <xsl:when test="$pbStyle = 'active'">
         <xsl:text>\clearpage </xsl:text>
       </xsl:when>
-      <xsl:when test="$pagebreakStyle = 'visible'">
+      <xsl:when test="$pbStyle = 'visible'">
         <xsl:text>✁[</xsl:text>
         <xsl:value-of select="@unit"/>
         <xsl:text> </xsl:text>
@@ -702,7 +688,7 @@ or parent::tei:div[contains(@rend, 'nonumber')]
         <xsl:value-of select="@n"/>
         <xsl:text>]✁</xsl:text>
       </xsl:when>
-      <xsl:when test="$pagebreakStyle = 'bracketsonly'">
+      <xsl:when test="$pbStyle = 'bracketsonly'">
         <!-- To avoid trouble with the scisssors character "✁" -->
         <xsl:text>[</xsl:text>
         <xsl:value-of select="@unit"/>
@@ -714,12 +700,12 @@ or parent::tei:div[contains(@rend, 'nonumber')]
         <xsl:value-of select="@n"/>
         <xsl:text>]</xsl:text>
       </xsl:when>
-      <xsl:when test="$pagebreakStyle = 'plain'">
+      <xsl:when test="$pbStyle = 'plain'">
         <xsl:text>\vspace{1ex}&#10;\par&#10;</xsl:text>
         <xsl:value-of select="@n"/>
         <xsl:text>\vspace{1ex}&#10;</xsl:text>
       </xsl:when>
-      <xsl:when test="$pagebreakStyle = 'sidebyside'">
+      <xsl:when test="$pbStyle = 'sidebyside'">
         <xsl:text>\cleartoleftpage&#10;\begin{figure}[ht!]\makebox[\textwidth][c]{</xsl:text>
         <xsl:text>\includegraphics[width=\textwidth]{</xsl:text>
         <xsl:value-of select="tei:resolveURI(., @facs)"/>
@@ -842,7 +828,9 @@ or parent::tei:div[contains(@rend, 'nonumber')]
         <xsl:text>&#10;</xsl:text>
         <xsl:call-template name="tei:makeHyperTarget"/>
         <xsl:value-of select="$begin"/>
+        <xsl:if test="not(tei:p|tei:list)">\noindent </xsl:if>
         <xsl:apply-templates/>
+        <xsl:if test="not(tei:p|tei:list)">&#10;</xsl:if>
         <xsl:value-of select="$end"/>
         <xsl:text>&#10;</xsl:text>
       </xsl:otherwise>
@@ -878,28 +866,7 @@ or parent::tei:div[contains(@rend, 'nonumber')]
     <xsl:apply-templates/>
     <xsl:value-of select="$postQuote"/>
   </xsl:template>
-  <xsl:template match="tei:space">
-    <xsl:variable name="unit">
-      <xsl:choose>
-        <xsl:when test="@unit">
-          <xsl:value-of select="@unit"/>
-        </xsl:when>
-        <xsl:otherwise>em</xsl:otherwise>
-      </xsl:choose>
-    </xsl:variable>
-    <xsl:variable name="quantity">
-      <xsl:choose>
-        <xsl:when test="@quantity">
-          <xsl:value-of select="@quantity"/>
-        </xsl:when>
-        <xsl:otherwise>1</xsl:otherwise>
-      </xsl:choose>
-    </xsl:variable>
-    <xsl:text>\hspace{</xsl:text>
-    <xsl:value-of select="$quantity"/>
-    <xsl:value-of select="$unit"/>
-    <xsl:text>}</xsl:text>
-  </xsl:template>
+  
     <!-- If $verseNumbering, something will be done with a specific latex package, todo -->
   <xsl:template match="tei:l">
     <xsl:variable name="next" select="following-sibling::*[1][self::tei:l]"/>
@@ -978,5 +945,59 @@ or parent::tei:div[contains(@rend, 'nonumber')]
     <xsl:text>&#10;\begin{center}&#10;</xsl:text>
     <xsl:apply-templates/>
     <xsl:text>\end{center}&#10;</xsl:text>
+  </xsl:template>
+  
+  <xsl:template match="tei:space">
+    <xsl:variable name="inline">
+      <xsl:call-template name="tei:isInline"/>
+    </xsl:variable>
+    
+    <xsl:variable name="unit">
+      <xsl:choose>
+        <xsl:when test="@unit">
+          <xsl:value-of select="@unit"/>
+        </xsl:when>
+        <xsl:otherwise>em</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="quantity">
+      <xsl:choose>
+        <xsl:when test="@quantity">
+          <xsl:value-of select="@quantity"/>
+        </xsl:when>
+        <xsl:otherwise>1</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:choose>
+      <!-- vertical spacing -->
+      <xsl:when test="$inline = ''">
+        <xsl:text>\bigbreak&#10;</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>\hspace{</xsl:text>
+        <xsl:value-of select="$quantity"/>
+        <xsl:value-of select="$unit"/>
+        <xsl:text>}</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  
+  <xsl:template match="tei:title">
+    <xsl:choose>
+      <xsl:when test="parent::tei:titleStmt/parent::tei:fileDesc">
+        <xsl:if test="preceding-sibling::tei:title">
+          <xsl:text> — </xsl:text>
+        </xsl:if>
+        <xsl:apply-templates/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>\emph{</xsl:text>
+          <xsl:apply-templates/>
+          <xsl:text>}</xsl:text>
+          <xsl:if test="ancestor::tei:biblStruct  or ancestor::tei:biblFull">
+            <xsl:text>. </xsl:text>
+          </xsl:if>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 </xsl:transform>

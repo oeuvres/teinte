@@ -32,10 +32,16 @@ usage    : php -f hurlus.php (dstdir/)? srcdir/*.xml\n");
       foreach(glob($glob) as $teifile) {
         $latex->load($teifile);
         $texfile = $latex->setup(dirname(__FILE__).'/hurlus_a4v2.tex'); // get the texfile installed with its template
+        $texname = pathinfo($texfile, PATHINFO_FILENAME);
+        $workdir = dirname($texfile).'/';
         //  latexmk -xelatex -quiet -f vaneigem1967_savoir-vivre.tex 
         // lualatex a4v2_seq.tex labruyere1688_caracteres.pdf
-        chdir (dirname($texfile)); // change working directory
-        exec("latexmk -xelatex -quiet -f ".basename($texfile));
+        chdir($workdir); // change working directory
+        exec("latexmk -xelatex -quiet -f ".basename($texfile)); // 
+        $booklet = $texname.'_carnet.tex';
+        copy(dirname(dirname(__FILE__)).'/latex/booklet_a4v2.tex', $workdir.$booklet);
+        $cmd = "lualatex $booklet $texname.pdf";
+        exec($cmd);
       }
     }
 

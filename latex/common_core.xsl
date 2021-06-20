@@ -491,90 +491,7 @@ it is dangerous for docx where nesting may produce lots of surprises
   <xsl:template match="tei:title" mode="simple">
     <xsl:apply-templates select="text()"/>
   </xsl:template>
-  <xsl:template match="tei:title">
-    <xsl:choose>
-      <xsl:when test="parent::tei:titleStmt/parent::tei:fileDesc">
-        <xsl:if test="preceding-sibling::tei:title">
-          <xsl:text> — </xsl:text>
-        </xsl:if>
-        <xsl:apply-templates/>
-      </xsl:when>
-      <xsl:when test="not(@level) and parent::tei:bibl">
-        <xsl:call-template name="makeInline">
-          <xsl:with-param name="style" select="concat(@rend, ' titlem')"/>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:when test="@level='m' or not(@level)">
-        <xsl:call-template name="emphasize">
-          <xsl:with-param name="class" select="concat(@rend, ' titlem')"/>
-          <xsl:with-param name="content">
-            <xsl:apply-templates/>
-          </xsl:with-param>
-        </xsl:call-template>
-        <xsl:if test="ancestor::tei:biblStruct or ancestor::tei:biblFull">
-          <xsl:text>, </xsl:text>
-        </xsl:if>
-      </xsl:when>
-      <xsl:when test="@level='s'">
-        <xsl:call-template name="emphasize">
-          <xsl:with-param name="class"  select="concat(@rend, ' titles')"/>
-          <xsl:with-param name="content">
-            <xsl:apply-templates/>
-          </xsl:with-param>
-        </xsl:call-template>
-        <xsl:if test="following-sibling::* and
-			 (ancestor::tei:biblStruct  or ancestor::tei:biblFull)">
-              <xsl:text> </xsl:text>
-        </xsl:if>
-      </xsl:when>
-      <xsl:when test="@level='j'">
-        <xsl:call-template name="emphasize">
-          <xsl:with-param name="class"  select="concat(@rend, ' titlej')"/>
-          <xsl:with-param name="content">
-            <xsl:apply-templates/>
-          </xsl:with-param>
-        </xsl:call-template>
-        <xsl:if test="ancestor::tei:biblStruct or ancestor::tei:biblFull">
-              <xsl:text> </xsl:text>
-        </xsl:if>
-      </xsl:when>
-      <xsl:when test="@level='a'">
-        <xsl:call-template name="emphasize">
-          <xsl:with-param name="class"  select="concat(@rend, ' titlea')"/>
-          <xsl:with-param name="content">
-            <xsl:apply-templates/>
-          </xsl:with-param>
-        </xsl:call-template>
-        <xsl:if test="ancestor::tei:biblStruct or ancestor::tei:biblFull">
-          <xsl:text>. </xsl:text>
-        </xsl:if>
-      </xsl:when>
-      <xsl:when test="@level='u'">
-        <xsl:call-template name="emphasize">
-          <xsl:with-param name="class" select="concat(@rend, ' titleu')"/>
-          <xsl:with-param name="content">
-            <xsl:apply-templates/>
-          </xsl:with-param>
-        </xsl:call-template>
-        <xsl:if test="ancestor::tei:biblStruct  or ancestor::tei:biblFull">
-          <xsl:text>. </xsl:text>
-        </xsl:if>
-      </xsl:when>
-      <!--
-         <xsl:when test="ancestor::tei:bibl">
-	   <xsl:apply-templates/>
-         </xsl:when>
--->
-      <xsl:otherwise>
-        <xsl:call-template name="emphasize">
-          <xsl:with-param name="class" select="concat(@rend, ' titlem')"/>
-          <xsl:with-param name="content">
-            <xsl:apply-templates/>
-          </xsl:with-param>
-        </xsl:call-template>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
+
   <xsl:template match="tei:meeting">
     <xsl:text> (</xsl:text>
     <xsl:apply-templates/>
@@ -788,46 +705,6 @@ it is dangerous for docx where nesting may produce lots of surprises
     </xsl:choose>
     <xsl:apply-templates/>
     <xsl:text>] </xsl:text>
-  </xsl:template>
-  <xsl:template match="tei:bibl">
-    <xsl:variable name="inline">
-      <xsl:call-template name="tei:isInline"/>
-    </xsl:variable>
-    <xsl:choose>
-      <xsl:when test="parent::tei:cit[contains(@rend,'display')] or
-        (parent::tei:cit and tei:p) or $inline != ''">
-        <xsl:call-template name="makeInline">
-          <xsl:with-param name="style">citbibl</xsl:with-param>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:when test="parent::tei:q/parent::tei:head or parent::tei:q[contains(@rend,'inline')]">
-        <xsl:call-template name="makeBlock">
-          <xsl:with-param name="style">citbibl</xsl:with-param>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:when test="$inline = ''">
-        <xsl:call-template name="makeBlock">
-          <xsl:with-param name="style">biblfree</xsl:with-param>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:call-template name="makeInline">
-          <xsl:with-param name="style">
-            <xsl:text>bibl</xsl:text>
-          </xsl:with-param>
-          <xsl:with-param name="before">
-            <xsl:if test="parent::tei:cit">
-              <xsl:text> (</xsl:text>
-            </xsl:if>
-          </xsl:with-param>
-          <xsl:with-param name="after">
-            <xsl:if test="parent::tei:cit">
-              <xsl:text>)</xsl:text>
-            </xsl:if>
-          </xsl:with-param>
-        </xsl:call-template>
-      </xsl:otherwise>
-    </xsl:choose>
   </xsl:template>
   
   <xsl:template match="tei:head" mode="plain">

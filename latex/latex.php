@@ -125,8 +125,7 @@ class Latex {
   function load($srcfile)
   {
     $this->srcfile = $srcfile;
-    $xml = file_get_contents($srcfile);
-    $this->$dom = self::dom($srcfile);
+    $this->dom = self::dom($srcfile);
   }
 
   static function workdir($teifile)
@@ -145,6 +144,7 @@ class Latex {
    */
   function setup($skelfile) 
   {
+    $filename = pathinfo($this->srcfile, PATHINFO_FILENAME);
     $workdir = self::workdir($this->srcfile);
     // resolve includes and graphics of template
     $tex = Latex::includes($skelfile, $workdir, $filename.'/');
@@ -152,6 +152,7 @@ class Latex {
     $meta = self::$latex_meta_xsl->transformToXml($this->dom);
     $text = self::$latex_xsl->transformToXml($this->dom);
     
+
     $tex = str_replace(
       array('%meta%', '%text%'), 
       array($meta, $text),
