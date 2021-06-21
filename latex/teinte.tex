@@ -8,17 +8,16 @@
 \usepackage{blindtext} % generate text for testing
 \usepackage{contour} % rounding words
 \usepackage[nodayofweek]{datetime}
-\usepackage{DejaVuSans}
+\usepackage{DejaVuSans} % font for symbols
 \usepackage{enumitem} % <list>
 \usepackage{etoolbox} % patch commands
 \usepackage{fancyvrb}
 \usepackage{fancyhdr}
 \usepackage{fontspec} % XeLaTeX mandatory for fonts
-\usepackage{footnote} % requested to collect footnotes in framed of tables
 \usepackage{footnote} % hack to collect footnotes in minipage etc.
 \usepackage{framed} % bordering correct with footnote hack
 \usepackage{graphicx}
-\usepackage{lettrine}
+\usepackage{lettrine} % drop caps
 \usepackage{lipsum} % generate text for testing
 \usepackage[framemethod=tikz,]{mdframed} % maybe used for frame with footnotes inside
 \usepackage{polyglossia} % non-break space french punct, bug Warning: "Failed to patch part"
@@ -30,7 +29,7 @@
 \usepackage[fit]{truncate} % used im runing titles
 \usepackage{unicode-math}
 \usepackage{verse} % <l>
-\usepackage{xcolor}
+\usepackage{xcolor} % named colors
 \usepackage{xparse} % recommanded
 \usepackage{hyperref} % supposed to be the last one, :o) except for the one to follow
 % TOTEST
@@ -77,6 +76,16 @@
 \let\elauthor\@author
 \let\eldate\@date
 
+\@ifundefined{\columnseprulecolor}{
+  \patchcmd\@outputdblcol{% find
+    \normalcolor\vrule
+  }{% and replace by
+    \columnseprulecolor\vrule
+  }{% success
+  }{% failure
+    \@latex@warning{Patching \string\@outputdblcol\space failed}%
+  }
+}{}
 
 \hyperbaseurl{}
 \hypersetup{extension = }
@@ -111,7 +120,8 @@
 \newcommand{\asterism}{\bigskip\par\noindent\parbox{\linewidth}{\centering\color{rubric}\large{\syms ✻}\\{\syms ✻}\hskip 0.75em{\syms ✻}}\bigskip\par}%
 \setlist{noitemsep,wide,leftmargin=*, labelindent=0pt} % labelindent=\parindent,leftmargin=*
 \setlist[itemize]{label=—}
-
+\renewcommand{\hrulefill}{%
+  \leavevmode\leaders\hrule height 0.2pt\hfill\kern\z@}
 
 % General typo
 \DeclareTextFontCommand{\textlarge}{\large}
@@ -126,11 +136,11 @@
 \newcommand\expan{}
 \newcommand\gap{}
 \renewcommand{\LettrineFontHook}{\color{rubric}\mdseries\ttfamily}
-\newcommand{\initial}[2]{\lettrine[lines=3, loversize=0.3, lhang=0.3]{#1}{#2}}
+\newcommand{\initial}[2]{\lettrine[lines=2, loversize=0.3, lhang=0.3]{#1}{#2}}
 \newcommand{\initialiv}[2]{%
   \let\oldLFH\LettrineFontHook
   \renewcommand{\LettrineFontHook}{\color{rubric}\ttfamily}
-  \lettrine[lines=5]{#1}{#2}
+  \lettrine[lines=4, loversize=0.2, lhang=0.2]{#1}{#2}
   \let\LettrineFontHook\oldLFH
 }
 \newcommand{\labelchar}[1]{{\color{rubric}\bf #1}}

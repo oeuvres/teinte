@@ -8,7 +8,7 @@ include dirname(dirname(__FILE__)).'/latex/latex.php';
 if (isset($argv[0]) && realpath($argv[0]) == realpath(__FILE__)) Hurlus::cli(); //direct CLI
 class Hurlus {
 
-  public static function cli() 
+  public static function cli()
   {
     array_shift($_SERVER['argv']); // shift first arg, the script filepath
     if (!count($_SERVER['argv'])) exit("
@@ -31,17 +31,28 @@ usage    : php -f hurlus.php (dstdir/)? srcdir/*.xml\n");
     while($glob = array_shift($_SERVER['argv']) ) {
       foreach(glob($glob) as $teifile) {
         $latex->load($teifile);
-        $texfile = $latex->setup(dirname(__FILE__).'/hurlus_a4v2.tex'); // get the texfile installed with its template
+        $texfile = $latex->setup(dirname(__FILE__).'/hurlus.tex'); // get the texfile installed with its resources
         $texname = pathinfo($texfile, PATHINFO_FILENAME);
         $workdir = dirname($texfile).'/';
-        //  latexmk -xelatex -quiet -f vaneigem1967_savoir-vivre.tex 
-        // lualatex a4v2_seq.tex labruyere1688_caracteres.pdf
+
         chdir($workdir); // change working directory
-        exec("latexmk -xelatex -quiet -f ".basename($texfile)); // 
+        // default is a4 2 cols, transform to pdf
+        exec("latexmk -xelatex -quiet -f ".$texname.'.tex'); //
+        $tex = file_get_contents($texfile);
+        // A5
+        $tex = preg_replace('@\\\\def\\\\mode\{[^\}]*\}@', '\\def\\mode{a5}', $tex);
+        $texsrc = $texname.'_a5.tex';
+        file_put_contents($texsrc, $tex);
+        exec("latexmk -xelatex -quiet -f ".$texsrc); //
+        // booklet
+        $tex = preg_replace('@\\\\def\\\\mode\{[^\}]*\}@', '\\def\\mode{booklet}', $tex);
+        $texsrc = $texname.'_a4v2.tex';
+        file_put_contents($texsrc, $tex);
+        exec("latexmk -xelatex -quiet -f ".$texsrc); //
         $booklet = $texname.'_carnet.tex';
         copy(dirname(dirname(__FILE__)).'/latex/booklet_a4v2.tex', $workdir.$booklet);
-        $cmd = "lualatex $booklet $texname.pdf";
-        exec($cmd);
+        $cmd = "lualatex $booklet ".$texname.'_a4v2.pdf';
+        exec($cmd); // order pages for printing
       }
     }
 
