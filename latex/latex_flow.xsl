@@ -715,8 +715,12 @@ for example: abstract.
         <xsl:value-of select="@n"/> 
         <xsl:text>\vspace{1ex}&#10;</xsl:text> 
       </xsl:when>
+      <!-- Image with facs, do something ? -->
       <xsl:when test="@facs">
+        <!--
         <xsl:value-of select="concat('% image:', tei:resolveURI(., @facs), '&#10;')"/>
+        -->
+        <xsl:text> </xsl:text>
       </xsl:when>
       <xsl:otherwise>
         <xsl:text> </xsl:text>

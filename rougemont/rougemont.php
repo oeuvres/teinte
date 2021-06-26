@@ -1,7 +1,6 @@
 <?php
 /**
- * This class should perform all that Hurlus want with XML/TEI source
- * with custom design
+ *Testing TEI > latex > pdf conversion
  */
 include dirname(dirname(__FILE__)).'/latex/latex.php';
 if (isset($argv[0]) && realpath($argv[0]) == realpath(__FILE__)) Rougemont::cli(); //direct CLI
@@ -14,7 +13,7 @@ class Rougemont {
     $texfile = self::$workdir.basename(self::$workdir).'_'.$id.'.tex';
     // echo $id, ' ', $texfile, "\n", $meta, "\n";
     $tex = str_replace(
-      array('%meta%', '%text%'), 
+      array('%meta%', '%text%'),
       array($meta, $text),
       self::$skeltex,
     );
@@ -22,13 +21,13 @@ class Rougemont {
     return "";
   }
 
-  public static function cli() 
+  public static function cli()
   {
     array_shift($_SERVER['argv']); // shift first arg, the script filepath
     if (!count($_SERVER['argv'])) exit("
 usage    : php -f rougemont.php srcdir/*.xml\n");
 
-    /* (dstdir/)? 
+    /* (dstdir/)?
     $dstdir = "";
     $lastc = substr($_SERVER['argv'][0], -1);
     if ('/' == $lastc || '\\' == $lastc) {
@@ -58,10 +57,10 @@ usage    : php -f rougemont.php srcdir/*.xml\n");
         $texfile = $latex->setup(dirname(__FILE__).'/rougemont.tex'); // setup the TEX template
         // copy alternate formats in the latex working directory
         foreach (glob(dirname(__FILE__)."/rougemont_*.tex") as $filename) {
-          mv 
+          mv
           // echo "$filename occupe " . filesize($filename) . "\n";
         }
-        //  latexmk -xelatex -quiet -f vaneigem1967_savoir-vivre.tex 
+        //  latexmk -xelatex -quiet -f vaneigem1967_savoir-vivre.tex
         // lualatex a4v2_seq.tex labruyere1688_caracteres.pdf
         // chdir (dirname($texfile)); // change working directory
         // exec("latexmk -xelatex -quiet -f ".basename($texfile));

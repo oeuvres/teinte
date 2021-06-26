@@ -19,7 +19,7 @@
   \usepackage[%
   a5paper,
   inner=10mm,
-  outer=10mm, 
+  outer=10mm,
   top=18mm,
   bottom=10mm,
   marginparsep=0pt,
@@ -29,7 +29,7 @@
   \usepackage[%
     a4paper,
     inner=10mm,
-    outer=10mm, 
+    outer=10mm,
     top=25mm,
     bottom=18mm,
     marginparsep=0pt,
@@ -131,7 +131,7 @@
 
 
 
-\renewenvironment{blockquote}% may be used for ornaments
+\renewenvironment{quoteblock}% may be used for ornaments
   {%
     \fontsize{9.5pt}{10.5pt}\selectfont
     \savenotes
@@ -139,24 +139,24 @@
     \begin{quotebar}
     % \begin{mdframed}[style=blockquote]
     % \begin{quotebox}
-  } 
+  }
   {%
     \end{quotebar}
     % \end{leftbar}
     \spewnotes
     % \end{mdframed}
     % \end{quotebox}
-  } 
+  }
 
 \renewenvironment{borderbox}% a framed box out of flow
   {%
     \bigskip
     \begin{mdframed}[style=borderbox]
-  } 
+  }
   {%
     \end{mdframed}
     \medskip
-  } 
+  }
 
 
 \renewcommand{\pn}[1]{\vskip 5pt\noindent{\sffamily\footnotesize\bfseries\color{rubric} #1.}} % <p n="3"/>
@@ -178,7 +178,7 @@
   \fancyhead[R]{\thepage}
 }
 
-\titleformat % delicate tuning, image has produce line-height problems in title on 2 lines 
+\titleformat % delicate tuning, image has produce line-height problems in title on 2 lines
   {name=\chapter} % command
   % [display] % shape
   {\vspace{16pt}\centering} % format
@@ -217,7 +217,7 @@
 \renewcommand{\cftsubsecfont}{\small\relax}
 \renewcommand{\cftsecdotsep}{\cftdotsep}
 \renewcommand{\cftsecpagefont}{\normalfont}
-\renewcommand{\cftsecleader}{\normalfont\cftdotfill{\cftsecdotsep}} 
+\renewcommand{\cftsecleader}{\normalfont\cftdotfill{\cftsecdotsep}}
 
 \begin{document}
 \pagestyle{fancy}

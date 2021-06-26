@@ -1598,7 +1598,20 @@
             <q>J'appelle <term rend="i">typographie</term> la mise à plat d’une pensée</q>
           </a:example>
         </div>
-        <ref name="hi.rend"/>
+        <optional>
+          <attribute name="rend">
+            <list>
+              <choice>
+                <ref name="rend.font"/>
+                <ref name="hi.rend.more"/>
+                <value>initial</value>
+                <value>initial2</value>
+                <value>initial3</value>
+                <value>initial4</value>
+              </choice>
+            </list>
+          </attribute>
+        </optional>
         <!--
         <optional>
           <attribute name="n"/>
@@ -1619,18 +1632,6 @@
           </choice>
         </zeroOrMore>
       </element>
-    </define>
-    <define name="hi.rend">
-      <optional>
-        <attribute name="rend">
-          <list>
-            <choice>
-              <ref name="rend.font"/>
-              <ref name="hi.rend.more"/>
-            </choice>
-          </list>
-        </attribute>
-      </optional>
     </define>
     <define name="hi.rend.more">
       <choice>
@@ -1735,8 +1736,8 @@
                   <value>cm</value>
                   <value>mm</value>
                   <value>in</value>
-                  <value>lines</value>
-                  <value>chars</value>
+                  <value>line</value>
+                  <value>char</value>
                 </choice>
               </attribute>
               <attribute name="quantity">
@@ -3438,6 +3439,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
       </choice>
     </define>
   </div>
-  <!-- appel du teiHeader, revoir URI : http://svn.code.sf.net/p/algone/code/teibook/teibookHeader.rng -->
+  <!-- appel du teiHeader, http://oeuvres.github.io/teinte/teinteHeader.rng -->
   <include h:href="./teinteHeader.rng" h:title="Schéma de l'entête de métadonnées Teibook" href="teinteHeader.rng"/>
 </grammar>

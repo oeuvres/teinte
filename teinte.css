@@ -1137,7 +1137,7 @@ li.item {
 }
 
 .lg > .lg > .l:first-of-type {
-  text-indent: 2rem;
+  /* text-indent: 2rem; */
 }
 
 

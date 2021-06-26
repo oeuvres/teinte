@@ -1363,6 +1363,38 @@ Tables
       <xsl:otherwise/>
     </xsl:choose>
   </xsl:template>
+  
+  <!-- Spaces vertical or horizontal -->
+  <xsl:template match="tei:space">
+    <xsl:variable name="inline">
+      <xsl:call-template name="tei:isInline"/>
+    </xsl:variable>
+    <xsl:choose>
+      <xsl:when test="$inline = ''">
+        <br class="space {@unit}{@quantity}"/>
+      </xsl:when>
+      <xsl:when test="text() != ''">
+        <samp>
+          <xsl:call-template name="atts"/>
+          <xsl:value-of select="substring($nbsp, 1, string-length(.))"/>
+        </samp>
+      </xsl:when>
+      <xsl:when test="@extent">
+        <samp class="space" style="{@extent}"/>
+      </xsl:when>
+      <xsl:when test="@unit = 'chars'">
+        <samp>
+          <xsl:call-template name="atts"/>
+          <xsl:value-of select="substring($nbsp, 1, @quantity)"/>
+        </samp>
+      </xsl:when>
+      <xsl:otherwise>
+        <samp class="space" style="width:2em;">    </samp>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:apply-templates/>
+  </xsl:template>
+  
 
   <!-- Create an html5 inline element, differents tests done to ensure quality of output -->
   <xsl:template match="tei:actor | tei:c | tei:caes | tei:castGroup/tei:head | tei:code | tei:distinct | tei:emph | tei:fw | tei:ident | tei:institution | tei:heraldry | tei:locus | tei:mentioned | tei:metamark | tei:nameLink | tei:num | tei:phr | tei:biblFull/tei:publicationStmt/tei:date | tei:biblFull/tei:publicationStmt/tei:pubPlace | tei:repository | tei:role | tei:roleDesc | tei:seg[@rend] | tei:seg[@type] | tei:settlement| tei:sic | tei:soCalled | tei:u" name="span">

@@ -942,30 +942,6 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
       <xsl:text>]</xsl:text>
     </span>
   </xsl:template>
-  <!-- Supposant que cela contient des espaces insécables -->
-  <xsl:template match="tei:space">
-    <xsl:choose>
-      <xsl:when test="text() != ''">
-        <samp>
-          <xsl:call-template name="noteatts"/>
-          <xsl:value-of select="substring($nbsp, 1, string-length(.))"/>
-        </samp>
-      </xsl:when>
-      <xsl:when test="@extent">
-        <samp class="space" style="{@extent}"/>
-      </xsl:when>
-      <xsl:when test="@unit = 'chars'">
-        <samp>
-          <xsl:call-template name="noteatts"/>
-          <xsl:value-of select="substring($nbsp, 1, @quantity)"/>
-        </samp>
-      </xsl:when>
-      <xsl:otherwise>
-        <samp class="space" style="width:2em;">    </samp>
-      </xsl:otherwise>
-    </xsl:choose>
-    <xsl:apply-templates/>
-  </xsl:template>
   <!-- Conteneur de variantes importantes -->
   <xsl:template match="tei:app[@rend='table']">
     <table>

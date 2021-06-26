@@ -393,14 +393,17 @@
     <define name="profileDesc">
       <element name="profileDesc">
         <a:documentation>Description non-bibliographique du texte (langue, circonstances de production)</a:documentation>
-        <!-- required in any order -->
+        <!-- in any order -->
         <interleave>
           <ref name="creation"/>
           <ref name="langUsage"/>
+          <optional>
+            <ref name="textClass"/>
+          </optional>
+          <optional>
+            <ref name="abstract"/>
+          </optional>
         </interleave>
-        <optional>
-          <ref name="textClass"/>
-        </optional>
       </element>
     </define>
     <define name="creation">
@@ -511,6 +514,26 @@
     </define>
     <define name="teiHeader.p">
       <element name="p">
+        <a:documentation>Paragraphe de texte enrichi</a:documentation>
+        <ref name="teiHeader.flow"/>
+      </element>
+    </define>
+    <define name="teiHeader.quote">
+      <element name="quote">
+        <a:documentation>Paragraphe de texte enrichi</a:documentation>
+        <choice>
+          <ref name="teiHeader.flow"/>
+          <oneOrMore>
+            <choice>
+              <ref name="teiHeader.p"/>
+              <ref name="teiHeader.bibl"/>
+            </choice>
+          </oneOrMore>
+        </choice>
+      </element>
+    </define>
+    <define name="teiHeader.label">
+      <element name="label">
         <a:documentation>Paragraphe de texte enrichi</a:documentation>
         <ref name="teiHeader.flow"/>
       </element>
@@ -956,6 +979,17 @@
         <text/>
       </element>
     </define>
+    <define name="abstract">
+      <element name="abstract">
+        <oneOrMore>
+          <choice>
+            <ref name="teiHeader.label"/>
+            <ref name="teiHeader.p"/>
+            <ref name="teiHeader.quote"/>
+          </choice>
+        </oneOrMore>
+      </element>
+    </define>
     <define name="encodingDesc">
       <element name="encodingDesc">
         <a:documentation>Documentation technique de l'encodage (relation d'un texte électronique avec sa ou ses sources)</a:documentation>
@@ -1048,14 +1082,14 @@
       <element name="sourceDesc">
         <a:documentation>Description de la (des) source(s) numérisée(s)</a:documentation>
         <oneOrMore>
-          <ref name="bibl.label"/>
+          <ref name="teiHeader.bibl"/>
           <optional>
             <ref name="biblFull"/>
           </optional>
         </oneOrMore>
       </element>
     </define>
-    <define name="bibl.label">
+    <define name="teiHeader.bibl">
       <element name="bibl">
         <a:documentation>Référence bibliographique peu structurée de l’œuvre numérisée. En texte mêlé ponctuée, avec typographie légère (italique). Référence utilisée par exemple pour générer les citations à la page</a:documentation>
         <ul xmlns="http://www.w3.org/1999/xhtml">
