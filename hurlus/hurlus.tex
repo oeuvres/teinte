@@ -87,27 +87,25 @@
 %%%%%%%%%%%%%
 % footnotes %
 %%%%%%%%%%%%%
-\makeatletter
-% \renewcommand*{\marginfont}{\itshape\footnotesize}
-% \patchcmd{\@footnotetext}{\footnotesize}{\small}{}{}
-\renewcommand\footnoterule{\vspace*{0.3cm}\hrule height \arrayrulewidth width 3cm \vspace*{0.3cm}}
-\setlength\footnotesep{1.5\footnotesep} % footnote separator
 \renewcommand{\thefootnote}{\bfseries\textcolor{rubric}{\arabic{footnote}}} % color for footnote marks
-\renewcommand\@makefntext[1]{\parindent 1.5em \noindent \hb@xt@1.8em{\hss{\normalfont\@thefnmark . }}#1} % no superscipt in foot
-\makeatother
 
 %%%%%%%%%
 % Fonts %
 %%%%%%%%%
+% \usepackage[]{noto} % works
+\usepackage[defaultmono]{droidsansmono}
 \usepackage[]{roboto} % SmallCaps, Regular is a bit bold
-\setmainfont{Roboto Light}[%
-  % ItalicFont={Roboto Italic},
-]
 % \linespread{0.90} % too compact, keep font natural
-\setsansfont{Roboto Condensed Light}[%
-  BoldFont={Roboto Condensed},
-]
-\newfontfamily{\fontlight}{DejaVu Sans} % for abstract
+\newfontfamily\fontrun[]{Roboto Condensed Light} % condensed runing heads
+\ifav
+  \setmainfont{Roboto}
+\else
+  \setmainfont[
+    BoldFont="Roboto",
+  ]{Roboto Light}
+  \renewcommand{\LettrineFontHook}{\bfseries\color{rubric}}
+\fi
+% \renewenvironment{labelblock}{\begin{center}\bfseries\color{rubric}}{\end{center}}
 
 %%%%%%%%
 % MISC %
@@ -136,9 +134,10 @@
   }
 
 
-\renewcommand{\pn}[1]{\vskip 5pt\noindent{\sffamily\footnotesize\bfseries\color{rubric} #1.}} % <p n="3"/>
+\renewcommand{\pn}[1]{{\footnotesize\color{rubric}\autour{#1}}} % <p n="3"/>
 \renewcommand{\headrulewidth}{\arrayrulewidth}
 \renewcommand{\headrule}{\color{rubric}\hrule}
+
 
 \ifaiv
   \fancypagestyle{fancy}{%
@@ -146,34 +145,36 @@
     \setlength{\headheight}{1.5em}
     \fancyhead{} % reset head
     \fancyfoot{} % reset foot
-    \fancyhead[L]{\truncate{0.45\headwidth}{\nouppercase{\sffamily\elbibl}}} % book ref
-    \fancyhead[R]{\truncate{0.45\headwidth}{\nouppercase{\sffamily\leftmark}}} % Chapter title
+    \fancyhead[L]{\truncate{0.45\headwidth}{\fontrun\elbibl}} % book ref
+    \fancyhead[R]{\truncate{0.45\headwidth}{\fontrun\nouppercase\leftmark}} % Chapter title
     \fancyhead[C]{\thepage}
   }
   \fancypagestyle{plain}{% apply to chapter
     \fancyhf{}% clear all header and footer fields
     \setlength{\headheight}{1.5em}
-    \fancyhead[L]{\truncate{0.9\headwidth}{\sffamily \elbibl}}
+    \fancyhead[L]{\truncate{0.9\headwidth}{\fontrun\elbibl}}
     \fancyhead[R]{\thepage}
   }
+  \renewcommand\chapteropen{\savenotes} % before chapter title
+  \renewcommand\chaptercont{\spewnotes} % after title, argument, epigraph…
+  \renewcommand\chapterclose{} % maybe useful for multicol settings
 \else
   \fancypagestyle{fancy}{%
     \fancyhf{}
     \setlength{\headheight}{1.5em}
     \fancyhead{} % reset head
     \fancyfoot{} % reset foot
-    \fancyhead[LO]{\truncate{0.9\headwidth}{\nouppercase{\sffamily\elbibl}}} % book ref
-    \fancyhead[RE]{\truncate{0.9\headwidth}{\nouppercase{\sffamily\leftmark}}} % Chapter title
+    \fancyhead[LO]{\truncate{0.9\headwidth}{\fontrun\elbibl}} % book ref
+    \fancyhead[RE]{\truncate{0.9\headwidth}{\fontrun\nouppercase\leftmark}} % Chapter title, \nouppercase needed
     \fancyhead[RO,LE]{\thepage}
   }
   \fancypagestyle{plain}{% apply to chapter
     \fancyhf{}% clear all header and footer fields
     \setlength{\headheight}{1.5em}
-    \fancyhead[L]{\truncate{0.9\headwidth}{\sffamily \elbibl}}
+    \fancyhead[L]{\truncate{0.9\headwidth}{\fontrun\elbibl}}
     \fancyhead[R]{\thepage}
   }
 \fi
-
 
 % delicate tuning, image has produce line-height problems in title on 2 lines
 \titleformat{name=\chapter} % command
@@ -182,42 +183,45 @@
   {} % label
   {0pt} % separator between n
   {% before code
-    \noindent\resizebox{\textwidth}{!}{\includegraphics[width=\textwidth]{img/bandeau.pdf}}
     % \vspace{16pt}
   }
-  [{\color{rubric}\huge\bfseries\sffamily #1}\vspace{16pt}] % after code
-
+[{\color{rubric}\huge\bfseries #1}\vspace{16pt}] % after code
 \titlespacing*{\chapter}{0pt}{-30pt}{0pt}[0pt]
-
-\titlespacing{\section}
-  {0pt}{0pt plus 4pt minus 2pt}{\baselineskip}
 
 \titleformat{name=\section}
   [block]
-  {\color{rubric}\large\bfseries\sffamily\raggedleft} % filright ?
+  {\color{rubric}\large\bfseries\raggedleft} % filright ?
   {} % \thesection
   {} % separator \arrayrulewidth
   {\color{rubric}\hrule}
 [#1]
+\titlespacing{\section}{0pt}{0pt plus 4pt minus 2pt}{\baselineskip}
+
+\titleformat{name=\subsection}
+  [block]
+  {\bfseries\raggedright} % filright ?
+  {} % \thesection
+  {} % separator \arrayrulewidth
+  {}
+[#1]
+% \titlespacing{\subsection}{0pt}{0pt plus 4pt minus 2pt}{\baselineskip}
 
 
-\newcommand\chapo{
-  \begin{center}
-    \includegraphics[width=\textwidth]{img/bandeau.pdf}\par
-    \bigskip
-    {\Large\addfontfeature{LetterSpace=25}\bfseries{\elauthor}}\par
-    \smallskip
-    {\large\eldate}\par
-    \bigskip
-    {\Large\selectfont\sffamily\emph{\eltitle}}\par
-    \bigskip
-    {\Large\sffamily LIVRE LIBRE À PRIX LIBRE, DEMANDEZ AU COMPTOIR\par}
-    \bigskip
-    \centerline{\small\color{rubric} {hurlus.fr, tiré le \today}}\par
-    {\hline\par}
-    \bigskip
-    \end{center}
-}
+\newcommand\chapo{{%
+  \vspace*{-3em}
+  \centering % no vskip ()
+  {\Large\addfontfeature{LetterSpace=25}\bfseries{\elauthor}}\par
+  \smallskip
+  {\large\eldate}\par
+  \bigskip
+  {\Large\selectfont\emph{\eltitle}}\par
+  \bigskip
+  {\Large LIVRE LIBRE À PRIX LIBRE, DEMANDEZ AU COMPTOIR\par}
+  \bigskip
+  \centerline{\small\color{rubric} {hurlus.fr, tiré le \today}}\par
+  {\hline\par}
+  \bigskip
+}}
 
 
 \begin{document}
@@ -234,10 +238,21 @@
 
 \elabstract
 \bigskip
+
 \makeatletter\@starttoc{toc}\makeatother % toc without new page
 
 \ifdev % autotext in dev mode
-\fontname\font — \textsc{Les règles du jeu}
+
+\fontname\font — \textsc{Les règles du jeu}\par
+(\hyperref[utopie]{\underline{Lien}})\par
+\noindent \initialiv{A}{lors là}\blindtext\par
+\noindent \initialiv{À}{ la bonheur des dames}\blindtext\par
+\noindent \initialiv{É}{tonnez-le}\blindtext\par
+\noindent \initialiv{Q}{ualitativement}\blindtext\par
+\noindent \initialiv{V}{aloriser}\blindtext\par
+\Blindtext
+\phantomsection
+\label{utopie}
 \Blinddocument
 \fi
 

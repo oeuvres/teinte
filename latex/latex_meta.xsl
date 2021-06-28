@@ -64,7 +64,9 @@ Latex from TEI, metadata for preamble
           <xsl:when test="position() = last()"> \&amp; </xsl:when>
           <xsl:otherwise>, </xsl:otherwise>
         </xsl:choose>
-        <xsl:apply-templates select="." mode="meta"/>
+        <xsl:apply-templates select="." mode="meta">
+          <xsl:with-param name="short" select="true()"/>
+        </xsl:apply-templates>
       </xsl:for-each>
     </xsl:for-each>
   </xsl:template>

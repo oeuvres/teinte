@@ -87,9 +87,14 @@
     tei:valList tei:vocal
     "/>
   
+  <!-- The classical \label is not a precise anchor without the \phantomsection hack
+  Use a local macro to always choose best solution
+  (hyperrerf/hypertarget with a position upper to the baseline)
+  Do not put text in anchor.
+  -->
   <xsl:template name="tei:makeHyperTarget">
     <xsl:param name="id" select="@xml:id"/>
-    <xsl:if test="$id">\label{<xsl:value-of select="$id"/>}</xsl:if>
+    <xsl:if test="$id">\phantomsection&#10;\label{<xsl:value-of select="$id"/>}</xsl:if>
   </xsl:template>
   
   <!-- Simple semantic block with a command -->

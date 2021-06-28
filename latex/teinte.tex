@@ -5,6 +5,7 @@
 
 \makeatletter % <@@@
 
+
 \usepackage{blindtext} % generate text for testing
 \usepackage{contour} % rounding words
 \usepackage[nodayofweek]{datetime}
@@ -14,13 +15,23 @@
 \usepackage{fancyvrb}
 \usepackage{fancyhdr}
 \usepackage{fontspec} % XeLaTeX mandatory for fonts
+\usepackage[stable]{footmisc} % https://texfaq.org/FAQ-ftnsect
 \usepackage{footnote} % hack to collect footnotes in minipage etc.
 \usepackage{framed} % bordering correct with footnote hack
 \usepackage{graphicx}
 \usepackage{lettrine} % drop caps
 \usepackage{lipsum} % generate text for testing
 \usepackage[framemethod=tikz,]{mdframed} % maybe used for frame with footnotes inside
+\usepackage{pdftexcmds} % needed for tests expressions
 \usepackage{polyglossia} % non-break space french punct, bug Warning: "Failed to patch part"
+\usepackage[%
+  indentfirst=false,
+  vskip=1em,
+  noorphanfirst=true,
+  noorphanafter=true,
+  leftmargin=\parindent,
+  rightmargin=0pt,
+]{quoting}
 \usepackage{ragged2e}
 \usepackage{tabularx} % <table>
 \usepackage[explicit]{titlesec} % NO implicit !, wear titles
@@ -30,8 +41,12 @@
 \usepackage{unicode-math}
 \usepackage{verse} % <l>
 \usepackage{xcolor} % named colors
-\usepackage{xparse} % recommanded
-\usepackage{hyperref} % supposed to be the last one, :o) except for the one to follow
+\usepackage{xparse} % @ifundefined
+\XeTeXdefaultencoding "iso-8859-1" % bad encoding of xstring
+\usepackage{xstring} % string tests
+\XeTeXdefaultencoding "utf-8"
+\usepackage{hyperref} % supposed to be the last one, :o) except for the ones to follow
+% \usepackage{bookmark}
 % TOTEST
 % \usepackage{hypcap} % links in caption ?
 % \usepackage{marginnote}
@@ -46,17 +61,9 @@
 % \usepackage[breakable]{tcolorbox} % text styling gone, footnote hack not kept with breakable
 
 
-\defaultfontfeatures{
-  % Mapping=tex-text, % no effect seen
-  Scale=MatchLowercase,
-  Ligatures={TeX,Common},
-}
-
 % Metadata inserted by a program, from the TEI source, for title page and runing heads
 %meta%
-
-
-% If things have not been defined before
+% Default metas
 \newcommand{\colorprovide}[2]{\@ifundefinedcolor{#1}{\colorlet{#1}{#2}}{}}
 \colorprovide{rubric}{red}
 \colorprovide{silver}{Gray}
@@ -76,19 +83,26 @@
 \let\elauthor\@author
 \let\eldate\@date
 
-\@ifundefined{\columnseprulecolor}{
-  \patchcmd\@outputdblcol{% find
-    \normalcolor\vrule
-  }{% and replace by
-    \columnseprulecolor\vrule
-  }{% success
-  }{% failure
-    \@latex@warning{Patching \string\@outputdblcol\space failed}%
-  }
-}{}
 
-\hyperbaseurl{}
-\hypersetup{extension = }
+\defaultfontfeatures{
+  % Mapping=tex-text, % no effect seen
+  Scale=MatchLowercase,
+  Ligatures={TeX,Common},
+}
+
+\@ifundefined{\columnseprulecolor}
+  {%
+    \patchcmd\@outputdblcol{% find
+      \normalcolor\vrule
+    }{% and replace by
+      \columnseprulecolor\vrule
+    }{% success
+    }{% failure
+      \@latex@warning{Patching \string\@outputdblcol\space failed}%
+    }
+  }
+  {}
+
 \hypersetup{
   % pdftex, % no effect
   pdftitle={\elbibl},
@@ -102,13 +116,10 @@
   % linktocpage=true, % toc, link only on page no
   pdfpagemode=UseOutlines,    % pdf toc
   % pdfpagelayout=TwoPageRight,
-  citebordercolor=0.75 0.75 0.75,
-  linkbordercolor=0.75 0.75 0.75,
-  urlbordercolor=0.75 0.75 0.75,
-  colorlinks=true,
-  allcolors=black,
+  hyperfootnotes=true,
+  colorlinks=false,
+  pdfborder=0 0 0,
 }
-\usepackage{bookmark} % after hyperref
 
 
 
@@ -129,36 +140,53 @@
 
 
 % commands, inlines
+\newcommand{\anchor}[1]{\Hy@raisedlink{\hypertarget{#1}{}}} % link to top of an anchor (not baseline)
 \newcommand\abbr{}
 \newcommand{\autour}[1]{\tikz[baseline=(X.base)]\node [draw=rubric,thin,rectangle,inner sep=1.5pt, rounded corners=3pt] (X) {#1};}
 \newcommand\corr{}
 \newcommand{\ed}[1]{ {\color{silver}\sffamily\footnotesize (#1)} } % <milestone ed="1688"/>
 \newcommand\expan{}
 \newcommand\gap{}
-\renewcommand{\LettrineFontHook}{\color{rubric}\mdseries\ttfamily}
+\renewcommand{\LettrineFontHook}{\color{rubric}}
 \newcommand{\initial}[2]{\lettrine[lines=2, loversize=0.3, lhang=0.3]{#1}{#2}}
 \newcommand{\initialiv}[2]{%
   \let\oldLFH\LettrineFontHook
-  \renewcommand{\LettrineFontHook}{\color{rubric}\ttfamily}
-  \lettrine[lines=4, loversize=0.2, lhang=0.2]{#1}{#2}
+  % \renewcommand{\LettrineFontHook}{\color{rubric}\ttfamily}
+  \IfSubStr{Q}{#1}{
+    \lettrine[lines=4, lhang=0.2, loversize=-0.1, lraise=0.2]{\smash{#1}}{#2}
+  }{\IfSubStr{É}{#1}{
+    \lettrine[lines=4, lhang=0.2, loversize=-0, lraise=0]{\smash{#1}}{#2}
+  }{\IfSubStr{ÀÂ}{#1}{
+    \lettrine[lines=4, lhang=0.2, loversize=-0, lraise=0, slope=0.6em]{\smash{#1}}{#2}
+  }{\IfSubStr{A}{#1}{
+    \lettrine[lines=4, lhang=0.2, loversize=0.2, slope=0.6em]{\smash{#1}}{#2}
+  }{\IfSubStr{V}{#1}{
+    \lettrine[lines=4, lhang=0.2, loversize=0.2, slope=-0.5em]{\smash{#1}}{#2}
+  }{
+    \lettrine[lines=4, lhang=0.2, loversize=0.2]{\smash{#1}}{#2}
+  }}}}}
   \let\LettrineFontHook\oldLFH
 }
 \newcommand{\labelchar}[1]{{\color{rubric}\bf #1}}
 \newcommand{\milestone}[1]{\autour{\footnotesize\color{rubric} #1}} % <milestone n="4"/>
+\newcommand\name{}
 \newcommand\orig{}
 \newcommand\orgName{}
 \newcommand\persName{}
-\newcommand\name{}
 \newcommand\placeName{}
-\newcommand{\pn}[1]{\noindent\sffamily\textbf{#1.} } % <p n="3"/>
+\newcommand{\pn}[1]{{\sffamily\textbf{#1.}} } % <p n="3"/>
 \newcommand\reg{}
 % \newcommand\ref{} % already defined
 \newcommand\sic{}
-
+\def\mednobreak{\ifdim\lastskip<\medskipamount
+  \removelastskip\nopagebreak\medskip\fi}
+\def\bignobreak{\ifdim\lastskip<\bigskipamount
+  \removelastskip\nopagebreak\bigskip\fi}
 % commands, blocks
 \newcommand{\byline}[1]{\bigskip{\RaggedLeft{#1}\par}\bigskip}
 \newcommand{\bibl}[1]{{\footnotesize\RaggedLeft{#1}\par}}
 \newcommand{\dateline}[1]{\medskip{\RaggedLeft{#1}\par}\bigskip}
+\newcommand{\labelblock}[1]{\bigskip{\color{rubric}\bfseries\centering #1\par}\bignobreak}
 \newcommand{\salute}[1]{\bigskip{#1}\par\medskip}
 
 % environments for blocks (some may become commands)
@@ -168,17 +196,6 @@
 \newenvironment{docDate}{}{\ifvmode\par\fi }
 \newenvironment{docImprint}{\vskip6pt}{\ifvmode\par\fi }
 \newenvironment{docTitle}{\vskip6pt\bfseries\fontsize{18pt}{22pt}\selectfont}{\par }
-\newenvironment{labelblock}
-  {%
-    \medskip
-    \begin{center}
-    \sffamily
-    \bfseries
-  }
-  {%
-    \end{center}
-    \medskip
-  }
 \newenvironment{msHead}{\vskip6pt}{\par}
 \newenvironment{msItem}{\vskip6pt}{\par}
 \newenvironment{titlePart}{}{\par }
@@ -207,14 +224,6 @@
 {\def\@noitemerr
   {\@latex@warning{Empty `bibitemlist' environment}}%
 \endlist}
-\usepackage[%
-  indentfirst=false,
-  vskip=1em,
-  noorphanfirst=true,
-  noorphanafter=true,
-  leftmargin=\parindent,
-  rightmargin=0pt,
-]{quoting}
 \newenvironment{quoteblock}% may be used for ornaments
   {\begin{quoting}}
   {\end{quoting}}
@@ -247,13 +256,37 @@
 
 
 % text structure
-\newcommand\chapteropen{} % maybe useful for multicol settings
+\newcommand\chapteropen{} % before chapter title
+\newcommand\chaptercont{} % after title, argument, epigraph…
 \newcommand\chapterclose{} % maybe useful for multicol settings
 \setcounter{secnumdepth}{-2} % no counters for hierarchy titles
 \setcounter{tocdepth}{5} % deep toc
 \markright{\@title} % ???
 \markboth{\@title}{\@author} % ???
 \renewcommand\tableofcontents{\@starttoc{toc}}
+% toclof format
+\renewcommand{\@cftmaketoctitle}{}
+\setlength{\cftbeforesecskip}{\z@ \@plus.2\p@}
+\renewcommand{\cftchapfont}{\bfseries}
+\renewcommand{\cftchapdotsep}{\cftdotsep}
+\renewcommand{\cftchapleader}{\normalfont\cftdotfill{\cftchapdotsep}}
+\renewcommand{\cftchappagefont}{\normalfont}
+\setlength{\cftbeforechapskip}{0em \@plus\p@}
+% \renewcommand{\cftsecfont}{\small\relax}
+\renewcommand{\cftsecpagefont}{\normalfont}
+% \renewcommand{\cftsubsecfont}{\small\relax}
+\renewcommand{\cftsecdotsep}{\cftdotsep}
+\renewcommand{\cftsecpagefont}{\normalfont}
+\renewcommand{\cftsecleader}{\normalfont\cftdotfill{\cftsecdotsep}}
+
+
+% footnotes
+\newif\ifheading
+\newcommand*{\fnmarkscale}{\ifheading 0.70 \else 1 \fi}
+\renewcommand\footnoterule{\vspace*{0.3cm}\hrule height \arrayrulewidth width 3cm \vspace*{0.3cm}}
+\setlength\footnotesep{1.5\footnotesep} % footnote separator
+\renewcommand\@makefntext[1]{\parindent 1.5em \noindent \hb@xt@1.8em{\hss{\normalfont\@thefnmark . }}#1} % no superscipt in foot
+
 
 % orphans and widows
 \clubpenalty=9996

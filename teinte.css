@@ -1828,6 +1828,32 @@ hr.dots {
   float: left;
   line-height: 1;
 }
+p.initial4::first-letter {
+  display: block;
+  font-weight: bold;
+  padding-top: -0.8em;
+  margin-left: -0.2em;
+  margin-right: 5px;
+  font-size: 6em;
+  float: left;
+  line-height: 1;
+}
+p.initial2::first-letter {
+  display: block;
+  font-weight: bold;
+  font-size: 2.8em;
+  float: left;
+  line-height: 1;
+  padding-top: 0.2em;
+  margin-right: 0.2em;
+}
+
+
+span.initial2,
+span.initial4 {
+  font-variant: small-caps;
+  font-weight: bold;
+}
 
 .i .dropcap::first-letter {
   margin-right: 10px;

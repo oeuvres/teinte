@@ -67,11 +67,30 @@ A light version for XSLT1, with local improvements.
     <xsl:choose>
       <!--  restart columns -->
       <xsl:when test="$documentclass = 'book' and $level &lt;= 0">
-        <xsl:apply-templates select="tei:head"/>
-        <xsl:apply-templates select="tei:epigraph"/>
-        <xsl:apply-templates select="tei:argument"/>
         <xsl:text>&#10;\chapteropen&#10;</xsl:text>
-        <xsl:apply-templates select="*[not(self::tei:head)][not(self::tei:argument)][not(self::tei:epigraph)]"/>
+        <!-- first content element -->
+        <xsl:variable name="first" select="
+         (*[not(self::tei:argument)]
+          [not(self::tei:byline)]
+          [not(self::tei:dateline)]
+          [not(self::tei:docAuthor)]
+          [not(self::tei:docDate)]
+          [not(self::tei:epigraph)]
+          [not(self::tei:head)]
+          [not(self::tei:opener)]
+          [not(self::tei:salute)]
+          [not(self::tei:signed)])[1]
+          "/>
+        <xsl:choose>
+          <xsl:when test="$first">
+            <xsl:apply-templates select="$first/preceding-sibling::*"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:apply-templates/>
+          </xsl:otherwise>
+        </xsl:choose>
+        <xsl:text>&#10;\chaptercont&#10;</xsl:text>
+        <xsl:apply-templates select="$first | $first/following-sibling::*"/>
         <xsl:text>\chapterclose&#10;&#10;</xsl:text>
       </xsl:when>
       <xsl:otherwise>
@@ -156,9 +175,9 @@ or parent::tei:div[contains(@rend, 'nonumber')]
         <xsl:apply-templates/>
         <xsl:text>}</xsl:text>
         <xsl:if test="../@xml:id">
-          <xsl:text>\label{</xsl:text>
-          <xsl:value-of select="../@xml:id"/>
-          <xsl:text>}</xsl:text>
+          <xsl:call-template name="tei:makeHyperTarget">
+            <xsl:with-param name="id" select="../@xml:id"/>
+          </xsl:call-template>
         </xsl:if>
         <xsl:text>&#10;</xsl:text>
       </xsl:otherwise>

@@ -421,6 +421,10 @@ Sections
           <xsl:otherwise>autofirst</xsl:otherwise>
         </xsl:choose>
         <xsl:if test="@n"> no</xsl:if>
+        <xsl:if test="tei:hi[contains(@rend, 'initial')]"> 
+          <xsl:text> </xsl:text>
+          <xsl:value-of select="tei:hi[starts-with(@rend, 'initial')]/@rend"/>
+        </xsl:if>
       </xsl:variable>
       <xsl:call-template name="atts">
         <xsl:with-param name="class" select="$class"/>
@@ -1067,6 +1071,14 @@ Tables
           </xsl:apply-templates>
         </xsl:element>
       </xsl:when>
+      <xsl:when test="contains($rend, 'initial')">
+        <span>
+          <xsl:call-template name="atts"/>
+          <xsl:apply-templates>
+            <xsl:with-param name="from" select="$from"/>
+          </xsl:apply-templates>
+        </span>
+      </xsl:when>
       <xsl:when test="$rend = ''">
         <em>
           <xsl:call-template name="atts"/>
@@ -1074,14 +1086,6 @@ Tables
             <xsl:with-param name="from" select="$from"/>
           </xsl:apply-templates>
         </em>
-      </xsl:when>
-      <xsl:when test="starts-with($rend, 'it')">
-        <i>
-          <xsl:call-template name="atts"/>
-          <xsl:apply-templates>
-            <xsl:with-param name="from" select="$from"/>
-          </xsl:apply-templates>
-        </i>
       </xsl:when>
       <xsl:when test="starts-with($rend, 'it')">
         <i>

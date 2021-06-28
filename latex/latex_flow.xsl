@@ -56,6 +56,10 @@ for example: abstract.
     </xsl:choose>
   </xsl:template>
   
+  <xsl:template match="tei:anchor">
+    <xsl:call-template name="tei:makeHyperTarget"/>
+  </xsl:template>
+  
   <xsl:template match="tei:bibl">
     <xsl:variable name="inline">
       <xsl:call-template name="tei:isInline"/>
@@ -150,7 +154,7 @@ for example: abstract.
     <xsl:apply-templates/>
     <xsl:text>}</xsl:text>
   </xsl:template>
-
+  
   <!-- code example, for TEI documentation, not yet relevant here
   <xsl:template match="tei:seg[tei:match(@rend, 'pre')] | tei:eg | tei:q[tei:match(@rend, 'eg')]">
     <xsl:variable name="stuff">
@@ -338,12 +342,13 @@ for example: abstract.
       </xsl:choose>
     </xsl:variable>
     <xsl:value-of select="$cmd"/>
-    <xsl:text>{</xsl:text>
-    <xsl:value-of select="substring($text, 1, 1)"/>
-    <xsl:text>}</xsl:text>
-    <xsl:text>{</xsl:text>
-    <xsl:value-of select="substring($text, 2)"/>
-    <xsl:text>}</xsl:text>
+    <xsl:variable name="c" select="substring($text, 2, 1)"/>
+    <xsl:variable name="apos">'</xsl:variable>
+    <xsl:choose>
+      <!-- L’, D’ \kern-0.08em{’} -->
+      <xsl:when test="$c = '’' or $c = $apos">{<xsl:value-of select="substring($text, 1, 1)"/>\kern-0.08em{’}}{<xsl:value-of select="substring($text, 3)"/>}</xsl:when>
+      <xsl:otherwise>{<xsl:value-of select="substring($text, 1, 1)"/>}{<xsl:value-of select="substring($text, 2)"/>}</xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   
 
@@ -388,19 +393,7 @@ for example: abstract.
         </xsl:call-template>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:text>\begin{labelblock}</xsl:text>
-        <!-- unsafe
-        <xsl:text>[</xsl:text>
-        <xsl:choose>
-          <xsl:when test="contains($rend, ' i ')">\it</xsl:when>
-          <xsl:when test="contains($rend, ' it')">\it</xsl:when>
-          <xsl:otherwise>\bf</xsl:otherwise>
-        </xsl:choose>
-        <xsl:text>]</xsl:text>
-        -->
-        <xsl:text>&#10;</xsl:text>
-        <xsl:apply-templates/>
-        <xsl:text>&#10;\end{labelblock}&#10;</xsl:text>
+        <xsl:if test="true()">&#10;\labelblock{<xsl:apply-templates/>}&#10;&#10;</xsl:if>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -429,7 +422,7 @@ for example: abstract.
         <xsl:apply-templates mode="gloss" select="tei:item"/>
         <xsl:text>&#10;\end{description} </xsl:text>
       </xsl:when>
-      <xsl:when test="contains($rend, ' ol ') or contains($rend, ' ordered ')">
+      <xsl:when test="contains($rend, ' ol ') or contains($rend, ' ordered ') or contains($rend, '1')">
         <xsl:text>\begin{enumerate}</xsl:text>
         <xsl:apply-templates/>
         <xsl:text>&#10;\end{enumerate}</xsl:text>
@@ -639,9 +632,12 @@ for example: abstract.
       <xsl:when test="name($prev) != 'p' or contains($prev/@rend, 'right')  or contains($prev/@rend, 'center')">\noindent </xsl:when>
     </xsl:choose>
     <xsl:if test="@n != ''">
+      <xsl:call-template name="tei:makeHyperTarget">
+        <xsl:with-param name="id" select="concat('par', @n)"/>
+      </xsl:call-template>
       <xsl:text>\pn{</xsl:text>
       <xsl:value-of select="@n"/>
-      <xsl:text>}</xsl:text>
+      <xsl:text>} </xsl:text>
     </xsl:if>
     <!-- Paragraph auto numbering ?
     <xsl:if test="$numberParagraphs = 'true'">
@@ -855,6 +851,40 @@ for example: abstract.
     <xsl:apply-templates/>
   </xsl:template>
 
+  <xsl:template match="tei:ptr | tei:ref">
+    <!-- Some chars may be escaped in URI -->
+    <xsl:variable name="target" select="translate(normalize-space(@target), '\', '')"/>
+    <xsl:choose>
+      <xsl:when test="not(@target)">
+        <xsl:apply-templates/>
+      </xsl:when>
+      <xsl:when test="starts-with($target, '#')">
+        <xsl:text>\hyperref[</xsl:text>
+        <xsl:value-of select="substring-after($target, '#')"/>
+        <xsl:text>]</xsl:text>
+        <xsl:text>{\underline{</xsl:text>
+        <xsl:apply-templates/>
+        <xsl:text>}}</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>\href{</xsl:text>
+        <xsl:value-of select="$target"/>
+        <xsl:text>}</xsl:text>
+        <xsl:text>{\underline{</xsl:text>
+        <xsl:apply-templates/>
+        <xsl:text>}}</xsl:text>
+        <!-- Url as footnotes -->
+        <xsl:text>\footnote{</xsl:text>
+        <xsl:text>\href{</xsl:text>
+        <xsl:value-of select="$target"/>
+        <xsl:text>}</xsl:text>
+        <xsl:text>{</xsl:text>
+        <xsl:value-of select="$target"/>
+        <xsl:text>}</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  
   <xsl:template match="tei:signed">
     <xsl:text>&#10;&#10;\begin{</xsl:text>
     <xsl:value-of select="$quoteEnv"/>
