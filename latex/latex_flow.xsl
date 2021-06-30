@@ -862,25 +862,14 @@ for example: abstract.
         <xsl:text>\hyperref[</xsl:text>
         <xsl:value-of select="substring-after($target, '#')"/>
         <xsl:text>]</xsl:text>
-        <xsl:text>{\underline{</xsl:text>
+        <xsl:text>{\dotuline{</xsl:text>
         <xsl:apply-templates/>
         <xsl:text>}}</xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:text>\href{</xsl:text>
-        <xsl:value-of select="$target"/>
-        <xsl:text>}</xsl:text>
-        <xsl:text>{\underline{</xsl:text>
-        <xsl:apply-templates/>
-        <xsl:text>}}</xsl:text>
-        <!-- Url as footnotes -->
-        <xsl:text>\footnote{</xsl:text>
-        <xsl:text>\href{</xsl:text>
-        <xsl:value-of select="$target"/>
-        <xsl:text>}</xsl:text>
-        <xsl:text>{</xsl:text>
-        <xsl:value-of select="$target"/>
-        <xsl:text>}</xsl:text>
+        <xsl:if test="true()">\href{<xsl:value-of select="$target"/>}{\dotuline{<xsl:apply-templates/>}}</xsl:if>
+        <!-- Url as footnote -->
+        <xsl:if test="true()">\footnote{\href{<xsl:value-of select="$target"/>}{\url{<xsl:value-of select="$target"/>}}}</xsl:if>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>

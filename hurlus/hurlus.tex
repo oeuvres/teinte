@@ -36,10 +36,10 @@
   \documentclass[french,twoside]{book} % ,notitlepage
   \usepackage[%
     a5paper,
-    inner=15mm,
+    inner=25mm,
     outer=15mm,
-    top=18mm,
-    bottom=18mm,
+    top=15mm,
+    bottom=15mm,
     marginparsep=0pt,
   ]{geometry}
   \usepackage[fontsize=12pt]{scrextend} % for Roboto
@@ -186,20 +186,22 @@
     % \vspace{16pt}
   }
 [{\color{rubric}\huge\bfseries #1}\vspace{16pt}] % after code
+% \titlespacing{command}{left spacing}{before spacing}{after spacing}[right]
 \titlespacing*{\chapter}{0pt}{-30pt}{0pt}[0pt]
 
 \titleformat{name=\section}
   [block]
-  {\color{rubric}\large\bfseries\raggedleft} % filright ?
+  {\color{rubric}\large\bfseries\raggedleft}
   {} % \thesection
   {} % separator \arrayrulewidth
   {\color{rubric}\hrule}
 [#1]
+
 \titlespacing{\section}{0pt}{0pt plus 4pt minus 2pt}{\baselineskip}
 
 \titleformat{name=\subsection}
   [block]
-  {\bfseries\raggedright} % filright ?
+  {\bfseries\raggedright}
   {} % \thesection
   {} % separator \arrayrulewidth
   {}

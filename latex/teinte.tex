@@ -39,12 +39,15 @@
 \usepackage{tocloft}
 \usepackage[fit]{truncate} % used im runing titles
 \usepackage{unicode-math}
+\usepackage[normalem]{ulem} % breakable \uline, normalem is absolutely necessary to keep \emph
 \usepackage{verse} % <l>
 \usepackage{xcolor} % named colors
 \usepackage{xparse} % @ifundefined
 \XeTeXdefaultencoding "iso-8859-1" % bad encoding of xstring
 \usepackage{xstring} % string tests
 \XeTeXdefaultencoding "utf-8"
+
+\PassOptionsToPackage{hyphens}{url} % before hyperref, which load url package
 \usepackage{hyperref} % supposed to be the last one, :o) except for the ones to follow
 % \usepackage{bookmark}
 % TOTEST
@@ -58,6 +61,7 @@
 % \usepackage{flushend} % bad for last notes, supposed flush end of columns
 % \usepackage{multicol} % not compatible with too much packages (longtable, framed, memoir…)
 % \usepackage{sectsty} % \chapterfont OBSOLETE
+% \usepackage{soul} % \ul for underline, OBSOLETE with XeTeX
 % \usepackage[breakable]{tcolorbox} % text styling gone, footnote hack not kept with breakable
 
 
@@ -113,12 +117,13 @@
   bookmarksopen=true,
   bookmarksopenlevel=1,
   pdfstartview=Fit,
-  % linktocpage=true, % toc, link only on page no
+  breaklinks=true, % avoid long links
   pdfpagemode=UseOutlines,    % pdf toc
-  % pdfpagelayout=TwoPageRight,
   hyperfootnotes=true,
   colorlinks=false,
   pdfborder=0 0 0,
+  % pdfpagelayout=TwoPageRight,
+  % linktocpage=true, % NO, toc, link only on page no
 }
 
 
