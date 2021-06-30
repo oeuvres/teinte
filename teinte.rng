@@ -1227,6 +1227,9 @@
         <optional>
           <ref name="att.type"/>
         </optional>
+        <optional>
+          <ref name="att.resp"/>
+        </optional>
         <!-- Maybe in italic and not in quotes -->
         <optional>
           <attribute name="rend">
