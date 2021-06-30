@@ -383,7 +383,7 @@
         <ref name="att.when"/>
       </optional>
       <optional>
-        <ref name="resp"/>
+        <ref name="att.resp"/>
       </optional>
       <optional>
         <ref name="att.n"/>
@@ -1226,9 +1226,6 @@
         <ref name="xml-atts"/>
         <optional>
           <ref name="att.type"/>
-        </optional>
-        <optional>
-          <ref name="resp"/>
         </optional>
         <!-- Maybe in italic and not in quotes -->
         <optional>
@@ -2143,7 +2140,7 @@
       <element name="add">
         <a:documentation>Segment de texte inséré, &lt;html5:ins&gt;</a:documentation>
         <optional>
-          <ref name="resp"/>
+          <ref name="att.resp"/>
         </optional>
         <zeroOrMore>
           <choice>
@@ -2617,7 +2614,7 @@
           <attribute name="rend"/>
         </optional>
         <optional>
-          <attribute name=/>
+          <ref name="att.resp"/>
         </optional>
         <optional>
           <attribute name="att.n"/>
@@ -2873,7 +2870,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
           <attribute name="n"/>
         </optional>
         <optional>
-          <attribute name=/>
+          <ref name="att.resp"/>
         </optional>
         <zeroOrMore>
           <ref name="term"/>
@@ -3150,7 +3147,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
       </attribute>
     </define>
     <define name="att.resp">
-      <attribute name=>
+      <attribute name="resp">
         <choice>
           <value>author</value>
           <a:documentation>note de l’auteur</a:documentation>
