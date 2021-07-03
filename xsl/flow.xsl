@@ -199,12 +199,52 @@ Sections
         <!-- hard page break ? -->
         <xsl:otherwise/>
       </xsl:choose>
-      <xsl:apply-templates>
+      <xsl:call-template name="div-header">
         <xsl:with-param name="level" select="$level + 1"/>
         <xsl:with-param name="from" select="$from"/>
-      </xsl:apply-templates>
+      </xsl:call-template>
     </xsl:element>
   </xsl:template>
+  <!-- 
+  Sections, group opening infos in a <header> element
+  -->
+  <xsl:template name="div-header">
+    <!--  -->
+    <xsl:param name="level"/>
+    <xsl:param name="from"/>
+    <xsl:variable name="first" select="
+      (*[not(self::tei:argument)]
+      [not(self::tei:byline)]
+      [not(self::tei:cb)]
+      [not(self::tei:dateline)]
+      [not(self::tei:docAuthor)]
+      [not(self::tei:docDate)]
+      [not(self::tei:epigraph)]
+      [not(self::tei:head)]
+      [not(self::tei:opener)]
+      [not(self::tei:pb)]
+      [not(self::tei:salute)]
+      [not(self::tei:signed)])[1]
+      "/>
+    <xsl:choose>
+      <xsl:when test="$first and $first/preceding-sibling::*">
+        <header>
+          <xsl:apply-templates select="$first/preceding-sibling::*"/>
+        </header>
+        <xsl:apply-templates select="$first | $first/following-sibling::*">
+          <xsl:with-param name="level" select="$level + 1"/>
+          <xsl:with-param name="from" select="$from"/>
+        </xsl:apply-templates>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates>
+          <xsl:with-param name="level" select="$level + 1"/>
+          <xsl:with-param name="from" select="$from"/>
+        </xsl:apply-templates>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  
   <!-- Floating division -->
   <xsl:template match="tei:floatingText">
     <xsl:param name="from"/>
@@ -297,6 +337,7 @@ Sections
   </xsl:template>
   <xsl:template match="tei:titlePage/tei:performance"/>
   <!-- <h[1-6]> titres avec niveaux hiérarchiques génériques selon le nombre d'ancêtres, il est possible de paramétrer le niveau, pour commencer à 1 en haut de document généré -->
+  
   <xsl:template match="tei:head">
     <xsl:param name="from"/>
     <xsl:param name="level" select="count(ancestor::tei:*) - 2"/>
@@ -308,6 +349,7 @@ Sections
     <xsl:variable name="name">
       <xsl:choose>
         <xsl:when test="normalize-space(.) = ''"/>
+        <xsl:when test="@type = 'kicker' and following-sibling::tei:head"/>
         <xsl:when test="parent::tei:front | parent::tei:text | parent::tei:back ">h1</xsl:when>
         <xsl:when test="$level &lt; 1">h1</xsl:when>
         <xsl:when test="$level &gt; 7">h6</xsl:when>
@@ -324,7 +366,11 @@ Sections
           </xsl:with-param>
         </xsl:call-template>
         <a href="#{$id}">
-          <xsl:apply-templates select="node()[local-name()!='pb']">
+          <xsl:for-each select="preceding-sibling::tei:head[1][@type = 'kicker']">
+            <xsl:apply-templates/>
+            <br />
+          </xsl:for-each>
+          <xsl:apply-templates select="node()[not(self::tei:pb)]">
             <xsl:with-param name="from" select="$from"/>
           </xsl:apply-templates>
         </a>
@@ -410,10 +456,10 @@ Sections
       <xsl:variable name="char1" select="substring( normalize-space(.), 1, 1)"/>
       <xsl:variable name="class">
         <xsl:choose>
-          <xsl:when test="contains( '-–—0123456789', $char1 )"/>
           <xsl:when test="descendant::tei:graphic">noindent</xsl:when>
           <xsl:when test="contains(concat(' ', @rend, ' '), ' indent ')"/>
           <!--
+          <xsl:when test="contains( '-–—0123456789', $char1 )"/>
           <xsl:when test="$prev and contains('-–—', substring(normalize-space($prev), 1, 1))"/>
           -->
           <xsl:when test="local-name($prev) ='p' and translate($prev, '*∾  ','')!=''"/>

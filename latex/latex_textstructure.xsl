@@ -63,7 +63,7 @@ A light version for XSLT1, with local improvements.
   <xsl:template match="tei:div">
     <xsl:variable name="level">
       <xsl:call-template name="level"/>
-    </xsl:variable>   
+    </xsl:variable>
     <xsl:choose>
       <!--  restart columns -->
       <xsl:when test="$documentclass = 'book' and $level &lt;= 0">
@@ -72,25 +72,28 @@ A light version for XSLT1, with local improvements.
         <xsl:variable name="first" select="
          (*[not(self::tei:argument)]
           [not(self::tei:byline)]
+          [not(self::tei:cb)]
           [not(self::tei:dateline)]
           [not(self::tei:docAuthor)]
           [not(self::tei:docDate)]
           [not(self::tei:epigraph)]
           [not(self::tei:head)]
           [not(self::tei:opener)]
+          [not(self::tei:pb)]
           [not(self::tei:salute)]
           [not(self::tei:signed)])[1]
           "/>
         <xsl:choose>
           <xsl:when test="$first">
             <xsl:apply-templates select="$first/preceding-sibling::*"/>
+            <xsl:text>&#10;\chaptercont&#10;</xsl:text>
+            <xsl:apply-templates select="$first | $first/following-sibling::*"/>
           </xsl:when>
           <xsl:otherwise>
+            <xsl:text>&#10;\chaptercont&#10;</xsl:text>
             <xsl:apply-templates/>
           </xsl:otherwise>
         </xsl:choose>
-        <xsl:text>&#10;\chaptercont&#10;</xsl:text>
-        <xsl:apply-templates select="$first | $first/following-sibling::*"/>
         <xsl:text>\chapterclose&#10;&#10;</xsl:text>
       </xsl:when>
       <xsl:otherwise>
@@ -227,7 +230,7 @@ or parent::tei:div[contains(@rend, 'nonumber')]
       </xsl:when>
       <xsl:when test="ancestor-or-self::tei:div[1]/descendant::*[key('CHAPTERS',generate-id(.))]">-1</xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="count(ancestor-or-self::tei:div) - 1"/>
+        <xsl:value-of select="count(ancestor-or-self::tei:div)"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>

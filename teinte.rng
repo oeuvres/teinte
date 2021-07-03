@@ -921,6 +921,7 @@
               </zeroOrMore>
             </element>
             <ref name="ref"/>
+            <ref name="surname"/>
             <ref name="title"/>
           </choice>
         </oneOrMore>
