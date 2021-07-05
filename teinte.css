@@ -321,8 +321,24 @@ h6 {
   orphans: 0;
 }
 
+a.bookmark {
+  font-size: 60%;
+  visibility: hidden;
+}
+
+h1:hover a.bookmark,
+h2:hover a.bookmark,
+h3:hover a.bookmark,
+h4:hover a.bookmark,
+h5:hover a.bookmark,
+h6:hover a.bookmark,
+a.bookmark:hover {
+  opacity: 0.5;
+  visibility: visible;
+}
+
 h1 {
-  font-size: 130%;
+  font-size: 150%;
   font-weight: 900;
   padding-top: 1rem;
   margin-top: 0;
@@ -1688,6 +1704,11 @@ p.p {
   text-indent: 2rem;
 }
 
+ul,
+ol {
+  padding-left: 2rem;
+}
+
 p.p.no {
   text-indent: 0;
   margin-top: 1rem;
@@ -1735,22 +1756,6 @@ blockquote.border {
   padding: 0.5rem 1.5rem;
 }
 
-
-a.bookmark {
-  font-size: 60%;
-  visibility: hidden;
-}
-
-h1:hover a.bookmark,
-h2:hover a.bookmark,
-h3:hover a.bookmark,
-h4:hover a.bookmark,
-h5:hover a.bookmark,
-h6:hover a.bookmark,
-a.bookmark:hover {
-  opacity: 0.5;
-  visibility: visible;
-}
 
 div.center,
 p.center,

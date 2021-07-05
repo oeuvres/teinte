@@ -13,14 +13,7 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
 
 XSLT 1.0 is compatible browser, PHP, Python, Java…
 -->
-<xsl:transform version="1.0"
-  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-  xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:eg="http://www.tei-c.org/ns/Examples"
-  xmlns:tei="http://www.tei-c.org/ns/1.0"
-  xmlns:epub="http://www.idpf.org/2007/ops"
-  exclude-result-prefixes="eg tei epub"
-  >
+<xsl:transform version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" xmlns:eg="http://www.tei-c.org/ns/Examples" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:epub="http://www.idpf.org/2007/ops" exclude-result-prefixes="eg tei epub">
   <!-- Import shared templates -->
   <xsl:import href="common.xsl"/>
   <xsl:output encoding="UTF-8" indent="yes" method="xml" omit-xml-declaration="yes"/>
@@ -54,7 +47,6 @@ Sections
       </xsl:apply-templates>
     </article>
   </xsl:template>
-
   <xsl:template match="tei:front">
     <xsl:param name="from"/>
     <xsl:param name="level" select="count(ancestor::tei:group)"/>
@@ -244,7 +236,6 @@ Sections
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-  
   <!-- Floating division -->
   <xsl:template match="tei:floatingText">
     <xsl:param name="from"/>
@@ -337,10 +328,9 @@ Sections
   </xsl:template>
   <xsl:template match="tei:titlePage/tei:performance"/>
   <!-- <h[1-6]> titres avec niveaux hiérarchiques génériques selon le nombre d'ancêtres, il est possible de paramétrer le niveau, pour commencer à 1 en haut de document généré -->
-  
   <xsl:template match="tei:head">
     <xsl:param name="from"/>
-    <xsl:param name="level" select="count(ancestor::tei:*) - 2"/>
+    <xsl:param name="level" select="count(ancestor::tei:div)"/>
     <xsl:variable name="id">
       <xsl:for-each select="parent::*">
         <xsl:call-template name="id"/>
@@ -365,15 +355,14 @@ Sections
             <xsl:if test="$verse"> verse</xsl:if>
           </xsl:with-param>
         </xsl:call-template>
-        <a href="#{$id}">
-          <xsl:for-each select="preceding-sibling::tei:head[1][@type = 'kicker']">
-            <xsl:apply-templates/>
-            <br />
-          </xsl:for-each>
-          <xsl:apply-templates select="node()[not(self::tei:pb)]">
-            <xsl:with-param name="from" select="$from"/>
-          </xsl:apply-templates>
-        </a>
+        <xsl:for-each select="preceding-sibling::tei:head[1][@type = 'kicker']">
+          <xsl:apply-templates/>
+          <br/>
+        </xsl:for-each>
+        <xsl:apply-templates select="node()[not(self::tei:pb)]">
+          <xsl:with-param name="from" select="$from"/>
+        </xsl:apply-templates>
+        <a href="#{$id}" class="bookmark"> 🔗</a>
       </xsl:element>
     </xsl:if>
   </xsl:template>
@@ -449,7 +438,7 @@ Sections
         <!-- If a margin note contains a block level element, browser will complain with p//p -->
         <xsl:when test=".//tei:note[@place='margin']">div</xsl:when>
         <xsl:otherwise>p</xsl:otherwise>
-      </xsl:choose>  
+      </xsl:choose>
     </xsl:variable>
     <xsl:element name="{$el}">
       <xsl:variable name="prev" select="preceding-sibling::*[not(self::tei:pb)][1]"/>
@@ -467,7 +456,7 @@ Sections
           <xsl:otherwise>autofirst</xsl:otherwise>
         </xsl:choose>
         <xsl:if test="@n"> no</xsl:if>
-        <xsl:if test="tei:hi[contains(@rend, 'initial')]"> 
+        <xsl:if test="tei:hi[contains(@rend, 'initial')]">
           <xsl:text> </xsl:text>
           <xsl:value-of select="tei:hi[starts-with(@rend, 'initial')]/@rend"/>
         </xsl:if>
@@ -525,7 +514,7 @@ Sections
         <hr class="hr" align="center" width="30%"/>
       </xsl:when>
       <xsl:when test="@type='dots'">
-        <hr  align="center" width="70%">
+        <hr align="center" width="70%">
           <xsl:call-template name="atts"/>
         </hr>
       </xsl:when>
@@ -613,7 +602,6 @@ Sections
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-  
   <xsl:template match="tei:listBibl | tei:listPerson">
     <xsl:param name="from"/>
     <xsl:if test="$index">
@@ -637,9 +625,7 @@ Sections
         <xsl:call-template name="message"/>
       </xsl:variable>
       <xsl:if test="string($message) != ''">
-        <p class="{local-name()}">
-          <xsl:value-of select="$message"/>
-        </p>
+        <p class="{local-name()}"> <xsl:value-of select="$message"/> </p>
       </xsl:if>
     </xsl:if>
     <div>
@@ -721,9 +707,9 @@ Sections
     </xsl:choose>
   </xsl:template>
   <!-- Titre d'une liste -->
-  <xsl:template match="tei:list/tei:head">
+  <xsl:template match="tei:list/tei:head | tei:listBibl/tei:head">
     <xsl:param name="from"/>
-    <p class="list">
+    <p class="{name(..)}">
       <xsl:apply-templates>
         <xsl:with-param name="from" select="$from"/>
       </xsl:apply-templates>
@@ -840,7 +826,6 @@ Sections
       </xsl:for-each>
     </ul>
   </xsl:template>
-
   <!-- Glossary like dictionary entry -->
   <xsl:template match="tei:entryFree">
     <xsl:param name="from"/>
@@ -937,7 +922,6 @@ Tables
     </xsl:element>
   </xsl:template>
   <!-- vers, strophe -->
-
   <xsl:template match="tei:lg">
     <xsl:param name="from"/>
     <div>
@@ -1193,7 +1177,6 @@ Tables
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-
   <!-- <gi>, nom d’un élément -->
   <!-- ajout de < et > pas assez robuste en CSS pour utiliser template span -->
   <xsl:template match="tei:gi">
@@ -1352,13 +1335,14 @@ Tables
     <xsl:if test="@n and @n != ''">
       <i class="cb"> (<xsl:value-of select="@n"/>) </i>
     </xsl:if>
-    -->
-  </xsl:template>
+    --> </xsl:template>
   <!-- line breaks -->
   <xsl:template match="tei:lb">
     <xsl:choose>
       <xsl:when test="parent::tei:l">
-        <span class="lb"><br/></span>
+        <span class="lb">
+          <br/>
+        </span>
       </xsl:when>
       <xsl:when test="@n and ancestor::tei:p">
         <xsl:text> </xsl:text>
@@ -1413,7 +1397,6 @@ Tables
       <xsl:otherwise/>
     </xsl:choose>
   </xsl:template>
-  
   <!-- Spaces vertical or horizontal -->
   <xsl:template match="tei:space">
     <xsl:variable name="inline">
@@ -1444,8 +1427,6 @@ Tables
     </xsl:choose>
     <xsl:apply-templates/>
   </xsl:template>
-  
-
   <!-- Create an html5 inline element, differents tests done to ensure quality of output -->
   <xsl:template match="tei:actor | tei:c | tei:caes | tei:castGroup/tei:head | tei:code | tei:distinct | tei:emph | tei:fw | tei:ident | tei:institution | tei:heraldry | tei:locus | tei:mentioned | tei:metamark | tei:nameLink | tei:num | tei:phr | tei:biblFull/tei:publicationStmt/tei:date | tei:biblFull/tei:publicationStmt/tei:pubPlace | tei:repository | tei:role | tei:roleDesc | tei:seg[@rend] | tei:seg[@type] | tei:settlement| tei:sic | tei:soCalled | tei:u" name="span">
     <xsl:param name="from"/>
@@ -1568,7 +1549,6 @@ Tables
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-
   <!--
 <h3>Links</h3>
   -->
@@ -1771,7 +1751,6 @@ Tables
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-
   <!-- behaviors on text nodes between words  -->
   <!--
   <xsl:template match="text()">
@@ -1851,7 +1830,6 @@ Tables
       </xsl:choose>
     </xsl:element>
   </xsl:template>
-
   <!-- Manuscript ou imprimé, notamment appelé comme témoin -->
   <xsl:template match="tei:msDesc | tei:bibl" mode="a">
     <a class="{local-name()}">
@@ -2229,11 +2207,7 @@ Elements block or inline level
   <!-- Titre d'une liste -->
   <xsl:template match="tei:quote/tei:head">
     <xsl:param name="from"/>
-    <p class="head">
-      <xsl:apply-templates>
-        <xsl:with-param name="from" select="$from"/>
-      </xsl:apply-templates>
-    </p>
+    <p class="head"> <xsl:apply-templates> <xsl:with-param name="from" select="$from"/> </xsl:apply-templates> </p>
   </xsl:template>
   <xsl:template match="tei:cit">
     <xsl:param name="from"/>
@@ -2291,7 +2265,6 @@ Elements block or inline level
         </div>
       </xsl:when>
       -->
-      
       <xsl:when test="@ref or @xml:base">
         <a>
           <!-- linking policy will be resolved from the "linking" template, matched by @ref attribute -->
@@ -2345,7 +2318,6 @@ Elements block or inline level
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-
   <!--
 Attributes
 

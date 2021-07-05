@@ -1,5 +1,11 @@
 /** Colors */
 
+
+:root {
+  /*# Les variables ne fonctionnent pas après minification dans concrete5 */
+  --rubric: #902c20;
+}
+
 small.no {
   color: #800;
 }
@@ -18,18 +24,41 @@ small.no,
 .pb,
 .note,
 #sidebar,
-#toolbar, 
+#toolbar,
 #header,
 body {
-  font-family: "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif;
+  font-family: 'Lato', sans-serif;
+  font-weight: 300;
 }
 
-.text { 
-  font-family: 'Bodoni Moda', 'Old Standard TT', sans-serif; /*   */
+.text {
+  font-weight: 400;
   font-size: 19px;
   line-height: 1.6;
 }
 
+.pb {
+  position: absolute;
+  right: 0.5rem;
+  background-color: #fff;
+}
+
+h1,
+h2 {
+  color: var(--rubric);
+}
+
+h1 {
+  border-top: 1px solid var(--rubric);
+}
+
+h2 {
+  text-align: left;
+}
+
+h3 {
+  text-align: right;
+}
 
 
 /* noterefover */
@@ -95,15 +124,15 @@ body {
 /* clearfix */
 body::after,
 main::after,
-#main::after, 
-#sidebar::after, 
+#main::after,
+#sidebar::after,
 #center::after {
   content: "";
   clear: both;
   display: table;
 }
 
-#main, 
+#main,
 #sidebar {
   clear: both;
   position: relative;
@@ -113,10 +142,10 @@ main::after,
   background-color: #FFFFFF;
 }
 
-#center, 
-#cont, 
-#contenu, 
-#main, 
+#center,
+#cont,
+#contenu,
+#main,
 #article {
   height: 100%;
 }
@@ -211,7 +240,7 @@ main::after,
 }
 
 #sidebar, #toolbar, #header {
-  color: #808099;
+  /* color: #808099; */
 }
 
 #breadcrumb {
