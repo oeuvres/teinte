@@ -120,6 +120,7 @@
             <xsl:when test="parent::tei:div"/>
             <!-- Brother of a block, block -->
             <xsl:when test="../tei:p|../tei:l|../tei:lg|../tei:list|../tei:table"/>
+            <xsl:when test="not(self::tei:note) and (ancestor::tei:p | ancestor::tei:l)">true</xsl:when>
             <xsl:when test="parent::tei:titlePage"/>
             <xsl:when test="parent::tei:body"/>
             <xsl:when test="parent::tei:front"/>

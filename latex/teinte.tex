@@ -15,8 +15,7 @@
 \usepackage{fancyvrb}
 \usepackage{fancyhdr}
 \usepackage{fontspec} % XeLaTeX mandatory for fonts
-\usepackage[stable]{footmisc} % https://texfaq.org/FAQ-ftnsect
-\usepackage{footnote} % hack to collect footnotes in minipage etc.
+\usepackage{footnote} % used to capture notes in minipage (ex: quote)
 \usepackage{framed} % bordering correct with footnote hack
 \usepackage{graphicx}
 \usepackage{lettrine} % drop caps
@@ -33,10 +32,11 @@
   rightmargin=0pt,
 ]{quoting}
 \usepackage{ragged2e}
+\usepackage{setspace}
 \usepackage{tabularx} % <table>
-\usepackage[explicit]{titlesec} % NO implicit !, wear titles
+\usepackage[explicit]{titlesec} % wear titles, !NO implicit
 \usepackage{tikz} % ornaments
-\usepackage{tocloft}
+\usepackage{tocloft} % styling tocs
 \usepackage[fit]{truncate} % used im runing titles
 \usepackage{unicode-math}
 \usepackage[normalem]{ulem} % breakable \uline, normalem is absolutely necessary to keep \emph
@@ -49,16 +49,17 @@
 
 \PassOptionsToPackage{hyphens}{url} % before hyperref, which load url package
 \usepackage{hyperref} % supposed to be the last one, :o) except for the ones to follow
-% \usepackage{bookmark}
 % TOTEST
 % \usepackage{hypcap} % links in caption ?
 % \usepackage{marginnote}
 % TESTED
 % \usepackage{background} % doesn’t work with xetek
+% \usepackage{bookmark} % prefers the hyperref hack \phantomsection
 % \usepackage[color, leftbars]{changebar} % 2 cols doc, impossible to keep bar left
 % \usepackage[utf8x]{inputenc} % inputenc package ignored with utf8 based engines
 % \usepackage{firamath} % unavailable in Ubuntu 21-04
 % \usepackage{flushend} % bad for last notes, supposed flush end of columns
+% \usepackage[stable]{footmisc} % BAD for complex notes https://texfaq.org/FAQ-ftnsect
 % \usepackage{multicol} % not compatible with too much packages (longtable, framed, memoir…)
 % \usepackage{sectsty} % \chapterfont OBSOLETE
 % \usepackage{soul} % \ul for underline, OBSOLETE with XeTeX
@@ -134,8 +135,38 @@
 \newcommand{\astermono}{\medskip\centerline{\color{rubric}\large\selectfont{\syms ✻}}\medskip\par}%
 \newcommand{\astertri}{\medskip\par\centerline{\color{rubric}\large\selectfont{\syms ✻\,✻\,✻}}\medskip\par}%
 \newcommand{\asterism}{\bigskip\par\noindent\parbox{\linewidth}{\centering\color{rubric}\large{\syms ✻}\\{\syms ✻}\hskip 0.75em{\syms ✻}}\bigskip\par}%
-\setlist{nolistsep,noitemsep,wide,leftmargin=*, labelindent=0pt} % labelindent=\parindent,leftmargin=*
-\setlist[itemize]{label=—}
+
+% lists
+\newlength{\listmod}
+\setlength{\listmod}{\parindent}
+\setlist{
+  itemindent=!,
+  listparindent=\listmod,
+  labelsep=0.2\listmod,
+  parsep=0pt,
+  % topsep=0.2em, % default topsep is best
+}
+\setlist[itemize]{
+  label=—,
+  leftmargin=0pt,
+  labelindent=1.2em,
+  labelwidth=0pt,
+}
+\setlist[enumerate]{
+  label={\bf\color{rubric}\arabic*.},
+  labelindent=0.8\listmod,
+  leftmargin=\listmod,
+  labelwidth=0pt,
+}
+\newlist{listalpha}{enumerate}{1}
+\setlist[listalpha]{
+  label={\bf\color{rubric}\alph*.},
+  leftmargin=0pt,
+  labelindent=0.8\listmod,
+  labelwidth=0pt,
+}
+\newcommand{\listhead}[1]{\hspace{-1\listmod}\emph{#1}}
+
 \renewcommand{\hrulefill}{%
   \leavevmode\leaders\hrule height 0.2pt\hfill\kern\z@}
 
@@ -190,8 +221,9 @@
 % commands, blocks
 \newcommand{\byline}[1]{\bigskip{\RaggedLeft{#1}\par}\bigskip}
 \newcommand{\bibl}[1]{{\footnotesize\RaggedLeft{#1}\par}}
+\newcommand{\biblitem}[1]{{\noindent\hangindent=\parindent   #1\par}}
 \newcommand{\dateline}[1]{\medskip{\RaggedLeft{#1}\par}\bigskip}
-\newcommand{\labelblock}[1]{\bigskip{\color{rubric}\bfseries\centering #1\par}\bignobreak}
+\newcommand{\labelblock}[1]{\bigskip{\color{rubric}\bfseries\centering\RaggedLeft{#1}\par}\bignobreak}
 \newcommand{\salute}[1]{\bigskip{#1}\par\medskip}
 
 % environments for blocks (some may become commands)
@@ -270,6 +302,8 @@
 \markboth{\@title}{\@author} % ???
 \renewcommand\tableofcontents{\@starttoc{toc}}
 % toclof format
+% \renewcommand{\@tocrmarg}{0.1em} % Useless command?
+% \renewcommand{\@pnumwidth}{0.5em} % {1.75em}
 \renewcommand{\@cftmaketoctitle}{}
 \setlength{\cftbeforesecskip}{\z@ \@plus.2\p@}
 \renewcommand{\cftchapfont}{\bfseries}
@@ -283,7 +317,13 @@
 \renewcommand{\cftsecdotsep}{\cftdotsep}
 \renewcommand{\cftsecpagefont}{\normalfont}
 \renewcommand{\cftsecleader}{\normalfont\cftdotfill{\cftsecdotsep}}
-
+\setlength{\cftsecindent}{1em}
+\setlength{\cftsubsecindent}{2em}
+\setlength{\cftsubsubsecindent}{3em}
+\setlength{\cftchapnumwidth}{1em}
+\setlength{\cftsecnumwidth}{1em}
+\setlength{\cftsubsecnumwidth}{1em}
+\setlength{\cftsubsubsecnumwidth}{1em}
 
 % footnotes
 \newif\ifheading

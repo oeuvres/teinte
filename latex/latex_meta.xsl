@@ -18,7 +18,15 @@ Latex from TEI, metadata for preamble
   </xsl:template>
   
   <xsl:template name="latexTitle">
-    <xsl:apply-templates select="/*/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[not(@type) or @type='main'][1]/node()" mode="meta"/>
+    <xsl:for-each select="/*/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title">
+      <xsl:choose>
+        <xsl:when test="not(@type) or @type='main'">{\bf <xsl:apply-templates mode="meta"/>}</xsl:when>
+        <xsl:otherwise>
+          <xsl:apply-templates mode="meta"/>
+        </xsl:otherwise>
+      </xsl:choose>
+      <xsl:if test="position() != last()">\\ \medskip&#10;</xsl:if>
+    </xsl:for-each>
   </xsl:template>
 
   <xsl:template name="latexDate">
@@ -101,6 +109,7 @@ Latex from TEI, metadata for preamble
     <xsl:text>\author{</xsl:text>
     <xsl:value-of select="$latexAuthor"/>
     <xsl:text>}&#10;</xsl:text>
+    <!-- Short title for runing head -->
     <xsl:text>\def\elbibl{</xsl:text>
     <xsl:if test="$latexAuthor != ''">
       <xsl:value-of select="$latexAuthor"/>
@@ -111,7 +120,7 @@ Latex from TEI, metadata for preamble
       <xsl:text>. </xsl:text>
     </xsl:if>
     <xsl:text>\emph{</xsl:text>
-    <xsl:value-of select="$latexTitle"/>
+    <xsl:apply-templates select="/*/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[not(@type) or @type='main'][1]/node()"/>
     <xsl:text>}</xsl:text>
     <xsl:text>}&#10;</xsl:text>
     <!--

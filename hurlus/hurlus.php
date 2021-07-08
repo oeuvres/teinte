@@ -26,10 +26,12 @@ class Hurlus {
     chdir($workdir); // change working directory
     // default is a4 2 cols, transform to pdf
     exec("latexmk -xelatex -quiet -f ".$texname.'.tex');
-    if ($dstdir) rename($workdir.$texname.'.pdf', $dstdir.$texname.'.pdf');
-
-
     $tex = file_get_contents($texfile);
+    if ($dstdir) {
+      rename($workdir.$texname.'.pdf', $dstdir.$texname.'.pdf');
+      rename($texfile, $dstdir.$texname.'.tex');
+    }
+
     // A5
     $tex = preg_replace('@\\\\def\\\\mode\{[^\}]*\}@', '\\def\\mode{a5}', $tex);
     $texsrc = $texname.'_a5.tex';

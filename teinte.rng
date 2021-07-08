@@ -807,7 +807,7 @@
           <ref name="function"/>
           <ref name="indexable"/>
           <ref name="figure"/>
-          <ref name="quote.c"/>
+          <ref name="quote-c"/>
           <ref name="label"/>
           <ref name="bibl"/>
           <ref name="stage"/>
@@ -1299,7 +1299,7 @@
         </optional>
       </element>
     </define>
-    <define name="quote.c">
+    <define name="quote-c">
       <element name="quote">
         <a:documentation>Citation insérée dans un paragraphe (niveau caractère)</a:documentation>
         <ref name="xml-atts"/>
@@ -1390,17 +1390,21 @@
           <oneOrMore>
             <choice>
               <text/>
+              <ref name="bibl"/>
               <ref name="typo"/>
               <ref name="function"/>
               <ref name="indexable"/>
-              <ref name="bibl"/>
+              <ref name="quote-c"/>
             </choice>
             <optional>
               <ref name="point"/>
             </optional>
           </oneOrMore>
           <oneOrMore>
-            <ref name="block"/>
+            <choice>
+              <ref name="pb"/>
+              <ref name="block"/>
+            </choice>
           </oneOrMore>
           <oneOrMore>
             <zeroOrMore>
@@ -2973,7 +2977,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
               XSD cos -->
               <ref name="anchor"/>
               <ref name="bibl"/>
-              <ref name="quote.c"/>
+              <ref name="quote-c"/>
               <ref name="function"/>
               <ref name="gap"/>
               <ref name="indexable"/>

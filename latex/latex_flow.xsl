@@ -231,22 +231,25 @@ for example: abstract.
     <xsl:call-template name="rendering"/>
   </xsl:template>
   <xsl:template name="rendering">
-    <xsl:variable name="cont">
+    <xsl:param name="rend">
+      <xsl:value-of select="@rend"/>
+    </xsl:param>
+    <xsl:param name="cont">
       <xsl:apply-templates/>
-    </xsl:variable>
+    </xsl:param>
     <xsl:choose>
-      <xsl:when test="not(@rend) or normalize-space(@rend) = ''">
+      <xsl:when test="normalize-space($rend) = ''">
         <xsl:copy-of select="$cont"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:variable name="tokens">
           <xsl:choose>
             <xsl:when test="function-available(str:tokenize)">
-              <xsl:copy-of select="str:tokenize(normalize-space(@rend))"/>
+              <xsl:copy-of select="str:tokenize(normalize-space($rend))"/>
             </xsl:when>
             <xsl:otherwise>
               <xsl:call-template name="str:tokenize">
-                <xsl:with-param name="string" select="normalize-space(@rend)"/>
+                <xsl:with-param name="string" select="normalize-space($rend)"/>
               </xsl:call-template>
             </xsl:otherwise>
           </xsl:choose>
@@ -338,7 +341,7 @@ for example: abstract.
       <xsl:choose>
         <xsl:when test="@rend = 'initial2'">\initial</xsl:when>
         <xsl:when test="@rend = 'initial4'">\initialiv</xsl:when>
-        <xsl:otherwise>\initial</xsl:otherwise>
+        <xsl:otherwise>\initialiv</xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
     <xsl:value-of select="$cmd"/>
@@ -360,14 +363,46 @@ for example: abstract.
     <xsl:text>}</xsl:text>
   </xsl:template>
 
+  <xsl:template match="tei:item">
+    <xsl:choose>
+      <xsl:when test="parent::tei:list[@type='gloss'] or preceding-sibling::tei:label">
+        <xsl:text>\item</xsl:text>
+        <xsl:if test="@n">[<xsl:value-of select="@n"/>]</xsl:if>
+        <xsl:text> </xsl:text>
+        <xsl:call-template name="rendering"/>
+        <xsl:text>&#10;</xsl:text>
+      </xsl:when>
+      <xsl:when test="parent::tei:list[@type='elementlist']">
+        <xsl:apply-templates/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>\item</xsl:text>
+        <xsl:if test="@n">[<xsl:value-of select="@n"/>]</xsl:if>
+        <xsl:text> </xsl:text>
+        <xsl:call-template name="tei:makeHyperTarget"/>
+        <xsl:call-template name="rendering"/>
+        <xsl:text>&#10;</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+    
   <xsl:template match="tei:item" mode="gloss">
-    <xsl:text>
-\item[{</xsl:text>
+    <xsl:text>\item[{</xsl:text>
     <xsl:apply-templates select="preceding-sibling::tei:label[1]" mode="gloss"/>
     <xsl:text>}]</xsl:text>
     <xsl:if test="tei:list">\hspace{1em}\hfill\linebreak&#10;</xsl:if>
     <xsl:apply-templates/>
+    <xsl:text>&#10;</xsl:text>
   </xsl:template>
+    
+  <xsl:template match="tei:item" mode="inline">
+    <xsl:if test="preceding-sibling::tei:item">, </xsl:if>
+    <xsl:if test="not(following-sibling::tei:item) and preceding-sibling::tei:item"> and </xsl:if>
+    <xsl:text>• </xsl:text>
+    <xsl:apply-templates/>
+    <xsl:text>&#160;</xsl:text>
+  </xsl:template>
+  
 
   <xsl:template match="tei:list/tei:label"/>
 
@@ -391,6 +426,10 @@ for example: abstract.
         <xsl:call-template name="makeInline">
           <xsl:with-param name="style" select="@type"/>
         </xsl:call-template>
+        <!-- bug when next node is an element, space are strip  -->
+        <xsl:if test="name(following-sibling::node()[1])">
+          <xsl:text> </xsl:text>
+        </xsl:if>
       </xsl:when>
       <xsl:otherwise>
         <xsl:if test="true()">&#10;\labelblock{<xsl:apply-templates/>}&#10;&#10;</xsl:if>
@@ -405,52 +444,66 @@ for example: abstract.
     <xsl:text>\par&#10;</xsl:text>
   </xsl:template>
 
+  <xsl:template match="tei:list/tei:head">
+    <xsl:text>\item[]\listhead{</xsl:text>
+    <xsl:call-template name="tei:makeHyperTarget"/>
+    <xsl:apply-templates/>
+    <xsl:text>}&#10;</xsl:text>
+  </xsl:template>
+
   <xsl:template match="tei:list">
-    <xsl:if test="tei:head">
-      <xsl:text>\leftline{\textbf{</xsl:text>
-      <xsl:for-each select="tei:head">
-        <xsl:apply-templates/>
-      </xsl:for-each>
-      <xsl:text>}} </xsl:text>
-    </xsl:if>
     <xsl:call-template name="tei:makeHyperTarget"/>
     <xsl:variable name="rend" select="concat(' ', normalize-space(@rend), ' ')"/>
+    <xsl:variable name="options">
+      <xsl:text>[</xsl:text>
+      <xsl:choose>
+        <xsl:when test="tei:item/tei:p | tei:item/tei:list">itemsep=\baselineskip,</xsl:when>
+        <xsl:otherwise>itemsep=0pt,</xsl:otherwise>
+      </xsl:choose>
+      <xsl:text>]</xsl:text>
+    </xsl:variable>   
     <xsl:choose>
       <xsl:when test="not(tei:item)"/>
       <xsl:when test="@type = 'gloss' or tei:label">
-        <xsl:text>\begin{description}&#10;</xsl:text>
+        <xsl:text>&#10;\begin{description}&#10;</xsl:text>
         <xsl:apply-templates mode="gloss" select="tei:item"/>
         <xsl:text>&#10;\end{description} </xsl:text>
       </xsl:when>
       <xsl:when test="contains($rend, ' ol ') or contains($rend, ' ordered ') or contains($rend, '1')">
-        <xsl:text>\begin{enumerate}</xsl:text>
+        <xsl:text>&#10;\begin{enumerate}</xsl:text>
+        <xsl:value-of select="$options"/>
+        <xsl:text>&#10;</xsl:text>
         <xsl:apply-templates/>
         <xsl:text>&#10;\end{enumerate}</xsl:text>
+      </xsl:when>
+      <xsl:when test="contains($rend, 'alpha') or contains($rend, ' lower-latin ') or contains($rend, ' a ') or contains($rend, ' a. ') or contains($rend, ' a) ')">
+        <xsl:text>&#10;\begin{listalpha}</xsl:text>
+        <xsl:value-of select="$options"/>
+        <xsl:text>&#10;</xsl:text>
+        <xsl:apply-templates/>
+        <xsl:text>&#10;\end{listalpha}</xsl:text>
       </xsl:when>
       <xsl:when test="@type = 'runin' or contains($rend, ' runin ') or contains($rend, ' runon ')">
         <xsl:apply-templates mode="runin" select="tei:item"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:text>\begin{itemize}</xsl:text>
+        <xsl:text>&#10;\begin{itemize}</xsl:text>
+        <xsl:value-of select="$options"/>
+        <xsl:text>&#10;</xsl:text>
         <xsl:apply-templates/>
-        <xsl:text>&#10;\end{itemize}&#10;</xsl:text>
+        <xsl:text>\end{itemize}&#10;</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
 
   <xsl:template match="tei:listBibl">
-    <xsl:if test="tei:head">
-      <xsl:text>\leftline{\textbf{</xsl:text>
-      <xsl:for-each select="tei:head">
-        <xsl:apply-templates/>
-      </xsl:for-each>
-      <xsl:text>}} </xsl:text>
-    </xsl:if>
+    <xsl:apply-templates select="tei:head"/>
+    <xsl:apply-templates select="*[not(self::tei:head)]"/>
+    <!--
     <xsl:choose>
       <xsl:when test="tei:biblStruct and not(tei:bibl)">
         <xsl:text>\begin{bibitemlist}{1}</xsl:text>
         <xsl:for-each select="tei:biblStruct">
-          <!-- Do not sort here, editor should know what he is doing -->
           <xsl:text>&#10;\bibitem[</xsl:text>
           <xsl:apply-templates select="." mode="xref"/>
           <xsl:text>]{</xsl:text>
@@ -470,38 +523,20 @@ for example: abstract.
         <xsl:text>&#10;\end{bibitemlist}&#10;</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
+    -->
   </xsl:template>
   
+  <xsl:template match="tei:listBibl/tei:head">
+    <xsl:text>\noindent\textbf{</xsl:text>
+    <xsl:for-each select="tei:head">
+      <xsl:apply-templates/>
+    </xsl:for-each>
+    <xsl:text>}\par&#10;</xsl:text>
+  </xsl:template>
+    
+  
   <xsl:template match="tei:listBibl/tei:bibl">
-    <xsl:text> \bibitem {</xsl:text>
-    <xsl:choose>
-      <xsl:when test="@xml:id">
-        <xsl:value-of select="@xml:id"/>
-      </xsl:when>
-      <xsl:otherwise>bibitem-<xsl:number level="any"/> </xsl:otherwise>
-    </xsl:choose>
-    <xsl:text>}</xsl:text>
-    <xsl:choose>
-      <xsl:when test="parent::tei:listBibl/@xml:lang = 'zh-TW' or @xml:lang = 'zh-TW'">
-        <xsl:text>{\textChinese </xsl:text>
-        <xsl:apply-templates/>
-        <xsl:text>}</xsl:text>
-      </xsl:when>
-      <xsl:when test="parent::tei:listBibl/@xml:lang = 'ja' or @xml:lang = 'ja'">
-        <xsl:text>{\textJapanese </xsl:text>
-        <xsl:apply-templates/>
-        <xsl:text>}</xsl:text>
-      </xsl:when>
-      <xsl:when test="parent::tei:listBibl/@xml:lang = 'ko' or @xml:lang = 'ko'">
-        <xsl:text>{\textKorean </xsl:text>
-        <xsl:apply-templates/>
-        <xsl:text>}</xsl:text>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:apply-templates/>
-      </xsl:otherwise>
-    </xsl:choose>
-    <xsl:text>&#10;</xsl:text>
+    <xsl:if test="true()">\biblitem{<xsl:apply-templates/>}&#10;</xsl:if>
   </xsl:template>
   
   <xsl:template match="tei:milestone">
@@ -627,9 +662,10 @@ for example: abstract.
     <xsl:call-template name="tei:makeHyperTarget"/>
     <xsl:variable name="prev" select="preceding-sibling::*[not(self::tei:pb)][not(self::tei:cb)][1]"/>
     <xsl:choose>
-      <xsl:when test="not(preceding-sibling::*)">\noindent </xsl:when>
+      <xsl:when test="contains($prev/@rend, 'right')  or contains($prev/@rend, 'center')">\noindent </xsl:when>
+      <xsl:when test="not(preceding-sibling::*) and not(parent::tei:item)">\noindent </xsl:when>
       <xsl:when test="contains(@rend, 'center') or contains(@rend, 'right')">\noindent </xsl:when>
-      <xsl:when test="name($prev) != 'p' or contains($prev/@rend, 'right')  or contains($prev/@rend, 'center')">\noindent </xsl:when>
+      <xsl:when test="name($prev) != 'p' and not(parent::tei:item)">\noindent </xsl:when>
     </xsl:choose>
     <xsl:if test="@n != ''">
       <xsl:call-template name="tei:makeHyperTarget">
@@ -763,7 +799,9 @@ for example: abstract.
     <xsl:choose>
       <!-- Inline, shall we tag ? -->
       <xsl:when test="$inline != ''">
+        <xsl:text>\emph{</xsl:text>
         <xsl:apply-templates/>
+        <xsl:text>}</xsl:text>
       </xsl:when>
       <xsl:when test="parent::tei:cit or parent::tei:note">
         <xsl:call-template name="tei:makeHyperTarget"/>

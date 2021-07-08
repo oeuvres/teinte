@@ -60,7 +60,7 @@
 %%%%%%%%%%%%%%
 % Alignments %
 %%%%%%%%%%%%%%
-
+% before teinte macros
 
 \setlength{\arrayrulewidth}{0.2pt}
 \setlength{\columnseprule}{\arrayrulewidth} % twocol
@@ -124,8 +124,8 @@
   }
 \renewenvironment{quoteblock}% may be used for ornaments
   {%
-    \small
     \savenotes
+    \setstretch{0.9}
     \begin{quotebar}
   }
   {%
@@ -155,8 +155,8 @@
     \fancyhead[L]{\truncate{0.9\headwidth}{\fontrun\elbibl}}
     \fancyhead[R]{\thepage}
   }
-  \renewcommand\chapteropen{\savenotes} % before chapter title
-  \renewcommand\chaptercont{\spewnotes} % after title, argument, epigraph…
+  \renewcommand\chapteropen{} % before chapter title NO more \savenotes needed
+  \renewcommand\chaptercont{} % after title, argument, epigraph… \spewnotes
   \renewcommand\chapterclose{} % maybe useful for multicol settings
 \else
   \fancypagestyle{fancy}{%
@@ -191,11 +191,11 @@
 
 \titleformat{name=\section}
   [block]
-  {\color{rubric}\large\bfseries\raggedleft}
+  {}
   {} % \thesection
   {} % separator \arrayrulewidth
-  {\color{rubric}\hrule}
-[#1]
+  {}
+[\vbox{\color{rubric}\hrule\bigskip \large\bfseries\raggedleft #1}]
 
 \titlespacing{\section}{0pt}{0pt plus 4pt minus 2pt}{\baselineskip}
 
@@ -205,7 +205,7 @@
   {} % \thesection
   {} % separator \arrayrulewidth
   {}
-[#1]
+[\uline{#1}]
 % \titlespacing{\subsection}{0pt}{0pt plus 4pt minus 2pt}{\baselineskip}
 
 
@@ -216,12 +216,12 @@
   \smallskip
   {\large\eldate}\par
   \bigskip
-  {\Large\selectfont\emph{\eltitle}}\par
+  {\Large\selectfont{\eltitle}}\par
+  \bigskip
+  {\color{rubric}\hline\par}
   \bigskip
   {\Large LIVRE LIBRE À PRIX LIBRE, DEMANDEZ AU COMPTOIR\par}
-  \bigskip
   \centerline{\small\color{rubric} {hurlus.fr, tiré le \today}}\par
-  {\hline\par}
   \bigskip
 }}
 
@@ -242,6 +242,7 @@
 \bigskip
 
 \makeatletter\@starttoc{toc}\makeatother % toc without new page
+\pagebreak % request a page break after toc
 
 \ifdev % autotext in dev mode
 

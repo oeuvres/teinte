@@ -114,27 +114,6 @@ it is dangerous for docx where nesting may produce lots of surprises
   </xsl:template>
   
   
-  <xsl:template match="tei:item">
-    <xsl:choose>
-      <xsl:when test="parent::tei:list[@type='gloss'] or preceding-sibling::tei:label">
-        <xsl:call-template name="makeLabelItem"/>
-      </xsl:when>
-      <xsl:when test="parent::tei:list[@type='elementlist']">
-        <xsl:apply-templates/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:call-template name="makeItem"/>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
-  
-  <xsl:template match="tei:item" mode="inline">
-    <xsl:if test="preceding-sibling::tei:item">, </xsl:if>
-    <xsl:if test="not(following-sibling::tei:item) and preceding-sibling::tei:item"> and </xsl:if>
-    <xsl:text>• </xsl:text>
-    <xsl:apply-templates/>
-    <xsl:text>&#160;</xsl:text>
-  </xsl:template>
   
   <xsl:template match="tei:edition">
     <xsl:apply-templates/>
@@ -729,12 +708,6 @@ it is dangerous for docx where nesting may produce lots of surprises
   </xsl:template>
   <xsl:template match="tei:figDesc" mode="plain"/>
   <xsl:template match="tei:ptr" mode="plain"/>
-  <xsl:template name="makeItem">
-    <xsl:apply-templates/>
-  </xsl:template>
-  <xsl:template name="makeLabelItem">
-    <xsl:apply-templates/>
-  </xsl:template>
   
   <xsl:template match="tei:lb">
     <xsl:variable name="inline">

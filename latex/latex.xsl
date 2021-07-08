@@ -93,20 +93,6 @@ A light version for XSLT1, with local improvements.
   </xsl:template>
 
   
-  <xsl:template name="makeItem">
-    <xsl:text>&#10;\item</xsl:text>
-    <xsl:if test="@n">[<xsl:value-of select="@n"/>]</xsl:if>
-    <xsl:text> </xsl:text>
-    <xsl:call-template name="tei:makeHyperTarget"/>
-    <xsl:call-template name="rendering"/>
-  </xsl:template>
-  <xsl:template name="makeLabelItem">
-    <xsl:text>&#10;\item</xsl:text>
-    <xsl:if test="@n">[<xsl:value-of select="@n"/>]</xsl:if>
-    <xsl:text> </xsl:text>
-    <xsl:call-template name="rendering"/>
-  </xsl:template>
-
   <xsl:template name="makeSection">
     <xsl:param name="level"/>
     <xsl:param name="heading"/>

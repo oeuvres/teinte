@@ -118,6 +118,8 @@
     <xsl:call-template name="tei:makeHyperTarget"/>
     <xsl:variable name="decl">
       <xsl:choose>
+        <xsl:when test="self::tei:foreign">\emph{</xsl:when>
+        <xsl:when test="self::tei:mentioned">\emph{</xsl:when>
         <xsl:when test="$st = 'supplied'">
           <xsl:text/>
         </xsl:when>
@@ -133,7 +135,7 @@
         <xsl:when test="$st = 'sub'">
           <xsl:text>\textsubscript{</xsl:text>
         </xsl:when>
-        <xsl:when test="local-name() = 'label'">
+        <xsl:when test="self::tei:label">
           <xsl:text>\labelchar{</xsl:text>
         </xsl:when>
         <xsl:when test="$st = ''">

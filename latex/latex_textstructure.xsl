@@ -118,14 +118,20 @@ A light version for XSLT1, with local improvements.
     <xsl:apply-templates/>
   </xsl:template>
   
-  <xsl:template match="tei:head">
+  <xsl:template match="
+      tei:back/tei:head
+    | tei:body/tei:head
+    | tei:div/tei:head
+    | tei:div1/tei:head
+    | tei:div2/tei:head
+    | tei:div3/tei:head
+    | tei:div4/tei:head
+    | tei:div5/tei:head
+    | tei:div6/tei:head
+    | tei:front/tei:head
+    ">
     <xsl:choose>
-      <xsl:when test="parent::tei:castList"/>
-      <xsl:when test="parent::tei:figure"/>
-      <xsl:when test="parent::tei:list"/>
-      <xsl:when test="parent::tei:lg">\subsection*{<xsl:apply-templates/>}&#10;</xsl:when>
       <xsl:when test="parent::tei:front or parent::tei:body or parent::tei:back">\section*{<xsl:apply-templates/>}&#10;</xsl:when>
-      <xsl:when test="parent::tei:table"/>
       <xsl:otherwise>
         <xsl:variable name="level">
           <xsl:call-template name="level"/>
@@ -178,13 +184,22 @@ or parent::tei:div[contains(@rend, 'nonumber')]
         <xsl:apply-templates/>
         <xsl:text>}</xsl:text>
         <xsl:if test="../@xml:id">
+          <!-- Keep it there fo bookmarks (tested) -->
           <xsl:call-template name="tei:makeHyperTarget">
             <xsl:with-param name="id" select="../@xml:id"/>
           </xsl:call-template>
         </xsl:if>
         <xsl:text>&#10;</xsl:text>
+        <xsl:for-each select=".//tei:note">
+          <xsl:if test="true()">\footnotetext{<xsl:apply-templates/>}&#10;</xsl:if>
+        </xsl:for-each>
       </xsl:otherwise>
     </xsl:choose>
+  </xsl:template>
+  
+  <!-- Note problems in <head> -->
+  <xsl:template match="tei:head//tei:note">
+    <xsl:text>\protect\footnotemark</xsl:text>
   </xsl:template>
   
   <xsl:template match="tei:opener">
