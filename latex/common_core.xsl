@@ -709,48 +709,6 @@ it is dangerous for docx where nesting may produce lots of surprises
   <xsl:template match="tei:figDesc" mode="plain"/>
   <xsl:template match="tei:ptr" mode="plain"/>
   
-  <xsl:template match="tei:lb">
-    <xsl:variable name="inline">
-      <xsl:call-template name="tei:isInline">
-        <xsl:with-param name="element" select=".."/>
-      </xsl:call-template>
-    </xsl:variable>
-    <xsl:choose>
-      <xsl:when test="@type='hyphenInWord' and contains(@rend,'hidden')"/>
-      <xsl:when test="contains(@rend,'hidden')">
-        <xsl:text> </xsl:text>
-      </xsl:when>
-      <xsl:when test="contains(@rend,'-') or @type='hyphenInWord'">
-        <xsl:text>-</xsl:text>
-        <xsl:call-template name="lb"/>
-      </xsl:when>
-      <xsl:when test="contains(@rend,'above')">
-        <xsl:text>⌜</xsl:text>
-      </xsl:when>
-      <xsl:when test="contains(@rend,'below')">
-        <xsl:text>⌞</xsl:text>
-      </xsl:when>
-      <!-- last linebreak of series ? do something ?
-      <xsl:when test="normalize-space(following-sibling::node()) = '' or normalize-space(preceding-sibling::node())"/>
-      -->
-      <xsl:when test="contains(@rend,'show')">
-        <xsl:call-template name="lb"/>
-      </xsl:when>
-      <xsl:when test="contains(@rend,'paragraph')">
-        <xsl:call-template name="lineBreakAsPara"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:call-template name="lb"/>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
-  <xsl:template name="lineBreak">
-    <xsl:text> </xsl:text>
-  </xsl:template>
-  <xsl:template name="lineBreakAsPara">
-    <xsl:text> </xsl:text>
-  </xsl:template>
-  
   <xsl:template match="tei:forename">
     <xsl:choose>
       <xsl:when test="parent::*/tei:surname"/>

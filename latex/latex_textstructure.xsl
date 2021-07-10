@@ -64,25 +64,28 @@ A light version for XSLT1, with local improvements.
     <xsl:variable name="level">
       <xsl:call-template name="level"/>
     </xsl:variable>
+    <!-- first content element -->
+    <xsl:variable name="first" select="
+      (*[not(self::tei:argument)]
+      [not(self::tei:byline)]
+      [not(self::tei:cb)]
+      [not(self::tei:dateline)]
+      [not(self::tei:docAuthor)]
+      [not(self::tei:docDate)]
+      [not(self::tei:epigraph)]
+      [not(self::tei:head)]
+      [not(self::tei:opener)]
+      [not(self::tei:pb)]
+      [not(self::tei:salute)]
+      [not(self::tei:signed)])[1]
+      "/>
+    
+    
+    
     <xsl:choose>
       <!--  restart columns -->
       <xsl:when test="$documentclass = 'book' and $level &lt;= 0">
         <xsl:text>&#10;\chapteropen&#10;</xsl:text>
-        <!-- first content element -->
-        <xsl:variable name="first" select="
-         (*[not(self::tei:argument)]
-          [not(self::tei:byline)]
-          [not(self::tei:cb)]
-          [not(self::tei:dateline)]
-          [not(self::tei:docAuthor)]
-          [not(self::tei:docDate)]
-          [not(self::tei:epigraph)]
-          [not(self::tei:head)]
-          [not(self::tei:opener)]
-          [not(self::tei:pb)]
-          [not(self::tei:salute)]
-          [not(self::tei:signed)])[1]
-          "/>
         <xsl:choose>
           <xsl:when test="$first">
             <xsl:apply-templates select="$first/preceding-sibling::*"/>

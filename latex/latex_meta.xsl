@@ -72,9 +72,20 @@ Latex from TEI, metadata for preamble
           <xsl:when test="position() = last()"> \&amp; </xsl:when>
           <xsl:otherwise>, </xsl:otherwise>
         </xsl:choose>
-        <xsl:apply-templates select="." mode="meta">
-          <xsl:with-param name="short" select="true()"/>
-        </xsl:apply-templates>
+        <xsl:choose>
+          <xsl:when test="normalize-space(.) != ''">
+            <xsl:value-of select="normalize-space(.)"/>
+          </xsl:when>
+          <xsl:when test="contains(@key, ',')">
+            <xsl:value-of select="normalize-space(substring-before(@key, ','))"/>
+          </xsl:when>
+          <xsl:when test="contains(@key, '(')">
+            <xsl:value-of select="normalize-space(substring-before(@key, '('))"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="normalize-space(.)"/>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:for-each>
     </xsl:for-each>
   </xsl:template>
@@ -109,6 +120,7 @@ Latex from TEI, metadata for preamble
     <xsl:text>\author{</xsl:text>
     <xsl:value-of select="$latexAuthor"/>
     <xsl:text>}&#10;</xsl:text>
+    
     <!-- Short title for runing head -->
     <xsl:text>\def\elbibl{</xsl:text>
     <xsl:if test="$latexAuthor != ''">
@@ -134,11 +146,20 @@ Latex from TEI, metadata for preamble
       </xsl:for-each>
     </xsl:variable>
     -->
+    
     <xsl:if test="/*/tei:teiHeader/tei:profileDesc/tei:abstract">
       <xsl:text>\def\elabstract{%&#10;</xsl:text>
       <xsl:apply-templates select="/*/tei:teiHeader/tei:profileDesc/tei:abstract/node()"/>
       <xsl:text>&#10;}&#10;</xsl:text>
     </xsl:if>
+
+    <xsl:if test="/*/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:bibl">
+      <xsl:text>\def\elsource{</xsl:text>
+      <xsl:apply-templates select="/*/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:bibl/node()"/>
+      <xsl:text>}&#10;</xsl:text>
+    </xsl:if>
+    
+
   </xsl:template>
 
     

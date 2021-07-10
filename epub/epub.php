@@ -111,7 +111,7 @@ class Epub
     $this->_dom->formatOutput = true;
     if ($this->_srcfile) $this->_dom->documentURI = realpath($this->_srcfile);
     // should resolve xinclude
-    $this->_dom->xinclude(LIBXML_NOENT | LIBXML_NONET | LIBXML_NOWARNING | LIBXML_NOERROR | LIBXML_NSCLEAN | LIBXML_PARSEHUGE); // 
+    $this->_dom->xinclude(LIBXML_NOENT | LIBXML_NONET | LIBXML_NOWARNING | LIBXML_NOERROR | LIBXML_NSCLEAN | LIBXML_PARSEHUGE); //
 
     self::log(E_USER_NOTICE, 'load '. round(microtime(true) - self::$_time, 3)." s.");
     // @xml:id may be used as a href path, example images

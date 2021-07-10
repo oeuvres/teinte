@@ -1,6 +1,6 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% LaTeX model https://hurlus.fr %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% LaTeX model pour https://ebooks-bnr.com/ %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Needed before document class
 \RequirePackage{pdftexcmds} % needed for tests expressions
@@ -13,26 +13,13 @@
 \newif\ifav % a5
 \newif\ifbooklet % booklet
 
-\ifnum \strcmp{\mode}{booklet}=0
-  \booklettrue
-\else\ifnum \strcmp{\mode}{a5}=0
+\ifnum \strcmp{\mode}{a5}=0
   \avtrue
 \else
   \aivtrue
-\fi\fi
+\fi
 
-\ifbooklet % do not enclose with {}
-  \documentclass[french,twoside]{book} % ,notitlepage
-  \usepackage[%
-    papersize={105mm, 297mm},
-    inner=10mm,
-    outer=10mm,
-    top=18mm,
-    bottom=18mm,
-    marginparsep=0pt,
-  ]{geometry}
-  \usepackage[fontsize=9.5pt]{scrextend} % for Roboto
-\else\ifav
+\ifav
   \documentclass[french,twoside]{book} % ,notitlepage
   \usepackage[%
     a5paper,
@@ -55,62 +42,33 @@
   ]{geometry}
   \setlength{\columnsep}{20mm}
   \usepackage[fontsize=9.5pt]{scrextend}
-\fi\fi
+\fi
 
-%%%%%%%%%%%%%%
-% Alignments %
-%%%%%%%%%%%%%%
+
 % before teinte macros
-
 \setlength{\arrayrulewidth}{0.2pt}
 \setlength{\columnseprule}{\arrayrulewidth} % twocol
 \setlength{\parskip}{0pt} % classical para with no margin
 \setlength{\parindent}{1.5em}
-
-%%%%%%%%%%
-% Colors %
-%%%%%%%%%%
-% before Teinte macros
-
 \usepackage[dvipsnames]{xcolor}
-\definecolor{rubric}{HTML}{902c20} % the tonic
+\definecolor{rubric}{HTML}{0c71c3} % the tonic
 \def\columnseprulecolor{\color{rubric}}
-\colorlet{borderline}{rubric!30!} % definecolor need exact code
-\definecolor{shadecolor}{gray}{0.95}
-\definecolor{bghi}{gray}{0.5}
 
 %%%%%%%%%%%%%%%%%
 % Teinte macros %
 %%%%%%%%%%%%%%%%%
 \input{../latex/teinte}
 
-%%%%%%%%%%%%%
-% footnotes %
-%%%%%%%%%%%%%
-\renewcommand{\thefootnote}{\bfseries\textcolor{rubric}{\arabic{footnote}}} % color for footnote marks
-
-%%%%%%%%%
-% Fonts %
-%%%%%%%%%
-\usepackage[]{roboto} % SmallCaps, Regular is a bit bold
-% \linespread{0.90} % too compact, keep font natural
-\newfontfamily\fontrun[]{Roboto Condensed Light} % condensed runing heads
-\ifav
-  \setmainfont[
-    ItalicFont={Roboto Light Italic},
-  ]{Roboto}
-\else
-  \setmainfont[
-    ItalicFont={Roboto Italic},
-    % BoldFont={Roboto},
-  ]{Roboto Light}
-  \renewcommand{\LettrineFontHook}{\bfseries\color{rubric}}
+% \usepackage{bitter}
+% \usepackage{Alegreya}
+% \usepackage{libertinus}
+% \renewcommand{\familydefault}{\sfdefault}
+% Need to be there, don't know why
+\ifav % A5
+  \usepackage[sfdefault]{FiraSans}
+\else % A4 2 cols
+  \usepackage[sfdefault,light]{FiraSans}
 \fi
-% \renewenvironment{labelblock}{\begin{center}\bfseries\color{rubric}}{\end{center}}
-
-%%%%%%%%
-% MISC %
-%%%%%%%%
 
 \setdefaultlanguage[frenchpart=false]{french} % bug on part
 
@@ -139,31 +97,6 @@
 \renewcommand{\headrulewidth}{\arrayrulewidth}
 \renewcommand{\headrule}{\color{rubric}\hrule}
 
-% delicate tuning, image has produce line-height problems in title on 2 lines
-\titleformat{name=\chapter} % command
-  [display] % shape
-  {\vspace{1.5em}\centering} % format
-  {} % label
-  {0pt} % separator between n
-  {}
-[{\color{rubric}\huge\textbf{#1}}\bigskip] % after code
-% \titlespacing{command}{left spacing}{before spacing}{after spacing}[right]
-\titlespacing*{\chapter}{0pt}{-2em}{0pt}[0pt]
-
-\titleformat{name=\section}
-  [block]{}{}{}{}
-  [\vbox{\color{rubric}\large\raggedleft\textbf{#1}}]
-\titlespacing{\section}{0pt}{0pt plus 4pt minus 2pt}{\baselineskip}
-
-\titleformat{name=\subsection}
-  [block]
-  {}
-  {} % \thesection
-  {} % separator \arrayrulewidth
-  {}
-[\vbox{\large\textbf{#1}}]
-% \titlespacing{\subsection}{0pt}{0pt plus 4pt minus 2pt}{\baselineskip}
-
 
 \ifaiv
   \fancypagestyle{fancy}{%
@@ -181,7 +114,11 @@
     \fancyhead[L]{\truncate{0.9\headwidth}{\fontrun\elbibl}}
     \fancyhead[R]{\thepage}
   }
+  \titleformat{name=\section}
+    [block]{}{}{}{}
+  [\vbox{\color{rubric}\hrule\bigskip \large\bfseries\raggedleft #1}]
 \else
+  \titleclass{\section}{top}
   \fancypagestyle{fancy}{%
     \fancyhf{}
     \setlength{\headheight}{1.5em}
@@ -197,8 +134,35 @@
     \fancyhead[L]{\truncate{0.9\headwidth}{\fontrun\elbibl}}
     \fancyhead[R]{\thepage}
   }
-  \titleclass{\section}{top}
+  \titleformat{name=\section}
+    [block]{}{}{}{}
+  [\vbox{\color{rubric}\large\bfseries\raggedleft #1}]
 \fi
+
+% delicate tuning, image has produce line-height problems in title on 2 lines
+\titleformat{name=\chapter} % command
+  [display] % shape
+  {\bigskip\centering} % format
+  {} % label
+  {0pt} % separator between n
+  {% before code
+    % \vspace{16pt}
+  }
+[{\color{rubric}\huge\bfseries #1}\bigskip] % after code
+% \titlespacing{command}{left spacing}{before spacing}{after spacing}[right]
+\titlespacing*{\chapter}{0pt}{-2em}{0pt}[0pt]
+
+
+\titlespacing{\section}{0pt}{0pt plus 4pt minus 2pt}{\baselineskip}
+
+\titleformat{name=\subsection}
+  [block]
+  {\bfseries\raggedright}
+  {} % \thesection
+  {} % separator \arrayrulewidth
+  {}
+[\uline{#1}]
+% \titlespacing{\subsection}{0pt}{0pt plus 4pt minus 2pt}{\baselineskip}
 
 
 \newcommand\chapo{{%
@@ -212,8 +176,7 @@
   \bigskip
   {\color{rubric}\hline\par}
   \bigskip
-  {\Large LIVRE LIBRE À PRIX LIBRE, DEMANDEZ AU COMPTOIR\par}
-  \centerline{\small\color{rubric} {hurlus.fr, tiré le \today}}\par
+  {\color{rubric} \hyperref[https://ebooks-bnr.com/]{Bibliothèque numérique romande} : \hyperref[https://ebooks-bnr.com/]{\uline{ebooks-bnr.com}}\par}
   \bigskip
 }}
 
@@ -235,22 +198,30 @@
 
 \makeatletter\@starttoc{toc}\makeatother % toc without new page
 
-\ifdev % autotext in dev mode
-
-\fontname\font — \textsc{Les règles du jeu}\par
-(\hyperref[utopie]{\underline{Lien}})\par
-\noindent \initialiv{A}{lors là}\blindtext\par
-\noindent \initialiv{À}{ la bonheur des dames}\blindtext\par
-\noindent \initialiv{É}{tonnez-le}\blindtext\par
-\noindent \initialiv{Q}{ualitativement}\blindtext\par
-\noindent \initialiv{V}{aloriser}\blindtext\par
-\Blindtext
-\phantomsection
-\label{utopie}
-\Blinddocument
-\fi
 
 %text%
 
+\onecolumn
 
+\setlength{\parskip}{1em}
+\setlength{\parindent}{0em}
+\fontsize{12pt}{15pt}\selectfont
+\chapter[Colophon]{Colophon}
+
+\begin{center}
+Ce livre numérique vous est proposé par\par
+
+{\color{rubric} \hyperref[https://ebooks-bnr.com/]{La Bibliothèque numérique romande}\par
+\hyperref[https://ebooks-bnr.com/]{\uline{ebooks-bnr.com}}\par}
+
+\end{center}
+
+
+\vfill
+
+\textbf{Source} : \elsource\par
+
+\textbf{Autres sites de livres numériques} Plusieurs sites partagent un catalogue commun qui répertorie un ensemble d’\emph{ebooks} et en donne le lien d’accès.
+Vous pouvez consulter ce catalogue à l’adresse : \href{https://noslivres.net/}{\uline{noslivres.net}}.\par
+\clearpage %force a page break
 \end{document}

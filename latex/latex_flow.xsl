@@ -355,8 +355,6 @@ for example: abstract.
   </xsl:template>
   
 
-  <xsl:template match="tei:lb[@type = 'line']"> \hline </xsl:template>
-
   <xsl:template match="tei:ident">
     <xsl:text>\textsf{</xsl:text>
     <xsl:apply-templates/>
@@ -437,8 +435,44 @@ for example: abstract.
     </xsl:choose>
   </xsl:template>
   
+  <xsl:template match="tei:lb">
+    <xsl:choose>
+      <xsl:when test="@type='hyphenInWord' and contains(@rend,'hidden')"/>
+      <xsl:when test="contains(@rend,'hidden')">
+        <xsl:text> </xsl:text>
+      </xsl:when>
+      <xsl:when test="contains(@rend,'-') or @type='hyphenInWord'">
+        <xsl:text>-</xsl:text>
+        <xsl:call-template name="lb"/>
+      </xsl:when>
+      <xsl:when test="contains(@rend,'above')">
+        <xsl:text>⌜</xsl:text>
+      </xsl:when>
+      <xsl:when test="contains(@rend,'below')">
+        <xsl:text>⌞</xsl:text>
+      </xsl:when>
+      <!-- last linebreak of series ? do something ?
+      <xsl:when test="normalize-space(following-sibling::node()) = '' or normalize-space(preceding-sibling::node())"/>
+      -->
+      <xsl:when test="contains(@rend,'show')">
+        <xsl:call-template name="lb"/>
+      </xsl:when>
+      <xsl:when test="contains(@rend,'paragraph')">
+        <xsl:call-template name="lineBreakAsPara"/>
+      </xsl:when>
+      <!-- \\* should be nicer on break page -->
+      <xsl:when test="parent::tei:signed | parent::tei:salute">\\&#10;</xsl:when>
+      <xsl:otherwise>
+        <xsl:call-template name="lb"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  
+  <xsl:template match="tei:lb[@type = 'line']">&#10;\hline&#10;</xsl:template>
+  
+  
   <xsl:template name="lb">
-    <xsl:text>{\hskip1pt}\\{}</xsl:text>
+    <xsl:text>\\&#10;</xsl:text>
   </xsl:template>
   <xsl:template name="lineBreakAsPara">
     <xsl:text>\par&#10;</xsl:text>
@@ -905,20 +939,25 @@ for example: abstract.
         <xsl:text>}}</xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:if test="true()">\href{<xsl:value-of select="$target"/>}{\dotuline{<xsl:apply-templates/>}}</xsl:if>
-        <!-- Url as footnote -->
-        <xsl:if test="true()">\footnote{\href{<xsl:value-of select="$target"/>}{\url{<xsl:value-of select="$target"/>}}}</xsl:if>
+        <xsl:text>\href{</xsl:text>
+        <xsl:value-of select="$target"/>
+        <xsl:text>}{\dotuline{</xsl:text>
+        <xsl:apply-templates/>
+        <xsl:text>}}</xsl:text>
+        <xsl:text>\footnote{</xsl:text>
+          <xsl:text>\href{</xsl:text>
+          <xsl:value-of select="$target"/>
+          <xsl:text>}{</xsl:text>
+          <xsl:value-of select="$target"/>
+          <xsl:text>}</xsl:text>
+        <xsl:text>}</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
   
   <xsl:template match="tei:signed">
-    <xsl:text>&#10;&#10;\begin{</xsl:text>
-    <xsl:value-of select="$quoteEnv"/>
-    <xsl:text>}&#10;</xsl:text>
+    <xsl:text>&#10;&#10;\signed{</xsl:text>
     <xsl:apply-templates/>
-    <xsl:text>\end{</xsl:text>
-    <xsl:value-of select="$quoteEnv"/>
     <xsl:text>}&#10;</xsl:text>
   </xsl:template>
 

@@ -153,7 +153,7 @@ Gobal TEI parameters and variables are divided in different categories
   <xsl:template name="doctitle">
     <xsl:choose>
       <xsl:when test="/*/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title">
-        <xsl:for-each select="/*/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[not(@type) or @type='main' or @type='sub']">
+        <xsl:for-each select="/*/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[not(@type) or @type='main']">
           <xsl:if test="position()!=1">. </xsl:if>
           <xsl:apply-templates mode="title"/>
         </xsl:for-each>
