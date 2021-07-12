@@ -1,4 +1,4 @@
-<?php 
+<?php
 include dirname(dirname(__FILE__)).'/teidoc.php';
 set_time_limit(-1);
 if (isset($argv[0]) && realpath($argv[0]) == realpath(__FILE__)) Latex::cli(); // direct CLI
@@ -11,7 +11,7 @@ class Latex {
   protected $srcfile;
   static protected $latex_xsl;
   static protected $latex_meta_xsl;
-  // escape all text nodes 
+  // escape all text nodes
   static protected $latex_esc = array(
     '@\s+@u' => ' ',
     '@\\\@u' => '\textbackslash', //before adding \ for escapings
@@ -45,11 +45,11 @@ class Latex {
 
   /**
    * resolve tex inclusions and image links
-   * 
+   *
    * $texfile: ! path to a tex file
    * $workdir: ? destination dir place where the tex will be processed.
    * $grafdir: ? a path where to put graphics, relative to workdir or absolute.
-   *    
+   *
    * If resources are found, they are copied in grafdir, and tex is rewrite in consequence.
    * No suport for \graphicspath{⟨dir⟩+}
    */
@@ -74,7 +74,7 @@ class Latex {
       else {
         $grafabs = $workdir.$grafdir;
       }
-    } 
+    }
     $tex = preg_replace_callback(
       '@(\\\includegraphics[^{]*){(.*?)}@',
       function($matches) use($srcdir, $workdir, $grafdir, $grafabs) {
@@ -113,15 +113,15 @@ class Latex {
   static function dom($srcfile)
   {
     $dom = new DOMDocument("1.0", "UTF-8");
-    $dom->preserveWhiteSpace = false;
-    $dom->formatOutput=true;
+    $dom->preserveWhiteSpace = true;
+    // $dom->formatOutput=true; // bug on some nodes LIBERTÉ 9 mai. ÉGALITÉ
     $dom->substituteEntities=true;
     $xml = file_get_contents($srcfile);
     $xml = preg_replace(array_keys(self::$latex_esc), array_values(self::$latex_esc), $xml);
     $dom->loadXML($xml,  LIBXML_NOENT | LIBXML_NONET | LIBXML_NOWARNING ); // no warn for <?xml-model
     return $dom;
   }
-  
+
   function load($srcfile)
   {
     $this->srcfile = $srcfile;
@@ -138,32 +138,41 @@ class Latex {
     return $workdir;
   }
 
-  /** 
+  /**
    * Setup pdf compilation : generate a tex from tei
    * $skelfile is a requested tex template
    */
-  function setup($skelfile) 
+  function setup($skelfile)
   {
     $filename = pathinfo($this->srcfile, PATHINFO_FILENAME);
     $workdir = self::workdir($this->srcfile);
     // resolve includes and graphics of template
     $tex = Latex::includes($skelfile, $workdir, $filename.'/');
 
+    $this->dom->save($workdir.$filename.'.xml');
+
     $meta = self::$latex_meta_xsl->transformToXml($this->dom);
     $text = self::$latex_xsl->transformToXml($this->dom);
-    
 
-    $tex = str_replace(
-      array('%meta%', '%text%'), 
-      array($meta, $text),
-      $tex,
-    );
+
     $texfile = $workdir.$filename.'.tex';
-    file_put_contents($texfile, $tex);
+    file_put_contents(
+      $texfile,
+      str_replace(
+        array('%meta%', '%text%'),
+        array($meta, $text),
+        $tex,
+      )
+    );
+    // create a special tex with meta only
+    file_put_contents(
+      $workdir.$filename.'_cover.tex',
+      str_replace('%meta%', $meta, $tex),
+    );
     return $texfile;
   }
-  
-  public static function cli() 
+
+  public static function cli()
   {
     array_shift($_SERVER['argv']); // shift first arg, the script filepath
     if (!count($_SERVER['argv'])) exit("

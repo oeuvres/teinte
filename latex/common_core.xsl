@@ -26,7 +26,6 @@ maybe it could be nice for html with a good generic CSS,
 it is dangerous for docx where nesting may produce lots of surprises
 (example : <bibl>, in a <note>, in a <quote>).
   -->
-  <xsl:output indent="no"/>
   
   
   <xsl:template match="tei:sic">
@@ -764,6 +763,7 @@ it is dangerous for docx where nesting may produce lots of surprises
   </xsl:template>
   
   <xsl:template match="tei:foreign">
+    <xsl:message/>
     <xsl:call-template name="makeInline">
       <xsl:with-param name="style">foreign</xsl:with-param>
     </xsl:call-template>

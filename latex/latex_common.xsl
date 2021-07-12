@@ -86,7 +86,7 @@
     tei:vMerge tei:vNot tei:vRange tei:valItem
     tei:valList tei:vocal
     "/>
-  
+
   <!-- The classical \label is not a precise anchor without the \phantomsection hack
   Use a local macro to always choose best solution
   (hyperrerf/hypertarget with a position upper to the baseline)

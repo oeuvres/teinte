@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xsl:transform  version="1.0"
-  xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
-  xmlns:tei="http://www.tei-c.org/ns/1.0" 
-  exclude-result-prefixes="tei"
-
-  xmlns:str="http://exslt.org/strings"
-  xmlns:exslt="http://exslt.org/common" 
-  extension-element-prefixes="str exslt"
->
+<xsl:transform version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:tei="http://www.tei-c.org/ns/1.0" exclude-result-prefixes="tei" xmlns:str="http://exslt.org/strings" xmlns:exslt="http://exslt.org/common" extension-element-prefixes="str exslt">
   <!-- 
 TEI Styleshest for LaTeX, forked from Sebastian Rahtz
 https://github.com/TEIC/Stylesheets/tree/dev/latex
@@ -26,12 +18,13 @@ for example: abstract.
   <xsl:param name="quoteEnv">quoteblock</xsl:param>
   <!-- TODO hadle LaTeX side -->
   <xsl:param name="pbStyle"/>
-
   <!-- TODO, move params -->
   <xsl:variable name="preQuote">« </xsl:variable>
   <xsl:variable name="postQuote"> »</xsl:variable>
   <!-- TODO, handle dinkus etc… -->
+  
   <xsl:template match="tei:ab">
+    <xsl:param name="message"/>
     <xsl:variable name="norm" select="normalize-space(.)"/>
     <xsl:variable name="dinkus" select="boolean(translate($norm, '  *⁂', '') = '')"/>
     <xsl:choose>
@@ -46,21 +39,27 @@ for example: abstract.
       </xsl:when>
       <xsl:when test="@type = 'ornament'">
         <xsl:text>&#10;\begin{center}</xsl:text>
-        <xsl:apply-templates/>
+        <xsl:apply-templates>
+          <xsl:with-param name="message" select="$message"/>
+        </xsl:apply-templates>
         <xsl:text>\end{center}&#10;&#10;</xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:apply-templates/>
+        <xsl:apply-templates>
+          <xsl:with-param name="message" select="$message"/>
+        </xsl:apply-templates>
         <xsl:text>\par&#10;</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
   
   <xsl:template match="tei:anchor">
+    <xsl:param name="message"/>
     <xsl:call-template name="tei:makeHyperTarget"/>
   </xsl:template>
   
   <xsl:template match="tei:bibl">
+    <xsl:param name="message"/>
     <xsl:variable name="inline">
       <xsl:call-template name="tei:isInline"/>
     </xsl:variable>
@@ -100,23 +99,25 @@ for example: abstract.
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-  
   <!-- Who call that mode cite ? -->
+  
   <xsl:template match="tei:bibl" mode="cite">
     <xsl:apply-templates select="text()[1]"/>
   </xsl:template>
   <!-- Semantic blocks  -->
+  
   <xsl:template match="tei:byline | tei:dateline | tei:salute | tei:signed">
+    <xsl:param name="message"/>
     <xsl:call-template name="makeBlock"/>
   </xsl:template>
   
   <xsl:template match="tei:argument">
+    <xsl:param name="message"/>
     <xsl:call-template name="makeGroup"/>
   </xsl:template>
   
-  
-  
   <xsl:template match="tei:cit">
+    <xsl:param name="message"/>
     <xsl:choose>
       <xsl:when test="
           contains(@rend, 'display') or tei:q/tei:p or
@@ -144,18 +145,24 @@ for example: abstract.
           <xsl:value-of select="@n"/>
           <xsl:text>) </xsl:text>
         </xsl:if>
-        <xsl:apply-templates/>
+        <xsl:apply-templates>
+          <xsl:with-param name="message" select="$message"/>
+        </xsl:apply-templates>
         <xsl:value-of select="$postQuote"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
+  
   <xsl:template match="tei:code">
+    <xsl:param name="message"/>
     <xsl:text>\texttt{</xsl:text>
-    <xsl:apply-templates/>
+    <xsl:apply-templates>
+      <xsl:with-param name="message" select="$message"/>
+    </xsl:apply-templates>
     <xsl:text>}</xsl:text>
   </xsl:template>
-  
   <!-- code example, for TEI documentation, not yet relevant here
+  
   <xsl:template match="tei:seg[tei:match(@rend, 'pre')] | tei:eg | tei:q[tei:match(@rend, 'eg')]">
     <xsl:variable name="stuff">
       <xsl:apply-templates mode="eg"/>
@@ -215,27 +222,39 @@ for example: abstract.
     </xsl:choose>
   </xsl:template>
   -->
+  
   <xsl:template match="tei:emph">
+    <xsl:param name="message"/>
     <xsl:text>\emph{</xsl:text>
-    <xsl:apply-templates/>
+    <xsl:apply-templates>
+      <xsl:with-param name="message" select="$message"/>
+    </xsl:apply-templates>
     <xsl:text>}</xsl:text>
   </xsl:template>
   
-
   <xsl:template match="tei:gloss">
+    <xsl:param name="message"/>
     <xsl:text>\emph{</xsl:text>
-    <xsl:apply-templates/>
+    <xsl:apply-templates>
+      <xsl:with-param name="message" select="$message"/>
+    </xsl:apply-templates>
     <xsl:text>}</xsl:text>
   </xsl:template>
+  
   <xsl:template match="tei:hi">
+    <xsl:param name="message"/>
     <xsl:call-template name="rendering"/>
   </xsl:template>
+  
   <xsl:template name="rendering">
+    <xsl:param name="message"/>
     <xsl:param name="rend">
       <xsl:value-of select="@rend"/>
     </xsl:param>
     <xsl:param name="cont">
-      <xsl:apply-templates/>
+      <xsl:apply-templates>
+        <xsl:with-param name="message" select="$message"/>
+      </xsl:apply-templates>
     </xsl:param>
     <xsl:choose>
       <xsl:when test="normalize-space($rend) = ''">
@@ -335,7 +354,9 @@ for example: abstract.
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
+  
   <xsl:template match="tei:hi[starts-with(@rend, 'initial')]">
+    <xsl:param name="message"/>
     <xsl:param name="text" select="normalize-space(.)"/>
     <xsl:variable name="cmd">
       <xsl:choose>
@@ -354,14 +375,17 @@ for example: abstract.
     </xsl:choose>
   </xsl:template>
   
-
   <xsl:template match="tei:ident">
+    <xsl:param name="message"/>
     <xsl:text>\textsf{</xsl:text>
-    <xsl:apply-templates/>
+    <xsl:apply-templates>
+      <xsl:with-param name="message" select="$message"/>
+    </xsl:apply-templates>
     <xsl:text>}</xsl:text>
   </xsl:template>
-
+  
   <xsl:template match="tei:item">
+    <xsl:param name="message"/>
     <xsl:choose>
       <xsl:when test="parent::tei:list[@type='gloss'] or preceding-sibling::tei:label">
         <xsl:text>\item</xsl:text>
@@ -371,7 +395,9 @@ for example: abstract.
         <xsl:text>&#10;</xsl:text>
       </xsl:when>
       <xsl:when test="parent::tei:list[@type='elementlist']">
-        <xsl:apply-templates/>
+        <xsl:apply-templates>
+          <xsl:with-param name="message" select="$message"/>
+        </xsl:apply-templates>
       </xsl:when>
       <xsl:otherwise>
         <xsl:text>\item</xsl:text>
@@ -383,38 +409,50 @@ for example: abstract.
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-    
+  
   <xsl:template match="tei:item" mode="gloss">
+    <xsl:param name="message"/>
     <xsl:text>\item[{</xsl:text>
     <xsl:apply-templates select="preceding-sibling::tei:label[1]" mode="gloss"/>
     <xsl:text>}]</xsl:text>
     <xsl:if test="tei:list">\hspace{1em}\hfill\linebreak&#10;</xsl:if>
-    <xsl:apply-templates/>
+    <xsl:apply-templates>
+      <xsl:with-param name="message" select="$message"/>
+    </xsl:apply-templates>
     <xsl:text>&#10;</xsl:text>
   </xsl:template>
-    
+  
   <xsl:template match="tei:item" mode="inline">
+    <xsl:param name="message"/>
     <xsl:if test="preceding-sibling::tei:item">, </xsl:if>
     <xsl:if test="not(following-sibling::tei:item) and preceding-sibling::tei:item"> and </xsl:if>
     <xsl:text>• </xsl:text>
-    <xsl:apply-templates/>
+    <xsl:apply-templates>
+      <xsl:with-param name="message" select="$message"/>
+    </xsl:apply-templates>
     <xsl:text>&#160;</xsl:text>
   </xsl:template>
   
-
   <xsl:template match="tei:list/tei:label"/>
-
+  
   <xsl:template match="tei:item/tei:label">
+    <xsl:param name="message"/>
     <xsl:text>\textbf{</xsl:text>
-    <xsl:apply-templates/>
+    <xsl:apply-templates>
+      <xsl:with-param name="message" select="$message"/>
+    </xsl:apply-templates>
     <xsl:text>}</xsl:text>
   </xsl:template>
-
+  
   <xsl:template match="tei:label" mode="gloss">
-    <xsl:apply-templates/>
+    <xsl:param name="message"/>
+    <xsl:apply-templates>
+      <xsl:with-param name="message" select="$message"/>
+    </xsl:apply-templates>
   </xsl:template>
   
   <xsl:template match="tei:label">
+    <xsl:param name="message"/>
     <xsl:variable name="inline">
       <xsl:call-template name="tei:isInline"/>
     </xsl:variable>
@@ -430,12 +468,17 @@ for example: abstract.
         </xsl:if>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:if test="true()">&#10;\labelblock{<xsl:apply-templates/>}&#10;&#10;</xsl:if>
+        <xsl:text>&#10;\labelblock{</xsl:text>
+        <xsl:apply-templates>
+          <xsl:with-param name="message" select="$message"/>
+        </xsl:apply-templates>
+        <xsl:text>}&#10;&#10;</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
   
   <xsl:template match="tei:lb">
+    <xsl:param name="message"/>
     <xsl:choose>
       <xsl:when test="@type='hyphenInWord' and contains(@rend,'hidden')"/>
       <xsl:when test="contains(@rend,'hidden')">
@@ -470,22 +513,26 @@ for example: abstract.
   
   <xsl:template match="tei:lb[@type = 'line']">&#10;\hline&#10;</xsl:template>
   
-  
   <xsl:template name="lb">
     <xsl:text>\\&#10;</xsl:text>
   </xsl:template>
+  
   <xsl:template name="lineBreakAsPara">
     <xsl:text>\par&#10;</xsl:text>
   </xsl:template>
-
+  
   <xsl:template match="tei:list/tei:head">
+    <xsl:param name="message"/>
     <xsl:text>\item[]\listhead{</xsl:text>
     <xsl:call-template name="tei:makeHyperTarget"/>
-    <xsl:apply-templates/>
+    <xsl:apply-templates>
+      <xsl:with-param name="message" select="$message"/>
+    </xsl:apply-templates>
     <xsl:text>}&#10;</xsl:text>
   </xsl:template>
-
+  
   <xsl:template match="tei:list">
+    <xsl:param name="message"/>
     <xsl:call-template name="tei:makeHyperTarget"/>
     <xsl:variable name="rend" select="concat(' ', normalize-space(@rend), ' ')"/>
     <xsl:variable name="options">
@@ -495,7 +542,7 @@ for example: abstract.
         <xsl:otherwise>itemsep=0pt,</xsl:otherwise>
       </xsl:choose>
       <xsl:text>]</xsl:text>
-    </xsl:variable>   
+    </xsl:variable>
     <xsl:choose>
       <xsl:when test="not(tei:item)"/>
       <xsl:when test="@type = 'gloss' or tei:label">
@@ -507,14 +554,18 @@ for example: abstract.
         <xsl:text>&#10;\begin{enumerate}</xsl:text>
         <xsl:value-of select="$options"/>
         <xsl:text>&#10;</xsl:text>
-        <xsl:apply-templates/>
+        <xsl:apply-templates>
+          <xsl:with-param name="message" select="$message"/>
+        </xsl:apply-templates>
         <xsl:text>&#10;\end{enumerate}</xsl:text>
       </xsl:when>
       <xsl:when test="contains($rend, 'alpha') or contains($rend, ' lower-latin ') or contains($rend, ' a ') or contains($rend, ' a. ') or contains($rend, ' a) ')">
         <xsl:text>&#10;\begin{listalpha}</xsl:text>
         <xsl:value-of select="$options"/>
         <xsl:text>&#10;</xsl:text>
-        <xsl:apply-templates/>
+        <xsl:apply-templates>
+          <xsl:with-param name="message" select="$message"/>
+        </xsl:apply-templates>
         <xsl:text>&#10;\end{listalpha}</xsl:text>
       </xsl:when>
       <xsl:when test="@type = 'runin' or contains($rend, ' runin ') or contains($rend, ' runon ')">
@@ -524,13 +575,16 @@ for example: abstract.
         <xsl:text>&#10;\begin{itemize}</xsl:text>
         <xsl:value-of select="$options"/>
         <xsl:text>&#10;</xsl:text>
-        <xsl:apply-templates/>
+        <xsl:apply-templates>
+          <xsl:with-param name="message" select="$message"/>
+        </xsl:apply-templates>
         <xsl:text>\end{itemize}&#10;</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-
+  
   <xsl:template match="tei:listBibl">
+    <xsl:param name="message"/>
     <xsl:apply-templates select="tei:head"/>
     <xsl:apply-templates select="*[not(self::tei:head)]"/>
     <!--
@@ -561,19 +615,27 @@ for example: abstract.
   </xsl:template>
   
   <xsl:template match="tei:listBibl/tei:head">
+    <xsl:param name="message"/>
     <xsl:text>\noindent\textbf{</xsl:text>
     <xsl:for-each select="tei:head">
-      <xsl:apply-templates/>
+      <xsl:apply-templates>
+        <xsl:with-param name="message" select="$message"/>
+      </xsl:apply-templates>
     </xsl:for-each>
     <xsl:text>}\par&#10;</xsl:text>
   </xsl:template>
-    
   
   <xsl:template match="tei:listBibl/tei:bibl">
-    <xsl:if test="true()">\biblitem{<xsl:apply-templates/>}&#10;</xsl:if>
+    <xsl:param name="message"/>
+    <xsl:text>\biblitem{</xsl:text>
+    <xsl:apply-templates>
+      <xsl:with-param name="message" select="$message"/>
+    </xsl:apply-templates>
+    <xsl:text>}&#10;</xsl:text>
   </xsl:template>
   
   <xsl:template match="tei:milestone">
+    <xsl:param name="message"/>
     <xsl:choose>
       <!-- <hr/> as a milestone ? To think
       <xsl:when test="contains(@rend,'hr')">
@@ -616,12 +678,14 @@ for example: abstract.
   </xsl:template>
   
   <xsl:template match="tei:num/text()">
+    <xsl:param name="message"/>
     <xsl:text>\textsc{</xsl:text>
     <xsl:value-of select="."/>
     <xsl:text>}</xsl:text>
   </xsl:template>
   
   <xsl:template name="marginalNote">
+    <xsl:param name="message"/>
     <xsl:choose>
       <xsl:when test="
           @place = 'left' or
@@ -632,29 +696,37 @@ for example: abstract.
     </xsl:choose>
     <xsl:text>\marginnote{</xsl:text>
     <xsl:call-template name="tei:makeHyperTarget"/>
-    <xsl:apply-templates/>
+    <xsl:apply-templates>
+      <xsl:with-param name="message" select="$message"/>
+    </xsl:apply-templates>
     <xsl:text>}</xsl:text>
   </xsl:template>
   
   <xsl:template name="displayNote">
+    <xsl:param name="message"/>
     <xsl:text>&#10;\begin{</xsl:text>
     <xsl:value-of select="$quoteEnv"/>
     <xsl:text>}&#10;</xsl:text>
-    <xsl:apply-templates/>
+    <xsl:apply-templates>
+      <xsl:with-param name="message" select="$message"/>
+    </xsl:apply-templates>
     <xsl:text>\end{</xsl:text>
     <xsl:value-of select="$quoteEnv"/>
     <xsl:text>}&#10;</xsl:text>
   </xsl:template>
   
   <xsl:template name="endNote">
+    <xsl:param name="message"/>
     <xsl:text>\endnote{</xsl:text>
     <xsl:call-template name="tei:makeHyperTarget"/>
-    
-    <xsl:apply-templates/>
+    <xsl:apply-templates>
+      <xsl:with-param name="message" select="$message"/>
+    </xsl:apply-templates>
     <xsl:text>}</xsl:text>
   </xsl:template>
   
   <xsl:template name="plainNote">
+    <xsl:param name="message"/>
     <xsl:text> {\small\itshape [</xsl:text>
     <xsl:choose>
       <xsl:when test="@n">
@@ -666,33 +738,43 @@ for example: abstract.
         </xsl:call-template>
       </xsl:otherwise>
     </xsl:choose>
-    <xsl:apply-templates/>
+    <xsl:apply-templates>
+      <xsl:with-param name="message" select="$message"/>
+    </xsl:apply-templates>
     <xsl:text>]} </xsl:text>
   </xsl:template>
   
   <xsl:template name="footNote">
+    <xsl:param name="message"/>
     <xsl:call-template name="tei:makeHyperTarget"/>
     <xsl:choose>
       <xsl:when test="@target">
         <xsl:text>\footnotetext{</xsl:text>
-        <xsl:apply-templates/>
+        <xsl:apply-templates>
+          <xsl:with-param name="message" select="$message"/>
+        </xsl:apply-templates>
         <xsl:text>}</xsl:text>
       </xsl:when>
       <xsl:when test="count(key('APP', 1)) &gt; 0">
         <xsl:text>\footnote{</xsl:text>
-        <xsl:apply-templates/>
+        <xsl:apply-templates>
+          <xsl:with-param name="message" select="$message"/>
+        </xsl:apply-templates>
         <xsl:text>}</xsl:text>
       </xsl:when>
       <xsl:otherwise>
         <xsl:text>\footnote{</xsl:text>
         <xsl:call-template name="tei:makeHyperTarget"/>
-        <xsl:apply-templates/>
+        <xsl:apply-templates>
+          <xsl:with-param name="message" select="$message"/>
+        </xsl:apply-templates>
         <xsl:text>}</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
   
   <xsl:template match="tei:p">
+    <xsl:param name="message"/>
     <xsl:call-template name="tei:makeHyperTarget"/>
     <xsl:variable name="prev" select="preceding-sibling::*[not(self::tei:pb)][not(self::tei:cb)][1]"/>
     <xsl:choose>
@@ -731,13 +813,13 @@ for example: abstract.
     <xsl:number/>
     <xsl:text>]} </xsl:text>
   </xsl:template>
-
   <!--
       <p>Process element pb</p>
       <p>Indication of a page break. We make it an anchor if it has an ID.</p>
     -->
-
+  
   <xsl:template match="tei:pb">
+    <xsl:param name="message"/>
     <!-- string " Page " is now managed through the i18n file -->
     <xsl:choose>
       <xsl:when test="$pbStyle = 'active'">
@@ -775,11 +857,11 @@ for example: abstract.
         <xsl:text>\cleartoleftpage&#10;\begin{figure}[ht!]\makebox[\textwidth][c]{</xsl:text>
         <xsl:text>\includegraphics[width=\textwidth]{</xsl:text>
         <xsl:value-of select="tei:resolveURI(., @facs)"/>
-        <xsl:text>} }\end{figure}</xsl:text> 
-        <xsl:text>\cleardoublepage&#10;</xsl:text> 
-        <xsl:text>\vspace{1ex}&#10;\par&#10;</xsl:text> 
-        <xsl:value-of select="@n"/> 
-        <xsl:text>\vspace{1ex}&#10;</xsl:text> 
+        <xsl:text>} }\end{figure}</xsl:text>
+        <xsl:text>\cleardoublepage&#10;</xsl:text>
+        <xsl:text>\vspace{1ex}&#10;\par&#10;</xsl:text>
+        <xsl:value-of select="@n"/>
+        <xsl:text>\vspace{1ex}&#10;</xsl:text>
       </xsl:when>
       <!-- Image with facs, do something ? -->
       <xsl:when test="@facs">
@@ -794,8 +876,9 @@ for example: abstract.
     </xsl:choose>
     <xsl:call-template name="tei:makeHyperTarget"/>
   </xsl:template>
-
+  
   <xsl:template match="tei:q | tei:said">
+    <xsl:param name="message"/>
     <xsl:variable name="inline">
       <xsl:call-template name="tei:isInline"/>
     </xsl:variable>
@@ -804,18 +887,23 @@ for example: abstract.
         <xsl:text>&#10;\begin{</xsl:text>
         <xsl:value-of select="$quoteEnv"/>
         <xsl:text>}</xsl:text>
-        <xsl:apply-templates/>
+        <xsl:apply-templates>
+          <xsl:with-param name="message" select="$message"/>
+        </xsl:apply-templates>
         <xsl:text>\end{</xsl:text>
         <xsl:value-of select="$quoteEnv"/>
         <xsl:text>}&#10;</xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:apply-templates/>
+        <xsl:apply-templates>
+          <xsl:with-param name="message" select="$message"/>
+        </xsl:apply-templates>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-
+  
   <xsl:template match="tei:quote">
+    <xsl:param name="message"/>
     <xsl:variable name="inline">
       <xsl:call-template name="tei:isInline"/>
     </xsl:variable>
@@ -834,12 +922,16 @@ for example: abstract.
       <!-- Inline, shall we tag ? -->
       <xsl:when test="$inline != ''">
         <xsl:text>\emph{</xsl:text>
-        <xsl:apply-templates/>
+        <xsl:apply-templates>
+          <xsl:with-param name="message" select="$message"/>
+        </xsl:apply-templates>
         <xsl:text>}</xsl:text>
       </xsl:when>
       <xsl:when test="parent::tei:cit or parent::tei:note">
         <xsl:call-template name="tei:makeHyperTarget"/>
-        <xsl:apply-templates/>
+        <xsl:apply-templates>
+          <xsl:with-param name="message" select="$message"/>
+        </xsl:apply-templates>
         <xsl:if test="following-sibling::*">
           <xsl:text>\par&#10;</xsl:text>
         </xsl:if>
@@ -892,7 +984,9 @@ for example: abstract.
         <xsl:text>&#10;</xsl:text>
         <xsl:call-template name="tei:makeHyperTarget"/>
         <xsl:text>\begin{borderbox}&#10;</xsl:text>
-        <xsl:apply-templates/>
+        <xsl:apply-templates>
+          <xsl:with-param name="message" select="$message"/>
+        </xsl:apply-templates>
         <xsl:text>\end{borderbox}&#10;&#10;</xsl:text>
       </xsl:when>
       <!-- Block or multi block -->
@@ -901,74 +995,95 @@ for example: abstract.
         <xsl:call-template name="tei:makeHyperTarget"/>
         <xsl:value-of select="$begin"/>
         <xsl:if test="not(tei:p|tei:list)">\noindent </xsl:if>
-        <xsl:apply-templates/>
+        <xsl:apply-templates>
+          <xsl:with-param name="message" select="$message"/>
+        </xsl:apply-templates>
         <xsl:if test="not(tei:p|tei:list)">&#10;</xsl:if>
         <xsl:value-of select="$end"/>
         <xsl:text>&#10;</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-
+  
   <xsl:template match="tei:p[contains(@rend, 'display')]">
+    <xsl:param name="message"/>
     <xsl:text>&#10;\begin{</xsl:text>
     <xsl:value-of select="$quoteEnv"/>
     <xsl:text>}&#10;</xsl:text>
-    <xsl:apply-templates/>
+    <xsl:apply-templates>
+      <xsl:with-param name="message" select="$message"/>
+    </xsl:apply-templates>
     <xsl:text>\end{</xsl:text>
     <xsl:value-of select="$quoteEnv"/>
     <xsl:text>}&#10;</xsl:text>
   </xsl:template>
-
+  
   <xsl:template match="tei:ref[@type = 'cite']">
-    <xsl:apply-templates/>
+    <xsl:param name="message"/>
+    <xsl:apply-templates>
+      <xsl:with-param name="message" select="$message"/>
+    </xsl:apply-templates>
   </xsl:template>
-
+  
   <xsl:template match="tei:ptr | tei:ref">
+    <xsl:param name="message"/>
     <!-- Some chars may be escaped in URI -->
     <xsl:variable name="target" select="translate(normalize-space(@target), '\', '')"/>
     <xsl:choose>
       <xsl:when test="not(@target)">
-        <xsl:apply-templates/>
+        <xsl:apply-templates>
+          <xsl:with-param name="message" select="$message"/>
+        </xsl:apply-templates>
       </xsl:when>
       <xsl:when test="starts-with($target, '#')">
         <xsl:text>\hyperref[</xsl:text>
         <xsl:value-of select="substring-after($target, '#')"/>
         <xsl:text>]</xsl:text>
         <xsl:text>{\dotuline{</xsl:text>
-        <xsl:apply-templates/>
+        <xsl:apply-templates>
+          <xsl:with-param name="message" select="$message"/>
+        </xsl:apply-templates>
         <xsl:text>}}</xsl:text>
       </xsl:when>
       <xsl:otherwise>
         <xsl:text>\href{</xsl:text>
         <xsl:value-of select="$target"/>
         <xsl:text>}{\dotuline{</xsl:text>
-        <xsl:apply-templates/>
+        <xsl:apply-templates>
+          <xsl:with-param name="message" select="$message"/>
+        </xsl:apply-templates>
         <xsl:text>}}</xsl:text>
         <xsl:text>\footnote{</xsl:text>
-          <xsl:text>\href{</xsl:text>
-          <xsl:value-of select="$target"/>
-          <xsl:text>}{</xsl:text>
-          <xsl:value-of select="$target"/>
-          <xsl:text>}</xsl:text>
-        <xsl:text>}</xsl:text>
+        <xsl:text>\href{</xsl:text>
+        <xsl:value-of select="$target"/>
+        <xsl:text>}{\url{</xsl:text>
+        <xsl:value-of select="$target"/>
+        <xsl:text>}}}</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
   
   <xsl:template match="tei:signed">
+    <xsl:param name="message"/>
     <xsl:text>&#10;&#10;\signed{</xsl:text>
-    <xsl:apply-templates/>
+    <xsl:apply-templates>
+      <xsl:with-param name="message" select="$message"/>
+    </xsl:apply-templates>
     <xsl:text>}&#10;</xsl:text>
   </xsl:template>
-
+  
   <xsl:template match="tei:soCalled">
+    <xsl:param name="message"/>
     <xsl:value-of select="$preQuote"/>
-    <xsl:apply-templates/>
+    <xsl:apply-templates>
+      <xsl:with-param name="message" select="$message"/>
+    </xsl:apply-templates>
     <xsl:value-of select="$postQuote"/>
   </xsl:template>
+  <!-- If $verseNumbering, something will be done with a specific latex package, todo -->
   
-    <!-- If $verseNumbering, something will be done with a specific latex package, todo -->
   <xsl:template match="tei:l">
+    <xsl:param name="message"/>
     <xsl:variable name="next" select="following-sibling::*[1][self::tei:l]"/>
     <xsl:variable name="prev" select="preceding-sibling::*[1][self::tei:l]"/>
     <xsl:choose>
@@ -977,37 +1092,52 @@ for example: abstract.
       <!-- Start of poem (if not <lg>) -->
       <xsl:when test="not($prev) and $next and not(parent::tei:lg)">
         <xsl:text>&#10;\begin{verse}&#10;</xsl:text>
-        <xsl:apply-templates/>
+        <xsl:apply-templates>
+          <xsl:with-param name="message" select="$message"/>
+        </xsl:apply-templates>
         <xsl:text>\\&#10;</xsl:text>
       </xsl:when>
       <!-- End of poem (if not <lg>) -->
       <xsl:when test="$prev and not($next) and not(parent::tei:lg)">
-        <xsl:apply-templates/>
+        <xsl:apply-templates>
+          <xsl:with-param name="message" select="$message"/>
+        </xsl:apply-templates>
         <xsl:text>\\&#10;\end{verse}&#10;</xsl:text>
       </xsl:when>
       <!-- End of stanza (with <lg>) -->
       <xsl:when test="$prev and not($next)">
-        <xsl:apply-templates/>
+        <xsl:apply-templates>
+          <xsl:with-param name="message" select="$message"/>
+        </xsl:apply-templates>
         <xsl:text>\\!</xsl:text>
       </xsl:when>
       <!-- End of stanza given by empty verse -->
       <xsl:when test="$next and $next =''">
-        <xsl:apply-templates/>
+        <xsl:apply-templates>
+          <xsl:with-param name="message" select="$message"/>
+        </xsl:apply-templates>
         <xsl:text>\\!&#10;&#10;</xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:apply-templates/>
+        <xsl:apply-templates>
+          <xsl:with-param name="message" select="$message"/>
+        </xsl:apply-templates>
         <xsl:text>\\&#10;</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
+  
   <xsl:template match="tei:del">
+    <xsl:param name="message"/>
     <xsl:text>\sout{</xsl:text>
-    <xsl:apply-templates/>
+    <xsl:apply-templates>
+      <xsl:with-param name="message" select="$message"/>
+    </xsl:apply-templates>
     <xsl:text>}</xsl:text>
   </xsl:template>
-
+  
   <xsl:template match="tei:lg">
+    <xsl:param name="message"/>
     <xsl:choose>
       <xsl:when test="count(key('APP',1))&gt;0">
         <xsl:variable name="c" select="(count(tei:l)+1) div 2"/>
@@ -1018,7 +1148,9 @@ for example: abstract.
         <xsl:text>\stanza&#10;</xsl:text>
         <xsl:for-each select="tei:l">
           <xsl:if test="parent::tei:lg/@xml:lang='Av'">{\itshape </xsl:if>
-          <xsl:apply-templates/>
+          <xsl:apply-templates>
+            <xsl:with-param name="message" select="$message"/>
+          </xsl:apply-templates>
           <xsl:if test="parent::tei:lg/@xml:lang='Av'">}</xsl:if>
           <xsl:if test="following-sibling::tei:l">
             <xsl:text>&amp;</xsl:text>
@@ -1033,7 +1165,9 @@ for example: abstract.
         <xsl:if test="not($prev)">
           <xsl:text>&#10;\begin{verse}&#10;</xsl:text>
         </xsl:if>
-        <xsl:apply-templates/>
+        <xsl:apply-templates>
+          <xsl:with-param name="message" select="$message"/>
+        </xsl:apply-templates>
         <xsl:if test="not($next)">
           <xsl:text>&#10;\end{verse}&#10;</xsl:text>
         </xsl:if>
@@ -1042,16 +1176,19 @@ for example: abstract.
   </xsl:template>
   
   <xsl:template match="tei:p[contains(@rend, 'center')]">
+    <xsl:param name="message"/>
     <xsl:text>&#10;\begin{center}&#10;</xsl:text>
-    <xsl:apply-templates/>
+    <xsl:apply-templates>
+      <xsl:with-param name="message" select="$message"/>
+    </xsl:apply-templates>
     <xsl:text>\end{center}&#10;</xsl:text>
   </xsl:template>
   
   <xsl:template match="tei:space">
+    <xsl:param name="message"/>
     <xsl:variable name="inline">
       <xsl:call-template name="tei:isInline"/>
     </xsl:variable>
-    
     <xsl:variable name="unit">
       <xsl:choose>
         <xsl:when test="@unit">
@@ -1083,20 +1220,25 @@ for example: abstract.
   </xsl:template>
   
   <xsl:template match="tei:title">
+    <xsl:param name="message"/>
     <xsl:choose>
       <xsl:when test="parent::tei:titleStmt/parent::tei:fileDesc">
         <xsl:if test="preceding-sibling::tei:title">
           <xsl:text> — </xsl:text>
         </xsl:if>
-        <xsl:apply-templates/>
+        <xsl:apply-templates>
+          <xsl:with-param name="message" select="$message"/>
+        </xsl:apply-templates>
       </xsl:when>
       <xsl:otherwise>
         <xsl:text>\emph{</xsl:text>
-          <xsl:apply-templates/>
-          <xsl:text>}</xsl:text>
-          <xsl:if test="ancestor::tei:biblStruct  or ancestor::tei:biblFull">
-            <xsl:text>. </xsl:text>
-          </xsl:if>
+        <xsl:apply-templates>
+          <xsl:with-param name="message" select="$message"/>
+        </xsl:apply-templates>
+        <xsl:text>}</xsl:text>
+        <xsl:if test="ancestor::tei:biblStruct  or ancestor::tei:biblFull">
+          <xsl:text>. </xsl:text>
+        </xsl:if>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>

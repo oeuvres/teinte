@@ -95,7 +95,52 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-  
+
+  <!-- ([%\$#_{}]) -->
+  <xsl:template name="texescape">
+    <xsl:param name="string" select="."/>
+    <xsl:choose>
+      <xsl:when test="contains($string, '_')">
+        <xsl:call-template name="texescape">
+          <xsl:with-param name="string" select="substring-before($string, '_')"/>
+        </xsl:call-template>
+        <xsl:text>\_</xsl:text>
+        <xsl:call-template name="texescape">
+          <xsl:with-param name="string" select="substring-after($string, '_')"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:when test="contains($string, '%')">
+        <xsl:call-template name="texescape">
+          <xsl:with-param name="string" select="substring-before($string, '%')"/>
+        </xsl:call-template>
+        <xsl:text>\%</xsl:text>
+        <xsl:call-template name="texescape">
+          <xsl:with-param name="string" select="substring-after($string, '%')"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:when test="contains($string, '#')">
+        <xsl:call-template name="texescape">
+          <xsl:with-param name="string" select="substring-before($string, '#')"/>
+        </xsl:call-template>
+        <xsl:text>\#</xsl:text>
+        <xsl:call-template name="texescape">
+          <xsl:with-param name="string" select="substring-after($string, '#')"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:when test="contains($string, '\')">
+        <xsl:call-template name="texescape">
+          <xsl:with-param name="string" select="substring-before($string, '\')"/>
+        </xsl:call-template>
+        <xsl:text>\\</xsl:text>
+        <xsl:call-template name="texescape">
+          <xsl:with-param name="string" select="substring-after($string, '\')"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$string"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
 
   <!-- 
     Is given an element and defines whether or not this element is to be rendered inline. 

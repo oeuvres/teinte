@@ -24,7 +24,7 @@ A light version for XSLT1, with local improvements.
   <xsl:import href="latex_figures.xsl"/>
   <xsl:import href="latex_linking.xsl"/>
   <xsl:import href="latex_textstructure.xsl"/>
-  <xsl:output method="text" encoding="utf8"/>
+  <xsl:output method="text" encoding="utf8" indent="no"/>
   <xsl:variable name="top" select="/"/>
   <xsl:param name="outputTarget">latex</xsl:param>
   <xsl:param name="spaceCharacter">\hspace*{6pt}</xsl:param>
@@ -37,10 +37,8 @@ A light version for XSLT1, with local improvements.
   
 
   
-  
-  
-
   <xsl:template match="processing-instruction()[name(.) = 'tex']">
+    <!-- TODO desescape ?  -->
     <xsl:value-of select="."/>
   </xsl:template>
   <xsl:template name="verbatim-lineBreak">

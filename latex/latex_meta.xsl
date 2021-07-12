@@ -10,7 +10,7 @@ Latex from TEI, metadata for preamble
 2021, frederic.glorieux@fictif.org
   -->
   <xsl:import href="latex_flow.xsl"/>
-  <xsl:output method="text" encoding="utf8"/>
+  <xsl:output method="text" encoding="utf8" indent="no"/>
   
   
   <xsl:template match="/">
@@ -20,7 +20,8 @@ Latex from TEI, metadata for preamble
   <xsl:template name="latexTitle">
     <xsl:for-each select="/*/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title">
       <xsl:choose>
-        <xsl:when test="not(@type) or @type='main'">{\bf <xsl:apply-templates mode="meta"/>}</xsl:when>
+        <xsl:when test="not(@type) or @type='main'">\textbf{ <xsl:apply-templates mode="meta"/> }</xsl:when>
+        <xsl:when test="@type='sub'">\textit{ <xsl:apply-templates mode="meta"/> }</xsl:when>
         <xsl:otherwise>
           <xsl:apply-templates mode="meta"/>
         </xsl:otherwise>
@@ -149,7 +150,15 @@ Latex from TEI, metadata for preamble
     
     <xsl:if test="/*/tei:teiHeader/tei:profileDesc/tei:abstract">
       <xsl:text>\def\elabstract{%&#10;</xsl:text>
-      <xsl:apply-templates select="/*/tei:teiHeader/tei:profileDesc/tei:abstract/node()"/>
+      <xsl:variable name="tex">
+        <xsl:for-each select="/*/tei:teiHeader/tei:profileDesc/tei:abstract">
+          <xsl:apply-templates/>
+        </xsl:for-each>
+      </xsl:variable>
+      <xsl:value-of select="$tex"/>
+      <xsl:if test="count(//tei:div) &gt; 10 and string-length($tex) &gt; 100">
+        <xsl:text>&#10;\clearpage</xsl:text>
+      </xsl:if>
       <xsl:text>&#10;}&#10;</xsl:text>
     </xsl:if>
 

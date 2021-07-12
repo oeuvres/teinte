@@ -12,14 +12,17 @@
 \newif\ifaiv % a4
 \newif\ifav % a5
 \newif\ifbooklet % booklet
+\newif\ifcover % cover for booklet
 
-\ifnum \strcmp{\mode}{booklet}=0
+\ifnum \strcmp{\mode}{cover}=0
+  \covertrue
+\else\ifnum \strcmp{\mode}{booklet}=0
   \booklettrue
 \else\ifnum \strcmp{\mode}{a5}=0
   \avtrue
 \else
   \aivtrue
-\fi\fi
+\fi\fi\fi
 
 \ifbooklet % do not enclose with {}
   \documentclass[french,twoside]{book} % ,notitlepage
@@ -43,6 +46,18 @@
     marginparsep=0pt,
   ]{geometry}
   \usepackage[fontsize=12pt]{scrextend}
+\else\ifcover
+  \documentclass[french,twocolumn]{book} % ,notitlepage
+  \usepackage[%
+    a4paper,
+    inner=10mm,
+    outer=10mm,
+    top=15mm,
+    bottom=15mm,
+    marginparsep=0pt,
+  ]{geometry}
+  \setlength{\columnsep}{20mm}
+  \usepackage[fontsize=12pt]{scrextend}
 \else% A4 2 cols
   \documentclass[twocolumn]{book}
   \usepackage[%
@@ -55,7 +70,7 @@
   ]{geometry}
   \setlength{\columnsep}{20mm}
   \usepackage[fontsize=9.5pt]{scrextend}
-\fi\fi
+\fi\fi\fi
 
 %%%%%%%%%%%%%%
 % Alignments %
@@ -164,15 +179,15 @@
 [\vbox{\large\textbf{#1}}]
 % \titlespacing{\subsection}{0pt}{0pt plus 4pt minus 2pt}{\baselineskip}
 
-
+\pagestyle{fancy} % after style
 \ifaiv
-  \fancypagestyle{fancy}{%
+  \fancypagestyle{main}{%
     \fancyhf{}
     \setlength{\headheight}{1.5em}
     \fancyhead{} % reset head
     \fancyfoot{} % reset foot
     \fancyhead[L]{\truncate{0.45\headwidth}{\fontrun\elbibl}} % book ref
-    \fancyhead[R]{\truncate{0.45\headwidth}{\fontrun\nouppercase\leftmark}} % Chapter title
+    \fancyhead[R]{\truncate{0.45\headwidth}{ \fontrun\nouppercase\leftmark}} % Chapter title
     \fancyhead[C]{\thepage}
   }
   \fancypagestyle{plain}{% apply to chapter
@@ -182,7 +197,7 @@
     \fancyhead[R]{\thepage}
   }
 \else
-  \fancypagestyle{fancy}{%
+  \fancypagestyle{main}{%
     \fancyhf{}
     \setlength{\headheight}{1.5em}
     \fancyhead{} % reset head
@@ -197,9 +212,12 @@
     \fancyhead[L]{\truncate{0.9\headwidth}{\fontrun\elbibl}}
     \fancyhead[R]{\thepage}
   }
+\fi
+\pagestyle{main} % after style
+
+\ifav % a5 only
   \titleclass{\section}{top}
 \fi
-
 
 \newcommand\chapo{{%
   \vspace*{-3em}
@@ -219,24 +237,45 @@
 
 
 \begin{document}
-\pagestyle{fancy}
+\urlstyle{same} % need after begin
 \thispagestyle{empty}
 
-
-\ifaiv
+\ifcover
+  \twocolumn
+  \vfill\null
+  \vspace*{0.95\textheight}
+  \newpage
+  \centering
+  {\LARGE\bfseries{\elauthor}}\par
+  \bigskip
+  {\Large\eldate}\par
+  \bigskip
+  \bigskip
+  {\LARGE\selectfont{\eltitle}}\par
+  \vfill\null
+  {\color{rubric}\setlength{\arrayrulewidth}{2pt}\hline\par}
+  \vfill\null
+  {\Large LIVRE LIBRE À PRIX LIBRE, DEMANDEZ AU COMPTOIR\par}
+  \centerline{\small\color{rubric} {hurlus.fr, tiré le \today}}\par
+\else\ifaiv
   \twocolumn[\chapo]
+  \elabstract
+  \bigskip
+  \makeatletter\@starttoc{toc}\makeatother % toc without new page
+  \newpage
 \else
   \chapo
-\fi
+  \elabstract
+  \bigskip
+  \makeatletter\@starttoc{toc}\makeatother % toc without new page
+  \clearpage
+\fi\fi
 
 
-\elabstract
-\bigskip
+%text%
 
-\makeatletter\@starttoc{toc}\makeatother % toc without new page
 
 \ifdev % autotext in dev mode
-
 \fontname\font — \textsc{Les règles du jeu}\par
 (\hyperref[utopie]{\underline{Lien}})\par
 \noindent \initialiv{A}{lors là}\blindtext\par
@@ -249,8 +288,4 @@
 \label{utopie}
 \Blinddocument
 \fi
-
-%text%
-
-
 \end{document}

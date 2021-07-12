@@ -18,10 +18,32 @@ Doit pouvoir fonctionner en import.
   >
   <!-- Importer des dates -->
   <xsl:import href="tei2iramuteq.xsl"/>
+  <xsl:output method="text"/>
   
   <xsl:template match="/">
-    <xsl:call-template name="roles"/>
+    <xsl:text>text=</xsl:text>
+    <xsl:call-template name="text"/>
+    <xsl:text>&#10;quotes=</xsl:text>
+    <xsl:call-template name="quotes"/>
+    <xsl:text>&#10;</xsl:text>
   </xsl:template>
+  
+  <xsl:template name="quotes">
+    <xsl:variable name="str">
+      <xsl:apply-templates select="/*/tei:text//tei:quote" mode="count"/>
+    </xsl:variable>
+    <xsl:value-of select="string-length(normalize-space($str))"/>
+  </xsl:template>
+
+  <xsl:template name="text">
+    <xsl:variable name="str">
+      <xsl:apply-templates select="/*/tei:text" mode="count"/>
+    </xsl:variable>
+    <xsl:value-of select="string-length(normalize-space($str))"/>
+  </xsl:template>
+  
+
+  <xsl:template match="tei:note" mode="count"/>
   
   <xsl:template name="roles">
     <xsl:for-each select="//tei:role[@xml:id]">
