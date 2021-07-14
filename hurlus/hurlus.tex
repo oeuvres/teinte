@@ -114,13 +114,17 @@
   \setmainfont[
     ItalicFont={Roboto Light Italic},
   ]{Roboto}
+\else\ifbooklet
+  \setmainfont[
+    ItalicFont={Roboto Light Italic},
+  ]{Roboto}
 \else
   \setmainfont[
     ItalicFont={Roboto Italic},
     % BoldFont={Roboto},
   ]{Roboto Light}
-  \renewcommand{\LettrineFontHook}{\bfseries\color{rubric}}
-\fi
+\fi\fi
+\renewcommand{\LettrineFontHook}{\bfseries\color{rubric}}
 % \renewenvironment{labelblock}{\begin{center}\bfseries\color{rubric}}{\end{center}}
 
 %%%%%%%%
@@ -237,14 +241,9 @@
 
 
 \begin{document}
-\urlstyle{same} % need after begin
 \thispagestyle{empty}
 
-\ifcover
-  \twocolumn
-  \vfill\null
-  \vspace*{0.95\textheight}
-  \newpage
+\ifbooklet{
   \centering
   {\LARGE\bfseries{\elauthor}}\par
   \bigskip
@@ -256,24 +255,31 @@
   {\color{rubric}\setlength{\arrayrulewidth}{2pt}\hline\par}
   \vfill\null
   {\Large LIVRE LIBRE À PRIX LIBRE, DEMANDEZ AU COMPTOIR\par}
-  \centerline{\small\color{rubric} {hurlus.fr, tiré le \today}}\par
-\else\ifaiv
+  \centerline{\small{hurlus.fr, tiré le \today}}\par
+  \newpage\null\thispagestyle{empty}\newpage
+  \addtocounter{page}{-2}
+}\fi
+
+\ifaiv
   \twocolumn[\chapo]
   \elabstract
   \bigskip
   \makeatletter\@starttoc{toc}\makeatother % toc without new page
-  \newpage
 \else
   \chapo
   \elabstract
   \bigskip
   \makeatletter\@starttoc{toc}\makeatother % toc without new page
-  \clearpage
-\fi\fi
+\fi
 
 
 %text%
 
+
+% at least one empty page at end (for booklet couv)
+\ifbooklet
+  \newpage\null\thispagestyle{empty}\newpage
+\fi
 
 \ifdev % autotext in dev mode
 \fontname\font — \textsc{Les règles du jeu}\par

@@ -82,8 +82,10 @@ class Bnr {
     exec("latexmk -xelatex -quiet -f ".$texname.'.tex');
     $tex = file_get_contents($texfile);
     if ($dstdir) {
-      rename($workdir.$texname.'.pdf', $dstdir.$texname.'.pdf');
-      // rename($texfile, $dstdir.$texname.'.tex');
+      $src = $workdir.$texname.'.pdf';
+      $dst = $dstdir.$texname.'.pdf';
+      // echo $src,' -',file_exists($src), '- ', $dst, "\n";
+      rename($src, $dst);
     }
 
     // A5

@@ -13,12 +13,12 @@ class Latex {
   static protected $latex_meta_xsl;
   // escape all text nodes
   static protected $latex_esc = array(
-    '@\s+@u' => ' ',
     '@\\\@u' => '\textbackslash', //before adding \ for escapings
     '@(&amp;)@u' => '\\\$1',
     '@([%\$#_{}])@u' => '\\\$1',
     '@~@u' => '\textasciitilde',
     '@\^@u' => '\textasciicircum',
+    '@\s+@' => ' ', // not unicode \s, keep unbreakable space
   );
 
   public function __construct() {
@@ -110,13 +110,13 @@ class Latex {
   /**
    * Escape XML/TEI for LaTeX
    */
-  static function dom($srcfile)
+  static function dom($teifile)
   {
     $dom = new DOMDocument("1.0", "UTF-8");
     $dom->preserveWhiteSpace = true;
     // $dom->formatOutput=true; // bug on some nodes LIBERTÉ 9 mai. ÉGALITÉ
     $dom->substituteEntities=true;
-    $xml = file_get_contents($srcfile);
+    $xml = file_get_contents($teifile);
     $xml = preg_replace(array_keys(self::$latex_esc), array_values(self::$latex_esc), $xml);
     $dom->loadXML($xml,  LIBXML_NOENT | LIBXML_NONET | LIBXML_NOWARNING ); // no warn for <?xml-model
     return $dom;
@@ -164,7 +164,7 @@ class Latex {
         $tex,
       )
     );
-    // create a special tex with meta only
+    // create a special tex with meta only ?
     file_put_contents(
       $workdir.$filename.'_cover.tex',
       str_replace('%meta%', $meta, $tex),

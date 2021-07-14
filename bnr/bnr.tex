@@ -96,6 +96,7 @@
 \renewcommand{\pn}[1]{{\footnotesize\color{rubric}\autour{#1}}} % <p n="3"/>
 \renewcommand{\headrulewidth}{\arrayrulewidth}
 \renewcommand{\headrule}{\color{rubric}\hrule}
+\renewcommand{\thefootnote}{\bfseries\textcolor{rubric}{\arabic{footnote}}} % color for footnote marks
 
 
 \ifaiv
@@ -176,7 +177,7 @@
   \bigskip
   {\color{rubric}\hline\par}
   \bigskip
-  {\color{rubric} \hyperref[https://ebooks-bnr.com/]{Bibliothèque numérique romande} : \hyperref[https://ebooks-bnr.com/]{\uline{ebooks-bnr.com}}\par}
+  {\color{rubric} \href{https://ebooks-bnr.com/}{Bibliothèque numérique romande} : \href{https://ebooks-bnr.com/}{\uline{ebooks-bnr.com}}\par}
   \bigskip
 }}
 
@@ -198,7 +199,6 @@
 
 \makeatletter\@starttoc{toc}\makeatother % toc without new page
 
-
 %text%
 
 \onecolumn
@@ -211,8 +211,8 @@
 \begin{center}
 Ce livre numérique vous est proposé par\par
 
-{\color{rubric} \hyperref[https://ebooks-bnr.com/]{La Bibliothèque numérique romande}\par
-\hyperref[https://ebooks-bnr.com/]{\uline{ebooks-bnr.com}}\par}
+{\color{rubric} \href{https://ebooks-bnr.com/}{La Bibliothèque numérique romande}\par
+\href{https://ebooks-bnr.com/}{\dotuline{ebooks-bnr.com}}\par}
 
 \end{center}
 
@@ -222,6 +222,6 @@ Ce livre numérique vous est proposé par\par
 \textbf{Source} : \elsource\par
 
 \textbf{Autres sites de livres numériques} Plusieurs sites partagent un catalogue commun qui répertorie un ensemble d’\emph{ebooks} et en donne le lien d’accès.
-Vous pouvez consulter ce catalogue à l’adresse : \href{https://noslivres.net/}{\uline{noslivres.net}}.\par
+Vous pouvez consulter ce catalogue à l’adresse : \href{https://noslivres.net/}{\dotuline{noslivres.net}}.\par
 \clearpage %force a page break
 \end{document}

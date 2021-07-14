@@ -24,12 +24,14 @@ class Hurlus {
     $workdir = dirname($texfile).'/';
     chdir($workdir); // change working directory
 
+    /*
     // cover
     $coverfile = $workdir.$texname.'_cover.tex';
     $tex = file_get_contents($coverfile);
     $tex = preg_replace('@\\\\def\\\\mode\{[^\}]*\}@', '\\def\\mode{cover}', $tex);
     file_put_contents($coverfile, $tex);
     exec("latexmk -xelatex -quiet -f ".$coverfile);
+    */
 
     // default is a4 2 cols, transform to pdf
     exec("latexmk -xelatex -quiet -f ".$texname.'.tex');

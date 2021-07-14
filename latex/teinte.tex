@@ -47,9 +47,10 @@
 \XeTeXdefaultencoding "iso-8859-1" % bad encoding of xstring
 \usepackage{xstring} % string tests
 \XeTeXdefaultencoding "utf-8"
-
 \PassOptionsToPackage{hyphens}{url} % before hyperref, which load url package
 \usepackage{hyperref} % supposed to be the last one, :o) except for the ones to follow
+\urlstyle{same} % after hyperref
+
 % TOTEST
 % \usepackage{hypcap} % links in caption ?
 % \usepackage{marginnote}
@@ -220,7 +221,7 @@
 
 % commands, blocks
 \newcommand{\byline}[1]{\bigskip{\RaggedLeft{#1}\par}\bigskip}
-\newcommand{\bibl}[1]{{\footnotesize\RaggedLeft{#1}\par}}
+\newcommand{\bibl}[1]{{\footnotesize\RaggedLeft{#1}\par\medskip}}
 \newcommand{\biblitem}[1]{{\noindent\hangindent=\parindent   #1\par}}
 \newcommand{\dateline}[1]{\medskip{\RaggedLeft{#1}\par}\bigskip}
 \newcommand{\labelblock}[1]{\bigbreak{\color{rubric}\noindent\textbf{#1}\par}\bignobreak}
@@ -307,10 +308,10 @@
 % \renewcommand{\@pnumwidth}{0.5em} % {1.75em}
 \renewcommand{\@cftmaketoctitle}{}
 \setlength{\cftbeforesecskip}{\z@ \@plus.2\p@}
-\renewcommand{\cftchapfont}{\bfseries}
+\renewcommand{\cftchapfont}{}
 \renewcommand{\cftchapdotsep}{\cftdotsep}
 \renewcommand{\cftchapleader}{\normalfont\cftdotfill{\cftchapdotsep}}
-\renewcommand{\cftchappagefont}{\normalfont}
+\renewcommand{\cftchappagefont}{\bfseries}
 \setlength{\cftbeforechapskip}{0em \@plus\p@}
 % \renewcommand{\cftsecfont}{\small\relax}
 \renewcommand{\cftsecpagefont}{\normalfont}
@@ -353,7 +354,6 @@
 \vbadness=4000
 \def\Gin@extensions{.pdf,.png,.jpg,.mps,.tif}
 % \renewcommand{\@cite}[1]{#1} % biblio
-
 
 \makeatother % /@@@>
 %%%%%%%%%%%%%%

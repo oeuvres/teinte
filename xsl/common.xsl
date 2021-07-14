@@ -521,6 +521,7 @@ Gobal TEI parameters and variables are divided in different categories
             <xsl:when test="parent::tei:div"/>
             <!-- Brother of a block, block -->
             <xsl:when test="../tei:p|../tei:l|../tei:lg|../tei:list|../tei:table"/>
+            <xsl:when test="parent::tei:cell and self::tei:quote"/>
             <xsl:when test="parent::tei:titlePage"/>
             <xsl:when test="parent::tei:body"/>
             <xsl:when test="parent::tei:front"/>
