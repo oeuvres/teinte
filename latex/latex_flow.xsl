@@ -281,8 +281,6 @@ for example: abstract.
               <xsl:when test=". = 'ital'">\itshape</xsl:when>
               <xsl:when test=". = 'italics'">\itshape</xsl:when>
               <xsl:when test=". = 'italique'">\itshape</xsl:when>
-              <xsl:when test=". = 'b'">\bfseries</xsl:when>
-              <xsl:when test=". = 'bold'">\bfseries</xsl:when>
               <xsl:when test=". = 'tt'">\ttfamily</xsl:when>
               <xsl:when test=". = 'sc'">\scshape</xsl:when>
               <xsl:when test=". = 'large'">\large</xsl:when>
@@ -310,22 +308,30 @@ for example: abstract.
         <xsl:variable name="cmd">
           <xsl:for-each select="exslt:node-set($tokens)">
             <xsl:choose>
-              <xsl:when test=". = 'strike'">\sout{</xsl:when>
-              <xsl:when test=". = 'calligraphic'">\textcal{</xsl:when>
               <xsl:when test=". = 'allcaps'">\uppercase{</xsl:when>
+              <xsl:when test=". = 'b'">\textbf{</xsl:when>
+              <xsl:when test=". = 'bold'">\textbf{</xsl:when>
+              <xsl:when test=". = 'calligraphic'">\textcal{</xsl:when>
               <xsl:when test=". = 'center'">\centerline{</xsl:when>
               <xsl:when test=". = 'gothic'">\textgothic{</xsl:when>
               <xsl:when test=". = 'noindex'">\textrm{</xsl:when>
-              <xsl:when test=". = 'overbar'">\textoverbar{</xsl:when>
               <xsl:when test=". = 'plain'">\textrm{</xsl:when>
-              <xsl:when test=". = 'quoted'">\textquoted{</xsl:when>
+              <xsl:when test=". = 'strong'">\textbf{</xsl:when>
               <xsl:when test=". = 'sub'">\textsubscript{</xsl:when>
               <xsl:when test=". = 'subscript'">\textsubscript{</xsl:when>
-              <xsl:when test=". = 'underline'">\uline{</xsl:when>
               <xsl:when test=". = 'sup'">\textsuperscript{</xsl:when>
               <xsl:when test=". = 'superscript'">\textsuperscript{</xsl:when>
-              <xsl:when test=". = 'wavyunderline'">\uwave{</xsl:when>
+              <xsl:when test=". = 'uc'">\uppercase{</xsl:when>
+              <xsl:when test=". = 'underline'">\uline{</xsl:when>
+              <!-- ? -->
+              <xsl:when test=". = 'strike'">\sout{</xsl:when>
+              <xsl:when test=". = 'overbar'">\textoverbar{</xsl:when>
               <xsl:when test=". = 'doubleunderline'">\uuline{</xsl:when>
+              <xsl:when test=". = 'wavyunderline'">\uwave{</xsl:when>
+              <!-- 
+              <xsl:when test=". = 'quoted'">\textquoted{</xsl:when>
+
+              -->
             </xsl:choose>
           </xsl:for-each>
         </xsl:variable>

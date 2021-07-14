@@ -77,11 +77,11 @@ Latex from TEI, metadata for preamble
           <xsl:when test="normalize-space(.) != ''">
             <xsl:value-of select="normalize-space(.)"/>
           </xsl:when>
-          <xsl:when test="contains(@key, ',')">
-            <xsl:value-of select="normalize-space(substring-before(@key, ','))"/>
-          </xsl:when>
           <xsl:when test="contains(@key, '(')">
             <xsl:value-of select="normalize-space(substring-before(@key, '('))"/>
+          </xsl:when>
+          <xsl:when test="contains(@key, ',')">
+            <xsl:value-of select="normalize-space(substring-before(@key, ','))"/>
           </xsl:when>
           <xsl:otherwise>
             <xsl:value-of select="normalize-space(.)"/>

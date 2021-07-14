@@ -203,7 +203,7 @@
   }}}}}
   \let\LettrineFontHook\oldLFH
 }
-\newcommand{\labelchar}[1]{{\color{rubric}\bf #1}}
+\newcommand{\labelchar}[1]{\textbf{\color{rubric} #1}}
 \newcommand{\milestone}[1]{\autour{\footnotesize\color{rubric} #1}} % <milestone n="4"/>
 \newcommand\name{}
 \newcommand\orig{}
@@ -221,7 +221,7 @@
 
 % commands, blocks
 \newcommand{\byline}[1]{\bigskip{\RaggedLeft{#1}\par}\bigskip}
-\newcommand{\bibl}[1]{{\footnotesize\RaggedLeft{#1}\par\medskip}}
+\newcommand{\bibl}[1]{{\RaggedLeft{#1}\par\bigskip}}
 \newcommand{\biblitem}[1]{{\noindent\hangindent=\parindent   #1\par}}
 \newcommand{\dateline}[1]{\medskip{\RaggedLeft{#1}\par}\bigskip}
 \newcommand{\labelblock}[1]{\bigbreak{\color{rubric}\noindent\textbf{#1}\par}\bignobreak}

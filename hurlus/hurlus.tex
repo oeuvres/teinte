@@ -154,7 +154,7 @@
   }
 
 
-\renewcommand{\pn}[1]{{\footnotesize\color{rubric}\autour{#1}}} % <p n="3"/>
+\renewcommand{\pn}[1]{{\footnotesize\autour{\color{rubric} #1}}} % <p n="3"/>
 \renewcommand{\headrulewidth}{\arrayrulewidth}
 \renewcommand{\headrule}{\color{rubric}\hrule}
 
@@ -183,7 +183,6 @@
 [\vbox{\large\textbf{#1}}]
 % \titlespacing{\subsection}{0pt}{0pt plus 4pt minus 2pt}{\baselineskip}
 
-\pagestyle{fancy} % after style
 \ifaiv
   \fancypagestyle{main}{%
     \fancyhf{}
@@ -206,8 +205,8 @@
     \setlength{\headheight}{1.5em}
     \fancyhead{} % reset head
     \fancyfoot{} % reset foot
-    \fancyhead[LO]{\truncate{0.9\headwidth}{\fontrun\elbibl}} % book ref
-    \fancyhead[RE]{\truncate{0.9\headwidth}{\fontrun\nouppercase\leftmark}} % Chapter title, \nouppercase needed
+    \fancyhead[RE]{\truncate{0.9\headwidth}{\fontrun\elbibl}} % book ref
+    \fancyhead[LO]{\truncate{0.9\headwidth}{\fontrun\nouppercase\leftmark}} % Chapter title, \nouppercase needed
     \fancyhead[RO,LE]{\thepage}
   }
   \fancypagestyle{plain}{% apply to chapter
@@ -217,7 +216,6 @@
     \fancyhead[R]{\thepage}
   }
 \fi
-\pagestyle{main} % after style
 
 \ifav % a5 only
   \titleclass{\section}{top}
@@ -241,9 +239,9 @@
 
 
 \begin{document}
-\thispagestyle{empty}
-
+\pagestyle{empty}
 \ifbooklet{
+  \thispagestyle{empty}
   \centering
   {\LARGE\bfseries{\elauthor}}\par
   \bigskip
@@ -260,18 +258,18 @@
   \addtocounter{page}{-2}
 }\fi
 
+\thispagestyle{empty}
 \ifaiv
   \twocolumn[\chapo]
-  \elabstract
-  \bigskip
-  \makeatletter\@starttoc{toc}\makeatother % toc without new page
 \else
   \chapo
-  \elabstract
-  \bigskip
-  \makeatletter\@starttoc{toc}\makeatother % toc without new page
 \fi
+\elabstract
+\bigskip
+\makeatletter\@starttoc{toc}\makeatother % toc without new page
+\bigskip
 
+\pagestyle{main} % after style
 
 %text%
 
