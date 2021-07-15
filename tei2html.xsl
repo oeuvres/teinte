@@ -118,6 +118,32 @@ XSLT 1.0 is compatible browser, PHP, Python, Java…
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
+  <!-- Metadata maybe controlled with this view -->
+  <xsl:template match="tei:index">
+    <div class="index">
+      <xsl:for-each select="*">
+        <div>
+          <xsl:call-template name="class"/>
+          <xsl:choose>
+            <xsl:when test="@type">
+              <small>
+                <xsl:value-of select="@type"/>
+                <xsl:text>: </xsl:text>
+              </small>
+            </xsl:when>
+          </xsl:choose>
+          <xsl:choose>
+            <xsl:when test="@key">
+              <xsl:value-of select="@key"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:apply-templates/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </div>
+      </xsl:for-each>
+    </div>
+  </xsl:template>
   <!-- Bloc de métadonnées -->
   <xsl:template match="tei:teiHeader">
     <!-- Parametrize ? -->

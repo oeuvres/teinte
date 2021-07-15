@@ -1138,6 +1138,11 @@ div.gloss {
   text-indent: 0;
 }
 
+div.index {
+  background-color: #eee;
+  padding: 0.2rem 1rem;
+}
+
 li.item {
   line-height: 1.2;
   margin-top: 0.25rem;
@@ -1299,7 +1304,7 @@ div.lg {
 }
 
 .marginnote {
-  display: inline-block;
+  display: block;
   float: right;
   text-indent: 0;
   clear: both;
@@ -1325,10 +1330,6 @@ div.lg {
   font-size: 90%;
   margin: 1px 0 1rem 0;
   clear: both;
-}
-
-  {
-  background-color: #FFFFEE;
 }
 
 .note blockquote {

@@ -213,6 +213,7 @@ Sections
       [not(self::tei:docDate)]
       [not(self::tei:epigraph)]
       [not(self::tei:head)]
+      [not(self::tei:index)]
       [not(self::tei:opener)]
       [not(self::tei:pb)]
       [not(self::tei:salute)]

@@ -28,10 +28,10 @@
   \documentclass[french,twoside]{book} % ,notitlepage
   \usepackage[%
     papersize={105mm, 297mm},
-    inner=10mm,
-    outer=10mm,
-    top=18mm,
-    bottom=18mm,
+    inner=12mm,
+    outer=12mm,
+    top=15mm,
+    bottom=15mm,
     marginparsep=0pt,
   ]{geometry}
   \usepackage[fontsize=9.5pt]{scrextend} % for Roboto
@@ -46,18 +46,6 @@
     marginparsep=0pt,
   ]{geometry}
   \usepackage[fontsize=12pt]{scrextend}
-\else\ifcover
-  \documentclass[french,twocolumn]{book} % ,notitlepage
-  \usepackage[%
-    a4paper,
-    inner=10mm,
-    outer=10mm,
-    top=15mm,
-    bottom=15mm,
-    marginparsep=0pt,
-  ]{geometry}
-  \setlength{\columnsep}{20mm}
-  \usepackage[fontsize=12pt]{scrextend}
 \else% A4 2 cols
   \documentclass[twocolumn]{book}
   \usepackage[%
@@ -70,7 +58,7 @@
   ]{geometry}
   \setlength{\columnsep}{20mm}
   \usepackage[fontsize=9.5pt]{scrextend}
-\fi\fi\fi
+\fi\fi
 
 %%%%%%%%%%%%%%
 % Alignments %

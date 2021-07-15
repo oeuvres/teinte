@@ -54,9 +54,13 @@ class Hurlus {
     file_put_contents($texsrc, $tex);
     exec("latexmk -xelatex -quiet -f ".$texsrc); //
     $booklet = $texname.'_brochure.tex';
+    /* old lua version
     copy(dirname(dirname(__FILE__)).'/latex/booklet_a4v2.tex', $workdir.$booklet);
     $cmd = "lualatex $booklet ".$texname.'_a4v2.pdf';
-    exec($cmd); // order pages for printing
+    */
+    $tex = file_get_contents(dirname(dirname(__FILE__)).'/latex/booklet_bind.tex');
+    file_put_contents($workdir.$booklet, str_replace('{thepdf}', '{'.$texname.'_a4v2}', $tex));
+    exec("latexmk -pdf -quiet -f ".$booklet); // order pages for printing
     if ($dstdir) rename($workdir.$texname.'_brochure.pdf', $dstdir.$texname.'_brochure.pdf');
 
   }

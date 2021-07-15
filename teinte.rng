@@ -902,6 +902,15 @@
               <text/>
             </element>
             <ref name="date"/>
+            <element name="dim">
+              <optional>
+                <attribute name="type"/>
+              </optional>
+              <optional>
+                <attribute name="extent"/>
+              </optional>
+              <text/>
+            </element>
             <ref name="emph"/>
             <ref name="foreign"/>
             <ref name="hi"/>

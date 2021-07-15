@@ -1118,6 +1118,15 @@
               </optional>
               <text/>
             </element>
+            <element name="dim">
+              <optional>
+                <attribute name="type"/>
+              </optional>
+              <optional>
+                <attribute name="extent"/>
+              </optional>
+              <text/>
+            </element>
             <ref name="teiHeader.emph"/>
             <element name="lb">
               <empty/>

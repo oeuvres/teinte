@@ -1,0 +1,136 @@
+\documentclass[
+   paper=297mm:210mm,
+]{scrartcl}
+
+\usepackage{xparse}
+
+\usepackage{graphicx}
+
+\usepackage{tikz}
+   \usetikzlibrary{calc}
+   \tikzset{
+      every node/.style = {
+         inner sep = 0pt,
+         outer sep = 0pt,
+      }
+   }
+
+\ExplSyntaxOn
+
+\int_new:N \l_booklet_sheets_int
+\int_new:N \l_booklet_counter_int
+\int_new:N \l_booklet_total_pages_int
+\int_new:N \l_booklet_total_pages_to_four_int
+\dim_new:N \l_booklet_creep_dim
+
+\cs_new:Npn \booklet_get_page:nn #1#2 {
+   \int_compare:nT { ( #1 ) <= \l_booklet_total_pages_int } {
+      \includegraphics [
+         width = 0.5\paperwidth,
+         height = \paperheight,
+         keepaspectratio,
+         page = #1,
+      ] { #2 }
+   }
+}
+
+\NewDocumentCommand { \MakeBooklet } { O{0mm} m } {
+   \file_if_exist:nTF { #2 .pdf } {
+      \int_zero:N \l_booklet_counter_int
+      \dim_zero:N \l_booklet_creep_dim
+      \pdfximage { #2 .pdf }
+      \int_set:Nn \l_booklet_total_pages_int
+         { \the \pdflastximagepages }
+      \int_compare:nTF { \int_mod:nn { \l_booklet_total_pages_int } { 4 } != 0 } {
+         \int_set:Nn \l_booklet_total_pages_to_four_int
+            { \l_booklet_total_pages_int + 4 - \int_mod:nn { \l_booklet_total_pages_int } { 4 } }
+      } {
+         \int_set_eq:NN \l_booklet_total_pages_to_four_int \l_booklet_total_pages_int
+      }
+      \int_set:Nn \l_booklet_sheets_int
+         { \l_booklet_total_pages_to_four_int / 2 }
+      \int_do_while:nn { \l_booklet_counter_int < \l_booklet_sheets_int } {
+         \clearpage
+         \int_incr:N \l_booklet_counter_int
+         \begin{tikzpicture}[remember~picture, overlay]
+            \clip (current~page.north) rectangle (current~page.south~east);
+            \node [anchor = west] at ($
+               (current~page.center)
+               -
+               (\dim_use:N \l_booklet_creep_dim, 0)
+            $) {
+               \booklet_get_page:nn
+                  { \int_use:N \l_booklet_counter_int }
+                  { #2 }
+            };
+         \end{tikzpicture}
+         \begin{tikzpicture}[remember~picture, overlay]
+            \clip (current~page.north~west) rectangle (current~page.south);
+            \node [anchor = east] at ($
+               (current~page.center)
+               +
+               (\dim_use:N \l_booklet_creep_dim, 0)
+            $) {
+               \booklet_get_page:nn
+                  { \int_eval:n { \l_booklet_total_pages_to_four_int - \l_booklet_counter_int + 1 } }
+                  { #2 }
+            };
+         \end{tikzpicture}
+         \begin{tikzpicture}[remember~picture,overlay,shift=(current~page.north~west)]
+            \begin{scope}[x={(current~page.north~east)},y={(current~page.south~west)}]
+            \draw[line~width=0.2pt] (0.5,0) -- (0.5,1) ;
+            \end{scope}
+         \end{tikzpicture}
+         \clearpage
+         \int_incr:N \l_booklet_counter_int
+         \begin{tikzpicture}[remember~picture, overlay]
+            \clip (current~page.north~west) rectangle (current~page.south);
+            \node [anchor = east] at ($
+               (current~page.center)
+               +
+               (\dim_use:N \l_booklet_creep_dim, 0)
+            $) {
+               \booklet_get_page:nn
+                  { \int_use:N \l_booklet_counter_int }
+                  { #2 }
+            };
+         \end{tikzpicture}
+         \begin{tikzpicture}[remember~picture, overlay]
+            \clip (current~page.north) rectangle (current~page.south~east);
+            \node [anchor = west] at ($
+               (current~page.center)
+               -
+               (\dim_use:N \l_booklet_creep_dim, 0)
+            $) {
+               \booklet_get_page:nn
+                  { \int_eval:n { \l_booklet_total_pages_to_four_int - \l_booklet_counter_int + 1 } }
+                  { #2 }
+            };
+         \end{tikzpicture}
+         \begin{tikzpicture}[remember~picture,overlay,shift=(current~page.north~west)]
+            \begin{scope}[x={(current~page.north~east)},y={(current~page.south~west)}]
+            \draw[line~width=0.2pt] (0.5,0) -- (0.5,1) ;
+            \end{scope}
+         \end{tikzpicture}
+         \dim_set:Nn \l_booklet_creep_dim {
+            #1 * \l_booklet_counter_int / 2
+         }
+      }
+   } {
+      \Huge
+      \noindent \textbf { Error! } \\
+      File ~ \texttt { #2 .pdf } ~ not ~ found.
+   }
+}
+
+\ExplSyntaxOff
+
+\pagestyle{empty}
+
+\begin{document}
+
+% #1 = shift per sheet (= thickness of paper, see below) [optional]
+% #2 = filename without suffix (must be a PDF)
+\MakeBooklet[0.1mm]{thepdf}
+
+\end{document}
