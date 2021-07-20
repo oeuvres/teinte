@@ -158,14 +158,6 @@ A light version for XSLT1, with local improvements.
     <xsl:variable name="level">
       <xsl:call-template name="level"/>
     </xsl:variable>
-    <!-- Update letf mark manual. We want some typo but no notes -->
-    <xsl:if test="../parent::tei:front | ../parent::tei:body | ../parent::tei:back">
-      <xsl:text>\renewcommand{\leftmark}{</xsl:text>
-      <xsl:apply-templates>
-        <xsl:with-param name="message">nonote</xsl:with-param>
-      </xsl:apply-templates>
-      <xsl:text>}&#10;</xsl:text>
-    </xsl:if>
     <xsl:text>\</xsl:text>
     <xsl:choose>
       <xsl:when test="$documentclass = 'book'">
@@ -218,6 +210,14 @@ or parent::tei:div[contains(@rend, 'nonumber')]
       <xsl:call-template name="tei:makeHyperTarget">
         <xsl:with-param name="id" select="../@xml:id"/>
       </xsl:call-template>
+    </xsl:if>
+    <!-- Update letf mark manual. We want some typo but no notes -->
+    <xsl:if test="../parent::tei:front | ../parent::tei:body | ../parent::tei:back">
+      <xsl:text>\renewcommand{\leftmark}{</xsl:text>
+      <xsl:apply-templates>
+        <xsl:with-param name="message">nonote</xsl:with-param>
+      </xsl:apply-templates>
+      <xsl:text>}&#10;</xsl:text>
     </xsl:if>
     <xsl:text>&#10;</xsl:text>
     <xsl:for-each select=".//tei:note">

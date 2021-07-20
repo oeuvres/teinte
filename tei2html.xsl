@@ -146,14 +146,16 @@ XSLT 1.0 is compatible browser, PHP, Python, Java…
   </xsl:template>
   <!-- Bloc de métadonnées -->
   <xsl:template match="tei:teiHeader">
-    <!-- Parametrize ? -->
-    <xsl:choose>
-      <xsl:when test="not($teiheader)"/>
-      <xsl:when test="../tei:text/tei:front/tei:titlePage"/>
-      <xsl:otherwise>
-        <xsl:apply-templates select="tei:fileDesc"/>
-      </xsl:otherwise>
-    </xsl:choose>
+    <header id="teiHeader">
+      <xsl:choose>
+        <xsl:when test="not($teiheader)"/>
+        <xsl:when test="../tei:text/tei:front/tei:titlePage"/>
+        <xsl:otherwise>
+          <xsl:apply-templates select="tei:fileDesc"/>
+          <xsl:apply-templates select="tei:profileDesc/tei:abstract"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </header>
   </xsl:template>
   <xsl:template match="tei:text">
     <xsl:param name="level" select="count(ancestor::tei:group)"/>

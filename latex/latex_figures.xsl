@@ -238,9 +238,12 @@ A light version for XSLT1, with local improvements.
       <xsl:text>]{</xsl:text>
       <!-- tei:resolveURI may be used here -->
       <xsl:choose>
+        <!-- $realFigures?
         <xsl:when test="$realFigures='true'">
           <xsl:value-of select="@url"/>
         </xsl:when>
+        -->
+        <xsl:when test="true()"/>
         <xsl:otherwise>
           <xsl:variable name="F">
             <xsl:value-of select="@url"/>
@@ -353,9 +356,11 @@ A light version for XSLT1, with local improvements.
         <xsl:when test="@scale">
           <xsl:value-of select="@scale"/>
         </xsl:when>
+        <!-- $standardScale ?
         <xsl:when test="not(@width) and not(@height) and not($standardScale=1)">
           <xsl:value-of select="$standardScale"/>
         </xsl:when>
+        -->
       </xsl:choose>
     </xsl:variable>
     <xsl:if test="not($s='')">

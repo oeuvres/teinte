@@ -222,8 +222,8 @@ for example: abstract.
     </xsl:choose>
   </xsl:template>
   -->
-  
-  <xsl:template match="tei:emph">
+    
+  <xsl:template match="tei:emph | tei:foreign | tei:gloss | tei:hi">
     <xsl:param name="message"/>
     <xsl:text>\emph{</xsl:text>
     <xsl:apply-templates>
@@ -232,18 +232,12 @@ for example: abstract.
     <xsl:text>}</xsl:text>
   </xsl:template>
   
-  <xsl:template match="tei:gloss">
-    <xsl:param name="message"/>
-    <xsl:text>\emph{</xsl:text>
-    <xsl:apply-templates>
-      <xsl:with-param name="message" select="$message"/>
-    </xsl:apply-templates>
-    <xsl:text>}</xsl:text>
-  </xsl:template>
   
   <xsl:template match="tei:hi">
     <xsl:param name="message"/>
-    <xsl:call-template name="rendering"/>
+    <xsl:call-template name="rendering">
+      <xsl:with-param name="message" select="$message"/>
+    </xsl:call-template>
   </xsl:template>
   
   <xsl:template name="rendering">
@@ -682,13 +676,62 @@ for example: abstract.
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-  
-  <xsl:template match="tei:num/text()">
-    <xsl:param name="message"/>
-    <xsl:text>\textsc{</xsl:text>
-    <xsl:value-of select="."/>
-    <xsl:text>}</xsl:text>
+    
+  <xsl:template match="tei:note">
+    <xsl:variable name="inline">
+      <xsl:call-template name="tei:isInline"/>
+    </xsl:variable>
+    <xsl:choose>
+      <xsl:when test="@place='none'"/>
+      <xsl:when test="not(@place) and (ancestor::tei:bibl or ancestor::tei:biblFull or ancestor::tei:biblStruct)">
+        <xsl:text> (</xsl:text>
+        <xsl:apply-templates/>
+        <xsl:text>)</xsl:text>
+      </xsl:when>
+      <xsl:when test="@place='sup' or @place='above'">
+        <xsl:call-template name="makeInline">
+          <xsl:with-param name="style">sup</xsl:with-param>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:when test="@place='sub' or @place='below'">
+        <xsl:call-template name="makeInline">
+          <xsl:with-param name="style">sub</xsl:with-param>
+        </xsl:call-template>
+      </xsl:when>
+      <!-- ?
+      <xsl:when test="@place='comment'">
+        <xsl:call-template name="commentNote"/>
+      </xsl:when>
+      -->
+      <xsl:when test="@place='inline' and $inline = ''">
+        <xsl:call-template name="displayNote"/>
+      </xsl:when>
+      <xsl:when test="@place='inline'">
+        <xsl:call-template name="plainNote"/>
+      </xsl:when>
+      <!-- $autoEndNotes='true', epub -->
+      <xsl:when test="@place='end'">
+        <xsl:call-template name="endNote"/>
+      </xsl:when>
+      <xsl:when test="@place='margin' or @place='marginal'">
+        <xsl:call-template name="marginalNote"/>
+      </xsl:when>
+      <xsl:when test="$inline = '' or tei:q">
+        <xsl:call-template name="displayNote"/>
+      </xsl:when>
+      <xsl:when test="@place = 'foot' or @place = 'bottom' or (not(@place) and $inline != '')">
+        <xsl:call-template name="footNote"/>
+      </xsl:when>
+      <xsl:when test="@place">
+        <xsl:message>WARNING: unknown @place for note, <xsl:value-of select="@place"/></xsl:message>
+        <xsl:call-template name="displayNote"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:call-template name="plainNote"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
+  
   
   <xsl:template name="marginalNote">
     <xsl:param name="message"/>
@@ -779,8 +822,16 @@ for example: abstract.
     </xsl:choose>
   </xsl:template>
   
+  <xsl:template match="tei:num/text()">
+    <xsl:param name="message"/>
+    <xsl:text>\textsc{</xsl:text>
+    <xsl:value-of select="."/>
+    <xsl:text>}</xsl:text>
+  </xsl:template>
+  
   <xsl:template match="tei:p">
     <xsl:param name="message"/>
+    <xsl:variable name="first" select="substring(translate(normalize-space(.), ' ', ''), 1, 1)"/>
     <xsl:call-template name="tei:makeHyperTarget"/>
     <xsl:variable name="prev" select="preceding-sibling::*[not(self::tei:pb)][not(self::tei:cb)][1]"/>
     <xsl:choose>
@@ -790,12 +841,14 @@ for example: abstract.
       <xsl:when test="name($prev) != 'p' and not(parent::tei:item)">\noindent </xsl:when>
     </xsl:choose>
     <xsl:if test="@n != ''">
+      <!-- No, number maybe not unique
       <xsl:call-template name="tei:makeHyperTarget">
         <xsl:with-param name="id" select="concat('par', @n)"/>
       </xsl:call-template>
+      -->
       <xsl:text>\pn{</xsl:text>
       <xsl:value-of select="@n"/>
-      <xsl:text>} </xsl:text>
+      <xsl:text>}</xsl:text>
     </xsl:if>
     <!-- Paragraph auto numbering ?
     <xsl:if test="$numberParagraphs = 'true'">
@@ -1051,6 +1104,20 @@ for example: abstract.
         </xsl:apply-templates>
         <xsl:text>}}</xsl:text>
       </xsl:when>
+      <xsl:when test="ancestor::tei:note">
+        <xsl:text>\href{</xsl:text>
+        <xsl:value-of select="$target"/>
+        <xsl:text>}{\dotuline{</xsl:text>
+        <xsl:apply-templates>
+          <xsl:with-param name="message" select="$message"/>
+        </xsl:apply-templates>
+        <xsl:if test="normalize-space(.) != @target">
+          <xsl:text> [</xsl:text>
+          <xsl:value-of select="@target"/>
+          <xsl:text>]</xsl:text>
+        </xsl:if>
+        <xsl:text>}}</xsl:text>
+      </xsl:when>
       <xsl:otherwise>
         <xsl:text>\href{</xsl:text>
         <xsl:value-of select="$target"/>
@@ -1212,6 +1279,9 @@ for example: abstract.
       </xsl:choose>
     </xsl:variable>
     <xsl:choose>
+      <xsl:when test="@quantity = 'vfill' or @extent = 'vfill'">
+        <xsl:text>\vfill\null&#10;</xsl:text>
+      </xsl:when>
       <!-- vertical spacing -->
       <xsl:when test="$inline = ''">
         <xsl:text>\bigbreak&#10;</xsl:text>

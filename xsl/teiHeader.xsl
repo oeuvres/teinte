@@ -654,12 +654,7 @@ Interpret TEI header as html.
   <xsl:template match="tei:publicationStmt | tei:titleStmt" mode="title">
     <xsl:call-template name="message"/>
   </xsl:template>
-  <xsl:template match="tei:teiHeader//tei:p">
-    <p>
-      <xsl:call-template name="headatts"/>
-      <xsl:apply-templates/>
-    </p>
-  </xsl:template>
+
   <!-- CSS declaration, should be called from <head> -->
   <xsl:template match="tei:tagsDecl">
       <xsl:if test="tei:rendition[not(@scheme) or @scheme='css']">

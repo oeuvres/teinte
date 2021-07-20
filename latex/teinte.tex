@@ -60,11 +60,12 @@
 % \usepackage[color, leftbars]{changebar} % 2 cols doc, impossible to keep bar left
 % \usepackage[utf8x]{inputenc} % inputenc package ignored with utf8 based engines
 % \usepackage[sfdefault,medium]{inter} % no small caps
-% \usepackage{firamath} % unavailable in Ubuntu 21-04
+% \usepackage{firamath} % choose firasans instead, firamath unavailable in Ubuntu 21-04
 % \usepackage{flushend} % bad for last notes, supposed flush end of columns
 % \usepackage[stable]{footmisc} % BAD for complex notes https://texfaq.org/FAQ-ftnsect
 % \usepackage{helvet} % not for XeLaTeX
 % \usepackage{multicol} % not compatible with too much packages (longtable, framed, memoir…)
+% \usepackage[default,oldstyle,scale=0.95]{opensans} % no small caps
 % \usepackage{sectsty} % \chapterfont OBSOLETE
 % \usepackage{soul} % \ul for underline, OBSOLETE with XeTeX
 % \usepackage[breakable]{tcolorbox} % text styling gone, footnote hack not kept with breakable
@@ -178,7 +179,7 @@
 % commands, inlines
 \newcommand{\anchor}[1]{\Hy@raisedlink{\hypertarget{#1}{}}} % link to top of an anchor (not baseline)
 \newcommand\abbr{}
-\newcommand{\autour}[1]{\tikz[baseline=(X.base)]\node [draw=rubric,thin,rectangle,inner sep=1.5pt, rounded corners=3pt] (X) {#1};}
+\newcommand{\autour}[1]{\tikz[baseline=(X.base)]\node [draw=rubric,thin,rectangle,inner sep=1.5pt, rounded corners=3pt] (X) {\color{rubric}#1};}
 \newcommand\corr{}
 \newcommand{\ed}[1]{ {\color{silver}\sffamily\footnotesize (#1)} } % <milestone ed="1688"/>
 \newcommand\expan{}
@@ -188,7 +189,7 @@
 \newcommand{\initialiv}[2]{%
   \let\oldLFH\LettrineFontHook
   % \renewcommand{\LettrineFontHook}{\color{rubric}\ttfamily}
-  \IfSubStr{Q}{#1}{
+  \IfSubStr{QJ’}{#1}{
     \lettrine[lines=4, lhang=0.2, loversize=-0.1, lraise=0.2]{\smash{#1}}{#2}
   }{\IfSubStr{É}{#1}{
     \lettrine[lines=4, lhang=0.2, loversize=-0, lraise=0]{\smash{#1}}{#2}
@@ -210,7 +211,9 @@
 \newcommand\orgName{}
 \newcommand\persName{}
 \newcommand\placeName{}
-\newcommand{\pn}[1]{{\sffamily\textbf{#1.}} } % <p n="3"/>
+\newcommand{\pn}[1]{\IfSubStr{-—–¶}{#1}% <p n="3"/>
+  {\noindent{\bfseries\color{rubric}   ¶  }}
+  {{\footnotesize\autour{ #1}  }}}
 \newcommand\reg{}
 % \newcommand\ref{} % already defined
 \newcommand\sic{}
@@ -224,7 +227,7 @@
 \newcommand{\bibl}[1]{{\RaggedLeft{#1}\par\bigskip}}
 \newcommand{\biblitem}[1]{{\noindent\hangindent=\parindent   #1\par}}
 \newcommand{\dateline}[1]{\medskip{\RaggedLeft{#1}\par}\bigskip}
-\newcommand{\labelblock}[1]{\bigbreak{\color{rubric}\noindent\textbf{#1}\par}\bignobreak}
+\newcommand{\labelblock}[1]{\medbreak{\noindent\color{rubric}\bfseries #1}\par\mednobreak}
 \newcommand{\salute}[1]{\bigbreak{#1}\par\medbreak}
 \newcommand{\signed}[1]{\bigbreak\filbreak{\raggedleft #1\par}\medskip}
 
@@ -241,7 +244,7 @@
 
 
 % environments for block containers
-\newenvironment{argument}{\fontlight\parindent0pt}{\vskip1.5em}
+\newenvironment{argument}{\itshape\parindent0pt}{\vskip1.5em}
 \newenvironment{biblfree}{}{\ifvmode\par\fi }
 \newenvironment{bibitemlist}[1]{%
   \list{\@biblabel{\@arabic\c@enumiv}}%

@@ -26,6 +26,25 @@ Doit pouvoir fonctionner en import.
     <xsl:text>&#10;quotes=</xsl:text>
     <xsl:call-template name="quotes"/>
     <xsl:text>&#10;</xsl:text>
+    <xsl:call-template name="p"/>
+  </xsl:template>
+  
+  <xsl:template name="p">
+    <xsl:for-each select="/*/tei:text//tei:p">
+      <xsl:sort order="descending" data-type="number" select="string-length(normalize-space(.))"/>
+      <xsl:if test="position() = 1">
+        <xsl:variable name="text" select="normalize-space(.)"/>
+        <xsl:text>Biggest &lt;p> </xsl:text>
+        <xsl:variable name="chars" select="string-length($text)"/>
+        <xsl:text> chars=</xsl:text>
+        <xsl:value-of select="$chars"/>
+        <xsl:text> lines=</xsl:text>
+        <xsl:value-of select="round($chars div 60)"/>
+        <xsl:text>&#10;</xsl:text>
+        <xsl:value-of select="substring($text, 1, 100)"/>
+      </xsl:if>
+    </xsl:for-each>
+    <xsl:text>&#10;</xsl:text>
   </xsl:template>
   
   <xsl:template name="quotes">

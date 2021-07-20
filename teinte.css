@@ -172,9 +172,10 @@ aside header {
 }
 
 blockquote.quote {
-  margin: 2rem 0rem 1.5rem 2rem;
+  margin: 0;
+  padding: 0.3rem 0rem 0.3rem 2rem;
   line-height: 1.25;
-  padding: 0;
+  border-left: 1px solid rgba(100, 100, 100, 0.5);
 }
 
 blockquote.quote .p {}
@@ -809,9 +810,15 @@ h2.castList {
 .argument {
   margin: 2rem 0 3rem 0;
   line-height: 1.4;
+  font-size: 105%;
   text-indent: 0;
-  font-size: 85%;
+  font-style: italic;
   text-align: justify
+}
+
+.argument em,
+.argument i {
+  font-style: normal;
 }
 
 p.argument {
@@ -1137,6 +1144,7 @@ div.gloss {
   background-color: #F3F3F3;
   text-indent: 0;
 }
+
 
 div.index {
   background-color: #eee;
@@ -1713,7 +1721,6 @@ ol {
 
 p.p.no {
   text-indent: 0;
-  margin-top: 1rem;
 }
 
 .milestone.no::before {

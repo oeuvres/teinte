@@ -30,7 +30,7 @@
     papersize={105mm, 297mm},
     inner=12mm,
     outer=12mm,
-    top=15mm,
+    top=20mm,
     bottom=15mm,
     marginparsep=0pt,
   ]{geometry}
@@ -47,7 +47,7 @@
   ]{geometry}
   \usepackage[fontsize=12pt]{scrextend}
 \else% A4 2 cols
-  \documentclass[twocolumn]{book}
+  \documentclass[twocolumn]{report}
   \usepackage[%
     a4paper,
     inner=15mm,
@@ -107,10 +107,9 @@
     ItalicFont={Roboto Light Italic},
   ]{Roboto}
 \else
-  \setmainfont[
-    ItalicFont={Roboto Italic},
-    % BoldFont={Roboto},
-  ]{Roboto Light}
+\setmainfont[
+  ItalicFont={Roboto Italic},
+]{Roboto Light}
 \fi\fi
 \renewcommand{\LettrineFontHook}{\bfseries\color{rubric}}
 % \renewenvironment{labelblock}{\begin{center}\bfseries\color{rubric}}{\end{center}}
@@ -134,6 +133,7 @@
   {%
     \savenotes
     \setstretch{0.9}
+    \normalfont
     \begin{quotebar}
   }
   {%
@@ -142,9 +142,8 @@
   }
 
 
-\renewcommand{\pn}[1]{{\footnotesize\autour{\color{rubric} #1}}} % <p n="3"/>
 \renewcommand{\headrulewidth}{\arrayrulewidth}
-\renewcommand{\headrule}{\color{rubric}\hrule}
+\renewcommand{\headrule}{{\color{rubric}\hrule}}
 
 % delicate tuning, image has produce line-height problems in title on 2 lines
 \titleformat{name=\chapter} % command
@@ -252,7 +251,7 @@
 \else
   \chapo
 \fi
-\elabstract
+{\it\elabstract}
 \bigskip
 \makeatletter\@starttoc{toc}\makeatother % toc without new page
 \bigskip

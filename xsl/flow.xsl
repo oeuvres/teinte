@@ -441,20 +441,23 @@ Sections
         <xsl:otherwise>p</xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
+    
     <xsl:element name="{$el}">
-      <xsl:variable name="prev" select="preceding-sibling::*[not(self::tei:pb)][1]"/>
+      <xsl:variable name="prev" select="preceding-sibling::*[not(self::tei:pb)][not(self::tei:cb)][1]"/>    
       <xsl:variable name="char1" select="substring( normalize-space(.), 1, 1)"/>
       <xsl:variable name="class">
         <xsl:choose>
-          <xsl:when test="descendant::tei:graphic">noindent</xsl:when>
           <xsl:when test="contains(concat(' ', @rend, ' '), ' indent ')"/>
+          <xsl:when test="contains($prev/@rend, 'right')  or contains($prev/@rend, 'center')">noindent </xsl:when>
+          <xsl:when test="not(preceding-sibling::*) and not(parent::tei:item)">noindent </xsl:when>
+          <xsl:when test="contains(@rend, 'center') or contains(@rend, 'right')">noindent </xsl:when>
+          <xsl:when test="name($prev) != 'p' and not(parent::tei:item)">noindent </xsl:when>
+          <xsl:when test="descendant::tei:graphic">noindent </xsl:when>
           <!--
           <xsl:when test="contains( '-–—0123456789', $char1 )"/>
           <xsl:when test="$prev and contains('-–—', substring(normalize-space($prev), 1, 1))"/>
-          -->
           <xsl:when test="local-name($prev) ='p' and translate($prev, '*∾  ','')!=''"/>
-          <xsl:when test="@n"/>
-          <xsl:otherwise>autofirst</xsl:otherwise>
+          -->
         </xsl:choose>
         <xsl:if test="@n"> no</xsl:if>
         <xsl:if test="tei:hi[contains(@rend, 'initial')]">
@@ -467,8 +470,13 @@ Sections
       </xsl:call-template>
       <xsl:if test="@n">
         <small class="no">
-          <xsl:value-of select="@n"/>
-          <xsl:text>. </xsl:text>
+          <xsl:choose>
+            <xsl:when test="contains('-–—¶', @n)">¶</xsl:when>
+            <xsl:otherwise>
+              <xsl:attribute name="class">no round</xsl:attribute>
+              <xsl:value-of select="@n"/>
+            </xsl:otherwise>
+          </xsl:choose>
         </small>
       </xsl:if>
       <xsl:apply-templates>
