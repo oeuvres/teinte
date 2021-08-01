@@ -223,9 +223,21 @@ for example: abstract.
   </xsl:template>
   -->
     
-  <xsl:template match="tei:emph | tei:foreign | tei:gloss | tei:hi">
+    
+  <xsl:template match="tei:del">
     <xsl:param name="message"/>
-    <xsl:text>\emph{</xsl:text>
+    <xsl:text>\sout{</xsl:text>
+    <xsl:apply-templates>
+      <xsl:with-param name="message" select="$message"/>
+    </xsl:apply-templates>
+    <xsl:text>}</xsl:text>
+  </xsl:template>
+    
+  <xsl:template match="tei:emph | tei:foreign | tei:gloss | tei:surname | tei:term">
+    <xsl:param name="message"/>
+    <xsl:text>\</xsl:text>
+    <xsl:value-of select="name()"/>
+    <xsl:text>{</xsl:text>
     <xsl:apply-templates>
       <xsl:with-param name="message" select="$message"/>
     </xsl:apply-templates>
@@ -433,6 +445,52 @@ for example: abstract.
     <xsl:text>&#160;</xsl:text>
   </xsl:template>
   
+  <xsl:template match="tei:l">
+    <xsl:param name="message"/>
+    <xsl:variable name="next" select="following-sibling::*[1][self::tei:l]"/>
+    <xsl:variable name="prev" select="preceding-sibling::*[1][self::tei:l]"/>
+    <xsl:choose>
+      <!-- empty verse as stanza separator, do notinh -->
+      <xsl:when test="normalize-space(.) = ''"/>
+      <!-- Start of poem (if not <lg>) -->
+      <xsl:when test="not($prev) and $next and not(parent::tei:lg)">
+        <xsl:text>&#10;\begin{verse}&#10;</xsl:text>
+        <xsl:apply-templates>
+          <xsl:with-param name="message" select="$message"/>
+        </xsl:apply-templates>
+        <xsl:text>\\&#10;</xsl:text>
+      </xsl:when>
+      <!-- End of poem (if not <lg>) -->
+      <xsl:when test="$prev and not($next) and not(parent::tei:lg)">
+        <xsl:apply-templates>
+          <xsl:with-param name="message" select="$message"/>
+        </xsl:apply-templates>
+        <xsl:text>\\&#10;\end{verse}&#10;</xsl:text>
+      </xsl:when>
+      <!-- End of stanza (with <lg>) -->
+      <xsl:when test="$prev and not($next)">
+        <xsl:apply-templates>
+          <xsl:with-param name="message" select="$message"/>
+        </xsl:apply-templates>
+        <xsl:text>\\!</xsl:text>
+      </xsl:when>
+      <!-- End of stanza given by empty verse -->
+      <xsl:when test="$next and $next =''">
+        <xsl:apply-templates>
+          <xsl:with-param name="message" select="$message"/>
+        </xsl:apply-templates>
+        <xsl:text>\\!&#10;&#10;</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates>
+          <xsl:with-param name="message" select="$message"/>
+        </xsl:apply-templates>
+        <xsl:text>\\&#10;</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  
+  
   <xsl:template match="tei:list/tei:label"/>
   
   <xsl:template match="tei:item/tei:label">
@@ -557,7 +615,7 @@ for example: abstract.
         <xsl:apply-templates>
           <xsl:with-param name="message" select="$message"/>
         </xsl:apply-templates>
-        <xsl:text>&#10;\end{enumerate}</xsl:text>
+        <xsl:text>\end{enumerate}&#10;&#10;</xsl:text>
       </xsl:when>
       <xsl:when test="contains($rend, 'alpha') or contains($rend, ' lower-latin ') or contains($rend, ' a ') or contains($rend, ' a. ') or contains($rend, ' a) ')">
         <xsl:text>&#10;\begin{listalpha}</xsl:text>
@@ -566,7 +624,7 @@ for example: abstract.
         <xsl:apply-templates>
           <xsl:with-param name="message" select="$message"/>
         </xsl:apply-templates>
-        <xsl:text>&#10;\end{listalpha}</xsl:text>
+        <xsl:text>\end{listalpha}&#10;&#10;</xsl:text>
       </xsl:when>
       <xsl:when test="@type = 'runin' or contains($rend, ' runin ') or contains($rend, ' runon ')">
         <xsl:apply-templates mode="runin" select="tei:item"/>
@@ -578,7 +636,7 @@ for example: abstract.
         <xsl:apply-templates>
           <xsl:with-param name="message" select="$message"/>
         </xsl:apply-templates>
-        <xsl:text>\end{itemize}&#10;</xsl:text>
+        <xsl:text>\end{itemize}&#10;&#10;</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -633,6 +691,46 @@ for example: abstract.
     </xsl:apply-templates>
     <xsl:text>}&#10;</xsl:text>
   </xsl:template>
+  
+  <xsl:template match="tei:lg">
+    <xsl:param name="message"/>
+    <xsl:choose>
+      <xsl:when test="count(key('APP',1))&gt;0">
+        <xsl:variable name="c" select="(count(tei:l)+1) div 2"/>
+        <xsl:text>\setstanzaindents{1,1,0}</xsl:text>
+        <xsl:text>\setcounter{stanzaindentsrepetition}{</xsl:text>
+        <xsl:value-of select="$c"/>
+        <xsl:text>}</xsl:text>
+        <xsl:text>\stanza&#10;</xsl:text>
+        <xsl:for-each select="tei:l">
+          <xsl:if test="parent::tei:lg/@xml:lang='Av'">{\itshape </xsl:if>
+          <xsl:apply-templates>
+            <xsl:with-param name="message" select="$message"/>
+          </xsl:apply-templates>
+          <xsl:if test="parent::tei:lg/@xml:lang='Av'">}</xsl:if>
+          <xsl:if test="following-sibling::tei:l">
+            <xsl:text>&amp;</xsl:text>
+          </xsl:if>
+        </xsl:for-each>
+        <xsl:text>\&amp;&#10;</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <!-- TODO if label inside between verses -->
+        <xsl:variable name="next" select="following-sibling::*[1][self::tei:lg]"/>
+        <xsl:variable name="prev" select="preceding-sibling::*[1][self::tei:lg]"/>
+        <xsl:if test="not($prev)">
+          <xsl:text>&#10;\begin{verse}&#10;</xsl:text>
+        </xsl:if>
+        <xsl:apply-templates>
+          <xsl:with-param name="message" select="$message"/>
+        </xsl:apply-templates>
+        <xsl:if test="not($next)">
+          <xsl:text>&#10;\end{verse}&#10;</xsl:text>
+        </xsl:if>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  
   
   <xsl:template match="tei:milestone">
     <xsl:param name="message"/>
@@ -839,6 +937,9 @@ for example: abstract.
       <xsl:when test="not(preceding-sibling::*) and not(parent::tei:item)">\noindent </xsl:when>
       <xsl:when test="contains(@rend, 'center') or contains(@rend, 'right')">\noindent </xsl:when>
       <xsl:when test="name($prev) != 'p' and not(parent::tei:item)">\noindent </xsl:when>
+      <!-- Moche
+      <xsl:when test="contains('-–—', $first)">\noindent </xsl:when>
+      -->
     </xsl:choose>
     <xsl:if test="@n != ''">
       <!-- No, number maybe not unique
@@ -1154,99 +1255,8 @@ for example: abstract.
     <xsl:value-of select="$postQuote"/>
   </xsl:template>
   <!-- If $verseNumbering, something will be done with a specific latex package, todo -->
-  
-  <xsl:template match="tei:l">
-    <xsl:param name="message"/>
-    <xsl:variable name="next" select="following-sibling::*[1][self::tei:l]"/>
-    <xsl:variable name="prev" select="preceding-sibling::*[1][self::tei:l]"/>
-    <xsl:choose>
-      <!-- empty verse as stanza separator, do notinh -->
-      <xsl:when test="normalize-space(.) = ''"/>
-      <!-- Start of poem (if not <lg>) -->
-      <xsl:when test="not($prev) and $next and not(parent::tei:lg)">
-        <xsl:text>&#10;\begin{verse}&#10;</xsl:text>
-        <xsl:apply-templates>
-          <xsl:with-param name="message" select="$message"/>
-        </xsl:apply-templates>
-        <xsl:text>\\&#10;</xsl:text>
-      </xsl:when>
-      <!-- End of poem (if not <lg>) -->
-      <xsl:when test="$prev and not($next) and not(parent::tei:lg)">
-        <xsl:apply-templates>
-          <xsl:with-param name="message" select="$message"/>
-        </xsl:apply-templates>
-        <xsl:text>\\&#10;\end{verse}&#10;</xsl:text>
-      </xsl:when>
-      <!-- End of stanza (with <lg>) -->
-      <xsl:when test="$prev and not($next)">
-        <xsl:apply-templates>
-          <xsl:with-param name="message" select="$message"/>
-        </xsl:apply-templates>
-        <xsl:text>\\!</xsl:text>
-      </xsl:when>
-      <!-- End of stanza given by empty verse -->
-      <xsl:when test="$next and $next =''">
-        <xsl:apply-templates>
-          <xsl:with-param name="message" select="$message"/>
-        </xsl:apply-templates>
-        <xsl:text>\\!&#10;&#10;</xsl:text>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:apply-templates>
-          <xsl:with-param name="message" select="$message"/>
-        </xsl:apply-templates>
-        <xsl:text>\\&#10;</xsl:text>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
-  
-  <xsl:template match="tei:del">
-    <xsl:param name="message"/>
-    <xsl:text>\sout{</xsl:text>
-    <xsl:apply-templates>
-      <xsl:with-param name="message" select="$message"/>
-    </xsl:apply-templates>
-    <xsl:text>}</xsl:text>
-  </xsl:template>
-  
-  <xsl:template match="tei:lg">
-    <xsl:param name="message"/>
-    <xsl:choose>
-      <xsl:when test="count(key('APP',1))&gt;0">
-        <xsl:variable name="c" select="(count(tei:l)+1) div 2"/>
-        <xsl:text>\setstanzaindents{1,1,0}</xsl:text>
-        <xsl:text>\setcounter{stanzaindentsrepetition}{</xsl:text>
-        <xsl:value-of select="$c"/>
-        <xsl:text>}</xsl:text>
-        <xsl:text>\stanza&#10;</xsl:text>
-        <xsl:for-each select="tei:l">
-          <xsl:if test="parent::tei:lg/@xml:lang='Av'">{\itshape </xsl:if>
-          <xsl:apply-templates>
-            <xsl:with-param name="message" select="$message"/>
-          </xsl:apply-templates>
-          <xsl:if test="parent::tei:lg/@xml:lang='Av'">}</xsl:if>
-          <xsl:if test="following-sibling::tei:l">
-            <xsl:text>&amp;</xsl:text>
-          </xsl:if>
-        </xsl:for-each>
-        <xsl:text>\&amp;&#10;</xsl:text>
-      </xsl:when>
-      <xsl:otherwise>
-        <!-- TODO if label inside between verses -->
-        <xsl:variable name="next" select="following-sibling::*[1][self::tei:lg]"/>
-        <xsl:variable name="prev" select="preceding-sibling::*[1][self::tei:lg]"/>
-        <xsl:if test="not($prev)">
-          <xsl:text>&#10;\begin{verse}&#10;</xsl:text>
-        </xsl:if>
-        <xsl:apply-templates>
-          <xsl:with-param name="message" select="$message"/>
-        </xsl:apply-templates>
-        <xsl:if test="not($next)">
-          <xsl:text>&#10;\end{verse}&#10;</xsl:text>
-        </xsl:if>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
+
+    
   
   <xsl:template match="tei:p[contains(@rend, 'center')]">
     <xsl:param name="message"/>
@@ -1318,4 +1328,6 @@ for example: abstract.
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
+  
+
 </xsl:transform>

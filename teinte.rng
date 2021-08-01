@@ -2150,6 +2150,7 @@
           <ref name="num"/>
           <ref name="point"/>
           <ref name="ref"/>
+          <ref name="surname"/>
         </choice>
       </zeroOrMore>
     </define>
@@ -2370,6 +2371,7 @@
         <ref name="orgName"/>
         <ref name="persName"/>
         <ref name="placeName"/>
+        <ref name="surname"/>
         <ref name="rs"/>
         <ref name="term"/>
         <ref name="tech"/>
@@ -2643,6 +2645,7 @@
             <ref name="hi"/>
             <ref name="num"/>
             <ref name="title"/>
+            <ref name="surname"/>
             <!-- 
             <ref name="persName"/>
             <ref name="placeName"/>

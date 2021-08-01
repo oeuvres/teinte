@@ -8,7 +8,15 @@ class Tools
   private static $transcache = array();
   /** get a temp dir */
   private static $tmpdir;
+  /** A logger, maybe a stream or a callable, used by Tools::log() */
+  private static $logger;
+  /** Log level */
+  public static $debug = false;
 
+  static function logger($logger=null) {
+    if ($logger != null) self::$logger = $logger;
+    return self::$logger;
+  }
 
   static function mois($num)
   {
@@ -28,6 +36,35 @@ class Tools
     );
     return $mois[(int)$num];
   }
+
+  /**
+   * Delete all files in a directory, create it if not exist
+   */
+  static public function dirclean($dir, $depth=0)
+  {
+    if (is_file($dir)) return unlink($dir);
+    // attempt to create the folder we want empty
+    if (!$depth && !file_exists($dir)) {
+      mkdir($dir, 0775, true);
+      @chmod($dir, 0775);  // let @, if www-data is not owner but allowed to write
+      return;
+    }
+    // should be dir here
+    if (is_dir($dir)) {
+      $handle=opendir($dir);
+      while (false !== ($entry = readdir($handle))) {
+        if ($entry == "." || $entry == "..") continue;
+        self::dirclean($dir.'/'.$entry, $depth+1);
+      }
+      closedir($handle);
+      // do not delete the root dir
+      if ($depth > 0) rmdir($dir);
+      // timestamp newDir
+      else touch($dir);
+      return;
+    }
+  }
+
 
   /**
    * get a pdo link to an sqlite database with good options
@@ -195,5 +232,31 @@ class Tools
     }
     closedir($dir);
   }
+
+  /**
+   * Custom error handler
+   * Especially used for xsl:message coming from transform()
+   * To avoid Apache time limit, php could output some bytes during long transformations
+   */
+  static function log($errno, $errstr=null, $errfile=null, $errline=null, $errcontext=null)
+  {
+    if (!self::$logger) self::$logger = STDERR;
+
+    $errstr=preg_replace("/XSLTProcessor::transform[^:]*:/", "", $errstr, -1, $count);
+    if ($count) { // is an XSLT error or an XSLT message, reformat here
+      if(strpos($errstr, 'error')!== false) return false;
+      else if ($errno == E_WARNING) $errno = E_USER_WARNING;
+    }
+    // a debug message in normal mode, do nothing
+    if ($errno == E_USER_NOTICE && !self::$debug) return true;
+    // ?? not a user message, let work default handler
+    // else if ($errno != E_USER_ERROR && $errno != E_USER_WARNING ) return false;
+
+    if (!$errstr && $errno) $errstr = $errno;
+
+    if (is_resource(self::$logger)) fwrite(self::$logger, $errstr."\n");
+    else if ( is_string(self::$logger) && function_exists(self::$logger)) call_user_func(self::$logger, $errstr);
+  }
+
 
 }

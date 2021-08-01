@@ -6,6 +6,7 @@
  * LGPL http://www.gnu.org/licenses/lgpl.html
  *
  */
+include_once(dirname(dirname(__FILE__)).'/php/tools.php');
 
 /**
  * Transform TEI in epub
@@ -143,11 +144,11 @@ class Epub
     $dstinfo = pathinfo( $dstfile );
     // for multi user rights and name collision, a random name ?
     $dstdir = $this->p['workdir'].'/'.$dstinfo['filename'].'-epub/';
-    self::dirclean($dstdir); // create a clean directory
+    Tools::dirclean($dstdir); // create a clean directory
     $dstdir=str_replace('\\', '/', realpath( $dstdir ) . '/'); // absolute path needed for xsl
 
     // copy the template folder
-    self::rcopy($template, $dstdir);
+    Tools::rcopy($template, $dstdir);
     // check if there is a colophon where to write a date
     if (file_exists($f = $dstdir.'OEBPS/colophon.xhtml')) {
       $cont = file_get_contents($f);
@@ -178,7 +179,7 @@ class Epub
     else if ( file_exists( $this->p['srcdir'].$this->p['filename'].'.png' )) $cover = $this->p['filename'].'.png';
     else if ( file_exists( $this->p['srcdir'].$this->p['filename'].'.jpg' )) $cover = $this->p['filename'].'.jpg';
     if ( $cover ) {
-      self::dirclean( $dstdir.'OEBPS/' . $imagesdir );
+      Tools::dirclean( $dstdir.'OEBPS/' . $imagesdir );
       copy( $this->p['srcdir'].$cover, $dstdir.'OEBPS/'.$imagesdir.$cover);
     }
     if ($cover) $params['cover'] = $imagesdir.$cover;
@@ -231,9 +232,9 @@ class Epub
       if ( !@mkdir( $dir, 0775, true ) ) exit( $dir." impossible à créer.\n");
       @chmod( $dir, 0775 );  // let @, if www-data is not owner but allowed to write
     }
-    self::zip( $dstfile, $dstdir );
+    self::zip($dstfile, $dstdir);
     if ( !self::$debug ) { // delete tmp dir if not debug
-      self::dirclean( $dstdir ); // this is a strange behaviour, new dir will empty dir
+      Tools::dirclean($dstdir); // this is a strange behaviour, new dir will empty dir
       rmdir( $dstdir );
     }
     // shall we return entire content of the file ?
@@ -288,7 +289,7 @@ class Epub
     // test first if dst dir (example, epub for sqlite)
     if (isset($dstdir)) {
       // create images folder only if images detected
-      if (!file_exists($dstdir)) self::dirclean($dstdir);
+      if (!file_exists($dstdir)) Tools::dirclean($dstdir);
       // destination
       $i=2;
       // avoid duplicated files
@@ -371,58 +372,6 @@ class Epub
     if (!self::$_logger);
     else if (is_resource(self::$_logger)) fwrite(self::$_logger, $errstr."\n");
     else if ( is_string(self::$_logger) && function_exists(self::$_logger)) call_user_func(self::$_logger, $errstr);
-  }
-  /**
-   * Delete all files in a directory, create it if not exist
-   */
-  static public function dirclean($dir, $depth=0)
-  {
-    if (is_file($dir)) return unlink($dir);
-    // attempt to create the folder we want empty
-    if (!$depth && !file_exists($dir)) {
-      mkdir($dir, 0775, true);
-      @chmod($dir, 0775);  // let @, if www-data is not owner but allowed to write
-      return;
-    }
-    // should be dir here
-    if (is_dir($dir)) {
-      $handle=opendir($dir);
-      while (false !== ($entry = readdir($handle))) {
-        if ($entry == "." || $entry == "..") continue;
-        self::dirclean($dir.'/'.$entry, $depth+1);
-      }
-      closedir($handle);
-      // do not delete the root dir
-      if ($depth > 0) rmdir($dir);
-      // timestamp newDir
-      else touch($dir);
-      return;
-    }
-  }
-  /**
-   * Recursively copy files from one directory to another
-   *
-   * @param String $src - Source of files being moved
-   * @param String $dst - Destination of files being moved
-   */
-  static function rcopy($src, $dst)
-  {
-      // If source is not a directory stop processing
-      if(!is_dir($src)) return false;
-      // If the destination directory does not exist create it
-      if(!is_dir($dst)) {
-        // If the destination directory could not be created stop processing
-        if(!mkdir($dst)) return false;
-      }
-      // Open the source directory to read in files
-      $it = new DirectoryIterator($src);
-      foreach($it as $f) {
-          if($f->isFile()) {
-              copy($f->getRealPath(), "$dst/" . $f->getFilename());
-          } else if(!$f->isDot() && $f->isDir()) {
-              self::rcopy($f->getRealPath(), "$dst/$f");
-          }
-      }
   }
   /**
    * Zip folder to a zip file

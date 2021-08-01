@@ -140,10 +140,8 @@ A light version for XSLT1, with local improvements.
     <xsl:apply-templates/>
   </xsl:template>
 
-
-
   <xsl:template match="
-      tei:back/tei:head
+    tei:back/tei:head
     | tei:body/tei:head
     | tei:div/tei:head
     | tei:div1/tei:head
@@ -153,6 +151,36 @@ A light version for XSLT1, with local improvements.
     | tei:div5/tei:head
     | tei:div6/tei:head
     | tei:front/tei:head
+    ">
+    <xsl:param name="message"/>
+    <xsl:variable name="level">
+      <xsl:call-template name="level"/>
+    </xsl:variable>
+    <xsl:text>\begin{center}</xsl:text>
+    <xsl:choose>
+      <xsl:when test="@type = 'sub'">
+        <xsl:text>\emph{</xsl:text>
+        <xsl:apply-templates/>
+        <xsl:text>}</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates/>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:text>\end{center}&#10;</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="
+      tei:back/tei:head[1]
+      | tei:body/tei:head[1]
+      | tei:div/tei:head[1]
+      | tei:div1/tei:head[1]
+      | tei:div2/tei:head[1]
+      | tei:div3/tei:head[1]
+      | tei:div4/tei:head[1]
+      | tei:div5/tei:head[1]
+      | tei:div6/tei:head[1]
+      | tei:front/tei:head[1]
     ">
     <xsl:param name="message"/>
     <xsl:variable name="level">
@@ -194,14 +222,16 @@ or (not($numberHeadings = 'true') and ancestor::tei:body)
 or (ancestor::tei:front and $numberFrontHeadings = '')
 or parent::tei:div[contains(@rend, 'nonumber')]
 
-\chapter[toc-title text only]{title with maybe notes}
+\chapter[{toc-title text only}]{title with maybe notes}
+
+[{a title may contain [brackets]}]
         -->
-    <xsl:text>[</xsl:text>
+    <xsl:text>[{</xsl:text>
     <xsl:variable name="title">
       <xsl:apply-templates select="." mode="title"/>
     </xsl:variable>
     <xsl:value-of select="normalize-space($title)"/>
-    <xsl:text>]</xsl:text>
+    <xsl:text>}]</xsl:text>
     <xsl:text>{</xsl:text>
     <xsl:apply-templates/>
     <xsl:text>}</xsl:text>

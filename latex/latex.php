@@ -1,5 +1,6 @@
 <?php
-include dirname(dirname(__FILE__)).'/teidoc.php';
+include_once(dirname(dirname(__FILE__)).'/teidoc.php');
+include_once(dirname(dirname(__FILE__)).'/php/tools.php');
 set_time_limit(-1);
 if (isset($argv[0]) && realpath($argv[0]) == realpath(__FILE__)) Latex::cli(); // direct CLI
 
@@ -7,7 +8,7 @@ if (isset($argv[0]) && realpath($argv[0]) == realpath(__FILE__)) Latex::cli(); /
  * Transform an XML/TEI file in LaTeX
  */
 class Latex {
-  protected $dom; // dom prepared for TeX (escapings)
+  protected $dom; // dom prepared for TeX (escapings, images)
   protected $srcfile;
   static protected $latex_xsl;
   static protected $latex_meta_xsl;
@@ -122,6 +123,77 @@ class Latex {
     return $dom;
   }
 
+    /**
+   * Extract <graphic> elements from a DOM doc, copy images in a flat dstdir
+   * $dom : a TEI dom doc, image links will be modified
+   * $dstdir : a folder where to copy images
+   * $basehref : a basehref prefix to rewrite image link, user knows how to resolve links to image
+   * return : a doc with updated links to image
+   */
+  private function teigraf($grafdir=null, $grafhref=null)
+  {
+    if ($grafdir) $grafdir=rtrim($grafdir, '/\\').'/';
+    // copy linked images in an images folder, and modify relative link
+    // $dom=$dom->cloneNode(true); // if we want to keep original dom
+    foreach ($this->dom->getElementsByTagNameNS('http://www.tei-c.org/ns/1.0', 'graphic') as $el) {
+      $this->teigrafatt($el->getAttributeNode("url"), $grafdir, $grafhref);
+    }
+    /*
+    do not store images of pages, especially in tif
+    foreach ($doc->getElementsByTagNameNS('http://www.tei-c.org/ns/1.0', 'pb') as $el) {
+      $this->img($el->getAttributeNode("facs"), $hrefTei, $dstdir, $hrefSqlite);
+    }
+    */
+  }
+  /**
+   * Process one image
+   */
+  public function teigrafatt($att, $grafdir=null, $grafhref="")
+  {
+    if (!isset($att) || !$att || !$att->value) return;
+    $url=$att->value;
+    $url=str_replace('\\', '', $url);
+    // image data, do nothing
+    if (strpos($url, 'data:image') === 0) return;
+
+    // if abolute url, OK
+    if (strpos($url, 'http') === 0) {
+
+    }
+    // test if relative file path
+    else if (file_exists($test=dirname($this->srcfile).'/'.$url)) {
+      $url=$test;
+    }
+    /*
+      // vendor specific etc/filename.jpg
+    else if ( $this->p['srcdir']
+      && file_exists( $test = $this->p['srcdir'].$this->p['filename'].'/'.substr($src, strpos($src, '/')+1) )
+    ) $src = $test;
+    */
+    // if not file exists, escape and alert (?)
+    else if ( !file_exists( $url ) ) {
+      Tools::log( "Image not found: ".$url );
+      return;
+    }
+    $srcParts=pathinfo($url);
+    // if dstdir requested, copy
+    if (isset($grafdir)) {
+      // destination
+      $i=2;
+      // avoid duplicated files
+      while (file_exists($grafdir.$srcParts['basename'])) {
+        $srcParts['basename']=$srcParts['filename'].'-'.$i.'.'.$srcParts['extension'];
+        $i++;
+      }
+      copy($url, $grafdir.$srcParts['basename']);
+    }
+    // changes links in TEI so that straight transform will point on the right files
+    $att->value=$grafhref.$srcParts['basename'];
+    // resize ?
+    // NO delete of <graphic> element if broken link
+  }
+
+
   function load($srcfile)
   {
     $this->srcfile = $srcfile;
@@ -146,10 +218,15 @@ class Latex {
   {
     $filename = pathinfo($this->srcfile, PATHINFO_FILENAME);
     $workdir = self::workdir($this->srcfile);
-    // resolve includes and graphics of template
-    $tex = Latex::includes($skelfile, $workdir, $filename.'/');
+    $grafdir = $workdir.$filename.'/';
+    Tools::dirclean($grafdir); // empty graf dir
 
+    // resolve includes and graphics of tex template
+    $tex = Latex::includes($skelfile, $workdir, $grafdir);
+    // resolve image links in tei source
+    $this->teigraf($grafdir, $filename.'/');
     $this->dom->save($workdir.$filename.'.xml');
+
 
     $meta = self::$latex_meta_xsl->transformToXml($this->dom);
     $text = self::$latex_xsl->transformToXml($this->dom);
@@ -176,7 +253,7 @@ class Latex {
   {
     array_shift($_SERVER['argv']); // shift first arg, the script filepath
     if (!count($_SERVER['argv'])) exit("
-usage    : php -f latex.php (dstdir/)? srcdir/*.xml\n");
+usage    : php -f latex.php teidir/*.xml\n");
 
     $dstdir = "";
     $lastc = substr($_SERVER['argv'][0], -1);
@@ -191,13 +268,15 @@ usage    : php -f latex.php (dstdir/)? srcdir/*.xml\n");
 
     $latex = new Latex();
     while($glob = array_shift($_SERVER['argv']) ) {
-      foreach(glob($glob) as $srcfile) {
-        $filename = pathinfo($srcfile, PATHINFO_FILENAME);
-        if ($dstdir) $dstname = $dstdir.$filename;
-        else $dstname = dirname($srcfile).'/'.$filename;
-        $latex->load($srcfile);
-        echo "$srcfile > $dstname(.tex|.pdf)\n";
-        $latex->export($dstname.'.tex');
+      foreach(glob($glob) as $teifile) {
+        $latex->load($teifile); // load tei
+        $texfile = $latex->setup(dirname(__FILE__).'/test.tex'); // install tex template
+        $texname = pathinfo($texfile, PATHINFO_FILENAME);
+        $workdir = dirname($texfile).'/';
+        echo "$teifile > $workdir/$texname(.tex|.pdf)\n";
+        chdir($workdir); // change working directory
+        // exec CLI xelatex
+        exec("latexmk -xelatex -quiet -f ".$texname.'.tex');
       }
     }
 

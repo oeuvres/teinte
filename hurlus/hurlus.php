@@ -3,7 +3,7 @@
  * This class should perform all that Hurlus want with XML/TEI source
  * with custom design
  */
-include dirname(dirname(__FILE__)).'/latex/latex.php';
+include_once(dirname(dirname(__FILE__)).'/latex/latex.php');
 
 if (isset($argv[0]) && realpath($argv[0]) == realpath(__FILE__)) Hurlus::cli(); //direct CLI
 class Hurlus {
@@ -23,15 +23,6 @@ class Hurlus {
     $texname = pathinfo($texfile, PATHINFO_FILENAME);
     $workdir = dirname($texfile).'/';
     chdir($workdir); // change working directory
-
-    /*
-    // cover
-    $coverfile = $workdir.$texname.'_cover.tex';
-    $tex = file_get_contents($coverfile);
-    $tex = preg_replace('@\\\\def\\\\mode\{[^\}]*\}@', '\\def\\mode{cover}', $tex);
-    file_put_contents($coverfile, $tex);
-    exec("latexmk -xelatex -quiet -f ".$coverfile);
-    */
 
     // default is a4 2 cols, transform to pdf
     exec("latexmk -xelatex -quiet -f ".$texname.'.tex');

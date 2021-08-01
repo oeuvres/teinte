@@ -15,6 +15,7 @@
 \usepackage{etoolbox} % patch commands
 \usepackage{fancyvrb}
 \usepackage{fancyhdr}
+\usepackage{float}
 \usepackage{fontspec} % XeLaTeX mandatory for fonts
 \usepackage{footnote} % used to capture notes in minipage (ex: quote)
 \usepackage{framed} % bordering correct with footnote hack
@@ -77,7 +78,7 @@
 % Default metas
 \newcommand{\colorprovide}[2]{\@ifundefinedcolor{#1}{\colorlet{#1}{#2}}{}}
 \colorprovide{rubric}{red}
-\colorprovide{silver}{Gray}
+\colorprovide{silver}{lightgray}
 \@ifundefined{syms}{\newfontfamily\syms{DejaVu Sans}}{}
 \newif\ifdev
 \@ifundefined{elbibl}{% No meta defined, maybe dev mode
@@ -100,17 +101,6 @@
   Scale=MatchLowercase,
   Ligatures={TeX,Common},
 }
-
-\@ifundefined{\columnseprulecolor}{%
-    \patchcmd\@outputdblcol{% find
-      \normalcolor\vrule
-    }{% and replace by
-      \columnseprulecolor\vrule
-    }{% success
-    }{% failure
-      \@latex@warning{Patching \string\@outputdblcol\space failed}%
-    }
-}{}
 
 \hypersetup{
   % pdftex, % no effect
@@ -178,12 +168,13 @@
 
 % commands, inlines
 \newcommand{\anchor}[1]{\Hy@raisedlink{\hypertarget{#1}{}}} % link to top of an anchor (not baseline)
-\newcommand\abbr{}
+\newcommand\abbr[1]{#1}
 \newcommand{\autour}[1]{\tikz[baseline=(X.base)]\node [draw=rubric,thin,rectangle,inner sep=1.5pt, rounded corners=3pt] (X) {\color{rubric}#1};}
-\newcommand\corr{}
+\newcommand\corr[1]{#1}
 \newcommand{\ed}[1]{ {\color{silver}\sffamily\footnotesize (#1)} } % <milestone ed="1688"/>
-\newcommand\expan{}
-\newcommand\gap{}
+\newcommand\expan[1]{#1}
+\newcommand\foreign[1]{\emph{#1}}
+\newcommand\gap[1]{#1}
 \renewcommand{\LettrineFontHook}{\color{rubric}}
 \newcommand{\initial}[2]{\lettrine[lines=2, loversize=0.3, lhang=0.3]{#1}{#2}}
 \newcommand{\initialiv}[2]{%
@@ -206,17 +197,20 @@
 }
 \newcommand{\labelchar}[1]{\textbf{\color{rubric} #1}}
 \newcommand{\milestone}[1]{\autour{\footnotesize\color{rubric} #1}} % <milestone n="4"/>
-\newcommand\name{}
-\newcommand\orig{}
-\newcommand\orgName{}
-\newcommand\persName{}
-\newcommand\placeName{}
+\newcommand\name[1]{#1}
+\newcommand\orig[1]{#1}
+\newcommand\orgName[1]{#1}
+\newcommand\persName[1]{#1}
+\newcommand\placeName[1]{#1}
 \newcommand{\pn}[1]{\IfSubStr{-—–¶}{#1}% <p n="3"/>
   {\noindent{\bfseries\color{rubric}   ¶  }}
   {{\footnotesize\autour{ #1}  }}}
 \newcommand\reg{}
 % \newcommand\ref{} % already defined
-\newcommand\sic{}
+\newcommand\sic[1]{#1}
+\newcommand\surname[1]{\textsc{#1}}
+\newcommand\term[1]{\textbf{#1}}
+
 \def\mednobreak{\ifdim\lastskip<\medskipamount
   \removelastskip\nopagebreak\medskip\fi}
 \def\bignobreak{\ifdim\lastskip<\bigskipamount

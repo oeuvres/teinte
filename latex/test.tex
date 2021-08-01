@@ -1,0 +1,42 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Minimum LaTeX model with Teinte  %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[twocolumn]{report}
+\usepackage[%
+  a4paper,
+  inner=15mm,
+  outer=10mm,
+  top=25mm,
+  bottom=18mm,
+  marginparsep=0pt,
+]{geometry}
+\setlength{\columnsep}{20mm}
+\usepackage[fontsize=9.5pt]{scrextend}
+%%%%%%%%%%%%%%%%%
+% Teinte macros %
+%%%%%%%%%%%%%%%%%
+\input{../latex/teinte}
+\newcommand\chapo{{%
+  \vspace*{-3em}
+  \centering % no vskip ()
+  {\Large\addfontfeature{LetterSpace=25}\bfseries{\elauthor}}\par
+  \smallskip
+  {\large\eldate}\par
+  \bigskip
+  {\Large\selectfont{\eltitle}}\par
+  \bigskip
+  {\color{rubric}\hline\par}
+  \bigskip
+}}
+
+
+\begin{document}
+\pagestyle{fancy}
+\thispagestyle{empty}
+\twocolumn[\chapo]
+% \elabstract
+\bigskip
+\makeatletter\@starttoc{toc}\makeatother % toc without new page
+%text%
+\end{document}
