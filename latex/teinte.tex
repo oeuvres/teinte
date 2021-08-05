@@ -8,6 +8,7 @@
 
 
 \usepackage{blindtext} % generate text for testing
+\usepackage[strict]{changepage} % for modulo 4
 \usepackage{contour} % rounding words
 \usepackage[nodayofweek]{datetime}
 \usepackage{DejaVuSans} % font for symbols
@@ -331,6 +332,11 @@
 \setlength\footnotesep{1.5\footnotesep} % footnote separator
 \renewcommand\@makefntext[1]{\parindent 1.5em \noindent \hb@xt@1.8em{\hss{\normalfont\@thefnmark . }}#1} % no superscipt in foot
 
+
+%   see https://tex.stackexchange.com/a/34449/5049
+\def\truncdiv#1#2{((#1-(#2-1)/2)/#2)}
+\def\moduloop#1#2{(#1-\truncdiv{#1}{#2}*#2)}
+\def\modulo#1#2{\number\numexpr\moduloop{#1}{#2}\relax}
 
 % orphans and widows
 \clubpenalty=9996

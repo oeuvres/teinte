@@ -1185,7 +1185,7 @@ for example: abstract.
     </xsl:apply-templates>
   </xsl:template>
   
-  <xsl:template match="tei:ptr | tei:ref">
+  <xsl:template match="tei:ref | tei:ptr">
     <xsl:param name="message"/>
     <!-- Some chars may be escaped in URI -->
     <xsl:variable name="target" select="translate(normalize-space(@target), '\', '')"/>

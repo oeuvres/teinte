@@ -418,6 +418,10 @@ quote p:first-child {
   text-indent: 0;
 }
 
+quote p{
+  margin: 0;
+}
+
 p quote {
   display: inline;
   margin: 0;
