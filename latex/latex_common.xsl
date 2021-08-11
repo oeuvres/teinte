@@ -152,18 +152,6 @@
     <xsl:value-of select="$after"/>
   </xsl:template>
   
-  <!-- An environment to group blocks -->
-  <xsl:template name="makeGroup">
-    <xsl:param name="style" select="local-name()"/>
-    <xsl:text>&#10;\begin{</xsl:text>
-    <xsl:value-of select="$style"/>
-    <xsl:text>}</xsl:text>
-    <xsl:call-template name="tei:makeHyperTarget"/>
-    <xsl:apply-templates/>
-    <xsl:text>\end{</xsl:text>
-    <xsl:value-of select="$style"/>
-    <xsl:text>}&#10;&#10;</xsl:text>
-  </xsl:template>
   
     
 </xsl:transform>

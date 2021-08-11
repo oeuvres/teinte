@@ -84,7 +84,7 @@ Latex from TEI, metadata for preamble
             <xsl:value-of select="normalize-space(substring-before(@key, ','))"/>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:value-of select="normalize-space(.)"/>
+            <xsl:value-of select="normalize-space(@key)"/>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:for-each>

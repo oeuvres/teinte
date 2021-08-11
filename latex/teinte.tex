@@ -11,7 +11,7 @@
 \usepackage[strict]{changepage} % for modulo 4
 \usepackage{contour} % rounding words
 \usepackage[nodayofweek]{datetime}
-\usepackage{DejaVuSans} % font for symbols
+% \usepackage{DejaVuSans} % seems buggy for sffont font for symbols
 \usepackage{enumitem} % <list>
 \usepackage{etoolbox} % patch commands
 \usepackage{fancyvrb}
@@ -35,7 +35,7 @@
   rightmargin=0pt,
 ]{quoting}
 \usepackage{ragged2e}
-\usepackage{setspace}
+\usepackage{setspace} % \setstretch for <quote>
 \usepackage{tabularx} % <table>
 \usepackage[explicit]{titlesec} % wear titles, !NO implicit
 \usepackage{tikz} % ornaments
@@ -50,8 +50,6 @@
 \usepackage{xstring} % string tests
 \XeTeXdefaultencoding "utf-8"
 \PassOptionsToPackage{hyphens}{url} % before hyperref, which load url package
-\usepackage{hyperref} % supposed to be the last one, :o) except for the ones to follow
-\urlstyle{same} % after hyperref
 
 % TOTEST
 % \usepackage{hypcap} % links in caption ?
@@ -71,7 +69,6 @@
 % \usepackage{sectsty} % \chapterfont OBSOLETE
 % \usepackage{soul} % \ul for underline, OBSOLETE with XeTeX
 % \usepackage[breakable]{tcolorbox} % text styling gone, footnote hack not kept with breakable
-
 
 
 % Metadata inserted by a program, from the TEI source, for title page and runing heads
@@ -101,25 +98,6 @@
   % Mapping=tex-text, % no effect seen
   Scale=MatchLowercase,
   Ligatures={TeX,Common},
-}
-
-\hypersetup{
-  % pdftex, % no effect
-  pdftitle={\elbibl},
-  % pdfauthor={Your name here},
-  % pdfsubject={Your subject here},
-  % pdfkeywords={keyword1, keyword2},
-  bookmarksnumbered=true,
-  bookmarksopen=true,
-  bookmarksopenlevel=1,
-  pdfstartview=Fit,
-  breaklinks=true, % avoid long links
-  pdfpagemode=UseOutlines,    % pdf toc
-  hyperfootnotes=true,
-  colorlinks=false,
-  pdfborder=0 0 0,
-  % pdfpagelayout=TwoPageRight,
-  % linktocpage=true, % NO, toc, link only on page no
 }
 
 
@@ -165,7 +143,6 @@
 % General typo
 \DeclareTextFontCommand{\textlarge}{\large}
 \DeclareTextFontCommand{\textsmall}{\small}
-
 
 % commands, inlines
 \newcommand{\anchor}[1]{\Hy@raisedlink{\hypertarget{#1}{}}} % link to top of an anchor (not baseline)
@@ -239,7 +216,7 @@
 
 
 % environments for block containers
-\newenvironment{argument}{\itshape\parindent0pt}{\vskip1.5em}
+\newenvironment{argument}{\itshape\parindent0pt}{\bigskip}
 \newenvironment{biblfree}{}{\ifvmode\par\fi }
 \newenvironment{bibitemlist}[1]{%
   \list{\@biblabel{\@arabic\c@enumiv}}%
@@ -264,6 +241,7 @@
 \newenvironment{quoteblock}% may be used for ornaments
   {\begin{quoting}}
   {\end{quoting}}
+\newenvironment{epigraph}{\parindent0pt\raggedleft\it}{\bigskip}
 
 % table () is preceded and finished by custom command
 \newcommand{\tableopen}[1]{%
@@ -331,6 +309,7 @@
 \renewcommand\footnoterule{\vspace*{0.3cm}\hrule height \arrayrulewidth width 3cm \vspace*{0.3cm}}
 \setlength\footnotesep{1.5\footnotesep} % footnote separator
 \renewcommand\@makefntext[1]{\parindent 1.5em \noindent \hb@xt@1.8em{\hss{\normalfont\@thefnmark . }}#1} % no superscipt in foot
+\patchcmd{\@footnotetext}{\footnotesize}{\footnotesize\sffamily}{}{} % before scrextend, hyperref
 
 
 %   see https://tex.stackexchange.com/a/34449/5049
@@ -357,6 +336,27 @@
 \vbadness=4000
 \def\Gin@extensions{.pdf,.png,.jpg,.mps,.tif}
 % \renewcommand{\@cite}[1]{#1} % biblio
+
+\usepackage{hyperref} % supposed to be the last one, :o) except for the ones to follow
+\urlstyle{same} % after hyperref
+\hypersetup{
+  % pdftex, % no effect
+  pdftitle={\elbibl},
+  % pdfauthor={Your name here},
+  % pdfsubject={Your subject here},
+  % pdfkeywords={keyword1, keyword2},
+  bookmarksnumbered=true,
+  bookmarksopen=true,
+  bookmarksopenlevel=1,
+  pdfstartview=Fit,
+  breaklinks=true, % avoid long links
+  pdfpagemode=UseOutlines,    % pdf toc
+  hyperfootnotes=true,
+  colorlinks=false,
+  pdfborder=0 0 0,
+  % pdfpagelayout=TwoPageRight,
+  % linktocpage=true, % NO, toc, link only on page no
+}
 
 \makeatother % /@@@>
 %%%%%%%%%%%%%%

@@ -111,9 +111,20 @@ for example: abstract.
     <xsl:call-template name="makeBlock"/>
   </xsl:template>
   
-  <xsl:template match="tei:argument">
+  <xsl:template match="tei:argument | tei:epigraph">
     <xsl:param name="message"/>
-    <xsl:call-template name="makeGroup"/>
+    <!-- An environment to group blocks -->
+    <xsl:param name="env" select="local-name()"/>
+    <xsl:text>&#10;\begin{</xsl:text>
+    <xsl:value-of select="$env"/>
+    <xsl:text>}&#10;</xsl:text>
+    <xsl:call-template name="tei:makeHyperTarget"/>
+    <xsl:apply-templates>
+      <xsl:with-param name="message" select="$message"/>
+    </xsl:apply-templates>
+    <xsl:text>&#10;\end{</xsl:text>
+    <xsl:value-of select="$env"/>
+    <xsl:text>}&#10;&#10;</xsl:text>
   </xsl:template>
   
   <xsl:template match="tei:cit">
@@ -932,40 +943,58 @@ for example: abstract.
     <xsl:variable name="first" select="substring(translate(normalize-space(.), ' ', ''), 1, 1)"/>
     <xsl:call-template name="tei:makeHyperTarget"/>
     <xsl:variable name="prev" select="preceding-sibling::*[not(self::tei:pb)][not(self::tei:cb)][1]"/>
-    <xsl:choose>
-      <xsl:when test="contains($prev/@rend, 'right')  or contains($prev/@rend, 'center')">\noindent </xsl:when>
-      <xsl:when test="not(preceding-sibling::*) and not(parent::tei:item)">\noindent </xsl:when>
-      <xsl:when test="contains(@rend, 'center') or contains(@rend, 'right')">\noindent </xsl:when>
-      <xsl:when test="name($prev) != 'p' and not(parent::tei:item)">\noindent </xsl:when>
-      <!-- Moche
+    <xsl:variable name="rend" select="concat(' ', normalize-space(@rend), ' ')"/>
+    <xsl:variable name="cont">
+      <xsl:choose>
+        <xsl:when test="contains($prev/@rend, 'right')  or contains($prev/@rend, 'center')">\noindent </xsl:when>
+        <xsl:when test="not(preceding-sibling::*) and not(parent::tei:item)">\noindent </xsl:when>
+        <xsl:when test="contains($rend, ' center ') or contains($rend, ' right ')">\noindent </xsl:when>
+        <xsl:when test="name($prev) != 'p' and not(parent::tei:item)">\noindent </xsl:when>
+        <!-- Moche
       <xsl:when test="contains('-–—', $first)">\noindent </xsl:when>
       -->
-    </xsl:choose>
-    <xsl:if test="@n != ''">
-      <!-- No, number maybe not unique
+      </xsl:choose>
+      <xsl:if test="@n != ''">
+        <!-- No, number maybe not unique
       <xsl:call-template name="tei:makeHyperTarget">
         <xsl:with-param name="id" select="concat('par', @n)"/>
       </xsl:call-template>
       -->
-      <xsl:text>\pn{</xsl:text>
-      <xsl:value-of select="@n"/>
-      <xsl:text>}</xsl:text>
-    </xsl:if>
-    <!-- Paragraph auto numbering ?
-    <xsl:if test="$numberParagraphs = 'true'">
-      <xsl:call-template name="numberParagraph"/>
-    </xsl:if>
-    -->
-    <!-- Case of par rendering -->
-    <xsl:call-template name="rendering"/>
-    <xsl:if test="count(key('APP', 1)) &gt; 0">
-      <xsl:text>&#10;\pend&#10;</xsl:text>
-    </xsl:if>
-    <!-- Especially at the end of a footnote or a quote, \par produce a bad empty line -->
-    <xsl:if test="following-sibling::*">
-      <xsl:text>\par</xsl:text>
-    </xsl:if>
-    <xsl:text>&#10;</xsl:text>
+        <xsl:text>\pn{</xsl:text>
+        <xsl:value-of select="@n"/>
+        <xsl:text>}</xsl:text>
+      </xsl:if>
+      <!-- Ideas of Sebastian , pending
+      <xsl:if test="$numberParagraphs = 'true'">
+        <xsl:call-template name="numberParagraph"/>
+      </xsl:if>
+      <xsl:if test="count(key('APP', 1)) &gt; 0">
+        <xsl:text>&#10;\pend&#10;</xsl:text>
+      </xsl:if>
+      -->
+      <!-- Rendering char styles -->
+      <xsl:call-template name="rendering"/>
+      <!-- Especially at the end of a footnote or a quote, \par produce a bad empty line -->
+      <xsl:if test="following-sibling::*">
+        <xsl:text>\par</xsl:text>
+      </xsl:if>
+    </xsl:variable>
+    <xsl:choose>
+      <xsl:when test="contains($rend, ' right ')">
+        <xsl:text>{\raggedleft </xsl:text>
+        <xsl:copy-of select="$cont"/>
+        <xsl:text>}&#10;</xsl:text>
+      </xsl:when>
+      <xsl:when test="contains($rend, 'center')">
+         <xsl:text>&#10;\begin{center}&#10;</xsl:text>
+          <xsl:copy-of select="$cont"/>
+        <xsl:text>&#10;\end{center}&#10;&#10;</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:copy-of select="$cont"/>
+        <xsl:text>&#10;</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   
   <xsl:template name="numberParagraph">
@@ -1258,14 +1287,6 @@ for example: abstract.
 
     
   
-  <xsl:template match="tei:p[contains(@rend, 'center')]">
-    <xsl:param name="message"/>
-    <xsl:text>&#10;\begin{center}&#10;</xsl:text>
-    <xsl:apply-templates>
-      <xsl:with-param name="message" select="$message"/>
-    </xsl:apply-templates>
-    <xsl:text>\end{center}&#10;</xsl:text>
-  </xsl:template>
   
   <xsl:template match="tei:space">
     <xsl:param name="message"/>

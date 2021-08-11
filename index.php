@@ -2,7 +2,7 @@
 /*
 Teinte: publish tei files
 
-Copyright © 2012, 2013, 2015, 2016 Frédéric Glorieux
+Copyright © 2012, 2013, 2015, 2016, 2021  Frédéric Glorieux
 license : APACHE 2.0 http://www.apache.org/licenses/LICENSE-2.0
 <frederic.glorieux@fictif.org>
 

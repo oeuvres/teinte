@@ -11,7 +11,6 @@
 
 \newif\ifaiv % a4
 \newif\ifav % a5
-\newif\ifbooklet % booklet
 
 \ifnum \strcmp{\mode}{a5}=0
   \avtrue
@@ -20,54 +19,118 @@
 \fi
 
 \ifav
-  \documentclass[french,twoside]{book} % ,notitlepage
+  \documentclass[french]{report} % ,notitlepage
   \usepackage[%
     a5paper,
-    inner=25mm,
-    outer=15mm,
-    top=15mm,
-    bottom=15mm,
+    inner=1em,
+    outer=1em,
+    headsep=10pt,
+    headheight=18pt,
+    top=32pt,
+    bottom=8mm,
     marginparsep=0pt,
   ]{geometry}
-  \usepackage[fontsize=12pt]{scrextend}
 \else% A4 2 cols
-  \documentclass[twocolumn]{book}
+  \documentclass[french]{report}
   \usepackage[%
     a4paper,
-    inner=15mm,
-    outer=10mm,
     top=25mm,
-    bottom=18mm,
-    marginparsep=0pt,
+    headsep=10mm,
+    bottom=20mm,
+    inner=20mm,
+    outer=20mm,
   ]{geometry}
-  \setlength{\columnsep}{20mm}
-  \usepackage[fontsize=9.5pt]{scrextend}
 \fi
 
 
 % before teinte macros
-\setlength{\arrayrulewidth}{0.2pt}
-\setlength{\columnseprule}{\arrayrulewidth} % twocol
-\setlength{\parskip}{0pt} % classical para with no margin
-\setlength{\parindent}{1.5em}
 \usepackage[dvipsnames]{xcolor}
-\definecolor{rubric}{HTML}{0c71c3} % the tonic
-\def\columnseprulecolor{\color{rubric}}
+\definecolor{rubric}{HTML}{00000} % the tonic
+
+
 
 %%%%%%%%%%%%%%%%%
 % Teinte macros %
 %%%%%%%%%%%%%%%%%
 \input{../latex/teinte}
 
+\setlength{\parskip}{0pt} % classical para with no margin
+\setlength{\parindent}{1.5em}
+\setlength{\arrayrulewidth}{0.2pt}
+\setlength{\columnseprule}{\arrayrulewidth} % twocol
+
+
 % \usepackage{bitter}
 % \usepackage{Alegreya}
 % \usepackage{libertinus}
 % \renewcommand{\familydefault}{\sfdefault}
 % Need to be there, don't know why
+\iffalse
+  \setmainfont[
+    Path=/var/www/html/teinte/bnr/fonts/,
+    Extension=.otf,
+    UprightFont=*-SemiBold,
+    ItalicFont=*-MediumItalic,
+    BoldFont=*-Heavy,
+    BoldItalicFont=*-HeavyItalic
+  ]{FiraGO} % 18 pt
+  \setmainfont[
+    Path=/var/www/html/teinte/bnr/fonts/, % rel path broken by build
+    Extension=.ttf,
+    UprightFont=*Slab-SemiBold,
+    ItalicFont=*-MediumItalic,
+    BoldFont=*-Black,
+    BoldItalicFont=*-BlackItalic
+  ]{Roboto} % 18 pt
+  \setmainfont[
+    Path=/var/www/html/teinte/bnr/fonts/, % rel path broken by build
+    %Extension=.ttf,
+    UprightFont=*-Regular.otf,
+    ItalicFont=*-Italic.otf,
+    BoldFont=*-Bold.ttf,
+    BoldItalicFont=*-BoldItalic.ttf
+  ]{Amasis30} % 18 pt
+  \setsansfont[
+    Path=/var/www/html/teinte/bnr/fonts/,
+    Extension=.ttf,
+    UprightFont=*-Regular,
+    ItalicFont=*-LightItalic,
+    BoldFont=*-Bold,
+    BoldItalicFont=*-BoldItalic
+  ]{Roboto} % 18 pt
+  \setmainfont[
+    Path=/var/www/html/teinte/bnr/fonts/,
+    Extension=.ttf,
+    UprightFont=*-Regular,
+    BoldFont=*-Bold,
+    ItalicFont=*-RegularItalic,
+    BoldItalicFont=*-BoldItalic
+  ]{Luciole}
+\fi
+
+\setmainfont[
+  Path=/var/www/html/teinte/bnr/fonts/, % rel path broken by build
+  %Extension=.ttf,
+  UprightFont=*-Regular.otf,
+  ItalicFont=*-Italic.otf,
+  BoldFont=*-Bold.ttf,
+  BoldItalicFont=*-BoldItalic.ttf
+]{Amasis30} % 18 pt
+\setsansfont[
+  Path=/var/www/html/teinte/bnr/fonts/,
+  Extension=.ttf,
+  UprightFont=*-Regular,
+  ItalicFont=*-LightItalic,
+  BoldFont=*-Bold,
+  BoldItalicFont=*-BoldItalic
+]{Roboto} % 18 pt
+
+
 \ifav % A5
-  \usepackage[sfdefault]{FiraSans}
-\else % A4 2 cols
-  \usepackage[sfdefault,light]{FiraSans}
+  \linespread{0.8}
+  \usepackage[fontsize=22pt]{scrextend}
+\else % A4
+  \usepackage[fontsize=16pt]{scrextend}
 \fi
 
 \setdefaultlanguage[frenchpart=false]{french} % bug on part
@@ -92,52 +155,47 @@
     \spewnotes
   }
 
-
 \renewcommand{\pn}[1]{{\footnotesize\color{rubric}\autour{#1}}} % <p n="3"/>
 \renewcommand{\headrulewidth}{\arrayrulewidth}
+% \renewcommand{\headrule}{\vbox to 0pt{\makebox[\headwidth]{\color{rubric}\dotfill}\vss}}
 \renewcommand{\headrule}{\color{rubric}\hrule}
 \renewcommand{\thefootnote}{\bfseries\textcolor{rubric}{\arabic{footnote}}} % color for footnote marks
 
 
-\ifaiv
-  \fancypagestyle{fancy}{%
-    \fancyhf{}
-    \setlength{\headheight}{1.5em}
-    \fancyhead{} % reset head
-    \fancyfoot{} % reset foot
-    \fancyhead[L]{\truncate{0.45\headwidth}{\fontrun\elbibl}} % book ref
-    \fancyhead[R]{\truncate{0.45\headwidth}{\fontrun\nouppercase\leftmark}} % Chapter title
-    \fancyhead[C]{\thepage}
-  }
-  \fancypagestyle{plain}{% apply to chapter
-    \fancyhf{}% clear all header and footer fields
-    \setlength{\headheight}{1.5em}
-    \fancyhead[L]{\truncate{0.9\headwidth}{\fontrun\elbibl}}
-    \fancyhead[R]{\thepage}
-  }
-  \titleformat{name=\section}
-    [block]{}{}{}{}
-  [\vbox{\color{rubric}\hrule\bigskip \large\bfseries\raggedleft #1}]
-\else
+\ifav % A5
   \titleclass{\section}{top}
   \fancypagestyle{fancy}{%
-    \fancyhf{}
-    \setlength{\headheight}{1.5em}
     \fancyhead{} % reset head
     \fancyfoot{} % reset foot
-    \fancyhead[LO]{\truncate{0.9\headwidth}{\fontrun\elbibl}} % book ref
-    \fancyhead[RE]{\truncate{0.9\headwidth}{\fontrun\nouppercase\leftmark}} % Chapter title, \nouppercase needed
-    \fancyhead[RO,LE]{\thepage}
+    \fancyhead[L]{\truncate{0.9\headwidth}{{\sffamily\fontsize{18}{18}\selectfont \elauthor, \eldate.}}} % book ref
+    % \fancyhead[RE]{\truncate{0.9\headwidth}{\sffamily\nouppercase\leftmark}} % Chapter title, \nouppercase needed
+    \fancyhead[R]{{\fontsize{22}{22}\selectfont\thepage}}
   }
   \fancypagestyle{plain}{% apply to chapter
     \fancyhf{}% clear all header and footer fields
-    \setlength{\headheight}{1.5em}
-    \fancyhead[L]{\truncate{0.9\headwidth}{\fontrun\elbibl}}
+    \fancyhead[L]{\truncate{0.9\headwidth}{\sffamily\elbibl}}
     \fancyhead[R]{\thepage}
   }
   \titleformat{name=\section}
     [block]{}{}{}{}
   [\vbox{\color{rubric}\large\bfseries\raggedleft #1}]
+\else % A4
+  \fancypagestyle{fancy}{%
+    \fancyhf{}
+    \fancyhead{} % reset head
+    \fancyfoot{} % reset foot
+    \fancyhead[L]{\truncate{0.45\headwidth}{\sffamily\elbibl}} % book ref
+    \fancyhead[R]{\truncate{0.45\headwidth}{\sffamily\nouppercase\leftmark}} % Chapter title
+    \fancyhead[C]{\thepage}
+  }
+  \fancypagestyle{plain}{% apply to chapter
+    \fancyhf{}% clear all header and footer fields
+    \fancyhead[L]{\truncate{0.9\headwidth}{\sffamily\elbibl}}
+    \fancyhead[R]{\thepage}
+  }
+  \titleformat{name=\section}
+    [block]{}{}{}{}
+  [\vbox{\color{rubric}\hrule\bigskip \large\bfseries\raggedleft #1}]
 \fi
 
 % delicate tuning, image has produce line-height problems in title on 2 lines
@@ -175,22 +233,28 @@
   \bigskip
   {\Large\selectfont{\eltitle}}\par
   \bigskip
-  {\color{rubric}\hline\par}
+  {\hline\par}
   \bigskip
-  {\color{rubric} \href{https://ebooks-bnr.com/}{Bibliothèque numérique romande} : \href{https://ebooks-bnr.com/}{\uline{ebooks-bnr.com}}\par}
+  {\color{rubric} Produit pour la \href{https://ebooks-bnr.com/}{Bibliothèque numérique romande \dotuline{ebooks-bnr.com}}\par}
+  \textit{avec \href{https://github.com/oeuvres/teinte}{Teinte}}\footnote{\href{https://github.com/oeuvres/teinte}{\dotuline{Teinte}} a généré automatiquement ce pdf
+  à partir d’une source \href{https://tei-c.org/release/doc/tei-p5-doc/en/html/REF-ELEMENTS.html}{\dotuline{XML/TEI}}, et LaTeX.}\par
   \bigskip
 }}
 
 
 \begin{document}
 \pagestyle{fancy}
-\thispagestyle{empty}
 
 
 \ifaiv
-  \twocolumn[\chapo]
-\else
+  \thispagestyle{empty}
   \chapo
+\else
+  \thispagestyle{empty}
+  \hbox{}\vfill
+  \chapo
+  \vfill
+  \newpage
 \fi
 
 
@@ -209,11 +273,11 @@
 \chapter[Colophon]{Colophon}
 
 \begin{center}
-Ce livre numérique vous est proposé par\par
-
+Ce livre numérique a été produit pour\par
 {\color{rubric} \href{https://ebooks-bnr.com/}{La Bibliothèque numérique romande}\par
 \href{https://ebooks-bnr.com/}{\dotuline{ebooks-bnr.com}}\par}
-
+\textit{avec \href{https://github.com/oeuvres/teinte}{Teinte}}\footnote{\href{https://github.com/oeuvres/teinte}{\dotuline{Teinte}} a généré automatiquement ce pdf
+  à partir d’une source \href{https://tei-c.org/release/doc/tei-p5-doc/en/html/REF-ELEMENTS.html}{\dotuline{XML/TEI}}, et LaTeX.}\par
 \end{center}
 
 

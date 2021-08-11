@@ -12,31 +12,29 @@
   marginparsep=0pt,
 ]{geometry}
 \setlength{\columnsep}{20mm}
-\usepackage[fontsize=9.5pt]{scrextend}
+
+
+
 %%%%%%%%%%%%%%%%%
 % Teinte macros %
 %%%%%%%%%%%%%%%%%
 \input{../latex/teinte}
-\newcommand\chapo{{%
-  \vspace*{-3em}
-  \centering % no vskip ()
-  {\Large\addfontfeature{LetterSpace=25}\bfseries{\elauthor}}\par
-  \smallskip
-  {\large\eldate}\par
-  \bigskip
-  {\Large\selectfont{\eltitle}}\par
-  \bigskip
-  {\color{rubric}\hline\par}
-  \bigskip
-}}
+
+% \usepackage[fontsize=9.5pt]{scrextend}
+
 
 
 \begin{document}
-\pagestyle{fancy}
-\thispagestyle{empty}
-\twocolumn[\chapo]
+% \pagestyle{fancy}
+% \thispagestyle{empty}
+% \twocolumn[\chapo]
 % \elabstract
 \bigskip
 \makeatletter\@starttoc{toc}\makeatother % toc without new page
 %text%
+\blindtext\footnote{\blindtext}
+
+\setstretch{0.9}
+\blindtext
+
 \end{document}

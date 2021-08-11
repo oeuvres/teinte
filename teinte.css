@@ -172,10 +172,10 @@ aside header {
 }
 
 blockquote.quote {
-  margin: 0;
-  padding: 0.3rem 0rem 0.3rem 2rem;
+  margin: 0 0 0 0.5rem;
+  padding: 0rem 0rem 0.3rem 1rem;
   line-height: 1.25;
-  border-left: 1px solid rgba(100, 100, 100, 0.5);
+  border-left: 0.5rem solid rgba(128, 128, 128, 0.1);
 }
 
 blockquote.quote .p {}
