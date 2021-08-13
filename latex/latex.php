@@ -19,6 +19,7 @@ class Latex {
     '@([%\$#_{}])@u' => '\\\$1',
     '@~@u' => '\textasciitilde',
     '@\^@u' => '\textasciicircum',
+    '@(\p{Han}[\p{Han} ]+)@u' => '\zh{$1}',
     '@\s+@' => ' ', // not unicode \s, keep unbreakable space
   );
 
@@ -225,7 +226,7 @@ class Latex {
     $tex = Latex::includes($skelfile, $workdir, $grafdir);
     // resolve image links in tei source
     $this->teigraf($grafdir, $filename.'/');
-    $this->dom->save($workdir.$filename.'.xml');
+    $this->dom->save($workdir.$filename.'.xml'); // for debug, save a copy of XML
 
 
     $meta = self::$latex_meta_xsl->transformToXml($this->dom);

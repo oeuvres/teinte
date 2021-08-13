@@ -119,6 +119,7 @@ A light version for XSLT1, with local improvements.
 
   </xsl:template>
 
+  <!-- Not yet support -->
   <xsl:template match="tei:div1|tei:div2|tei:div3|tei:div4|tei:div5">
     <xsl:param name="message"/>
     <xsl:apply-templates/>

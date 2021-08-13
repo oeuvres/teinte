@@ -156,9 +156,10 @@ Latex from TEI, metadata for preamble
         </xsl:for-each>
       </xsl:variable>
       <xsl:value-of select="$tex"/>
-      <xsl:if test="count(//tei:div) &gt; 10 and string-length($tex) &gt; 100">
-        <xsl:text>&#10;\clearpage</xsl:text>
-      </xsl:if>
+      <xsl:choose>
+        <xsl:when test="string-length($tex) &lt; 1500">\vfill&#10;</xsl:when>
+        <xsl:otherwise>\newpage&#10;</xsl:otherwise>
+      </xsl:choose>
       <xsl:text>&#10;}&#10;</xsl:text>
     </xsl:if>
 

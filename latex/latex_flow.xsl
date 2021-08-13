@@ -273,84 +273,60 @@ for example: abstract.
         <xsl:with-param name="message" select="$message"/>
       </xsl:apply-templates>
     </xsl:param>
+    <xsl:variable name="zerend" select="concat(' ', normalize-space($rend), ' ')"/>
     <xsl:choose>
-      <xsl:when test="normalize-space($rend) = ''">
+      <xsl:when test="normalize-space($zerend) = ''">
         <xsl:copy-of select="$cont"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:variable name="tokens">
-          <xsl:choose>
-            <xsl:when test="function-available(str:tokenize)">
-              <xsl:copy-of select="str:tokenize(normalize-space($rend))"/>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:call-template name="str:tokenize">
-                <xsl:with-param name="string" select="normalize-space($rend)"/>
-              </xsl:call-template>
-            </xsl:otherwise>
-          </xsl:choose>
-        </xsl:variable>
         <xsl:variable name="decls">
-          <xsl:for-each select="exslt:node-set($tokens)">
             <xsl:choose>
-              <xsl:when test=". = 'i'">\itshape</xsl:when>
-              <xsl:when test=". = 'it'">\itshape</xsl:when>
-              <xsl:when test=". = 'ital'">\itshape</xsl:when>
-              <xsl:when test=". = 'italics'">\itshape</xsl:when>
-              <xsl:when test=". = 'italique'">\itshape</xsl:when>
-              <xsl:when test=". = 'tt'">\ttfamily</xsl:when>
-              <xsl:when test=". = 'sc'">\scshape</xsl:when>
-              <xsl:when test=". = 'large'">\large</xsl:when>
-              <xsl:when test=". = 'larger'">\larger</xsl:when>
-              <xsl:when test=". = 'small'">\small</xsl:when>
-              <xsl:when test=". = 'smaller'">\smaller</xsl:when>
-              <xsl:when test="starts-with(., 'color')">
-                <xsl:text>\color</xsl:text>
-                <xsl:choose>
-                  <xsl:when test="starts-with(., 'color(')">
-                    <xsl:text>{</xsl:text>
-                    <xsl:value-of select="substring-before(substring-after(., 'color('), ')')"/>
-                    <xsl:text>}</xsl:text>
-                  </xsl:when>
-                  <xsl:when test="starts-with(., 'color')">
-                    <xsl:text>{</xsl:text>
-                    <xsl:value-of select="substring-after(., 'color')"/>
-                    <xsl:text>}</xsl:text>
-                  </xsl:when>
-                </xsl:choose>
+              <xsl:when test="contains($zerend, ' i ')">\itshape</xsl:when>
+              <xsl:when test="contains($zerend, ' it ')">\itshape</xsl:when>
+              <xsl:when test="contains($zerend, ' ital ')">\itshape</xsl:when>
+              <xsl:when test="contains($zerend, ' italics ')">\itshape</xsl:when>
+              <xsl:when test="contains($zerend, ' italique ')">\itshape</xsl:when>
+              <xsl:when test="contains($zerend, ' tt ')">\ttfamily</xsl:when>
+              <xsl:when test="contains($zerend, ' sc ')">\scshape</xsl:when>
+              <xsl:when test="contains($zerend, ' large ')">\large</xsl:when>
+              <xsl:when test="contains($zerend, ' larger ')">\larger</xsl:when>
+              <xsl:when test="contains($zerend, ' small ')">\small</xsl:when>
+              <xsl:when test="contains($zerend, ' smaller ')">\smaller</xsl:when>
+              <xsl:when test="contains($zerend, ' color')">
+                <xsl:variable name="color" select="substring-before(substring-after($zerend, ' color'), ' ')"/>
+                <xsl:text>\color{</xsl:text>
+                <xsl:value-of select="translate($color, '(}', '')"/>
+                <xsl:text>}</xsl:text>
               </xsl:when>
             </xsl:choose>
-          </xsl:for-each>
         </xsl:variable>
         <xsl:variable name="cmd">
-          <xsl:for-each select="exslt:node-set($tokens)">
-            <xsl:choose>
-              <xsl:when test=". = 'allcaps'">\uppercase{</xsl:when>
-              <xsl:when test=". = 'b'">\textbf{</xsl:when>
-              <xsl:when test=". = 'bold'">\textbf{</xsl:when>
-              <xsl:when test=". = 'calligraphic'">\textcal{</xsl:when>
-              <xsl:when test=". = 'center'">\centerline{</xsl:when>
-              <xsl:when test=". = 'gothic'">\textgothic{</xsl:when>
-              <xsl:when test=". = 'noindex'">\textrm{</xsl:when>
-              <xsl:when test=". = 'plain'">\textrm{</xsl:when>
-              <xsl:when test=". = 'strong'">\textbf{</xsl:when>
-              <xsl:when test=". = 'sub'">\textsubscript{</xsl:when>
-              <xsl:when test=". = 'subscript'">\textsubscript{</xsl:when>
-              <xsl:when test=". = 'sup'">\textsuperscript{</xsl:when>
-              <xsl:when test=". = 'superscript'">\textsuperscript{</xsl:when>
-              <xsl:when test=". = 'uc'">\uppercase{</xsl:when>
-              <xsl:when test=". = 'underline'">\uline{</xsl:when>
-              <!-- ? -->
-              <xsl:when test=". = 'strike'">\sout{</xsl:when>
-              <xsl:when test=". = 'overbar'">\textoverbar{</xsl:when>
-              <xsl:when test=". = 'doubleunderline'">\uuline{</xsl:when>
-              <xsl:when test=". = 'wavyunderline'">\uwave{</xsl:when>
-              <!-- 
-              <xsl:when test=". = 'quoted'">\textquoted{</xsl:when>
+          <xsl:choose>
+            <xsl:when test="contains($zerend, ' allcaps ')">\uppercase{</xsl:when>
+            <xsl:when test="contains($zerend, ' b ')">\textbf{</xsl:when>
+            <xsl:when test="contains($zerend, ' bold ')">\textbf{</xsl:when>
+            <xsl:when test="contains($zerend, ' gothic ')">\textgothic{</xsl:when>
+            <xsl:when test="contains($zerend, ' noindex ')">\textrm{</xsl:when>
+            <xsl:when test="contains($zerend, ' plain ')">\textrm{</xsl:when>
+            <xsl:when test="contains($zerend, ' strong ')">\textbf{</xsl:when>
+            <xsl:when test="contains($zerend, ' sub ')">\textsubscript{</xsl:when>
+            <xsl:when test="contains($zerend, ' subscript ')">\textsubscript{</xsl:when>
+            <xsl:when test="contains($zerend, ' sup ')">\textsuperscript{</xsl:when>
+            <xsl:when test="contains($zerend, ' superscript ')">\textsuperscript{</xsl:when>
+            <xsl:when test="contains($zerend, ' uc ')">\uppercase{</xsl:when>
+            <xsl:when test="contains($zerend, ' underline ')">\uline{</xsl:when>
+            <xsl:when test="contains($zerend, ' uppercase ')">\uppercase{</xsl:when>
+            <!-- 
+            <xsl:when test=". = 'strike'">\sout{</xsl:when>
+            <xsl:when test=". = 'overbar'">\textoverbar{</xsl:when>
+            <xsl:when test=". = 'doubleunderline'">\uuline{</xsl:when>
+            <xsl:when test=". = 'wavyunderline'">\uwave{</xsl:when>
+            <xsl:when test=". = 'quoted'">\textquoted{</xsl:when>
+            <xsl:when test=". = 'center'">\centerline{</xsl:when>
+            <xsl:when test=". = 'calligraphic'">\textcal{</xsl:when>
 
-              -->
-            </xsl:choose>
-          </xsl:for-each>
+            -->
+          </xsl:choose>
         </xsl:variable>
         <xsl:value-of select="$cmd"/>
         <xsl:choose>
@@ -938,14 +914,24 @@ for example: abstract.
     <xsl:text>}</xsl:text>
   </xsl:template>
   
+  
   <xsl:template match="tei:p">
     <xsl:param name="message"/>
     <xsl:variable name="first" select="substring(translate(normalize-space(.), ' ', ''), 1, 1)"/>
     <xsl:call-template name="tei:makeHyperTarget"/>
     <xsl:variable name="prev" select="preceding-sibling::*[not(self::tei:pb)][not(self::tei:cb)][1]"/>
     <xsl:variable name="rend" select="concat(' ', normalize-space(@rend), ' ')"/>
+    <xsl:variable name="txt">
+      <xsl:apply-templates select="." mode="title"/>
+    </xsl:variable>   
     <xsl:variable name="cont">
       <xsl:choose>
+        <!-- force noindent -->
+        <xsl:when test="contains($rend, ' noindent ')">\noindent </xsl:when>
+        <!-- force indent -->
+        <xsl:when test="contains($rend, ' indent ')"/>
+        <!-- if first para is less than 2 “line”, let indent -->
+        <xsl:when test="string-length(normalize-space($txt)) &lt; 80"/>
         <xsl:when test="contains($prev/@rend, 'right')  or contains($prev/@rend, 'center')">\noindent </xsl:when>
         <xsl:when test="not(preceding-sibling::*) and not(parent::tei:item)">\noindent </xsl:when>
         <xsl:when test="contains($rend, ' center ') or contains($rend, ' right ')">\noindent </xsl:when>
@@ -1216,8 +1202,8 @@ for example: abstract.
   
   <xsl:template match="tei:ref | tei:ptr">
     <xsl:param name="message"/>
-    <!-- Some chars may be escaped in URI -->
-    <xsl:variable name="target" select="translate(normalize-space(@target), '\', '')"/>
+    <!-- Special chars like % _ should have been latex escaped previously -->
+    <xsl:variable name="target" select="normalize-space(@target)"/>
     <xsl:choose>
       <xsl:when test="not(@target)">
         <xsl:apply-templates>

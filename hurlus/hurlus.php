@@ -26,9 +26,13 @@ class Hurlus {
 
     // default is a4 2 cols, transform to pdf
     exec("latexmk -xelatex -quiet -f ".$texname.'.tex');
+
+
     $tex = file_get_contents($texfile);
     if ($dstdir) {
-      rename($workdir.$texname.'.pdf', $dstdir.$texname.'.pdf');
+      $pdf = $workdir.$texname.'.pdf';
+      if(!file_exists($pdf)) return; // problem, errors should have been sent
+      rename($pdf, $dstdir.$texname.'.pdf');
       rename($texfile, $dstdir.$texname.'.tex');
     }
 
