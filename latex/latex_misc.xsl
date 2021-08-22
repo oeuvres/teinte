@@ -4,30 +4,13 @@
     <xsl:text>\quad{}</xsl:text>
   </xsl:template>
   <xsl:template match="tei:facsimile"/>
-  <xsl:template match="tei:listPerson">
-    \begin{enumerate}
-    <xsl:apply-templates/>
-    \end{enumerate}
-  </xsl:template>
   
-  <xsl:template match="tei:person">
-    \item <xsl:apply-templates/>
-  </xsl:template>
   
   <xsl:template match="tei:affiliation|tei:email">
     <xsl:text>\mbox{}\\ </xsl:text>
     <xsl:apply-templates/>
   </xsl:template>
   
-  <xsl:template match="tei:listPerson">
-    \begin{enumerate}
-    <xsl:apply-templates/>
-    \end{enumerate}
-  </xsl:template>
-  
-  <xsl:template match="tei:person">
-    \item <xsl:apply-templates/>
-  </xsl:template>
   
   <xsl:template match="tei:affiliation|tei:email">
     <xsl:text>\mbox{}\\ </xsl:text>

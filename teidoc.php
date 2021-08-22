@@ -119,7 +119,7 @@ class Teidoc
     $meta['filesize'] = $this->filesize();
     return $meta;
   }
-  
+
   /**
    * Return an array of metadata from a dom document
    */
@@ -135,7 +135,8 @@ class Teidoc
     $first = true;
     foreach ($nl as $node) {
       $value = $node->getAttribute("key");
-      if (!$value) $value = $node->textContent;
+      $text = preg_replace('@\s+@', ' ', trim($node->textContent));
+      if (!$value) $value = $text;
       if (($pos = strpos($value, '('))) $value = trim(substr($value, 0, $pos));
       $meta['author'][] = $value;
       if ($first) {
@@ -143,7 +144,9 @@ class Teidoc
         $first = false;
       }
       else $meta['byline'] .= " ; ";
-      $meta['byline'] .= $value;
+      // prefer text value to att value
+      if ($text) $meta['byline'] .= $text;
+      else $meta['byline'] .= $value;
     }
     // editors
     $meta['editby'] = null;
@@ -194,7 +197,7 @@ class Teidoc
 
 
     return $meta;
-  } 
+  }
   /**
    *
    */

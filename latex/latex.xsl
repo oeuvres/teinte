@@ -33,7 +33,7 @@ A light version for XSLT1, with local improvements.
   <xsl:key name="FOOTNOTES" match="tei:note[not(@place) or @place='bottom']" use="1"/>
   <xsl:key name="TREES" match="tei:eTree[not(ancestor::tei:eTree)]" use="1"/>
   <xsl:key name="APP" match="tei:app" use="1"/>
-  <xsl:key name="CHAPTERS" match="tei:div[@type='chapter' or @type='article']" use="generate-id()"/>
+  <xsl:key name="CHAPTERS" match="tei:div[@type='chapter' or @type='article' or @type='act']" use="generate-id()"/>
   
 
   

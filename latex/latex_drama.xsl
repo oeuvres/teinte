@@ -38,44 +38,7 @@ A light version for XSLT1, with local improvements.
       <xsl:apply-templates/>
       <xsl:text>}</xsl:text>
   </xsl:template>
-  <doc xmlns="http://www.oxygenxml.com/ns/doc/xsl">
-      <desc>Process element castGroup</desc>
-   </doc>
-  <xsl:template match="tei:castGroup"> 
-      <xsl:text>\begin{itemize} </xsl:text>
-      <xsl:apply-templates/>
-      <xsl:text>&#10;\end{itemize}</xsl:text>
-  </xsl:template>
-  <doc xmlns="http://www.oxygenxml.com/ns/doc/xsl">
-      <desc>Process element castItem</desc>
-   </doc>
-  <xsl:template match="tei:castItem">
-    <xsl:text>&#10;\item </xsl:text>
-    <xsl:apply-templates/>
-  </xsl:template>
-  <doc xmlns="http://www.oxygenxml.com/ns/doc/xsl">
-      <desc>Process element castList</desc>
-   </doc>
-  <xsl:template match="tei:castList">
-      <xsl:if test="tei:head">
-         <xsl:text> \par\textit{</xsl:text>
-         <xsl:for-each select="tei:head">
-            <xsl:apply-templates/>
-         </xsl:for-each>
-         <xsl:text>}&#10;</xsl:text>
-      </xsl:if> 
-      <xsl:text>\begin{itemize} </xsl:text>
-      <xsl:apply-templates/> 
-      <xsl:text>\end{itemize} </xsl:text>
-  </xsl:template>
-  <doc xmlns="http://www.oxygenxml.com/ns/doc/xsl">
-      <desc>Process elementp/tei:stage</desc>
-   </doc>
-  <xsl:template match="tei:p/tei:stage">
-      <xsl:text>\textit{</xsl:text>
-      <xsl:apply-templates/>
-      <xsl:text>}</xsl:text>
-  </xsl:template>
+
   <doc xmlns="http://www.oxygenxml.com/ns/doc/xsl">
       <desc>Process element role</desc>
    </doc>
@@ -108,37 +71,7 @@ A light version for XSLT1, with local improvements.
       <xsl:apply-templates/>
       <xsl:text>}</xsl:text>
   </xsl:template>
-  <doc xmlns="http://www.oxygenxml.com/ns/doc/xsl">
-      <desc>Process element sp</desc>
-   </doc>
-  <xsl:template match="tei:sp"> \begin{description} \item[<xsl:apply-templates select="tei:speaker"/>] <xsl:apply-templates select="tei:p | tei:l | tei:lg | tei:seg |      tei:ab | tei:stage"/>
-      <xsl:text>\end{description}
-</xsl:text>
-  </xsl:template>
-  <doc xmlns="http://www.oxygenxml.com/ns/doc/xsl">
-      <desc>Process element sp/tei:p</desc>
-   </doc>
-  <xsl:template match="tei:sp/tei:p">
-    <xsl:text>&#10;&#10;</xsl:text>
-      <xsl:apply-templates/>
-  </xsl:template>
-  <doc xmlns="http://www.oxygenxml.com/ns/doc/xsl">
-      <desc>Process element stage</desc>
-   </doc>
-  <xsl:template match="tei:stage">
-      <xsl:text>\textit{</xsl:text>
-      <xsl:apply-templates/>
-      <xsl:text>}\par&#10;</xsl:text>
-  </xsl:template>
-  <doc xmlns="http://www.oxygenxml.com/ns/doc/xsl">
-      <desc>Process element sp/tei:stage</desc>
-   </doc>
-  <xsl:template match="tei:sp/tei:stage">
-      <xsl:text/>
-      <xsl:text>\textit{</xsl:text>
-      <xsl:apply-templates/>
-      <xsl:text>} </xsl:text>
-  </xsl:template>
+
   <doc xmlns="http://www.oxygenxml.com/ns/doc/xsl">
       <desc>Process element tech</desc>
    </doc>

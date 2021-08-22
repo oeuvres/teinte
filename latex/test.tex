@@ -20,11 +20,27 @@
 %%%%%%%%%%%%%%%%%
 \input{../latex/teinte}
 
-% \usepackage[fontsize=9.5pt]{scrextend}
-
 
 
 \begin{document}
+
+\noindent This is the regular text that is not indented.
+\begin{verse}
+Blessed are the poor in spirit, for theirs is the kingdom of heaven.\\
+Blessed are those who mourn, for they shall be comforted.\\
+Blessed are the meek, for they shall inherit the earth.\\
+Blessed are those who hunger and thirst for righteousness, for they shall be satisfied.
+\end{verse}
+\setlength{\leftmargini}{\saveleftmargini}% restore original value in case you do not want to change this thing globaly.
+
+\begin{verse}
+Blessed are the poor in spirit, for theirs is the kingdom of heaven.\\
+Blessed are those who mourn, for they shall be comforted.\\
+Blessed are the meek, for they shall inherit the earth.\\
+Blessed are those who hunger and thirst for righteousness, for they shall be satisfied.
+\end{verse}
+\noindent This is the regular text that is not indented.
+
 % \pagestyle{fancy}
 % \thispagestyle{empty}
 % \twocolumn[\chapo]

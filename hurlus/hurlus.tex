@@ -67,7 +67,7 @@
 
 \setlength{\arrayrulewidth}{0.2pt}
 \setlength{\columnseprule}{\arrayrulewidth} % twocol
-\setlength{\parskip}{0pt} % classical para with no margin
+\setlength{\parskip}{0pt} % 1pt allow better vertical justification
 \setlength{\parindent}{1.5em}
 
 %%%%%%%%%%
@@ -123,7 +123,7 @@
 
 \newenvironment{quotebar}{%
     \def\FrameCommand{{\color{rubric!10!}\vrule width 0.5em} \hspace{0.9em}}%
-    \def\OuterFrameSep{\itemsep} % séparateur vertical
+    \def\OuterFrameSep{0pt} % séparateur vertical
     \MakeFramed {\advance\hsize-\width \FrameRestore}
   }%
   {%
@@ -157,7 +157,7 @@
 \titlespacing*{\chapter}{0pt}{-2em}{0pt}[0pt]
 
 \titleformat{name=\section}
-  [block]{}{}{}{}
+  [display]{}{}{}{}
   [\vbox{\color{rubric}\large\raggedleft\textbf{#1}}]
 \titlespacing{\section}{0pt}{0pt plus 4pt minus 2pt}{\baselineskip}
 
@@ -210,34 +210,25 @@
 
 \newcommand\chapo{{%
   \vspace*{-3em}
-  \centering % no vskip ()
-  {\Large\addfontfeature{LetterSpace=25}\bfseries{\elauthor}}\par
-  \smallskip
-  {\large\eldate}\par
-  \bigskip
-  {\Large\selectfont{\eltitle}}\par
+  \centering\parindent0pt % no vskip ()
+  \eltitlepage
   \bigskip
   {\color{rubric}\hline\par}
   \bigskip
   {\Large TEXTE LIBRE À PARTICIPATIONS LIBRES\par}
-  \centerline{\small\color{rubric} {hurlus.fr, tiré le \today}}\par
+  \centerline{\small\color{rubric} {\href{https://hurlus.fr}{\dotuline{hurlus.fr}}}, tiré le \today}\par
   \bigskip
 }}
 
 \newcommand\cover{{%
   \thispagestyle{empty}
-  \centering
-  {\LARGE\bfseries{\elauthor}}\par
-  \bigskip
-  {\Large\eldate}\par
-  \bigskip
-  \bigskip
-  {\LARGE\selectfont{\eltitle}}\par
+  \centering\parindent0pt
+  \eltitlepage
   \vfill\null
   {\color{rubric}\setlength{\arrayrulewidth}{2pt}\hline\par}
   \vfill\null
   {\Large TEXTE LIBRE À PARTICIPATIONS LIBRES\par}
-  \centerline{{\href{https://hurlus.fr}{\dotuline{hurlus.fr}}, tiré le \today}}\par
+  \centerline{\href{https://hurlus.fr}{\dotuline{hurlus.fr}}, tiré le \today}\par
 }}
 
 \begin{document}
@@ -267,7 +258,8 @@
 \bigskip
 
 \pagestyle{main} % after style
-
+\setcounter{footnote}{0}
+\setcounter{footnoteA}{0}
 %text%
 
 

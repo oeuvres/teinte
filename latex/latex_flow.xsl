@@ -13,6 +13,7 @@ Should work as an import (or include) to generate flow latex,
 for example: abstract.
 2021, frederic.glorieux@fictif.org
   -->
+  <xsl:import href="../xsl/common.xsl"/>
   <xsl:import href="tei_common.xsl"/>
   <xsl:import href="latex_common.xsl"/>
   <xsl:param name="quoteEnv">quoteblock</xsl:param>
@@ -21,7 +22,15 @@ for example: abstract.
   <!-- TODO, move params -->
   <xsl:variable name="preQuote">« </xsl:variable>
   <xsl:variable name="postQuote"> »</xsl:variable>
-  <!-- TODO, handle dinkus etc… -->
+  <!-- Mode Bible, if there is a lot of tei:p[@n][tei:lb], hanging long lines -->
+  <xsl:variable name="bible">
+    <xsl:choose>
+      <!-- not enougn paras with numbers -->
+      <xsl:when test="count(/tei:TEI/tei:text/tei:body//tei:p[@n]) div count(/tei:TEI/tei:text/tei:body//tei:p) &lt; 0.3"/>
+      <!-- quite a lot verses with line breaks -->
+      <xsl:when test="count(/tei:TEI/tei:text/tei:body//tei:p[@n][tei:lb]) div count(/tei:TEI/tei:text/tei:body//tei:p[@n]) &gt; 0.3">bible</xsl:when>
+    </xsl:choose>
+  </xsl:variable>
   
   <xsl:template match="tei:ab">
     <xsl:param name="message"/>
@@ -99,19 +108,8 @@ for example: abstract.
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-  <!-- Who call that mode cite ? -->
   
-  <xsl:template match="tei:bibl" mode="cite">
-    <xsl:apply-templates select="text()[1]"/>
-  </xsl:template>
-  <!-- Semantic blocks  -->
-  
-  <xsl:template match="tei:byline | tei:dateline | tei:salute | tei:signed">
-    <xsl:param name="message"/>
-    <xsl:call-template name="makeBlock"/>
-  </xsl:template>
-  
-  <xsl:template match="tei:argument | tei:epigraph">
+  <xsl:template match="tei:argument">
     <xsl:param name="message"/>
     <!-- An environment to group blocks -->
     <xsl:param name="env" select="local-name()"/>
@@ -126,6 +124,34 @@ for example: abstract.
     <xsl:value-of select="$env"/>
     <xsl:text>}&#10;&#10;</xsl:text>
   </xsl:template>
+  
+  <!-- Who call that mode cite ? -->
+  <xsl:template match="tei:bibl" mode="cite">
+    <xsl:apply-templates select="text()[1]"/>
+  </xsl:template>
+  
+  <!-- Semantic blocks  -->
+  <xsl:template match="tei:byline | tei:castItem | tei:dateline | tei:salute | tei:signed | tei:speaker">
+    <xsl:param name="message"/>
+    <xsl:call-template name="makeBlock"/>
+  </xsl:template>
+  
+  <xsl:template match="tei:castList">
+    <xsl:text>&#10;\bigbreak&#10;</xsl:text>
+    <xsl:apply-templates/>
+    <xsl:text>\bigbreak&#10;&#10;</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="tei:castList/tei:head">
+    <xsl:text>{\centering </xsl:text>
+    <xsl:apply-templates/>
+    <xsl:text>\par}\nopagebreak\bigskip\nopagebreak</xsl:text>
+  </xsl:template>
+  
+  <xsl:template match="tei:castGroup"> 
+    <xsl:apply-templates/>
+  </xsl:template>
+  
   
   <xsl:template match="tei:cit">
     <xsl:param name="message"/>
@@ -253,6 +279,20 @@ for example: abstract.
       <xsl:with-param name="message" select="$message"/>
     </xsl:apply-templates>
     <xsl:text>}</xsl:text>
+  </xsl:template>
+  
+  <xsl:template match="tei:epigraph">
+    <xsl:param name="message"/>
+    <xsl:call-template name="tei:makeHyperTarget"/>
+    <xsl:text>&#10;\epigraph{</xsl:text>
+    <xsl:apply-templates select="node()[not(self::tei:bibl)]">
+      <xsl:with-param name="message" select="$message"/>
+    </xsl:apply-templates>
+    <xsl:text>}{</xsl:text>
+    <xsl:apply-templates select="tei:bibl">
+      <xsl:with-param name="message" select="$message"/>
+    </xsl:apply-templates>
+    <xsl:text>}&#10;&#10;</xsl:text>
   </xsl:template>
   
   
@@ -383,7 +423,7 @@ for example: abstract.
     <xsl:text>}</xsl:text>
   </xsl:template>
   
-  <xsl:template match="tei:item">
+  <xsl:template match="tei:item | tei:person">
     <xsl:param name="message"/>
     <xsl:choose>
       <xsl:when test="parent::tei:list[@type='gloss'] or preceding-sibling::tei:label">
@@ -434,48 +474,128 @@ for example: abstract.
   
   <xsl:template match="tei:l">
     <xsl:param name="message"/>
-    <xsl:variable name="next" select="following-sibling::*[1][self::tei:l]"/>
-    <xsl:variable name="prev" select="preceding-sibling::*[1][self::tei:l]"/>
+    <xsl:variable name="next" select="following-sibling::*[not(contains($notblock, concat(' ', local-name(), ' ')))][1]"/>
+    <xsl:variable name="prev" select="preceding-sibling::*[not(contains($notblock, concat(' ', local-name(), ' ')))][1]"/>
+    <xsl:variable name="norm" select="normalize-space(.)"/>
+    <!-- before -->
     <xsl:choose>
-      <!-- empty verse as stanza separator, do notinh -->
+      <!-- for epigraph, nothing on open, let indent -->
+      <xsl:when test="parent::tei:epigraph"/>
+      <!-- Restart poem environment, interrupted by something like <label>, <stage>… -->
+      <xsl:when test="preceding-sibling::tei:l and $prev and local-name($prev) != 'l'">
+        <xsl:text>\* </xsl:text>
+      </xsl:when>
+      <!-- if <lg>, an environment is already opened  -->
+      <xsl:when test="parent::tei:lg"/>
+      <!-- empty verse as stanza separator, do nothing -->
       <xsl:when test="normalize-space(.) = ''"/>
       <!-- Start of poem (if not <lg>) -->
-      <xsl:when test="not($prev) and $next and not(parent::tei:lg)">
-        <xsl:text>&#10;\begin{verse}&#10;</xsl:text>
-        <xsl:apply-templates>
-          <xsl:with-param name="message" select="$message"/>
-        </xsl:apply-templates>
-        <xsl:text>\\&#10;</xsl:text>
+      <xsl:when test="not($prev) or local-name($prev) != 'l'">
+        <xsl:text>\begin{poem}&#10;</xsl:text>
       </xsl:when>
-      <!-- End of poem (if not <lg>) -->
-      <xsl:when test="$prev and not($next) and not(parent::tei:lg)">
-        <xsl:apply-templates>
-          <xsl:with-param name="message" select="$message"/>
-        </xsl:apply-templates>
-        <xsl:text>\\&#10;\end{verse}&#10;</xsl:text>
-      </xsl:when>
-      <!-- End of stanza (with <lg>) -->
-      <xsl:when test="$prev and not($next)">
-        <xsl:apply-templates>
-          <xsl:with-param name="message" select="$message"/>
-        </xsl:apply-templates>
-        <xsl:text>\\!</xsl:text>
+    </xsl:choose>
+    <!-- Rupted verse, get the exact spacer from previous verse -->
+    <xsl:variable name="txt">
+      <xsl:call-template name="lspacer"/>
+    </xsl:variable>
+    <xsl:if test="normalize-space($txt) != ''">
+      <xsl:text>\phantom{</xsl:text>
+      <xsl:value-of select="$txt"/>
+      <xsl:text>}</xsl:text>
+    </xsl:if>
+    <xsl:if test="normalize-space(.) != ''">
+      <xsl:apply-templates>
+        <xsl:with-param name="message" select="$message"/>
+      </xsl:apply-templates>
+    </xsl:if>
+    <!-- after -->
+    <xsl:choose>
+      <!-- epigraph, normal \par, even empty (?) -->
+      <xsl:when test="parent::tei:epigraph">
+        <xsl:if test="$next">
+          <xsl:text>\par&#10;</xsl:text>
+        </xsl:if>
       </xsl:when>
       <!-- End of stanza given by empty verse -->
-      <xsl:when test="$next and $next =''">
-        <xsl:apply-templates>
-          <xsl:with-param name="message" select="$message"/>
-        </xsl:apply-templates>
-        <xsl:text>\\!&#10;&#10;</xsl:text>
+      <xsl:when test="$next  and local-name($next)='l' and $next=''">
+        <xsl:text> \\!&#10;&#10;</xsl:text>
       </xsl:when>
-      <xsl:otherwise>
-        <xsl:apply-templates>
-          <xsl:with-param name="message" select="$message"/>
-        </xsl:apply-templates>
-        <xsl:text>\\&#10;</xsl:text>
-      </xsl:otherwise>
+      <!-- followed by a verse -->
+      <xsl:when test="$next and local-name($next) = 'l'">
+        <xsl:text> \\&#10;</xsl:text>
+      </xsl:when>
+      <!-- interrupt poem environment -->
+      <xsl:when test="following-sibling::tei:l and $next">
+        <xsl:text> \\?&#10;</xsl:text>
+      </xsl:when>
+      <!-- in <lg> environment, let upper decide -->
+      <xsl:when test="parent::tei:lg"/>
+      <!-- last <l> or followed by a non verse, close environment -->
+      <xsl:when test="not($next) or local-name($next) != 'l'">
+        <xsl:text> \\-&#10;\end{poem}&#10;</xsl:text>
+      </xsl:when>
     </xsl:choose>
   </xsl:template>
+
+  <xsl:template match="tei:sp/tei:l">
+    <xsl:param name="message"/>
+    <xsl:text>\spl{</xsl:text>
+    <!-- Rupted verse, get the exact spacer from previous verse -->
+    <xsl:variable name="txt">
+      <xsl:call-template name="lspacer"/>
+    </xsl:variable>
+    <xsl:if test="normalize-space($txt) != ''">
+      <xsl:text>\phantom{</xsl:text>
+      <xsl:value-of select="$txt"/>
+      <xsl:text>}</xsl:text>
+    </xsl:if>
+    <xsl:if test="normalize-space(.) != ''">
+      <xsl:apply-templates>
+        <xsl:with-param name="message" select="$message"/>
+      </xsl:apply-templates>
+    </xsl:if>
+    <xsl:text>}&#10;</xsl:text>
+  </xsl:template>
+  
+
+  <xsl:template match="tei:lg">
+    <xsl:param name="message"/>
+    <xsl:variable name="next" select="following-sibling::*[not(contains($notblock, concat(' ', local-name(), ' ')))][1]"/>
+    <xsl:variable name="prev" select="preceding-sibling::*[not(contains($notblock, concat(' ', local-name(), ' ')))][1]"/>
+    <xsl:choose>
+      <!-- poem env restart -->
+      <xsl:when test="ancestor::tei:lg and preceding-sibling::tei:lg and local-name($prev) != 'lg'">
+        <xsl:text>\* </xsl:text>
+      </xsl:when>
+      <xsl:when test="ancestor::tei:lg"/>
+      <xsl:when test="not($prev) or local-name($prev) != 'lg'">
+        <xsl:text>\begin{poem}&#10;</xsl:text>
+      </xsl:when>
+    </xsl:choose>
+    <xsl:apply-templates>
+      <xsl:with-param name="message" select="$message"/>
+    </xsl:apply-templates>
+    <xsl:choose>
+      <!-- poem env stop, something between stanza -->
+      <xsl:when test="ancestor::tei:lg and following-sibling::tei:lg and local-name($next) != 'lg'">
+        <xsl:text> \\?&#10;&#10;</xsl:text>
+      </xsl:when>
+      <!-- followed by stanza -->
+      <xsl:when test="local-name($next) = 'lg'">
+        <xsl:text> \\!&#10;&#10;</xsl:text>
+      </xsl:when>
+      <!-- let ancestor close poem -->
+      <xsl:when test="ancestor::tei:lg"/>
+      <xsl:when test="not($next) or local-name($next) != 'lg'">
+        <xsl:text> \\-&#10;\end{poem}&#10;</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>% &lt;lg> what should I do? &#10;</xsl:text>
+      </xsl:otherwise>
+      <!-- end stanza -->
+    </xsl:choose>
+  </xsl:template>
+  
   
   
   <xsl:template match="tei:list/tei:label"/>
@@ -548,6 +668,9 @@ for example: abstract.
       <xsl:when test="contains(@rend,'paragraph')">
         <xsl:call-template name="lineBreakAsPara"/>
       </xsl:when>
+      <xsl:when test="parent::tei:p[@n != '']">
+        <xsl:text>\par&#10;\noindent\hangindent=2\parindent </xsl:text>
+      </xsl:when>
       <!-- \\* should be nicer on break page -->
       <xsl:when test="parent::tei:signed | parent::tei:salute">\\&#10;</xsl:when>
       <xsl:otherwise>
@@ -584,7 +707,7 @@ for example: abstract.
       <xsl:text>[</xsl:text>
       <xsl:choose>
         <xsl:when test="tei:item/tei:p | tei:item/tei:list">itemsep=\baselineskip,</xsl:when>
-        <xsl:otherwise>itemsep=0pt,</xsl:otherwise>
+        <xsl:otherwise>itemsep=0pt,topsep=0pt,partopsep=0pt,parskip=0pt</xsl:otherwise>
       </xsl:choose>
       <xsl:text>]</xsl:text>
     </xsl:variable>
@@ -679,44 +802,16 @@ for example: abstract.
     <xsl:text>}&#10;</xsl:text>
   </xsl:template>
   
-  <xsl:template match="tei:lg">
-    <xsl:param name="message"/>
-    <xsl:choose>
-      <xsl:when test="count(key('APP',1))&gt;0">
-        <xsl:variable name="c" select="(count(tei:l)+1) div 2"/>
-        <xsl:text>\setstanzaindents{1,1,0}</xsl:text>
-        <xsl:text>\setcounter{stanzaindentsrepetition}{</xsl:text>
-        <xsl:value-of select="$c"/>
-        <xsl:text>}</xsl:text>
-        <xsl:text>\stanza&#10;</xsl:text>
-        <xsl:for-each select="tei:l">
-          <xsl:if test="parent::tei:lg/@xml:lang='Av'">{\itshape </xsl:if>
-          <xsl:apply-templates>
-            <xsl:with-param name="message" select="$message"/>
-          </xsl:apply-templates>
-          <xsl:if test="parent::tei:lg/@xml:lang='Av'">}</xsl:if>
-          <xsl:if test="following-sibling::tei:l">
-            <xsl:text>&amp;</xsl:text>
-          </xsl:if>
-        </xsl:for-each>
-        <xsl:text>\&amp;&#10;</xsl:text>
-      </xsl:when>
-      <xsl:otherwise>
-        <!-- TODO if label inside between verses -->
-        <xsl:variable name="next" select="following-sibling::*[1][self::tei:lg]"/>
-        <xsl:variable name="prev" select="preceding-sibling::*[1][self::tei:lg]"/>
-        <xsl:if test="not($prev)">
-          <xsl:text>&#10;\begin{verse}&#10;</xsl:text>
-        </xsl:if>
-        <xsl:apply-templates>
-          <xsl:with-param name="message" select="$message"/>
-        </xsl:apply-templates>
-        <xsl:if test="not($next)">
-          <xsl:text>&#10;\end{verse}&#10;</xsl:text>
-        </xsl:if>
-      </xsl:otherwise>
-    </xsl:choose>
+  <xsl:template match="tei:listPerson">
+    <!-- empty list persons maybe used in theater -->
+    <xsl:if test="normalize-space(.) != ''">
+      <xsl:text>\begin{enumerate}&#10;</xsl:text>
+      <xsl:apply-templates/>
+      <xsl:text>\end{enumerate}&#10;</xsl:text>
+    </xsl:if>
   </xsl:template>
+  
+  
   
   
   <xsl:template match="tei:milestone">
@@ -805,7 +900,7 @@ for example: abstract.
         <xsl:call-template name="displayNote"/>
       </xsl:when>
       <xsl:when test="@place = 'foot' or @place = 'bottom' or (not(@place) and $inline != '')">
-        <xsl:call-template name="footNote"/>
+        <xsl:call-template name="footnote"/>
       </xsl:when>
       <xsl:when test="@place">
         <xsl:message>WARNING: unknown @place for note, <xsl:value-of select="@place"/></xsl:message>
@@ -878,9 +973,15 @@ for example: abstract.
     <xsl:text>]} </xsl:text>
   </xsl:template>
   
-  <xsl:template name="footNote">
+  <xsl:template name="footnote">
     <xsl:param name="message"/>
     <xsl:call-template name="tei:makeHyperTarget"/>
+    <xsl:variable name="command">
+      <xsl:choose>
+        <xsl:when test="@resp='editor'">\footnoteA{</xsl:when>
+        <xsl:otherwise>\footnote{</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
     <xsl:choose>
       <xsl:when test="@target">
         <xsl:text>\footnotetext{</xsl:text>
@@ -897,7 +998,7 @@ for example: abstract.
         <xsl:text>}</xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:text>\footnote{</xsl:text>
+        <xsl:value-of select="$command"/>
         <xsl:call-template name="tei:makeHyperTarget"/>
         <xsl:apply-templates>
           <xsl:with-param name="message" select="$message"/>
@@ -915,41 +1016,24 @@ for example: abstract.
   </xsl:template>
   
   
-  <xsl:template match="tei:p">
+  <xsl:template match="tei:p" name="p">
     <xsl:param name="message"/>
-    <xsl:variable name="first" select="substring(translate(normalize-space(.), ' ', ''), 1, 1)"/>
-    <xsl:call-template name="tei:makeHyperTarget"/>
-    <xsl:variable name="prev" select="preceding-sibling::*[not(self::tei:pb)][not(self::tei:cb)][1]"/>
     <xsl:variable name="rend" select="concat(' ', normalize-space(@rend), ' ')"/>
-    <xsl:variable name="txt">
-      <xsl:apply-templates select="." mode="title"/>
-    </xsl:variable>   
+    <xsl:call-template name="tei:makeHyperTarget"/>
+    <xsl:variable name="noindent">
+      <xsl:call-template name="noindent"/>
+    </xsl:variable>
     <xsl:variable name="cont">
       <xsl:choose>
-        <!-- force noindent -->
-        <xsl:when test="contains($rend, ' noindent ')">\noindent </xsl:when>
-        <!-- force indent -->
-        <xsl:when test="contains($rend, ' indent ')"/>
-        <!-- if first para is less than 2 “line”, let indent -->
-        <xsl:when test="string-length(normalize-space($txt)) &lt; 80"/>
-        <xsl:when test="contains($prev/@rend, 'right')  or contains($prev/@rend, 'center')">\noindent </xsl:when>
-        <xsl:when test="not(preceding-sibling::*) and not(parent::tei:item)">\noindent </xsl:when>
-        <xsl:when test="contains($rend, ' center ') or contains($rend, ' right ')">\noindent </xsl:when>
-        <xsl:when test="name($prev) != 'p' and not(parent::tei:item)">\noindent </xsl:when>
-        <!-- Moche
-      <xsl:when test="contains('-–—', $first)">\noindent </xsl:when>
-      -->
+        <xsl:when test="@n != ''">
+          <xsl:text>\noindent</xsl:text>
+          <xsl:if test="$bible != ''">\hangindent=2\parindent</xsl:if>
+          <xsl:text>\pn{</xsl:text>
+          <xsl:value-of select="@n"/>
+          <xsl:text>} </xsl:text>
+        </xsl:when>
+        <xsl:when test="$noindent != ''">\noindent </xsl:when>
       </xsl:choose>
-      <xsl:if test="@n != ''">
-        <!-- No, number maybe not unique
-      <xsl:call-template name="tei:makeHyperTarget">
-        <xsl:with-param name="id" select="concat('par', @n)"/>
-      </xsl:call-template>
-      -->
-        <xsl:text>\pn{</xsl:text>
-        <xsl:value-of select="@n"/>
-        <xsl:text>}</xsl:text>
-      </xsl:if>
       <!-- Ideas of Sebastian , pending
       <xsl:if test="$numberParagraphs = 'true'">
         <xsl:call-template name="numberParagraph"/>
@@ -1051,6 +1135,9 @@ for example: abstract.
     </xsl:choose>
     <xsl:call-template name="tei:makeHyperTarget"/>
   </xsl:template>
+  
+
+  
   
   <xsl:template match="tei:q | tei:said">
     <xsl:param name="message"/>
@@ -1210,7 +1297,7 @@ for example: abstract.
           <xsl:with-param name="message" select="$message"/>
         </xsl:apply-templates>
       </xsl:when>
-      <xsl:when test="starts-with($target, '#')">
+      <xsl:when test="starts-with($target, '#') or starts-with($target, '\#')">
         <xsl:text>\hyperref[</xsl:text>
         <xsl:value-of select="substring-after($target, '#')"/>
         <xsl:text>]</xsl:text>
@@ -1227,12 +1314,12 @@ for example: abstract.
         <xsl:apply-templates>
           <xsl:with-param name="message" select="$message"/>
         </xsl:apply-templates>
-        <xsl:if test="normalize-space(.) != @target">
-          <xsl:text> [</xsl:text>
-          <xsl:value-of select="@target"/>
-          <xsl:text>]</xsl:text>
-        </xsl:if>
         <xsl:text>}}</xsl:text>
+        <xsl:if test="normalize-space(.) != @target">
+          <xsl:text> [\url{</xsl:text>
+          <xsl:value-of select="@target"/>
+          <xsl:text>}]</xsl:text>
+        </xsl:if>
       </xsl:when>
       <xsl:otherwise>
         <xsl:text>\href{</xsl:text>
@@ -1271,8 +1358,9 @@ for example: abstract.
   </xsl:template>
   <!-- If $verseNumbering, something will be done with a specific latex package, todo -->
 
-    
-  
+  <xsl:template match="tei:sp">
+    <xsl:apply-templates/>
+  </xsl:template>
   
   <xsl:template match="tei:space">
     <xsl:param name="message"/>
@@ -1311,6 +1399,24 @@ for example: abstract.
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
+
+  <xsl:template match="tei:div/tei:stage">
+    <xsl:text>{\centering\it </xsl:text>
+    <xsl:apply-templates/>
+    <xsl:text>\par}\nobreakpage\bigskip\nobreakpage&#10;</xsl:text>
+  </xsl:template>
+  
+  <xsl:template match="tei:stage">
+    <xsl:text>\textit{</xsl:text>
+    <xsl:apply-templates/>
+    <xsl:text>}</xsl:text>
+  </xsl:template>
+  <xsl:template match="tei:sp/tei:stage">
+    <xsl:text>         \textit{</xsl:text>
+    <xsl:apply-templates/>
+    <xsl:text>}\par&#10;</xsl:text>
+  </xsl:template>
+  
   
   <xsl:template match="tei:title">
     <xsl:param name="message"/>

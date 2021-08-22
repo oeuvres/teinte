@@ -52,7 +52,7 @@ A light version for XSLT1, with local improvements.
   <xsl:template match="tei:body">
     <xsl:param name="message"/>
     <xsl:if test="not(ancestor::tei:floatingText) and not(preceding::tei:body) and preceding::tei:front">
-      <xsl:text>\mainmatter </xsl:text>
+      <xsl:text>&#10;\mainmatter&#10;&#10;</xsl:text>
     </xsl:if>
     <xsl:if test="count(key('APP',1))&gt;0"> \beginnumbering \def\endstanzaextra{\pstart\centering---------\skipnumbering\pend} </xsl:if>
     <xsl:apply-templates/>
@@ -187,7 +187,7 @@ A light version for XSLT1, with local improvements.
     <xsl:variable name="level">
       <xsl:call-template name="level"/>
     </xsl:variable>
-    <xsl:text>\</xsl:text>
+    <xsl:text>&#10;\</xsl:text>
     <xsl:choose>
       <xsl:when test="$documentclass = 'book'">
         <xsl:choose>
@@ -236,21 +236,21 @@ or parent::tei:div[contains(@rend, 'nonumber')]
     <xsl:text>{</xsl:text>
     <xsl:apply-templates/>
     <xsl:text>}</xsl:text>
+    <!-- Update letf mark manual. We want some typo but no notes -->
+    <xsl:if test="../parent::tei:front | ../parent::tei:body | ../parent::tei:back">
+      <xsl:text>&#10;\renewcommand{\leftmark}{</xsl:text>
+      <xsl:apply-templates>
+        <xsl:with-param name="message">nonote</xsl:with-param>
+      </xsl:apply-templates>
+      <xsl:text>}</xsl:text>
+    </xsl:if>
     <xsl:if test="../@xml:id">
       <!-- Keep it there fo bookmarks (tested) -->
       <xsl:call-template name="tei:makeHyperTarget">
         <xsl:with-param name="id" select="../@xml:id"/>
       </xsl:call-template>
     </xsl:if>
-    <!-- Update letf mark manual. We want some typo but no notes -->
-    <xsl:if test="../parent::tei:front | ../parent::tei:body | ../parent::tei:back">
-      <xsl:text>\renewcommand{\leftmark}{</xsl:text>
-      <xsl:apply-templates>
-        <xsl:with-param name="message">nonote</xsl:with-param>
-      </xsl:apply-templates>
-      <xsl:text>}&#10;</xsl:text>
-    </xsl:if>
-    <xsl:text>&#10;</xsl:text>
+    <xsl:text>&#10;&#10;</xsl:text>
     <xsl:for-each select=".//tei:note">
       <xsl:if test="true()">\footnotetext{<xsl:apply-templates/>}&#10;</xsl:if>
     </xsl:for-each>

@@ -26,7 +26,8 @@ Latex from TEI, metadata for preamble
           <xsl:apply-templates mode="meta"/>
         </xsl:otherwise>
       </xsl:choose>
-      <xsl:if test="position() != last()">\\ \medskip&#10;</xsl:if>
+      <xsl:text>\par&#10;</xsl:text>
+      <xsl:if test="position() != last()">\medskip&#10;</xsl:if>
     </xsl:for-each>
   </xsl:template>
 
@@ -133,7 +134,7 @@ Latex from TEI, metadata for preamble
       <xsl:text>. </xsl:text>
     </xsl:if>
     <xsl:text>\emph{</xsl:text>
-    <xsl:apply-templates select="/*/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[not(@type) or @type='main'][1]/node()"/>
+    <xsl:apply-templates select="/*/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[not(@type) or @type='main'][1]/node()" mode="meta"/>
     <xsl:text>}</xsl:text>
     <xsl:text>}&#10;</xsl:text>
     <!--
@@ -170,6 +171,47 @@ Latex from TEI, metadata for preamble
     </xsl:if>
     
 
+    <xsl:text>\def\eltitlepage{%&#10;</xsl:text>
+    <xsl:call-template name="titlePage"/>
+    <xsl:text>&#10;}&#10;</xsl:text>
+  </xsl:template>
+  
+  <xsl:template name="titlePage">
+    <xsl:text>{\centering\parindent0pt&#10;</xsl:text>
+    <xsl:variable name="author">
+      <xsl:call-template name="latexAuthor"/>
+    </xsl:variable>
+    <xsl:if test="$author != ''">
+      <xsl:text>  {\LARGE\addfontfeature{LetterSpace=25}\bfseries </xsl:text>
+      <xsl:value-of select="$author"/>
+      <xsl:text>\par}\bigskip&#10;</xsl:text>
+    </xsl:if>
+    <xsl:variable name="date">
+      <xsl:call-template name="latexDate"/>
+    </xsl:variable>
+    <xsl:if test="$date != ''">
+      <xsl:text>  {\Large </xsl:text>
+      <xsl:value-of select="$date"/>
+      <xsl:text>\par}\bigskip&#10;</xsl:text>
+    </xsl:if>
+    <xsl:text>  {\LARGE&#10;</xsl:text>
+    <xsl:apply-templates select="/*/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title"/>
+    <xsl:text>&#10;  }&#10;</xsl:text>
+    <xsl:text>}&#10;</xsl:text>
+  </xsl:template>
+  
+  <!-- no notes in a title page -->
+  <xsl:template match="tei:fileDesc/tei:titleStmt/tei:title/tei:note"/>
+  
+  <xsl:template match="tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title">
+    <xsl:text>\bigskip</xsl:text>
+    <xsl:choose>
+      <xsl:when test="not(@type) or @type = 'main'">\textbf{</xsl:when>
+      <xsl:when test="@type='sub'">\emph{</xsl:when>
+      <xsl:otherwise>{</xsl:otherwise>
+    </xsl:choose>
+    <xsl:apply-templates/>
+    <xsl:text>}\par&#10;</xsl:text>
   </xsl:template>
 
     

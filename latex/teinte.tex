@@ -6,12 +6,13 @@
 
 \makeatletter % <@@@
 
-
+\usepackage{alphalph} % for alph couter z, aa, ab…
 \usepackage{blindtext} % generate text for testing
 \usepackage[strict]{changepage} % for modulo 4
 \usepackage{contour} % rounding words
 \usepackage[nodayofweek]{datetime}
 \usepackage{enumitem} % <list>
+\usepackage{epigraph} % <epigraph>
 \usepackage{etoolbox} % patch commands
 \usepackage{fancyvrb}
 \usepackage{fancyhdr}
@@ -22,9 +23,12 @@
 \usepackage{graphicx}
 \usepackage{lettrine} % drop caps
 \usepackage{lipsum} % generate text for testing
+\usepackage{manyfoot} % for parallel footnote numerotation
 \usepackage[framemethod=tikz,]{mdframed} % maybe used for frame with footnotes inside
+\usepackage[defaultlines=2,all]{nowidow} % at least 2 lines by par (works well!)
 \usepackage{pdftexcmds} % needed for tests expressions
-\usepackage{polyglossia} % non-break space french punct, bug Warning: "Failed to patch part"
+\usepackage{poetry} % <l>, bad for theater
+\usepackage{polyglossia} % bug Warning: "Failed to patch part"
 \usepackage[%
   indentfirst=false,
   vskip=1em,
@@ -42,13 +46,12 @@
 \usepackage[fit]{truncate} % used im runing titles
 \usepackage{unicode-math}
 \usepackage[normalem]{ulem} % breakable \uline, normalem is absolutely necessary to keep \emph
-\usepackage{verse} % <l>
 \usepackage{xcolor} % named colors
 \usepackage{xparse} % @ifundefined
 \XeTeXdefaultencoding "iso-8859-1" % bad encoding of xstring
 \usepackage{xstring} % string tests
 \XeTeXdefaultencoding "utf-8"
-\PassOptionsToPackage{hyphens}{url} % before hyperref, which load url package
+
 
 % TOTEST
 % \usepackage{hypcap} % links in caption ?
@@ -69,6 +72,7 @@
 % \usepackage{sectsty} % \chapterfont OBSOLETE
 % \usepackage{soul} % \ul for underline, OBSOLETE with XeTeX
 % \usepackage[breakable]{tcolorbox} % text styling gone, footnote hack not kept with breakable
+% \usepackage{verse} % not enough control on indent, poetry is better
 
 \defaultfontfeatures{
   % Mapping=tex-text, % no effect seen
@@ -124,6 +128,14 @@
   labelwidth=0pt,
 }
 \setlist[enumerate]{
+  label={\arabic*°},
+  labelindent=0.8\listmod,
+  leftmargin=\listmod,
+  labelwidth=0pt,
+}
+% list for big items
+\newlist{decbig}{enumerate}{1}
+\setlist[decbig]{
   label={\bf\color{rubric}\arabic*.},
   labelindent=0.8\listmod,
   leftmargin=\listmod,
@@ -183,7 +195,7 @@
 \newcommand\placeName[1]{#1}
 \newcommand{\pn}[1]{\IfSubStr{-—–¶}{#1}% <p n="3"/>
   {\noindent{\bfseries\color{rubric}   ¶  }}
-  {{\footnotesize\autour{ #1}  }}}
+  {{\footnotesize\autour{#1}}}}
 \newcommand\reg{}
 % \newcommand\ref{} % already defined
 \newcommand\sic[1]{#1}
@@ -201,10 +213,14 @@
 \newcommand{\byline}[1]{\bigskip{\RaggedLeft{#1}\par}\bigskip}
 \newcommand{\bibl}[1]{{\RaggedLeft{#1}\par\bigskip}}
 \newcommand{\biblitem}[1]{{\noindent\hangindent=\parindent   #1\par}}
+\newcommand{\castItem}[1]{{\noindent\hangindent=\parindent #1\par}}
 \newcommand{\dateline}[1]{\medskip{\RaggedLeft{#1}\par}\bigskip}
 \newcommand{\labelblock}[1]{\medbreak{\noindent\color{rubric}\bfseries #1}\par\mednobreak}
 \newcommand{\salute}[1]{\bigbreak{#1}\par\medbreak}
-\newcommand{\signed}[1]{\bigbreak\filbreak{\raggedleft #1\par}\medskip}
+\newcommand{\signed}[1]{\medskip{\raggedleft #1\par}\bigbreak} % supposed bottom
+\newcommand{\speaker}[1]{\medskip{\centering #1\par\nopagebreak}} % supposed bottom
+\newcommand{\spl}[1]{\noindent\hangindent=2\parindent  #1\par} % sp/l
+
 
 % environments for blocks (some may become commands)
 \newenvironment{borderbox}{}{} % framing content
@@ -244,7 +260,11 @@
 \newenvironment{quoteblock}% may be used for ornaments
   {\begin{quoting}}
   {\end{quoting}}
-\newenvironment{epigraph}{\parindent0pt\raggedleft\it}{\bigskip}
+% \newenvironment{epigraph}{\parindent0pt\raggedleft\it}{\bigskip}
+ % epigraph pack
+\setlength{\epigraphrule}{0pt}
+\setlength{\epigraphwidth}{0.8\textwidth}
+% \renewcommand{\epigraphflush}{center} ? dont work
 
 % table () is preceded and finished by custom command
 \newcommand{\tableopen}[1]{%
@@ -279,8 +299,6 @@
 \newcommand\chapterclose{} % maybe useful for multicol settings
 \setcounter{secnumdepth}{-2} % no counters for hierarchy titles
 \setcounter{tocdepth}{5} % deep toc
-\markright{\@title} % ???
-\markboth{\@title}{\@author} % ???
 \renewcommand\tableofcontents{\@starttoc{toc}}
 % toclof format
 % \renewcommand{\@tocrmarg}{0.1em} % Useless command?
@@ -313,14 +331,22 @@
 \setlength\footnotesep{1.5\footnotesep} % footnote separator
 \renewcommand\@makefntext[1]{\parindent 1.5em \noindent \hb@xt@1.8em{\hss{\normalfont\@thefnmark . }}#1} % no superscipt in foot
 \patchcmd{\@footnotetext}{\footnotesize}{\footnotesize\sffamily}{}{} % before scrextend, hyperref
+\DeclareNewFootnote{A}[alph] % for editor notes
+\renewcommand*{\thefootnoteA}{\alphalph{\value{footnoteA}}} % z, aa, ab…
 
+% poem
+\setlength{\poembotskip}{0pt}
+\setlength{\poemtopskip}{0pt}
+\setlength{\poemindent}{0pt}
+\poemlinenumsfalse
 
 %   see https://tex.stackexchange.com/a/34449/5049
 \def\truncdiv#1#2{((#1-(#2-1)/2)/#2)}
 \def\moduloop#1#2{(#1-\truncdiv{#1}{#2}*#2)}
 \def\modulo#1#2{\number\numexpr\moduloop{#1}{#2}\relax}
 
-% orphans and widows
+% orphans and widows, nowidow package in test
+% from memoir package
 \clubpenalty=9996
 \widowpenalty=9999
 \brokenpenalty=4991
@@ -328,20 +354,17 @@
 \postdisplaypenalty=1549
 \displaywidowpenalty=1602
 \hyphenpenalty=400
-% Copied from Rahtz but not understood
-\def\@pnumwidth{1.55em}
-\def\@tocrmarg {2.55em}
-\def\@dotsep{4.5}
-\emergencystretch 3em
+% report h or v overfull ?
 \hbadness=4000
+\vbadness=4000
+% good to avoid lines too wide
+\emergencystretch 3em
 \pretolerance=750
 \tolerance=2000
-\vbadness=4000
 \def\Gin@extensions{.pdf,.png,.jpg,.mps,.tif}
-% \renewcommand{\@cite}[1]{#1} % biblio
 
+\PassOptionsToPackage{hyphens}{url} % before hyperref and biblatex, which load url package
 \usepackage{hyperref} % supposed to be the last one, :o) except for the ones to follow
-\urlstyle{same} % after hyperref
 \hypersetup{
   % pdftex, % no effect
   pdftitle={\elbibl},
@@ -352,7 +375,7 @@
   bookmarksopen=true,
   bookmarksopenlevel=1,
   pdfstartview=Fit,
-  breaklinks=true, % avoid long links
+  breaklinks=true, % avoid long links, overrided by url package
   pdfpagemode=UseOutlines,    % pdf toc
   hyperfootnotes=true,
   colorlinks=false,
@@ -360,6 +383,9 @@
   % pdfpagelayout=TwoPageRight,
   % linktocpage=true, % NO, toc, link only on page no
 }
+\urlstyle{same} % after hyperref
+
+
 
 \makeatother % /@@@>
 %%%%%%%%%%%%%%

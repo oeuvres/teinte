@@ -1907,11 +1907,13 @@
         <zeroOrMore>
           <choice>
             <text/>
+            <ref name="emph"/>
             <ref name="hi"/>
             <ref name="listPerson"/>
             <ref name="note"/>
             <ref name="pb"/>
             <ref name="ref"/>
+            <ref name="surname"/>
             <ref name="stage"/>
           </choice>
         </zeroOrMore>

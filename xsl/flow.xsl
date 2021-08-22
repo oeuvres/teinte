@@ -446,19 +446,10 @@ Sections
       <xsl:variable name="prev" select="preceding-sibling::*[not(self::tei:pb)][not(self::tei:cb)][1]"/>    
       <xsl:variable name="char1" select="substring( normalize-space(.), 1, 1)"/>
       <xsl:variable name="class">
-        <xsl:choose>
-          <xsl:when test="contains(concat(' ', @rend, ' '), ' indent ')"/>
-          <xsl:when test="contains($prev/@rend, 'right')  or contains($prev/@rend, 'center')">noindent </xsl:when>
-          <xsl:when test="not(preceding-sibling::*) and not(parent::tei:item)">noindent </xsl:when>
-          <xsl:when test="contains(@rend, 'center') or contains(@rend, 'right')">noindent </xsl:when>
-          <xsl:when test="name($prev) != 'p' and not(parent::tei:item)">noindent </xsl:when>
-          <xsl:when test="descendant::tei:graphic">noindent </xsl:when>
-          <!--
-          <xsl:when test="contains( '-–—0123456789', $char1 )"/>
-          <xsl:when test="$prev and contains('-–—', substring(normalize-space($prev), 1, 1))"/>
-          <xsl:when test="local-name($prev) ='p' and translate($prev, '*∾  ','')!=''"/>
-          -->
-        </xsl:choose>
+        <xsl:variable name="noindent">
+          <xsl:call-template name="noindent"/>
+        </xsl:variable>
+        <xsl:if test="$noindent != ''"> noindent </xsl:if>
         <xsl:if test="@n"> no</xsl:if>
         <xsl:if test="tei:hi[contains(@rend, 'initial')]">
           <xsl:text> </xsl:text>
@@ -1033,57 +1024,19 @@ Tables
               </small>
             </xsl:when>
           </xsl:choose>
-          <xsl:if test="@part = 'M' or @part = 'm' or @part = 'F' or @part = 'f'  or @part = 'y'  or @part = 'Y'">
-            <!-- Rupted verse, get the exact spacer from previous verse -->
-            <xsl:variable name="txt">
-              <xsl:apply-templates select="preceding::tei:l[1]" mode="lspacer"/>
-            </xsl:variable>
-            <xsl:if test="normalize-space($txt) != ''">
-              <span class="spacer" style="visibility: hidden;">
-                <xsl:value-of select="$txt"/>
-              </span>
-            </xsl:if>
+          <!-- Rupted verse, get the exact spacer from previous verse -->
+          <xsl:variable name="txt">
+            <xsl:call-template name="lspacer"/>
+          </xsl:variable>
+          <xsl:if test="normalize-space($txt) != ''">
+            <span class="spacer" style="visibility: hidden;">
+              <xsl:value-of select="$txt"/>
+            </span>
           </xsl:if>
           <xsl:apply-templates>
             <xsl:with-param name="from" select="$from"/>
           </xsl:apply-templates>
         </div>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
-  <xsl:template match="tei:l" mode="lspacer">
-    <xsl:variable name="txt">
-      <xsl:apply-templates mode="title"/>
-    </xsl:variable>
-    <xsl:choose>
-      <!-- ??? -->
-      <xsl:when test="not(ancestor::tei:body)"/>
-      <!-- encoding error -->
-      <xsl:when test="not(@part)"/>
-      <!-- encoding error -->
-      <xsl:when test="@part = 'F'">
-        <xsl:apply-templates select="preceding::tei:l[1]" mode="lspacer"/>
-        <xsl:value-of select="$txt"/>
-        <xsl:text> </xsl:text>
-      </xsl:when>
-      <xsl:when test="@part = 'M'">
-        <xsl:apply-templates select="preceding::tei:l[1]" mode="lspacer"/>
-        <xsl:value-of select="$txt"/>
-        <xsl:text> </xsl:text>
-      </xsl:when>
-      <xsl:when test="@part = 'Y'">
-        <xsl:apply-templates select="preceding::tei:l[1]" mode="lspacer"/>
-        <xsl:value-of select="$txt"/>
-        <xsl:text> </xsl:text>
-      </xsl:when>
-      <xsl:when test="@part = 'I'">
-        <xsl:value-of select="$txt"/>
-        <xsl:text> </xsl:text>
-      </xsl:when>
-      <!-- No part="I" ? -->
-      <xsl:otherwise>
-        <xsl:value-of select="$txt"/>
-        <xsl:text> </xsl:text>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>

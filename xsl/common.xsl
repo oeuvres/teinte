@@ -331,6 +331,7 @@ Gobal TEI parameters and variables are divided in different categories
   <xsl:variable name="epub2">epub2</xsl:variable>
   <xsl:variable name="epub3">epub3</xsl:variable>
   <xsl:variable name="html5">html5</xsl:variable>
+  <xsl:variable name="notblock"> anchor cb index lb milestone pb </xsl:variable> 
   <!-- What kind of root element to output ? html, nav… -->
   <xsl:param name="root" select="$html"/>
   <xsl:variable name="html">html</xsl:variable>
@@ -1181,6 +1182,52 @@ Could be correct for a text only version in <xsl:value-of select=""/>
     </xsl:choose>
   </xsl:template>
   
+  <xsl:template name="lspacer">
+    <xsl:if test="@part = 'M' or @part = 'm' or @part = 'F' or @part = 'f'  or @part = 'y'  or @part = 'Y'">
+      <!-- Rupted verse, get the exact spacer from previous verse -->
+      <xsl:apply-templates select="preceding::tei:l[1]" mode="lspacer"/>
+    </xsl:if>
+    
+  </xsl:template>
+  
+  <xsl:template match="tei:l" mode="lspacer">
+    <xsl:variable name="txt">
+      <xsl:apply-templates mode="title"/>
+    </xsl:variable>
+    <xsl:choose>
+      <!-- ??? -->
+      <xsl:when test="not(ancestor::tei:body)"/>
+      <!-- encoding error -->
+      <xsl:when test="not(@part)"/>
+      <!-- encoding error -->
+      <xsl:when test="@part = 'F'">
+        <xsl:apply-templates select="preceding::tei:l[1]" mode="lspacer"/>
+        <xsl:value-of select="$txt"/>
+        <xsl:text> </xsl:text>
+      </xsl:when>
+      <xsl:when test="@part = 'M'">
+        <xsl:apply-templates select="preceding::tei:l[1]" mode="lspacer"/>
+        <xsl:value-of select="$txt"/>
+        <xsl:text> </xsl:text>
+      </xsl:when>
+      <xsl:when test="@part = 'Y'">
+        <xsl:apply-templates select="preceding::tei:l[1]" mode="lspacer"/>
+        <xsl:value-of select="$txt"/>
+        <xsl:text> </xsl:text>
+      </xsl:when>
+      <xsl:when test="@part = 'I'">
+        <xsl:value-of select="$txt"/>
+        <xsl:text> </xsl:text>
+      </xsl:when>
+      <!-- No part="I" ? -->
+      <xsl:otherwise>
+        <xsl:value-of select="$txt"/>
+        <xsl:text> </xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  
+  
   <xsl:template match="tei:lb" mode="title">
     <xsl:variable name="prev" select="preceding-sibling::node()[1]"/>
     <xsl:variable name="next" select="following-sibling::node()[1]"/>
@@ -1418,6 +1465,50 @@ Le mode label génère un intitulé court obtenu par une liste de valeurs locali
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
+  
+  <!-- Is <p> noindent ? -->
+  <xsl:template name="noindent">
+    <xsl:variable name="rend" select="concat(' ', normalize-space(@rend), ' ')"/>
+    <!-- first non space char -->
+    <xsl:variable name="firstchar" select="substring(translate(normalize-space(.), ' ', ''), 1, 1)"/>
+    <xsl:variable name="firstnode" select="node()[1][normalize-space(.) != '']"/>
+    <!-- previous sibling block -->
+    <xsl:variable name="prevblock" select="preceding-sibling::*[not(contains($notblock, concat(' ', local-name(), ' ')))][1]"/>
+    <!-- previous <p> -->
+    <!--
+    <xsl:variable name="prevp" select="preceding-sibling::tei:p[1]"/>
+    -->
+    <xsl:variable name="txt">
+      <xsl:apply-templates select="." mode="title"/>
+    </xsl:variable>
+    <xsl:variable name="len" select="string-length(normalize-space($txt))"/>
+    <xsl:choose>
+      <!-- force noindent -->
+      <xsl:when test="contains($rend, ' noindent ')">noindent</xsl:when>
+      <!-- force indent -->
+      <xsl:when test="contains($rend, ' indent ')"/>
+      <!-- Starting by a label, all the same -->
+      <xsl:when test="local-name($firstnode) = 'label'"/>
+      <!-- Numbering to display -->
+      <xsl:when test="@n != ''">noindent</xsl:when>
+      <!-- first char seem a pseudo item, let indent -->
+      <xsl:when test="contains('-–—1234567890', $firstchar)"/>
+      <!-- first <p> of a series, smaller than 2 “line”, let indent -->
+      <xsl:when test="not($prevblock) and $len &lt; 80"/>
+      <!-- first <p> of a series (> 2 lines), noindent -->
+      <xsl:when test="not($prevblock)">noindent</xsl:when>
+      <!-- if preceded by not <p> -->
+      <xsl:when test="name($prevblock) != 'p' and not(parent::tei:item)">noindent</xsl:when>
+      <!-- this para is center or right align -->
+      <xsl:when test="contains($rend, ' center ') or contains($rend, ' right ')">noindent</xsl:when>
+      <!-- prev block (maybe <p>) is center or right align -->
+      <xsl:when test="contains($prevblock/@rend, 'right')  or contains($prevblock/@rend, 'center')">noindent</xsl:when>
+      <!-- bad
+      -->
+    </xsl:choose>
+    
+  </xsl:template>
+  
   <!-- pour obtenir un chemin relatif à l'XSLT appliquée -->
   <xsl:template name="xslbase">
     <xsl:param name="path" select="/processing-instruction('xml-stylesheet')[contains(., 'xsl')]"/>
