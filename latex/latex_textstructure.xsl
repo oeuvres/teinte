@@ -296,16 +296,9 @@ or parent::tei:div[contains(@rend, 'nonumber')]
 
   <xsl:template match="tei:titlePage">
     <xsl:param name="message"/>
-    <xsl:text>&#10;\begin{titlepage}&#10;</xsl:text>
+    <xsl:text>&#10;\begin{titlePage}&#10;</xsl:text>
     <xsl:apply-templates/>
-    <xsl:text>&#10;\end{titlepage}&#10;</xsl:text>
-  </xsl:template>
-
-  <xsl:template match="tei:trailer">
-    <xsl:param name="message"/>
-    <xsl:text>&#10;&#10;\begin{raggedleft}</xsl:text>
-    <xsl:apply-templates/>
-    <xsl:text>\end{raggedleft}&#10;</xsl:text>
+    <xsl:text>&#10;\end{titlePage}&#10;</xsl:text>
   </xsl:template>
 
   <xsl:template name="bibliography">

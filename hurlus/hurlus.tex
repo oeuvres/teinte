@@ -32,7 +32,8 @@
     outer=12mm,
     top=20mm,
     bottom=15mm,
-    marginparsep=0pt,
+    marginparsep=3pt,
+    marginpar=7mm,
   ]{geometry}
   \usepackage[fontsize=9.5pt]{scrextend} % for Roboto
 \else\ifav
@@ -144,6 +145,7 @@
 
 \renewcommand{\headrulewidth}{\arrayrulewidth}
 \renewcommand{\headrule}{{\color{rubric}\hrule}}
+\renewcommand{\lnatt}[1]{\marginpar{\sffamily\scriptsize #1}}
 
 % delicate tuning, image has produce line-height problems in title on 2 lines
 \titleformat{name=\chapter} % command

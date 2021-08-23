@@ -1887,6 +1887,7 @@
               <ref name="ref"/>
               <ref name="space"/>
               <ref name="stage"/>
+              <ref name="surname"/>
             </choice>
           </oneOrMore>
           <oneOrMore>

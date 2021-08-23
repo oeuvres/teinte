@@ -47,14 +47,7 @@ A light version for XSLT1, with local improvements.
       <xsl:apply-templates/>
       <xsl:text>}</xsl:text>
   </xsl:template>
-  <doc xmlns="http://www.oxygenxml.com/ns/doc/xsl">
-      <desc>Process element roleDesc</desc>
-   </doc>
-  <xsl:template match="tei:roleDesc">
-      <xsl:text>\begin{quote}</xsl:text>
-      <xsl:apply-templates/>
-      <xsl:text>\end{quote}</xsl:text>
-  </xsl:template>
+
   <doc xmlns="http://www.oxygenxml.com/ns/doc/xsl">
       <desc>Process element set</desc>
    </doc>

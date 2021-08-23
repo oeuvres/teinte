@@ -131,7 +131,7 @@ for example: abstract.
   </xsl:template>
   
   <!-- Semantic blocks  -->
-  <xsl:template match="tei:byline | tei:castItem | tei:dateline | tei:salute | tei:signed | tei:speaker">
+  <xsl:template match="tei:byline | tei:castItem | tei:dateline | tei:docAuthor | tei:docDate | tei:docImprint | tei:salute | tei:signed | tei:speaker | tei:trailer">
     <xsl:param name="message"/>
     <xsl:call-template name="makeBlock"/>
   </xsl:template>
@@ -269,7 +269,16 @@ for example: abstract.
     </xsl:apply-templates>
     <xsl:text>}</xsl:text>
   </xsl:template>
-    
+
+  <xsl:template match="tei:docTitle">
+    <xsl:param name="message"/>
+    <xsl:text>\begin{docTitle}&#10;</xsl:text>
+    <xsl:apply-templates>
+      <xsl:with-param name="message" select="$message"/>
+    </xsl:apply-templates>
+    <xsl:text>\end{docTitle}&#10;</xsl:text>
+  </xsl:template>
+  
   <xsl:template match="tei:emph | tei:foreign | tei:gloss | tei:surname | tei:term">
     <xsl:param name="message"/>
     <xsl:text>\</xsl:text>
@@ -353,9 +362,9 @@ for example: abstract.
             <xsl:when test="contains($zerend, ' subscript ')">\textsubscript{</xsl:when>
             <xsl:when test="contains($zerend, ' sup ')">\textsuperscript{</xsl:when>
             <xsl:when test="contains($zerend, ' superscript ')">\textsuperscript{</xsl:when>
-            <xsl:when test="contains($zerend, ' uc ')">\uppercase{</xsl:when>
+            <xsl:when test="contains($zerend, ' uc ')">\MakeUppercase{</xsl:when>
             <xsl:when test="contains($zerend, ' underline ')">\uline{</xsl:when>
-            <xsl:when test="contains($zerend, ' uppercase ')">\uppercase{</xsl:when>
+            <xsl:when test="contains($zerend, ' uppercase ')">\MakeUppercase{</xsl:when>
             <!-- 
             <xsl:when test=". = 'strike'">\sout{</xsl:when>
             <xsl:when test=". = 'overbar'">\textoverbar{</xsl:when>
@@ -540,6 +549,19 @@ for example: abstract.
   <xsl:template match="tei:sp/tei:l">
     <xsl:param name="message"/>
     <xsl:text>\spl{</xsl:text>
+    <!-- numbering ? -->
+    <xsl:choose>
+      <xsl:when test="not(@n)"/>
+      <xsl:when test="not(number(@n) &gt; 0)"/>
+      <xsl:when test="number(@n) mod 5 != 0"/>
+      <xsl:when test="preceding::tei:l[1]/@n = @n"/>
+      <xsl:otherwise>
+        <xsl:text>\lnatt{</xsl:text>
+        <xsl:value-of select="@n"/>
+        <xsl:text>}</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+    
     <!-- Rupted verse, get the exact spacer from previous verse -->
     <xsl:variable name="txt">
       <xsl:call-template name="lspacer"/>
@@ -1339,6 +1361,11 @@ for example: abstract.
     </xsl:choose>
   </xsl:template>
   
+  <xsl:template match="tei:roleDesc">
+    <xsl:apply-templates/>
+  </xsl:template>
+  
+  
   <xsl:template match="tei:signed">
     <xsl:param name="message"/>
     <xsl:text>&#10;&#10;\signed{</xsl:text>
@@ -1400,21 +1427,28 @@ for example: abstract.
     </xsl:choose>
   </xsl:template>
 
-  <xsl:template match="tei:div/tei:stage">
-    <xsl:text>{\centering\it </xsl:text>
+  <xsl:template match="tei:div[@type='scene']/tei:stage | tei:div2/tei:stage">
+    <xsl:text>\stagescene{</xsl:text>
     <xsl:apply-templates/>
-    <xsl:text>\par}\nobreakpage\bigskip\nobreakpage&#10;</xsl:text>
+    <xsl:text>}&#10;</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="tei:div[@type='scene']/tei:stage/tei:surname | tei:div2/tei:stage/tei:surname">
+    <xsl:text>\MakeUppercase{</xsl:text>
+    <xsl:apply-templates/>
+    <xsl:text>}</xsl:text>
   </xsl:template>
   
+
   <xsl:template match="tei:stage">
     <xsl:text>\textit{</xsl:text>
     <xsl:apply-templates/>
     <xsl:text>}</xsl:text>
   </xsl:template>
   <xsl:template match="tei:sp/tei:stage">
-    <xsl:text>         \textit{</xsl:text>
+    <xsl:text>\stagesp{</xsl:text>
     <xsl:apply-templates/>
-    <xsl:text>}\par&#10;</xsl:text>
+    <xsl:text>}&#10;</xsl:text>
   </xsl:template>
   
   
@@ -1440,6 +1474,24 @@ for example: abstract.
         </xsl:if>
       </xsl:otherwise>
     </xsl:choose>
+  </xsl:template>
+
+  <xsl:template match="tei:titlePart">
+    <xsl:param name="message"/>
+    <xsl:choose>
+      <xsl:when test="@type='sub'">
+        <xsl:text>\emph{</xsl:text>
+      </xsl:when>
+    </xsl:choose>
+    <xsl:call-template name="rendering">
+      <xsl:with-param name="message" select="$message"/>
+    </xsl:call-template>
+    <xsl:choose>
+      <xsl:when test="@type='sub'">
+        <xsl:text>}</xsl:text>
+      </xsl:when>
+    </xsl:choose>
+    <xsl:text>\par&#10;</xsl:text>
   </xsl:template>
   
 

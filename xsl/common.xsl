@@ -1195,11 +1195,10 @@ Could be correct for a text only version in <xsl:value-of select=""/>
       <xsl:apply-templates mode="title"/>
     </xsl:variable>
     <xsl:choose>
-      <!-- ??? -->
-      <xsl:when test="not(ancestor::tei:body)"/>
-      <!-- encoding error -->
+      <!-- encoding may have problem for ex @part="F"
       <xsl:when test="not(@part)"/>
-      <!-- encoding error -->
+      -->
+      <xsl:when test="not(ancestor::tei:body)"/>
       <xsl:when test="@part = 'F'">
         <xsl:apply-templates select="preceding::tei:l[1]" mode="lspacer"/>
         <xsl:value-of select="$txt"/>
@@ -1207,8 +1206,8 @@ Could be correct for a text only version in <xsl:value-of select=""/>
       </xsl:when>
       <xsl:when test="@part = 'M'">
         <xsl:apply-templates select="preceding::tei:l[1]" mode="lspacer"/>
-        <xsl:value-of select="$txt"/>
         <xsl:text> </xsl:text>
+        <xsl:value-of select="$txt"/>
       </xsl:when>
       <xsl:when test="@part = 'Y'">
         <xsl:apply-templates select="preceding::tei:l[1]" mode="lspacer"/>
@@ -1217,7 +1216,6 @@ Could be correct for a text only version in <xsl:value-of select=""/>
       </xsl:when>
       <xsl:when test="@part = 'I'">
         <xsl:value-of select="$txt"/>
-        <xsl:text> </xsl:text>
       </xsl:when>
       <!-- No part="I" ? -->
       <xsl:otherwise>
