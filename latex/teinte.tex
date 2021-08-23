@@ -12,7 +12,6 @@
 \usepackage{contour} % rounding words
 \usepackage[nodayofweek]{datetime}
 \usepackage{enumitem} % <list>
-\usepackage{epigraph} % <epigraph>
 \usepackage{etoolbox} % patch commands
 \usepackage{fancyvrb}
 \usepackage{fancyhdr}
@@ -189,8 +188,10 @@
   \removelastskip\nopagebreak\bigskip\fi}
 
 % commands, blocks
+
 \newcommand{\byline}[1]{\bigskip{\RaggedLeft{#1}\par}\bigskip}
-\newcommand{\bibl}[1]{{\RaggedLeft{#1}\par\bigskip}}
+
+\newcommand{\bibl}[1]{{\smallskip\setlength{\RaggedLeftLeftskip}{2em plus \leftskip}\RaggedLeft\normalsize\normalfont #1\par\medskip}}}
 \newcommand{\biblitem}[1]{{\noindent\hangindent=\parindent   #1\par}}
 \newcommand{\castItem}[1]{{\noindent\hangindent=\parindent #1\par}}
 \newcommand{\dateline}[1]{\medskip{\RaggedLeft{#1}\par}\bigskip}
@@ -199,12 +200,12 @@
 \newcommand{\docImprint}[1]{\ifvmode\medskip\fi #1 \ifvmode\par\fi }
 \newcommand{\labelblock}[1]{\medbreak{\noindent\color{rubric}\bfseries #1}\par\mednobreak}
 \newcommand{\salute}[1]{\bigbreak{#1}\par\medbreak}
-\newcommand{\signed}[1]{\medskip{\raggedleft #1\par}\bigbreak} % supposed bottom
-\newcommand{\speaker}[1]{\medskip{\centering\sffamily #1\par\nopagebreak}} % supposed bottom
-\newcommand{\stagescene}[1]{{\centering\sffamily #1\par}\bigskip}
+\newcommand{\signed}[1]{\medskip{\RaggedLeft #1\par}\bigbreak} % supposed bottom
+\newcommand{\speaker}[1]{\medskip{\Centering\sffamily #1\par\nopagebreak}} % supposed bottom
+\newcommand{\stagescene}[1]{{\Centering\sffamily #1\par}\bigskip}
 \newcommand{\stagesp}[1]{\begingroup\leftskip\parindent\noindent\it\sffamily #1\par\endgroup} % left margin, better than list envs
 \newcommand{\spl}[1]{\noindent\hangindent=2\parindent  #1\par} % sp/l
-\newcommand{\trailer}[1]{{\centering\bigskip #1\par}} % sp/l
+\newcommand{\trailer}[1]{{\Centering\bigskip #1\par}} % sp/l
 
 % environments for blocks (some may become commands)
 \newenvironment{borderbox}{}{} % framing content
@@ -237,20 +238,16 @@
   {\@latex@warning{Empty `bibitemlist' environment}}%
 \endlist}
 \newenvironment{docTitle}{\LARGE\bigskip\bfseries\onehalfspacing}{\bigskip}
+\newenvironment{epigraph}{\leftskip1.5\parindent \sffamily\large}{\bigskip}
 \newenvironment{quoteblock}% may be used for ornaments
   {\begin{quoting}}
   {\end{quoting}}
 \newenvironment{titlePage}
-  {\centering}
+  {\Centering}
   {}
 
 
 
-  % \newenvironment{epigraph}{\parindent0pt\raggedleft\it}{\bigskip}
- % epigraph pack
-\setlength{\epigraphrule}{0pt}
-\setlength{\epigraphwidth}{0.8\textwidth}
-% \renewcommand{\epigraphflush}{center} ? dont work
 
 
 

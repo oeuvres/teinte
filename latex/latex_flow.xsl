@@ -293,15 +293,11 @@ for example: abstract.
   <xsl:template match="tei:epigraph">
     <xsl:param name="message"/>
     <xsl:call-template name="tei:makeHyperTarget"/>
-    <xsl:text>&#10;\epigraph{</xsl:text>
-    <xsl:apply-templates select="node()[not(self::tei:bibl)]">
+    <xsl:text>&#10;\begin{epigraph}&#10;</xsl:text>
+    <xsl:apply-templates>
       <xsl:with-param name="message" select="$message"/>
     </xsl:apply-templates>
-    <xsl:text>}{</xsl:text>
-    <xsl:apply-templates select="tei:bibl">
-      <xsl:with-param name="message" select="$message"/>
-    </xsl:apply-templates>
-    <xsl:text>}&#10;&#10;</xsl:text>
+    <xsl:text>\end{epigraph}&#10;&#10;</xsl:text>
   </xsl:template>
   
   
@@ -546,7 +542,7 @@ for example: abstract.
     </xsl:choose>
   </xsl:template>
 
-  <xsl:template match="tei:sp/tei:l">
+  <xsl:template match="tei:sp/tei:l | tei:epigraph/tei:l">
     <xsl:param name="message"/>
     <xsl:text>\spl{</xsl:text>
     <!-- numbering ? -->
