@@ -173,9 +173,11 @@ aside header {
 
 blockquote.quote {
   margin: 0 0 0 0.5rem;
-  padding: 0rem 0rem 0.3rem 1rem;
-  line-height: 1.25;
+  padding: 0.4rem 0rem 0.6rem 1rem;
+  line-height: 1.2;
+  color:rgba(0, 0, 0, 0.5);
   border-left: 0.5rem solid rgba(128, 128, 128, 0.1);
+  font-size: 1.4rem;
 }
 
 blockquote.quote .p {}
