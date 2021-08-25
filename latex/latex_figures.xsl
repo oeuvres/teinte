@@ -20,78 +20,44 @@ A light version for XSLT1, with local improvements.
 2021, frederic.glorieux@fictif.org
   -->
   <xsl:template match="tei:cell">
+    <xsl:variable name="rend" select="concat(' ', normalize-space(@rend), ' ')"/>
     <!-- \tabcellsep -->
-    <xsl:if test="preceding-sibling::tei:cell"> &amp; </xsl:if>
     <xsl:choose>
-      <xsl:when test="@role='label'">
-        <xsl:text>\Panel{</xsl:text>
-        <xsl:if test="starts-with(normalize-space(.),'[')">
-          <xsl:text>{}</xsl:text>
-        </xsl:if>
-        <xsl:apply-templates/>
-        <xsl:text>}{label}{</xsl:text>
-        <xsl:choose>
-          <xsl:when test="@cols">
-            <xsl:value-of select="@cols"/>
-          </xsl:when>
-          <xsl:otherwise>1</xsl:otherwise>
-        </xsl:choose>
-        <xsl:text>}{</xsl:text>
-        <xsl:choose>
-          <xsl:when test="@align='right'">r</xsl:when>
-          <xsl:when test="@align='centre'">c</xsl:when>
-          <xsl:when test="@align='center'">c</xsl:when>
-          <xsl:when test="@align='left'">l</xsl:when>
-          <xsl:when test="@acols">c</xsl:when>
-          <xsl:otherwise>l</xsl:otherwise>
-        </xsl:choose>
-        <xsl:text>}</xsl:text>
+      <xsl:when test="contains($rend, ' right ')">
+        <xsl:text>\raggedleft\arraybackslash </xsl:text>
       </xsl:when>
-      <xsl:when test="@cols &gt; 1">
-        <xsl:text>\multicolumn{</xsl:text>
-        <xsl:value-of select="@cols"/>
-        <xsl:text>}{</xsl:text>
-        <xsl:if test="@role='label' or
-			  parent::tei:row/@role='label'">
-          <xsl:text>){\columncolor{label}}</xsl:text>
-        </xsl:if>
-        <xsl:choose>
-          <xsl:when test="@align='right'">r</xsl:when>
-          <xsl:when test="@align='centre'">c</xsl:when>
-          <xsl:when test="@align='center'">c</xsl:when>
-          <xsl:when test="@align='left'">l</xsl:when>
-          <xsl:otherwise>l</xsl:otherwise>
-        </xsl:choose>
-        <xsl:text>}{</xsl:text>
-        <xsl:apply-templates/>
-        <xsl:text>}</xsl:text>
+      <xsl:when test="contains($rend, ' center ')">
+        <xsl:text>\centering\arraybackslash </xsl:text>
       </xsl:when>
-      <xsl:when test="@align">
-        <xsl:text>\multicolumn{1}{</xsl:text>
-        <xsl:if test="@role='label' or
-			  parent::tei:row/@role='label'">
-          <xsl:text>){\columncolor{label}}</xsl:text>
-        </xsl:if>
-        <xsl:choose>
-          <xsl:when test="@align='right'">r</xsl:when>
-          <xsl:when test="@align='centre'">c</xsl:when>
-          <xsl:when test="@align='center'">c</xsl:when>
-          <xsl:when test="@align='left'">l</xsl:when>
-          <xsl:otherwise>l</xsl:otherwise>
-        </xsl:choose>
-        <xsl:text>}{</xsl:text>
+      <xsl:when test="contains($rend, ' left ')">
+        <xsl:text>\raggedright\arraybackslash </xsl:text>
+      </xsl:when>
+      <!-- do not justify label -->
+      <xsl:when test="@role = 'label'">
+        <xsl:text>\raggedright\arraybackslash </xsl:text>
+      </xsl:when>
+      <xsl:when test="not(@rend)"/>
+    </xsl:choose>
+    <xsl:variable name="length" select="string-length(normalize-space(.))"/>
+    <xsl:variable name="nonumbers" select="translate(., '0123456789', '') = ."/>
+    <xsl:choose>
+      <xsl:when test="$nonumbers and $length &gt; 4">
+        <xsl:text>{\footnotesize </xsl:text>
         <xsl:apply-templates/>
         <xsl:text>}</xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:if test="starts-with(normalize-space(.),'[')">
-          <xsl:text>{}</xsl:text>
-        </xsl:if>
         <xsl:apply-templates/>
       </xsl:otherwise>
     </xsl:choose>
+    <xsl:choose>
+      <xsl:when test="following-sibling::tei:cell">&#10;   &amp; </xsl:when>
+    </xsl:choose>
   </xsl:template>
-  
+  <!-- let justify -->
+  <xsl:template match="tei:cell//tei:lb">
+    <xsl:text> </xsl:text>
+  </xsl:template>
   <xsl:template match="tei:figDesc"/>
   
   <xsl:template match="tei:figure">
@@ -271,27 +237,32 @@ A light version for XSLT1, with local improvements.
     <xsl:text>\begin{tabularx}{\linewidth}&#10;</xsl:text>
     <!-- prologue { | m{5em} | m{1cm}| m{1cm} | }  -->
     <!-- Find the longest row -->
-    <xsl:text>{|</xsl:text>
+    <xsl:text>{</xsl:text>
     <xsl:for-each select="tei:row">
       <xsl:sort data-type="number" order="descending" select="count(tei:cell)"/>
       <xsl:if test="position() = 1">
         <xsl:for-each select="tei:cell">
-          <!-- column type ? -->
+          <xsl:text>&#10;  | </xsl:text>
           <xsl:choose>
-            <xsl:when test="position() = 1">l</xsl:when>
+            <xsl:when test="false()">l</xsl:when>
             <xsl:otherwise>X</xsl:otherwise>
           </xsl:choose>
-          <xsl:text>|</xsl:text>
         </xsl:for-each>
       </xsl:if>
     </xsl:for-each>
-    <xsl:text>}&#10;\hline</xsl:text>
+    <xsl:text> |&#10;}&#10;</xsl:text>
+    <xsl:text>\toprule&#10;</xsl:text>
     <xsl:for-each select="tei:row">
-      <xsl:for-each select="tei:cell">
-        <xsl:apply-templates select="."/>
-      </xsl:for-each>
-      <xsl:text> \\&#10;\hline&#10;</xsl:text>
+      <xsl:apply-templates select="tei:cell"/>
+      <xsl:text> \\&#10;</xsl:text>
+      <xsl:choose>
+        <xsl:when test="position() = 1 and tei:cell[2]/@role='label'">
+          <xsl:text>\midrule&#10;</xsl:text>
+        </xsl:when>
+        <xsl:when test="position() != last()">\hline&#10;</xsl:when>
+      </xsl:choose>
     </xsl:for-each>
+    <xsl:text>\bottomrule&#10;</xsl:text>
     <xsl:text>\end{tabularx}&#10;</xsl:text>
     <xsl:text>\tableclose{</xsl:text>
     <xsl:value-of select="$type"/>

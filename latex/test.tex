@@ -65,19 +65,28 @@
 % \usepackage{hypcap} % links in caption ?
 % \usepackage{marginnote}
 % TESTED
+
+% fonts
+% \usepackage{ebgaramond-maths} % OK, too light ?
+% \usepackage{CormorantGaramond} % OK
+% \usepackage{DejaVuSans} % correct
+% \usepackage[]{kpfonts} % not otf XeLaTeX
+% \usepackage{LibreBodoni} % too heavy
+% \usepackage[default]{gfsbodoni} % bugs
+% \usepackage{helvet} % not for XeLaTeX
+% \usepackage[default,oldstyle,scale=0.95]{opensans} % no small caps
+% \usepackage{TheanoDidot} % no italic
+
 % \usepackage{background} % doesn’t work with xetek
 % \usepackage{bookmark} % prefers the hyperref hack \phantomsection
 % \usepackage[color, leftbars]{changebar} % 2 cols doc, impossible to keep bar left
-% \usepackage{DejaVuSans} % override too much, was for for symbols
 % \usepackage{epigraph} % unsolve bug in twocols
 % \usepackage[utf8x]{inputenc} % inputenc package ignored with utf8 based engines
 % \usepackage[sfdefault,medium]{inter} % no small caps
 % \usepackage{firamath} % choose firasans instead, firamath unavailable in Ubuntu 21-04
 % \usepackage{flushend} % bad for last notes, supposed flush end of columns
 % \usepackage[stable]{footmisc} % BAD for complex notes https://texfaq.org/FAQ-ftnsect
-% \usepackage{helvet} % not for XeLaTeX
 % \usepackage{multicol} % not compatible with too much packages (longtable, framed, memoir…)
-% \usepackage[default,oldstyle,scale=0.95]{opensans} % no small caps
 % \usepackage{sectsty} % \chapterfont OBSOLETE
 % \usepackage{scrextend} % KOMA-common, break page, was for margins
 % \usepackage{soul} % \ul for underline, OBSOLETE with XeTeX

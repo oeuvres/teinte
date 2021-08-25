@@ -8,6 +8,7 @@
 
 \usepackage{alphalph} % for alph couter z, aa, ab…
 \usepackage{blindtext} % generate text for testing
+\usepackage{booktabs} % for tables: \toprule, \midrule…
 \usepackage[strict]{changepage} % for modulo 4
 \usepackage{contour} % rounding words
 \usepackage[nodayofweek]{datetime}
@@ -38,6 +39,7 @@
 ]{quoting}
 \usepackage{ragged2e}
 \usepackage{setspace} % \setstretch for <quote>
+\usepackage{scrextend} % KOMA-common, used for addmargin
 \usepackage{tabularx} % <table>
 \usepackage[explicit]{titlesec} % wear titles, !NO implicit
 \usepackage{tikz} % ornaments
@@ -190,8 +192,8 @@
 % commands, blocks
 
 \newcommand{\byline}[1]{\bigskip{\RaggedLeft{#1}\par}\bigskip}
-
-\newcommand{\bibl}[1]{{\smallskip\setlength{\RaggedLeftLeftskip}{2em plus \leftskip}\RaggedLeft\normalsize\normalfont #1\par\medskip}}}
+% \setlength{\RaggedLeftLeftskip}{2em plus \leftskip}
+\newcommand{\bibl}[1]{{\smallskip\RaggedLeft\normalsize\normalfont #1\par\medskip}}
 \newcommand{\biblitem}[1]{{\noindent\hangindent=\parindent   #1\par}}
 \newcommand{\castItem}[1]{{\noindent\hangindent=\parindent #1\par}}
 \newcommand{\dateline}[1]{\medskip{\RaggedLeft{#1}\par}\bigskip}
@@ -238,7 +240,8 @@
   {\@latex@warning{Empty `bibitemlist' environment}}%
 \endlist}
 \newenvironment{docTitle}{\LARGE\bigskip\bfseries\onehalfspacing}{\bigskip}
-\newenvironment{epigraph}{\leftskip1.5\parindent \sffamily\large}{\bigskip}
+% leftskip makes big bugs in Lexmark printing \sffamily
+\newenvironment{epigraph}{\begin{addmargin}[2\parindent]{0em}\sffamily\large\setstretch{0.95}}{\end{addmargin}\bigskip}
 \newenvironment{quoteblock}% may be used for ornaments
   {\begin{quoting}}
   {\end{quoting}}
@@ -252,6 +255,7 @@
 
 
 % table () is preceded and finished by custom command
+\renewcommand\tabularxcolumn[1]{m{#1}}% for vertical centering text in X column
 \newcommand{\tableopen}[1]{%
   \ifnum\strcmp{#1}{wide}=0{%
     \begin{center}

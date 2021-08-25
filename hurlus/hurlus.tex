@@ -36,15 +36,10 @@
     marginpar=7mm,
   ]{geometry}
   \usepackage[fontsize=9.5pt]{scrextend} % for Roboto
-\else\ifav
+\else\ifav % A5
   \documentclass[french,twoside]{book} % ,notitlepage
   \usepackage[%
-    a5paper,
-    inner=25mm,
-    outer=15mm,
-    top=15mm,
-    bottom=15mm,
-    marginparsep=0pt,
+    a5paper
   ]{geometry}
   \usepackage[fontsize=12pt]{scrextend}
 \else% A4 2 cols
@@ -96,21 +91,23 @@
 %%%%%%%%%
 % Fonts %
 %%%%%%%%%
-\usepackage[]{roboto} % SmallCaps, Regular is a bit bold
 % \linespread{0.90} % too compact, keep font natural
-\newfontfamily\fontrun[]{Roboto Condensed Light} % condensed runing heads
-\ifav
-  \setmainfont[
-    ItalicFont={Roboto Light Italic},
-  ]{Roboto}
+\ifav % A5
+
 \else\ifbooklet
+  \usepackage[]{roboto} % SmallCaps, Regular is a bit bold
   \setmainfont[
     ItalicFont={Roboto Light Italic},
   ]{Roboto}
+  \setsansfont{Roboto Light} % seen, if not set, problem with printer
+  \newfontfamily\fontrun[]{Roboto Condensed Light} % condensed runing heads
 \else
-\setmainfont[
-  ItalicFont={Roboto Italic},
-]{Roboto Light}
+  \usepackage[]{roboto} % SmallCaps, Regular is a bit bold
+  \setmainfont[
+    ItalicFont={Roboto Italic},
+  ]{Roboto Light}
+  \setsansfont{Roboto Light} % seen, if not set, problem with printer
+  \newfontfamily\fontrun[]{Roboto Condensed Light} % condensed runing heads
 \fi\fi
 \renewcommand{\LettrineFontHook}{\bfseries\color{rubric}}
 % \renewenvironment{labelblock}{\begin{center}\bfseries\color{rubric}}{\end{center}}
@@ -134,10 +131,11 @@
   {%
     \savenotes
     \setstretch{0.9}
-    \normalfont
     \begin{quotebar}
+    \smallskip
   }
   {%
+    \smallskip
     \end{quotebar}
     \spewnotes
   }
@@ -160,7 +158,7 @@
 
 \titleformat{name=\section}
   [display]{}{}{}{}
-  [\vbox{\color{rubric}\large\raggedleft\textbf{#1}}]
+  [\vbox{\color{rubric}\large\centering\textbf{#1}}]
 \titlespacing{\section}{0pt}{0pt plus 4pt minus 2pt}{\baselineskip}
 
 \titleformat{name=\subsection}
@@ -215,7 +213,7 @@
   \centering\parindent0pt % no vskip ()
   \eltitlepage
   \bigskip
-  {\color{rubric}\hline\par}
+  {\color{rubric}\hline}
   \bigskip
   {\Large TEXTE LIBRE À PARTICIPATIONS LIBRES\par}
   \centerline{\small\color{rubric} {\href{https://hurlus.fr}{\dotuline{hurlus.fr}}}, tiré le \today}\par
@@ -227,7 +225,7 @@
   \centering\parindent0pt
   \eltitlepage
   \vfill\null
-  {\color{rubric}\setlength{\arrayrulewidth}{2pt}\hline\par}
+  {\color{rubric}\setlength{\arrayrulewidth}{2pt}\hline}
   \vfill\null
   {\Large TEXTE LIBRE À PARTICIPATIONS LIBRES\par}
   \centerline{\href{https://hurlus.fr}{\dotuline{hurlus.fr}}, tiré le \today}\par

@@ -1284,20 +1284,7 @@ for example: abstract.
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-  
-  <xsl:template match="tei:p[contains(@rend, 'display')]">
-    <xsl:param name="message"/>
-    <xsl:text>&#10;\begin{</xsl:text>
-    <xsl:value-of select="$quoteEnv"/>
-    <xsl:text>}&#10;</xsl:text>
-    <xsl:apply-templates>
-      <xsl:with-param name="message" select="$message"/>
-    </xsl:apply-templates>
-    <xsl:text>\end{</xsl:text>
-    <xsl:value-of select="$quoteEnv"/>
-    <xsl:text>}&#10;</xsl:text>
-  </xsl:template>
-  
+    
   <xsl:template match="tei:ref[@type = 'cite']">
     <xsl:param name="message"/>
     <xsl:apply-templates>
