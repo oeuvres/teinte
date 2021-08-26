@@ -203,9 +203,9 @@
 \newcommand{\labelblock}[1]{\medbreak{\noindent\color{rubric}\bfseries #1}\par\mednobreak}
 \newcommand{\salute}[1]{\bigbreak{#1}\par\medbreak}
 \newcommand{\signed}[1]{\medskip{\RaggedLeft #1\par}\bigbreak} % supposed bottom
-\newcommand{\speaker}[1]{\medskip{\Centering\sffamily #1\par\nopagebreak}} % supposed bottom
-\newcommand{\stagescene}[1]{{\Centering\sffamily #1\par}\bigskip}
-\newcommand{\stagesp}[1]{\begingroup\leftskip\parindent\noindent\it\sffamily #1\par\endgroup} % left margin, better than list envs
+\newcommand{\speaker}[1]{\medskip{\Centering\sffamily #1 \par\nopagebreak}} % supposed bottom
+\newcommand{\stagescene}[1]{{\Centering\sffamily\textsf{#1}\par}\bigskip}
+\newcommand{\stageblock}[1]{\begingroup\leftskip\parindent\noindent\it\sffamily\footnotesize #1\par\endgroup} % left margin, better than list envs
 \newcommand{\spl}[1]{\noindent\hangindent=2\parindent  #1\par} % sp/l
 \newcommand{\trailer}[1]{{\Centering\bigskip #1\par}} % sp/l
 

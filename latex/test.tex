@@ -60,6 +60,22 @@
     ItalicFont=*-RegularItalic,
     BoldItalicFont=*-BoldItalic
   ]{Luciole}
+
+  \else% A4
+    \documentclass[french]{report}
+    \usepackage[%
+      a4paper,
+      headheight=13pt,
+      top=25mm,
+      headsep=10mm,
+      bottom=20mm,
+      marginpar=8mm,
+      marginparsep=3pt,
+      inner=20mm,
+      outer=20mm,
+    ]{geometry}
+  \fi
+
 \fi
 % TOTEST
 % \usepackage{hypcap} % links in caption ?
@@ -70,11 +86,14 @@
 % \usepackage{ebgaramond-maths} % OK, too light ?
 % \usepackage{CormorantGaramond} % OK
 % \usepackage{DejaVuSans} % correct
-% \usepackage[]{kpfonts} % not otf XeLaTeX
-% \usepackage{LibreBodoni} % too heavy
+% \usepackage{firamath} % choose firasans instead, firamath unavailable in Ubuntu 21-04
 % \usepackage[default]{gfsbodoni} % bugs
 % \usepackage{helvet} % not for XeLaTeX
+% \usepackage[sfdefault,medium]{inter} % no small caps
+% \usepackage[]{kpfonts} % not otf for XeLaTeX
+% \usepackage{LibreBodoni} % OK, too heavy
 % \usepackage[default,oldstyle,scale=0.95]{opensans} % no small caps
+% \usepackage[]{roboto} % SmallCaps, Regular is a bit bold
 % \usepackage{TheanoDidot} % no italic
 
 % \usepackage{background} % doesn’t work with xetek
@@ -82,8 +101,6 @@
 % \usepackage[color, leftbars]{changebar} % 2 cols doc, impossible to keep bar left
 % \usepackage{epigraph} % unsolve bug in twocols
 % \usepackage[utf8x]{inputenc} % inputenc package ignored with utf8 based engines
-% \usepackage[sfdefault,medium]{inter} % no small caps
-% \usepackage{firamath} % choose firasans instead, firamath unavailable in Ubuntu 21-04
 % \usepackage{flushend} % bad for last notes, supposed flush end of columns
 % \usepackage[stable]{footmisc} % BAD for complex notes https://texfaq.org/FAQ-ftnsect
 % \usepackage{multicol} % not compatible with too much packages (longtable, framed, memoir…)

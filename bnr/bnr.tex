@@ -9,16 +9,16 @@
 % Define mode
 \def\mode{a4}
 
-\newif\ifaiv % a4
-\newif\ifav % a5
+\newif\ifAIV % a4
+\newif\ifAV % a5
 
 \ifnum \strcmp{\mode}{a5}=0
-  \avtrue
+  \AVtrue
 \else
-  \aivtrue
+  \AIVtrue
 \fi
 
-\ifav
+\ifAV
   \documentclass[french]{report} % ,notitlepage
   \usepackage[%
     a5paper,
@@ -32,16 +32,9 @@
   ]{geometry}
 \else% A4
   \documentclass[french]{report}
-  \usepackage[%
-    a4paper,
-    headheight=13pt,
+  \usepackage[
     top=25mm,
-    headsep=10mm,
-    bottom=20mm,
-    marginpar=8mm,
-    marginparsep=3pt,
-    inner=20mm,
-    outer=20mm,
+    bottom=18mm,
   ]{geometry}
 \fi
 
@@ -49,8 +42,12 @@
 % before teinte macros
 \usepackage[dvipsnames]{xcolor}
 \definecolor{rubric}{HTML}{000000} % the tonic
-
-
+\ifAV % A5
+  \linespread{0.8}
+  \usepackage[fontsize=18pt]{scrextend}
+\else % A4
+  \usepackage[fontsize=16pt]{scrextend}
+\fi
 
 %%%%%%%%%%%%%%%%%
 % Teinte macros %
@@ -80,12 +77,7 @@
 ]{Roboto} % 18 pt
 
 
-\ifav % A5
-  \linespread{0.8}
-  \usepackage[fontsize=18pt]{scrextend}
-\else % A4
-  \usepackage[fontsize=16pt]{scrextend}
-\fi
+
 
 \setdefaultlanguage[frenchpart=false]{french} % bug on part
 
@@ -116,7 +108,7 @@
 \renewcommand{\thefootnote}{\bfseries\textcolor{rubric}{\arabic{footnote}}} % color for footnote marks
 
 
-\ifav % A5
+\ifAV % A5
   % \renewcommand{\lnatt}[1]{} % no verse number, not enogh margin
   \titleclass{\section}{top}
   \fancypagestyle{fancy}{%

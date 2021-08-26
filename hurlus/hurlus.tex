@@ -93,7 +93,8 @@
 %%%%%%%%%
 % \linespread{0.90} % too compact, keep font natural
 \ifav % A5
-
+  \usepackage{DejaVuSans} % correct
+  \setsansfont{DejaVuSans} % seen, if not set, problem with printer
 \else\ifbooklet
   \usepackage[]{roboto} % SmallCaps, Regular is a bit bold
   \setmainfont[

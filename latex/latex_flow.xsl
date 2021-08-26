@@ -1050,7 +1050,9 @@ for example: abstract.
           <xsl:value-of select="@n"/>
           <xsl:text>} </xsl:text>
         </xsl:when>
-        <xsl:when test="$noindent != ''">\noindent </xsl:when>
+        <xsl:when test="$noindent != ''">
+          <xsl:text>\noindent </xsl:text>
+        </xsl:when>
       </xsl:choose>
       <!-- Ideas of Sebastian , pending
       <xsl:if test="$numberParagraphs = 'true'">
@@ -1410,13 +1412,20 @@ for example: abstract.
     </xsl:choose>
   </xsl:template>
 
-  <xsl:template match="tei:div[@type='scene']/tei:stage | tei:div2/tei:stage">
-    <xsl:text>\stagescene{</xsl:text>
+  <xsl:template match="tei:div[@type='scene']/tei:stage | tei:div[@type='act']/tei:div/tei:stage | tei:div2/tei:stage">
+    <xsl:choose>
+      <xsl:when test="preceding-sibling::tei:stage">
+        <xsl:text>\stageblock{</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>\stagescene{</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:apply-templates/>
     <xsl:text>}&#10;</xsl:text>
   </xsl:template>
 
-  <xsl:template match="tei:div[@type='scene']/tei:stage/tei:surname | tei:div2/tei:stage/tei:surname">
+  <xsl:template match="tei:div[@type='scene']/tei:stage/tei:surname | tei:div[@type='act']/tei:div/tei:stage/tei:surname | tei:div2/tei:stage/tei:surname">
     <xsl:text>\MakeUppercase{</xsl:text>
     <xsl:apply-templates/>
     <xsl:text>}</xsl:text>
@@ -1429,7 +1438,7 @@ for example: abstract.
     <xsl:text>}</xsl:text>
   </xsl:template>
   <xsl:template match="tei:sp/tei:stage">
-    <xsl:text>\stagesp{</xsl:text>
+    <xsl:text>\stageblock{</xsl:text>
     <xsl:apply-templates/>
     <xsl:text>}&#10;</xsl:text>
   </xsl:template>
