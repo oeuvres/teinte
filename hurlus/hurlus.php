@@ -64,7 +64,7 @@ class Hurlus {
   {
     array_shift($_SERVER['argv']); // shift first arg, the script filepath
     if (!count($_SERVER['argv'])) exit("
-usage    : php -f hurlus.php (dstdir/)? srcdir/*.xml\n");
+usage    : php -f hurlus.php  srcdir/*.xml\n");
 
     /*
     $dstdir = "";
@@ -81,6 +81,7 @@ usage    : php -f hurlus.php (dstdir/)? srcdir/*.xml\n");
 
     while($glob = array_shift($_SERVER['argv']) ) {
       foreach(glob($glob) as $teifile) {
+        Hurlus::pdf($teifile, dirname(realpath($teifile)));
       }
     }
 

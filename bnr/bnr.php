@@ -103,11 +103,12 @@ class Bnr {
     array_shift($_SERVER['argv']); // shift first arg, the script filepath
     if (!count($_SERVER['argv'])) exit("
 usage    : php bnr.php srcdir/*.xml\n");
-    $dstdir = dirname(__FILE__).'/work/';
+    $basedir = dirname(dirname(dirname(__FILE__))).'/bnr-obtic/';
     while($glob = array_shift($_SERVER['argv']) ) {
       foreach(glob($glob) as $teifile) {
-        self::pdf(realpath($teifile), $dstdir);
-        self::export(realpath($teifile), $dstdir);
+        $name = pathinfo($teifile, PATHINFO_FILENAME);
+        self::pdf(realpath($teifile), $basedir.$name);
+        self::export(realpath($teifile), $basedir.$name);
       }
     }
 

@@ -325,53 +325,50 @@ for example: abstract.
       </xsl:when>
       <xsl:otherwise>
         <xsl:variable name="decls">
-            <xsl:choose>
-              <xsl:when test="contains($zerend, ' i ')">\itshape</xsl:when>
-              <xsl:when test="contains($zerend, ' it ')">\itshape</xsl:when>
-              <xsl:when test="contains($zerend, ' ital ')">\itshape</xsl:when>
-              <xsl:when test="contains($zerend, ' italics ')">\itshape</xsl:when>
-              <xsl:when test="contains($zerend, ' italique ')">\itshape</xsl:when>
-              <xsl:when test="contains($zerend, ' tt ')">\ttfamily</xsl:when>
-              <xsl:when test="contains($zerend, ' sc ')">\scshape</xsl:when>
-              <xsl:when test="contains($zerend, ' large ')">\large</xsl:when>
-              <xsl:when test="contains($zerend, ' larger ')">\larger</xsl:when>
-              <xsl:when test="contains($zerend, ' small ')">\small</xsl:when>
-              <xsl:when test="contains($zerend, ' smaller ')">\smaller</xsl:when>
-              <xsl:when test="contains($zerend, ' color')">
-                <xsl:variable name="color" select="substring-before(substring-after($zerend, ' color'), ' ')"/>
-                <xsl:text>\color{</xsl:text>
-                <xsl:value-of select="translate($color, '(}', '')"/>
-                <xsl:text>}</xsl:text>
-              </xsl:when>
-            </xsl:choose>
+          <xsl:if test="contains($zerend, ' center ')">\centering</xsl:if>
+          <xsl:if test="contains($zerend, ' i ')">\itshape</xsl:if>
+          <xsl:if test="contains($zerend, ' it ')">\itshape</xsl:if>
+          <xsl:if test="contains($zerend, ' ital ')">\itshape</xsl:if>
+          <xsl:if test="contains($zerend, ' italics ')">\itshape</xsl:if>
+          <xsl:if test="contains($zerend, ' italique ')">\itshape</xsl:if>
+          <xsl:if test="contains($zerend, ' tt ')">\ttfamily</xsl:if>
+          <xsl:if test="contains($zerend, ' sc ')">\scshape</xsl:if>
+          <xsl:if test="contains($zerend, ' large ')">\large</xsl:if>
+          <xsl:if test="contains($zerend, ' larger ')">\larger</xsl:if>
+          <xsl:if test="contains($zerend, ' right ')">\raggedleft</xsl:if>
+          <xsl:if test="contains($zerend, ' small ')">\small</xsl:if>
+          <xsl:if test="contains($zerend, ' smaller ')">\smaller</xsl:if>
+          <xsl:if test="contains($zerend, ' color')">
+            <xsl:variable name="color" select="substring-before(substring-after($zerend, ' color'), ' ')"/>
+            <xsl:text>\color{</xsl:text>
+            <xsl:value-of select="translate($color, '(}', '')"/>
+            <xsl:text>}</xsl:text>
+          </xsl:if>
         </xsl:variable>
         <xsl:variable name="cmd">
-          <xsl:choose>
-            <xsl:when test="contains($zerend, ' allcaps ')">\uppercase{</xsl:when>
-            <xsl:when test="contains($zerend, ' b ')">\textbf{</xsl:when>
-            <xsl:when test="contains($zerend, ' bold ')">\textbf{</xsl:when>
-            <xsl:when test="contains($zerend, ' gothic ')">\textgothic{</xsl:when>
-            <xsl:when test="contains($zerend, ' noindex ')">\textrm{</xsl:when>
-            <xsl:when test="contains($zerend, ' plain ')">\textrm{</xsl:when>
-            <xsl:when test="contains($zerend, ' strong ')">\textbf{</xsl:when>
-            <xsl:when test="contains($zerend, ' sub ')">\textsubscript{</xsl:when>
-            <xsl:when test="contains($zerend, ' subscript ')">\textsubscript{</xsl:when>
-            <xsl:when test="contains($zerend, ' sup ')">\textsuperscript{</xsl:when>
-            <xsl:when test="contains($zerend, ' superscript ')">\textsuperscript{</xsl:when>
-            <xsl:when test="contains($zerend, ' uc ')">\MakeUppercase{</xsl:when>
-            <xsl:when test="contains($zerend, ' underline ')">\uline{</xsl:when>
-            <xsl:when test="contains($zerend, ' uppercase ')">\MakeUppercase{</xsl:when>
+          <xsl:if test="contains($zerend, ' allcaps ')">\uppercase{</xsl:if>
+          <xsl:if test="contains($zerend, ' b ')">\textbf{</xsl:if>
+          <xsl:if test="contains($zerend, ' bold ')">\textbf{</xsl:if>
+          <xsl:if test="contains($zerend, ' gothic ')">\textgothic{</xsl:if>
+          <xsl:if test="contains($zerend, ' noindex ')">\textrm{</xsl:if>
+          <xsl:if test="contains($zerend, ' plain ')">\textrm{</xsl:if>
+          <xsl:if test="contains($zerend, ' strong ')">\textbf{</xsl:if>
+          <xsl:if test="contains($zerend, ' sub ')">\textsubscript{</xsl:if>
+          <xsl:if test="contains($zerend, ' subscript ')">\textsubscript{</xsl:if>
+          <xsl:if test="contains($zerend, ' sup ')">\textsuperscript{</xsl:if>
+          <xsl:if test="contains($zerend, ' superscript ')">\textsuperscript{</xsl:if>
+          <xsl:if test="contains($zerend, ' uc ')">\MakeUppercase{</xsl:if>
+          <xsl:if test="contains($zerend, ' underline ')">\uline{</xsl:if>
+          <xsl:if test="contains($zerend, ' uppercase ')">\MakeUppercase{</xsl:if>
             <!-- 
             <xsl:when test=". = 'strike'">\sout{</xsl:when>
             <xsl:when test=". = 'overbar'">\textoverbar{</xsl:when>
             <xsl:when test=". = 'doubleunderline'">\uuline{</xsl:when>
             <xsl:when test=". = 'wavyunderline'">\uwave{</xsl:when>
             <xsl:when test=". = 'quoted'">\textquoted{</xsl:when>
-            <xsl:when test=". = 'center'">\centerline{</xsl:when>
             <xsl:when test=". = 'calligraphic'">\textcal{</xsl:when>
 
             -->
-          </xsl:choose>
         </xsl:variable>
         <xsl:value-of select="$cmd"/>
         <xsl:choose>
@@ -1062,29 +1059,18 @@ for example: abstract.
         <xsl:text>&#10;\pend&#10;</xsl:text>
       </xsl:if>
       -->
-      <!-- Rendering char styles -->
-      <xsl:call-template name="rendering"/>
+      <xsl:apply-templates>
+        <xsl:with-param name="message" select="$message"/>
+      </xsl:apply-templates>
       <!-- Especially at the end of a footnote or a quote, \par produce a bad empty line -->
-      <xsl:if test="following-sibling::*">
+      <xsl:if test="following-sibling::* or contains($rend, ' center ') or contains($rend, ' right ')">
         <xsl:text>\par</xsl:text>
       </xsl:if>
     </xsl:variable>
-    <xsl:choose>
-      <xsl:when test="contains($rend, ' right ')">
-        <xsl:text>{\raggedleft </xsl:text>
-        <xsl:copy-of select="$cont"/>
-        <xsl:text>}&#10;</xsl:text>
-      </xsl:when>
-      <xsl:when test="contains($rend, 'center')">
-         <xsl:text>&#10;\begin{center}&#10;</xsl:text>
-          <xsl:copy-of select="$cont"/>
-        <xsl:text>&#10;\end{center}&#10;&#10;</xsl:text>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:copy-of select="$cont"/>
-        <xsl:text>&#10;</xsl:text>
-      </xsl:otherwise>
-    </xsl:choose>
+    <xsl:call-template name="rendering">
+      <xsl:with-param name="cont" select="$cont"/>
+    </xsl:call-template>
+    <xsl:text>&#10;</xsl:text>
   </xsl:template>
   
   <xsl:template name="numberParagraph">

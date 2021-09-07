@@ -234,6 +234,22 @@ class Tools
   }
 
   /**
+   * Build a hash from tsv file where first col is the key.
+   */
+  static function tsvhash($tsvfile, $sep="\t")
+  {
+    $ret = array();
+    $handle = fopen($tsvfile, "r");
+    $l = 1;
+    while (($data = fgetcsv($handle, 0, $sep)) !== FALSE) {
+      if (!$data || !count($data)) continue;
+      if (isset($ret[$data[0]])) echo $tsvfile,'#',$l,' not unique key:', $data[0], "\n";
+      $ret[$data[0]] = $data;
+    }
+    return $ret;
+  }
+
+  /**
    * Custom error handler
    * Especially used for xsl:message coming from transform()
    * To avoid Apache time limit, php could output some bytes during long transformations
