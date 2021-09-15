@@ -20,13 +20,15 @@ Latex from TEI, metadata for preamble
   <xsl:template name="latexTitle">
     <xsl:for-each select="/*/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title">
       <xsl:choose>
-        <xsl:when test="not(@type) or @type='main'">\textbf{ <xsl:apply-templates mode="meta"/> }</xsl:when>
-        <xsl:when test="@type='sub'">\textit{ <xsl:apply-templates mode="meta"/> }</xsl:when>
+        <xsl:when test="not(@type) or @type='main'"><xsl:apply-templates mode="meta"/></xsl:when>
+        <xsl:when test="@type='sub'">\emph{<xsl:apply-templates mode="meta"/>}</xsl:when>
         <xsl:otherwise>
           <xsl:apply-templates mode="meta"/>
         </xsl:otherwise>
       </xsl:choose>
-      <xsl:text>\par&#10;</xsl:text>
+      <xsl:if test="following-sibling::tei:title">
+        <xsl:text>\par&#10;</xsl:text>
+      </xsl:if>
       <xsl:if test="position() != last()">\medskip&#10;</xsl:if>
     </xsl:for-each>
   </xsl:template>

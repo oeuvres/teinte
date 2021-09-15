@@ -8,12 +8,12 @@ if (isset($argv[0]) && realpath($argv[0]) == realpath(__FILE__)) Latex::cli(); /
  * Transform an XML/TEI file in LaTeX
  */
 class Latex {
-  protected $dom; // dom prepared for TeX (escapings, images)
+  public $dom; // dom prepared for TeX (escapings, images)
   protected $srcfile;
   static protected $latex_xsl;
   static protected $latex_meta_xsl;
   // escape all text nodes
-  static protected $latex_esc = array(
+  static public $latex_esc = array(
     '@\\\@u' => '\textbackslash', //before adding \ for escapings
     '@(&amp;)@u' => '\\\$1',
     '@([%\$#_{}])@u' => '\\\$1',
@@ -131,7 +131,7 @@ class Latex {
    * $basehref : a basehref prefix to rewrite image link, user knows how to resolve links to image
    * return : a doc with updated links to image
    */
-  private function teigraf($grafdir=null, $grafhref=null)
+  public function teigraf($grafdir=null, $grafhref=null)
   {
     if ($grafdir) $grafdir=rtrim($grafdir, '/\\').'/';
     // copy linked images in an images folder, and modify relative link
@@ -219,6 +219,7 @@ class Latex {
   {
     $filename = pathinfo($this->srcfile, PATHINFO_FILENAME);
     $workdir = self::workdir($this->srcfile);
+
     $grafdir = $workdir.$filename.'/';
     Tools::dirclean($grafdir); // empty graf dir
 

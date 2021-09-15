@@ -11,6 +11,8 @@ class Rougemont {
   public static function xslChapter($id, $meta, $text)
   {
     $texfile = self::$workdir.basename(self::$workdir).'_'.$id.'.tex';
+    $workdir = dirname($texfile).'/';
+    chdir($workdir); // change working directory
     // echo $id, ' ', $texfile, "\n", $meta, "\n";
     $tex = str_replace(
       array('%meta%', '%text%'),
@@ -18,6 +20,12 @@ class Rougemont {
       self::$skeltex,
     );
     file_put_contents($texfile, $tex);
+    exec("latexmk -xelatex -interaction=nonstopmode ".$texfile); //
+    // exec("xelatex -interaction=nonstopmode --halt-on-error ".$texfile); //
+    // exec("xelatex -interaction=nonstopmode --halt-on-error ".$texfile); //
+    // exec("xelatex -interaction=nonstopmode --halt-on-error ".$texfile); //
+    // rename(self::$workdir.basename(self::$workdir).'.tex', self::$workdir.basename(self::$workdir).'_'.$id.'.tex');
+    // rename(self::$workdir.basename(self::$workdir).'.pdf', self::$workdir.basename(self::$workdir).'_'.$id.'.pdf');
     return "";
   }
 
@@ -46,11 +54,33 @@ usage    : php -f rougemont.php srcdir/*.xml\n");
       foreach(glob($glob) as $teifile) {
         $teiname = pathinfo($teifile, PATHINFO_FILENAME);
         list($teiname) = explode("_", $teiname);
-        $teidom = Latex::dom($teifile); // escape for lATEX
+        $bookurl = "https://unige.ch/rougemont/";
+        $path = realpath($teifile);
+        $folder = basename(dirname($path));
+        if (strpos($folder, 'livres') !== false) $bookurl .= "livres/";
+        else if (strpos($folder, 'articles') !== false) $bookurl .= "articles/";
+        else if (strpos($folder, 'corr') !== false) $bookurl .= "correspondances/";
+        $bookurl .= $teiname.'/';
+        $bookurl = preg_replace(array_keys(Latex::$latex_esc), array_values(Latex::$latex_esc), $bookurl);
+        echo $bookurl,"\n";
+        $proc->setParameter('',
+          array(
+            'bookurl' => $bookurl,
+          )
+        );
+
         // set props before transformations
         self::$workdir = Latex::workdir($teiname);
         self::$skeltex = Latex::includes(dirname(__FILE__).'/rougemont.tex', self::$workdir, $teiname.'/');
-        $proc->transformToXML($teidom);
+        $latex = new Latex();
+        $latex->load($teifile);
+
+        $grafhref = 'ill/';
+        $grafdir = self::$workdir.$grafhref;
+        Tools::dirclean($grafdir); // empty graf dir
+        $latex->teigraf($grafdir, $grafhref);
+
+        $proc->transformToXML($latex->dom);
 
         /*
         $latex->load($teifile); // load TEI/XML source

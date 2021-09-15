@@ -363,7 +363,9 @@ Sections
         <xsl:apply-templates select="node()[not(self::tei:pb)]">
           <xsl:with-param name="from" select="$from"/>
         </xsl:apply-templates>
-        <a href="#{$id}" class="bookmark"> 🔗</a>
+        <a href="#{$id}" class="bookmark">
+          <xsl:text> </xsl:text>
+        </a>
       </xsl:element>
     </xsl:if>
   </xsl:template>

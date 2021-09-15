@@ -106,7 +106,11 @@ p,
 projectDesc,
 publicationStmt,
 publicationStmt > *,
+abstract > quote,
+argument > quote,
+cit > quote,
 div > quote,
+postscript > quote,
 refsDecl,
 salute,
 samplingDecl,
@@ -213,7 +217,7 @@ div7 {
   margin-bottom: 1rem;
   counter-increment: div7;
 }
-/* 
+/*
 div1 > head:before {
   content: counter(div1) ". ";
 }
@@ -267,7 +271,7 @@ div3 head {
 }
 
 /**
- * 
+ *
  */
 
 /*
@@ -656,8 +660,8 @@ hi[rend = "smallcaps"] {
 }
 
 hi[rend = "sup"] {
-  position: relative; 
-  top: -0.5em; 
+  position: relative;
+  top: -0.5em;
   font-size: 80%;
 }
 
@@ -997,7 +1001,7 @@ change:before {
       fontInherit, true,
       color, "inherit",
       tooltip, "Nom, Prénom (AAAA-AAAA)"
-    );  
+    );
   }
 
   placeName:after {

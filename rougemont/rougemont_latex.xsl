@@ -8,7 +8,7 @@
   >
   <xsl:import href="../latex/latex.xsl"/>
   <xsl:import href="../latex/latex_meta.xsl"/>
-  <!-- Url ? -->
+  <xsl:param name="bookurl"/>
   <xsl:param name="bookname"/>
 
   <xsl:key name="split" match="
@@ -90,6 +90,10 @@
       <xsl:text> (</xsl:text>
       <xsl:value-of select="$latexDate"/>
       <xsl:text>)</xsl:text>
+      <xsl:text>}&#10;</xsl:text>
+      <xsl:text>\def\elurl{</xsl:text>
+      <xsl:value-of select="$bookurl"/>
+      <xsl:value-of select="$chapid"/>
       <xsl:text>}&#10;</xsl:text>
     </xsl:variable>
     <xsl:variable name="text">
