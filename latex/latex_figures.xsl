@@ -61,9 +61,16 @@ A light version for XSLT1, with local improvements.
   <xsl:template match="tei:figDesc"/>
   
   <xsl:template match="tei:figure">
-    <xsl:text>&#10;\begin{figure}[h]&#10;  \centering&#10;</xsl:text>
-    <xsl:apply-templates/>
-    <xsl:text>\end{figure}&#10;&#10;</xsl:text>
+    <xsl:choose>
+      <xsl:when test="not(ancestor::tei:note)">
+        <xsl:text>&#10;\begin{figure}[h]&#10;  \centering&#10;</xsl:text>
+        <xsl:apply-templates/>
+        <xsl:text>\end{figure}&#10;&#10;</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   
   <xsl:template match="tei:figure/tei:head">
@@ -85,7 +92,7 @@ A light version for XSLT1, with local improvements.
     </xsl:choose>
     -->
     <xsl:variable name="pic">
-      <xsl:text>  \includegraphics[</xsl:text>
+      <xsl:text>\noindent\includegraphics[</xsl:text>
       <xsl:call-template name="graphicsAttributes">
         <xsl:with-param name="mode">latex</xsl:with-param>
       </xsl:call-template>
@@ -251,7 +258,10 @@ A light version for XSLT1, with local improvements.
       </xsl:if>
     </xsl:for-each>
     <xsl:text> |&#10;}&#10;</xsl:text>
+    <!-- joining pb
     <xsl:text>\toprule&#10;</xsl:text>
+    -->
+    <xsl:text>\hline&#10;</xsl:text>
     <xsl:for-each select="tei:row">
       <xsl:apply-templates select="tei:cell"/>
       <xsl:text> \\&#10;</xsl:text>
@@ -259,10 +269,12 @@ A light version for XSLT1, with local improvements.
         <xsl:when test="position() = 1 and tei:cell[2]/@role='label'">
           <xsl:text>\midrule&#10;</xsl:text>
         </xsl:when>
-        <xsl:when test="position() != last()">\hline&#10;</xsl:when>
+        <xsl:otherwise>\hline&#10;</xsl:otherwise>
       </xsl:choose>
     </xsl:for-each>
+    <!-- joining pb
     <xsl:text>\bottomrule&#10;</xsl:text>
+    -->
     <xsl:text>\end{tabularx}&#10;</xsl:text>
     <xsl:text>\tableclose{</xsl:text>
     <xsl:value-of select="$type"/>

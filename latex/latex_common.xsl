@@ -94,7 +94,7 @@
   -->
   <xsl:template name="tei:makeHyperTarget">
     <xsl:param name="id" select="@xml:id"/>
-    <xsl:if test="$id">\phantomsection&#10;\label{<xsl:value-of select="$id"/>}</xsl:if>
+    <xsl:if test="$id">\phantomsection\label{<xsl:value-of select="$id"/>}</xsl:if>
   </xsl:template>
   
   <!-- Simple semantic block with a command -->

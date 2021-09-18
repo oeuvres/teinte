@@ -331,7 +331,7 @@ Gobal TEI parameters and variables are divided in different categories
   <xsl:variable name="epub2">epub2</xsl:variable>
   <xsl:variable name="epub3">epub3</xsl:variable>
   <xsl:variable name="html5">html5</xsl:variable>
-  <xsl:variable name="notblock"> anchor cb index lb milestone pb </xsl:variable> 
+  <xsl:variable name="notblock"> anchor cb figure graphic index lb milestone pb </xsl:variable> 
   <!-- What kind of root element to output ? html, nav… -->
   <xsl:param name="root" select="$html"/>
   <xsl:variable name="html">html</xsl:variable>
@@ -1471,7 +1471,7 @@ Le mode label génère un intitulé court obtenu par une liste de valeurs locali
     <xsl:variable name="firstchar" select="substring(translate(normalize-space(.), ' ', ''), 1, 1)"/>
     <xsl:variable name="firstnode" select="node()[1][normalize-space(.) != '']"/>
     <!-- previous sibling block -->
-    <xsl:variable name="prevblock" select="preceding-sibling::*[1][not(contains($notblock, concat(' ', local-name(), ' ')))]"/>
+    <xsl:variable name="prevblock" select="preceding-sibling::*[not(contains($notblock, concat(' ', local-name(), ' ')))][1]"/>
     <!-- previous <p> -->
     <!--
     <xsl:variable name="prevp" select="preceding-sibling::tei:p[1]"/>
@@ -1492,9 +1492,9 @@ Le mode label génère un intitulé court obtenu par une liste de valeurs locali
       <!-- first char seem a pseudo item, let indent -->
       <xsl:when test="contains('-–—1234567890', $firstchar)"/>
       <!-- theater, first <p> of a series -->
-      <xsl:when test="name($prevblock) != 'p' and parent::tei:sp">noindent</xsl:when>
+      <xsl:when test="name($prevblock) != 'p' and (parent::tei:sp or parent::tei:quote)">noindent</xsl:when>
       <!-- first <p> of a series, smaller than 2 “line”, let indent -->
-      <xsl:when test="name($prevblock) != 'p' and $len &lt; 80"/>
+      <xsl:when test="not($prevblock) and $len &lt; 80"/> 
       <!-- first <p> of a series (> 2 lines), noindent -->
       <xsl:when test="not($prevblock)">noindent</xsl:when>
       <!-- if preceded by not <p> -->

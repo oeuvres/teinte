@@ -19,6 +19,7 @@ class Latex {
     '@([%\$#_{}])@u' => '\\\$1',
     '@~@u' => '\textasciitilde',
     '@\^@u' => '\textasciicircum',
+    '@(<pb[^>]*>)\s+@' => '$1', // page breaks may add unwanted space
     '@(\p{Han}[\p{Han} ]+)@u' => '\zh{$1}',
     '@\s+@' => ' ', // not unicode \s, keep unbreakable space
   );

@@ -474,7 +474,7 @@ for example: abstract.
     <xsl:text>&#160;</xsl:text>
   </xsl:template>
   
-  <xsl:template match="tei:l">
+  <xsl:template match="complex/tei:l">
     <xsl:param name="message"/>
     <xsl:variable name="next" select="following-sibling::*[not(contains($notblock, concat(' ', local-name(), ' ')))][1]"/>
     <xsl:variable name="prev" select="preceding-sibling::*[not(contains($notblock, concat(' ', local-name(), ' ')))][1]"/>
@@ -537,11 +537,47 @@ for example: abstract.
         <xsl:text> \\-&#10;\end{poem}&#10;</xsl:text>
       </xsl:when>
     </xsl:choose>
+    
+    
+    <!-- Other version of loop.
+      Contains verses, all elements should be blocks. Verse environment doesn’t like to be inside quoting -->
+
+      <xsl:for-each select="*">
+        <!-- Before block -->
+        <xsl:choose>
+          <!-- quote starting by verse do nothing -->
+          <xsl:when test="(self::tei:l or self::tei:lg) and position() = 1"/>
+          <!-- non verse opening, begin quote -->
+          <xsl:when test="position() = 1"/>
+          <!-- Non verse inside quote, do nothing, let verse know -->
+          <xsl:when test="not(self::tei:l) and not(self::tei:lg)"/>
+          <!-- Not first verse of a series, do nothing -->
+          <xsl:when test="preceding-sibling::*[1][self::tei:l or self::tei:lg]"/>
+          <!-- First verse of a series, preceded by a non verse block, end quote environment  -->
+          <xsl:otherwise/>
+        </xsl:choose>
+        <xsl:apply-templates select="."/>
+        <!-- After block -->
+        <xsl:choose>
+          <!-- quote closing by verse, do nothing -->
+          <xsl:when test="position() = last() and (self::tei:l or self::tei:lg)"/>
+          <!-- quote closing with a non verse block, end -->
+          <xsl:when test="position() = last()"/>
+          <!-- Not end, not verse, do nothing -->
+          <xsl:when test="not(self::tei:l) and not(self::tei:lg)"/>
+          <!-- verse followed by verse, do nothing -->
+          <xsl:when test="following-sibling::*[1][self::tei:l or self::tei:lg]"/>
+          <!-- Should be last verse a series, followed by something else to enclose in quote -->
+          <xsl:otherwise/>
+        </xsl:choose>
+      </xsl:for-each>
+    
+    
   </xsl:template>
 
-  <xsl:template match="tei:sp/tei:l | tei:epigraph/tei:l">
+  <xsl:template match="tei:l">
     <xsl:param name="message"/>
-    <xsl:text>\spl{</xsl:text>
+    <xsl:text>\lpar{</xsl:text>
     <!-- numbering ? -->
     <xsl:choose>
       <xsl:when test="not(@n)"/>
@@ -573,7 +609,7 @@ for example: abstract.
   </xsl:template>
   
 
-  <xsl:template match="tei:lg">
+  <xsl:template match="complex/tei:lg">
     <xsl:param name="message"/>
     <xsl:variable name="next" select="following-sibling::*[not(contains($notblock, concat(' ', local-name(), ' ')))][1]"/>
     <xsl:variable name="prev" select="preceding-sibling::*[not(contains($notblock, concat(' ', local-name(), ' ')))][1]"/>
@@ -609,6 +645,16 @@ for example: abstract.
       </xsl:otherwise>
       <!-- end stanza -->
     </xsl:choose>
+  </xsl:template>
+  
+  <xsl:template match="tei:lg">
+    <xsl:param name="message"/>
+    <xsl:variable name="next" select="following-sibling::*[not(contains($notblock, concat(' ', local-name(), ' ')))][1]"/>
+    <xsl:variable name="prev" select="preceding-sibling::*[not(contains($notblock, concat(' ', local-name(), ' ')))][1]"/>
+    <xsl:apply-templates>
+      <xsl:with-param name="message" select="$message"/>
+    </xsl:apply-templates>
+    <xsl:if test="local-name($next) = 'lg'">\bigskip&#10;</xsl:if>
   </xsl:template>
   
   
@@ -1035,9 +1081,15 @@ for example: abstract.
     <xsl:param name="message"/>
     <xsl:variable name="rend" select="concat(' ', normalize-space(@rend), ' ')"/>
     <xsl:call-template name="tei:makeHyperTarget"/>
+    <xsl:variable name="pb1">
+      <xsl:if test="name(*[1]) = 'pb' and normalize-space(*[1]/preceding-sibling::text()) = ''">pb1</xsl:if>
+    </xsl:variable>
     <xsl:variable name="noindent">
       <xsl:call-template name="noindent"/>
     </xsl:variable>
+    <xsl:if test="$pb1 != ''">
+      <xsl:apply-templates select="tei:pb[1]"/>
+    </xsl:if>
     <xsl:variable name="cont">
       <xsl:choose>
         <xsl:when test="@n != ''">
@@ -1059,9 +1111,18 @@ for example: abstract.
         <xsl:text>&#10;\pend&#10;</xsl:text>
       </xsl:if>
       -->
-      <xsl:apply-templates>
-        <xsl:with-param name="message" select="$message"/>
-      </xsl:apply-templates>
+      <xsl:choose>
+        <xsl:when test="$pb1 != ''">
+          <xsl:apply-templates select="node()[not(self::tei:pb[1])]">
+            <xsl:with-param name="message" select="$message"/>
+          </xsl:apply-templates>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:apply-templates>
+            <xsl:with-param name="message" select="$message"/>
+          </xsl:apply-templates>
+        </xsl:otherwise>
+      </xsl:choose>
       <!-- Especially at the end of a footnote or a quote, \par produce a bad empty line -->
       <xsl:if test="following-sibling::* or contains($rend, ' center ') or contains($rend, ' right ')">
         <xsl:text>\par</xsl:text>
@@ -1085,6 +1146,16 @@ for example: abstract.
   
   <xsl:template match="tei:pb">
     <xsl:param name="message"/>
+    <xsl:call-template name="tei:makeHyperTarget"/>
+    <!-- if no surrounding space, do not forget to add one, but not if already there -->
+    <xsl:variable name="prev" select="preceding-sibling::node()[1]"/>
+    <xsl:variable name="next" select="following-sibling::node()[1]"/>
+    <xsl:variable name="spaces" select="concat(substring($prev, string-length($prev)), substring($next, 1, 1))"/>
+    <xsl:variable name="sp">
+      <xsl:if test="translate($spaces, concat('&#9;', '&#10;', '&#13;'), '  ')">
+        <xsl:text> </xsl:text>
+      </xsl:if>
+    </xsl:variable>
     <!-- string " Page " is now managed through the i18n file -->
     <xsl:choose>
       <xsl:when test="$pbStyle = 'active'">
@@ -1133,13 +1204,14 @@ for example: abstract.
         <!--
         <xsl:value-of select="concat('% image:', tei:resolveURI(., @facs), '&#10;')"/>
         -->
-        <xsl:text> </xsl:text>
+        <xsl:value-of select="$sp"/>
       </xsl:when>
+      <!-- no need to add space if @xml:id -->
+      <xsl:when test="@xml:id"/>
       <xsl:otherwise>
-        <xsl:text> </xsl:text>
+        <xsl:value-of select="$sp"/>
       </xsl:otherwise>
     </xsl:choose>
-    <xsl:call-template name="tei:makeHyperTarget"/>
   </xsl:template>
   
 
@@ -1176,16 +1248,8 @@ for example: abstract.
       <xsl:call-template name="tei:isInline"/>
     </xsl:variable>
     <xsl:variable name="rend" select="concat(' ', @rend, ' ')"/>
-    <xsl:variable name="begin">
-      <xsl:text>\begin{</xsl:text>
-      <xsl:value-of select="$quoteEnv"/>
-      <xsl:text>}&#10;</xsl:text>
-    </xsl:variable>
-    <xsl:variable name="end">
-      <xsl:text>\end{</xsl:text>
-      <xsl:value-of select="$quoteEnv"/>
-      <xsl:text>}&#10;</xsl:text>
-    </xsl:variable>
+    <xsl:variable name="prevblock" select="preceding-sibling::*[not(contains($notblock, concat(' ', local-name(), ' ')))][1]"/>
+    <xsl:variable name="nextblock" select="following-sibling::*[not(contains($notblock, concat(' ', local-name(), ' ')))][1]"/>
     <xsl:choose>
       <!-- Inline, shall we tag ? -->
       <xsl:when test="$inline != ''">
@@ -1195,7 +1259,7 @@ for example: abstract.
         </xsl:apply-templates>
         <xsl:text>}</xsl:text>
       </xsl:when>
-      <xsl:when test="parent::tei:cit or parent::tei:note">
+      <xsl:when test="parent::tei:cit">
         <xsl:call-template name="tei:makeHyperTarget"/>
         <xsl:apply-templates>
           <xsl:with-param name="message" select="$message"/>
@@ -1204,50 +1268,8 @@ for example: abstract.
           <xsl:text>\par&#10;</xsl:text>
         </xsl:if>
       </xsl:when>
-      <!-- Contains verses, all elements should be blocks. Verse environment doesn’t like to be inside quoting -->
-      <xsl:when test="tei:l | tei:lg">
-        <xsl:text>&#10;</xsl:text>
-        <xsl:call-template name="tei:makeHyperTarget"/>
-        <xsl:for-each select="*">
-          <!-- Before block -->
-          <xsl:choose>
-            <!-- quote starting by verse do nothing -->
-            <xsl:when test="(self::tei:l or self::tei:lg) and position() = 1"/>
-            <!-- non verse opening, begin quote -->
-            <xsl:when test="position() = 1">
-              <xsl:value-of select="$begin"/>
-            </xsl:when>
-            <!-- Non verse inside quote, do nothing, let verse know -->
-            <xsl:when test="not(self::tei:l) and not(self::tei:lg)"/>
-            <!-- Not first verse of a series, do nothing -->
-            <xsl:when test="preceding-sibling::*[1][self::tei:l or self::tei:lg]"/>
-            <!-- First verse of a series, preceded by a non verse block, end quote environment  -->
-            <xsl:otherwise>
-              <xsl:value-of select="$end"/>
-            </xsl:otherwise>
-          </xsl:choose>
-          <xsl:apply-templates select="."/>
-          <!-- After block -->
-          <xsl:choose>
-            <!-- quote closing by verse, do nothing -->
-            <xsl:when test="position() = last() and (self::tei:l or self::tei:lg)"/>
-            <!-- quote closing with a non verse block, end -->
-            <xsl:when test="position() = last()">
-              <xsl:value-of select="$end"/>
-            </xsl:when>
-            <!-- Not end, not verse, do nothing -->
-            <xsl:when test="not(self::tei:l) and not(self::tei:lg)"/>
-            <!-- verse followed by verse, do nothing -->
-            <xsl:when test="following-sibling::*[1][self::tei:l or self::tei:lg]"/>
-            <!-- Should be last verse a series, followed by something else to enclose in quote -->
-            <xsl:otherwise>
-              <xsl:value-of select="$begin"/>
-            </xsl:otherwise>
-          </xsl:choose>
-        </xsl:for-each>
-        <xsl:text>&#10;</xsl:text>
-      </xsl:when>
       <!-- framed border -->
+      <!--
       <xsl:when test="contains($rend, ' border ')">
         <xsl:text>&#10;</xsl:text>
         <xsl:call-template name="tei:makeHyperTarget"/>
@@ -1257,17 +1279,19 @@ for example: abstract.
         </xsl:apply-templates>
         <xsl:text>\end{borderbox}&#10;&#10;</xsl:text>
       </xsl:when>
+      -->
       <!-- Block or multi block -->
       <xsl:otherwise>
-        <xsl:text>&#10;</xsl:text>
         <xsl:call-template name="tei:makeHyperTarget"/>
-        <xsl:value-of select="$begin"/>
+        <xsl:if test="$prevblock and local-name($prevblock) != 'quote'">\quoteskip</xsl:if>
+        <xsl:text>\begin{quoteblock}&#10;</xsl:text>
         <xsl:if test="not(tei:p|tei:list)">\noindent </xsl:if>
         <xsl:apply-templates>
           <xsl:with-param name="message" select="$message"/>
         </xsl:apply-templates>
-        <xsl:if test="not(tei:p|tei:list)">&#10;</xsl:if>
-        <xsl:value-of select="$end"/>
+        <xsl:if test="not(tei:p|tei:l|tei:list)">&#10;</xsl:if>
+        <xsl:text>\end{quoteblock}</xsl:text>
+        <xsl:if test="$nextblock">\quoteskip</xsl:if>
         <xsl:text>&#10;</xsl:text>
       </xsl:otherwise>
     </xsl:choose>

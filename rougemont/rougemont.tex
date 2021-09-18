@@ -5,7 +5,7 @@
 \RequirePackage{pdftexcmds} % needed for tests expressions
 \RequirePackage{fix-cm} % correct units
 
-\documentclass[twocolumn,french]{article}
+\documentclass[twocolumn]{article}
 \usepackage[%
   a4paper,
   inner=15mm,
@@ -21,23 +21,31 @@
 %%%%%%%%%%
 % before Teinte macros
 \usepackage[dvipsnames]{xcolor}
-% \definecolor{rubric}{HTML}{cf1408} % the tonic
-\definecolor{rubric}{HTML}{000000}
+\definecolor{rubric}{HTML}{cf1408} % the tonic
 \colorlet{borderline}{rubric!10!} % definecolor need exact code
 \definecolor{shadecolor}{gray}{0.95}
 
 \usepackage[]{roboto} % SmallCaps, Regular is a bit bold
 \setmainfont[
-  ItalicFont={Roboto Italic},
-]{Roboto Light}
-\setsansfont{Roboto Light} % seen, if not set, problem with printer
+  ItalicFont={Roboto Light Italic},
+]{Roboto}
+\setsansfont{Roboto} % seen, if not set, problem with printer
 \newfontfamily\fontrun[]{Roboto Condensed Light} % condensed runing heads
+\newfontfamily\fontquote[ItalicFont={Roboto Italic},]{Roboto Light} % light quotes
 
 
 %%%%%%%%%%%%%%%%%
 % Teinte macros %
 %%%%%%%%%%%%%%%%%
 \input{../latex/teinte}
+\setdefaultlanguage[frenchpart=false]{french} % bug on part
+\renewcommand{\headrulewidth}{0.1pt}
+\renewcommand{\headrule}{{\color{rubric}\hrule}}
+\renewcommand{\thefootnote}{\bfseries\textcolor{rubric}{\arabic{footnote}}} % color for footnote marks
+\titleformat{name=\section}
+  [display]{}{}{}{}
+  [\vbox{\color{rubric}\Large\textbf{#1}}]
+% \titlespacing{\section}{0pt}{0pt plus 4pt minus 2pt}{\baselineskip}
 
 \fancypagestyle{main}{%
   \fancyhf{}
@@ -48,21 +56,30 @@
   \fancyhead[R]{\truncate{0.45\headwidth}{ \fontrun\nouppercase\eltitle}} % Chapter title
   \fancyhead[C]{\thepage}
 }
-\fancypagestyle{plain}{% apply to chapter
-  \fancyhf{}% clear all header and footer fields
-  \setlength{\headheight}{1.5em}
-  \fancyhead[L]{\truncate{0.9\headwidth}{\fontrun\elbibl}}
-  \fancyhead[R]{\thepage}
-}
+
+\renewenvironment{quoteblock}
+  {\begin{quoting}\fontquote} %
+  {\end{quoting}}
 
 
 \begin{document}
 
-\pagestyle{empty}
-\twocolumn[{\centering\parindent0pt
+\thispagestyle{empty}
+\twocolumn[{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[xshift=15mm,yshift=-15mm,anchor=north west] at (current page.north west){%
+      \includegraphics[width=30mm]{ddr-red.png}
+    };
+    \node[xshift=15mm,yshift=-6mm,anchor=north west] at (current page.north west){%
+      \includegraphics[width=50mm]{rougemont20-noir.png}
+    };
+  \end{tikzpicture}
+  \RaggedLeft\parindent0pt\setlength{\RaggedLeftLeftskip}{35mm}
+  \vskip-2em
   {\LARGE \elauthor (\eldate)\par}
   {\LARGE\normalfont \emph{\elbook}\par}
-  {\LARGE \href{\elurl}{\eltitle}\footnotemark\par}\bigskip\bigskip
+  {\LARGE \href{\elurl}{\eltitle}\footnotemark\par}
+  \vskip3em
 }]
 \footnotetext{\href{\elurl}{\dotuline{\elurl}}}
 \pagestyle{main} % after style

@@ -56,26 +56,27 @@
         <xsl:value-of select="@n"/>
         <xsl:text> </xsl:text>
       </xsl:if>
-      <xsl:apply-templates select="tei:head" mode="meta"/>
+      <xsl:for-each select="tei:head">
+        <xsl:apply-templates select="." mode="meta"/>
+        <xsl:if test="following-sibling::tei:head">\par&#10; </xsl:if>
+      </xsl:for-each>
     </xsl:variable>
     <xsl:variable name="meta">
       <xsl:text>\title{</xsl:text>
       <xsl:value-of select="$head"/>
+      <xsl:if test="@when|@from|@to">
+        <xsl:text> (</xsl:text>
+        <xsl:call-template name="latexDate">
+          <xsl:with-param name="el" select="."/>
+        </xsl:call-template>
+        <xsl:text>)</xsl:text>
+      </xsl:if>
       <xsl:text>}&#10;</xsl:text>
       <xsl:text>\author{</xsl:text>
       <xsl:value-of select="$latexAuthor"/>
       <xsl:text>}&#10;</xsl:text>
       <xsl:text>\date{</xsl:text>
-      <xsl:choose>
-        <xsl:when test="@when|@from|@to">
-          <xsl:call-template name="latexDate">
-            <xsl:with-param name="el" select="."/>
-          </xsl:call-template>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:value-of select="$latexDate"/>
-        </xsl:otherwise>
-      </xsl:choose>
+        <xsl:value-of select="$latexDate"/>
       <xsl:text>}&#10;</xsl:text>
       <xsl:text>\def\elbook{</xsl:text>
       <xsl:value-of select="$latexTitle"/>
@@ -83,13 +84,12 @@
       <!-- Short ref for running head -->
       <xsl:text>\def\elbibl{</xsl:text>
       <xsl:value-of select="$latexAuthor1"/>
+      <xsl:text>, </xsl:text>
+      <xsl:value-of select="$latexDate"/>
       <xsl:text>. </xsl:text>
       <xsl:text>\emph{</xsl:text>
       <xsl:value-of select="$latexTitle"/>
       <xsl:text>}</xsl:text>
-      <xsl:text> (</xsl:text>
-      <xsl:value-of select="$latexDate"/>
-      <xsl:text>)</xsl:text>
       <xsl:text>}&#10;</xsl:text>
       <xsl:text>\def\elurl{</xsl:text>
       <xsl:value-of select="$bookurl"/>

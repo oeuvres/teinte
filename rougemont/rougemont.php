@@ -20,7 +20,7 @@ class Rougemont {
       self::$skeltex,
     );
     file_put_contents($texfile, $tex);
-    exec("latexmk -xelatex -interaction=nonstopmode ".$texfile); //
+    exec("latexmk -xelatex -interaction=nonstopmode -f ".$texfile); //
     // exec("xelatex -interaction=nonstopmode --halt-on-error ".$texfile); //
     // exec("xelatex -interaction=nonstopmode --halt-on-error ".$texfile); //
     // exec("xelatex -interaction=nonstopmode --halt-on-error ".$texfile); //
