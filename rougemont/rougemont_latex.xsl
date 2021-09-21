@@ -41,24 +41,61 @@
   </xsl:variable>
   
   <xsl:template match="/" priority="10">
-    <xsl:for-each select="//tei:div[@type='chapter']">
-      <xsl:call-template name="chapter"/>
-    </xsl:for-each>
+    <xsl:choose>
+      <xsl:when test="//tei:div[@type='chapter']">
+        <xsl:for-each select="//tei:div[@type='chapter']">
+          <xsl:call-template name="chapter"/>
+        </xsl:for-each>
+      </xsl:when>
+      <xsl:when test="//tei:div[@type='article']">
+        <xsl:for-each select="//tei:div[@type='article']">
+          <xsl:call-template name="chapter"/>
+        </xsl:for-each>
+      </xsl:when>
+    </xsl:choose>
   </xsl:template>
   
   <xsl:template name="chapter">
     <!-- Number, used also as url -->
     <xsl:variable name="chapid">
-      <xsl:call-template name="id"/>
+      <xsl:choose>
+        <xsl:when test="@type = 'chapter'">
+          <xsl:number level="any" count="tei:div[@type = 'chapter']"/>
+        </xsl:when>
+        <xsl:when test="@type = 'article'">
+          <xsl:choose>
+            <xsl:when test="contains(@xml:id, '_')">
+              <xsl:value-of select="translate(substring-before(@xml:id, '_'), 'abcdefghijklmnopqrstuvwxyz', '')"/>
+              <xsl:text>_</xsl:text>
+              <xsl:value-of select="substring-after(@xml:id, '_')"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="translate(@xml:id, 'abcdefghijklmnopqrstuvwxyz', '')"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:call-template name="id"/>
+        </xsl:otherwise>
+      </xsl:choose>
     </xsl:variable>
     <xsl:variable name="head">
-      <xsl:if test="@n">
-        <xsl:value-of select="@n"/>
-        <xsl:text> </xsl:text>
-      </xsl:if>
       <xsl:for-each select="tei:head">
-        <xsl:apply-templates select="." mode="meta"/>
-        <xsl:if test="following-sibling::tei:head">\par&#10; </xsl:if>
+        <xsl:variable name="txt">
+          <xsl:apply-templates select="." mode="meta"/>
+        </xsl:variable>
+        <xsl:value-of select="$txt"/>
+        <xsl:if test="following-sibling::tei:head">
+          <xsl:call-template name="head-pun">
+            <xsl:with-param name="txt" select="$txt"/>
+            <!--
+            <xsl:with-param name="next">
+              <xsl:apply-templates select="following-sibling::tei:head[1]" mode="meta"/>
+            </xsl:with-param>
+            -->
+          </xsl:call-template>
+          <xsl:text> \par&#10;</xsl:text>
+        </xsl:if>
       </xsl:for-each>
     </xsl:variable>
     <xsl:variable name="meta">
@@ -142,11 +179,6 @@
       <xsl:value-of select="normalize-space($rich)"/>
     </xsl:variable>
     -->
-  </xsl:template>
-
-  <!-- Identifiant local -->
-  <xsl:template match="tei:div[@type = 'chapter']" mode="id">
-    <xsl:number level="any" count="tei:div[@type = 'chapter']"/>
   </xsl:template>
 
 

@@ -177,7 +177,7 @@ blockquote.quote {
   line-height: 1.2;
   color:rgba(0, 0, 0, 0.5);
   border-left: 0.5rem solid rgba(128, 128, 128, 0.1);
-  font-size: 1.4rem;
+  font-size: 1.2rem;
 }
 
 blockquote.quote .p {}
@@ -341,7 +341,7 @@ a.bookmark:hover {
 }
 
 h1 {
-  font-size: 150%;
+  font-size: 130%;
   font-weight: 900;
   padding-top: 1rem;
   margin-top: 0;
@@ -369,6 +369,7 @@ h3 a:link,
 h3 a:visited {
   text-decoration: none;
   border-bottom-color: transparent;
+  color: inherit;
 }
 
 h1 a:hover {
@@ -927,8 +928,10 @@ small.l-n {
   font-size: 80%;
 }
 
-section > .pb,
-article > .pb {
+article > .pb,
+footer > .pb,
+header > .pb,
+section > .pb {
   float: left;
   margin-right: 0.5rem;
   margin-top: 0.3rem;
@@ -1314,7 +1317,7 @@ div.lg {
 }
 
 .marginnote {
-  display: block;
+  display: inline-block;
   float: right;
   text-indent: 0;
   clear: both;
@@ -1381,11 +1384,11 @@ p.note {
 }
 
 a.noteref {
-  font-size: 75%;
+  font-size: 60%;
   line-height: 0;
   position: relative;
   vertical-align: baseline;
-  top: -0.5rem;
+  top: -0.4em;
 }
 
 a.noteref sup {
@@ -1421,9 +1424,13 @@ a.noteback {
   margin-bottom: 1rem;
 }
 
-.questions {
-  margin: 1rem 0 1rem 0;
-  font-size: 90%;
+p.p {
+  text-indent: 2rem;
+}
+
+p.p.no {
+  text-indent: 0;
+  margin-top: 1rem;
 }
 
 /*
@@ -2024,6 +2031,21 @@ div.ornament {
   margin-top: 6rem;
   height: 5rem;
   border-top: 1px #CCCCCC solid;
+}
+
+.questions {
+  margin: 1rem 0 1rem 0;
+  font-size: 90%;
+}
+
+div.question,
+p.question {
+  font-weight: 300;
+  text-align: justify;
+  font-style: italic;
+  text-align: left;
+  font-size: 95%;
+  line-height: inherit;
 }
 
 .l.refrain {

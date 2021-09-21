@@ -54,13 +54,26 @@ usage    : php -f rougemont.php srcdir/*.xml\n");
       foreach(glob($glob) as $teifile) {
         $teiname = pathinfo($teifile, PATHINFO_FILENAME);
         list($teiname) = explode("_", $teiname);
+        $dstdir = dirname(dirname(dirname(__FILE__))).'/ddr-pdf/'.$teiname.'/';
+        $dstfiles = glob($dstdir.'*.pdf');
+        if (!count($dstfiles));
+        else if (filemtime($dstfiles[0]) > filemtime($teifile)) continue;
+        Tools::dirclean($dstdir);
+
+
         $bookurl = "https://unige.ch/rougemont/";
         $path = realpath($teifile);
         $folder = basename(dirname($path));
-        if (strpos($folder, 'livres') !== false) $bookurl .= "livres/";
-        else if (strpos($folder, 'articles') !== false) $bookurl .= "articles/";
-        else if (strpos($folder, 'corr') !== false) $bookurl .= "correspondances/";
-        $bookurl .= $teiname.'/';
+        if (strpos($folder, 'livres') !== false) {
+          $bookurl .= "livres/".$teiname.'/';
+        }
+        else if (strpos($folder, 'articles') !== false) {
+          $journal = explode('ddr-', $teiname, 2)[1];
+          $bookurl .= "articles/".$journal.'/';
+        }
+        else if (strpos($folder, 'corr') !== false) {
+          $bookurl .= "correspondances/".$teiname.'/';
+        }
         $bookurl = preg_replace(array_keys(Latex::$latex_esc), array_values(Latex::$latex_esc), $bookurl);
         echo $bookurl,"\n";
         $proc->setParameter('',
@@ -81,6 +94,11 @@ usage    : php -f rougemont.php srcdir/*.xml\n");
         $latex->teigraf($grafdir, $grafhref);
 
         $proc->transformToXML($latex->dom);
+
+        echo self::$workdir,"\n";
+        foreach (glob(self::$workdir."*.pdf") as $srcfile) {
+          copy($srcfile, $dstdir.basename($srcfile));
+        }
 
         /*
         $latex->load($teifile); // load TEI/XML source

@@ -217,7 +217,7 @@ Latex from TEI, metadata for preamble
   </xsl:template>
 
     
-  <xsl:template match="tei:head[@type='kicker']" mode="meta"/>
+  
 
   <xsl:template match="tei:head[tei:lb]" mode="meta">
     <xsl:for-each select="tei:lb">

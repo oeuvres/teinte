@@ -693,6 +693,13 @@ for example: abstract.
           <xsl:text> </xsl:text>
         </xsl:if>
       </xsl:when>
+      <xsl:when test="contains($rend, 'question') or @type='question'">
+        <xsl:text>&#10;\question{</xsl:text>
+        <xsl:apply-templates>
+          <xsl:with-param name="message" select="$message"/>
+        </xsl:apply-templates>
+        <xsl:text>}&#10;</xsl:text>
+      </xsl:when>
       <xsl:otherwise>
         <xsl:text>&#10;\labelblock{</xsl:text>
         <xsl:apply-templates>
@@ -973,6 +980,16 @@ for example: abstract.
     </xsl:choose>
   </xsl:template>
   
+  <!-- Note problems in <head> -->
+  <xsl:template match="tei:head//tei:note">
+    <xsl:param name="message"/>
+    <xsl:choose>
+      <xsl:when test="contains($message, 'nonote')"/>
+      <xsl:otherwise>
+        <xsl:text>\protect\footnotemark </xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
   
   <xsl:template name="marginalNote">
     <xsl:param name="message"/>
@@ -1128,10 +1145,18 @@ for example: abstract.
         <xsl:text>\par</xsl:text>
       </xsl:if>
     </xsl:variable>
-    <xsl:call-template name="rendering">
-      <xsl:with-param name="cont" select="$cont"/>
-    </xsl:call-template>
-    <xsl:text>&#10;</xsl:text>
+    <xsl:choose>
+      <!-- empty para used as a spacer -->
+      <xsl:when test="translate(normalize-space(.), ' ', '') = ''">
+        <xsl:text>\bigbreak&#10;</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:call-template name="rendering">
+          <xsl:with-param name="cont" select="$cont"/>
+        </xsl:call-template>
+        <xsl:text>&#10;</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   
   <xsl:template name="numberParagraph">
@@ -1269,17 +1294,17 @@ for example: abstract.
         </xsl:if>
       </xsl:when>
       <!-- framed border -->
-      <!--
       <xsl:when test="contains($rend, ' border ')">
-        <xsl:text>&#10;</xsl:text>
         <xsl:call-template name="tei:makeHyperTarget"/>
-        <xsl:text>\begin{borderbox}&#10;</xsl:text>
+        <xsl:if test="$prevblock and local-name($prevblock) != 'quote'">\quoteskip</xsl:if>
+        <xsl:text>\begin{frametext}&#10;</xsl:text>
         <xsl:apply-templates>
           <xsl:with-param name="message" select="$message"/>
         </xsl:apply-templates>
-        <xsl:text>\end{borderbox}&#10;&#10;</xsl:text>
+        <xsl:text>\end{frametext}</xsl:text>
+        <xsl:if test="$nextblock">\quoteskip</xsl:if>
+        <xsl:text>&#10;</xsl:text>
       </xsl:when>
-      -->
       <!-- Block or multi block -->
       <xsl:otherwise>
         <xsl:call-template name="tei:makeHyperTarget"/>

@@ -38,35 +38,6 @@ class Tools
   }
 
   /**
-   * Delete all files in a directory, create it if not exist
-   */
-  static public function dirclean($dir, $depth=0)
-  {
-    if (is_file($dir)) return unlink($dir);
-    // attempt to create the folder we want empty
-    if (!$depth && !file_exists($dir)) {
-      mkdir($dir, 0775, true);
-      @chmod($dir, 0775);  // let @, if www-data is not owner but allowed to write
-      return;
-    }
-    // should be dir here
-    if (is_dir($dir)) {
-      $handle=opendir($dir);
-      while (false !== ($entry = readdir($handle))) {
-        if ($entry == "." || $entry == "..") continue;
-        self::dirclean($dir.'/'.$entry, $depth+1);
-      }
-      closedir($handle);
-      // do not delete the root dir
-      if ($depth > 0) rmdir($dir);
-      // timestamp newDir
-      else touch($dir);
-      return;
-    }
-  }
-
-
-  /**
    * get a pdo link to an sqlite database with good options
    */
   static function pdo($file, $sql)
@@ -191,9 +162,38 @@ class Tools
   {
     if (is_dir($dir)) return $dir;
     if (!mkdir($dir, 0775, true)) throw new Exception("Directory not created: ".$dir);
-    @chmod(dirname($dir), 0775);  // let @, if www-data is not owner but allowed to write
+    @chmod($dir, 0775);  // let @, if www-data is not owner but allowed to write
     return $dir;
   }
+
+    /**
+   * Delete all files in a directory, create it if not exist
+   */
+  static public function dirclean($dir, $depth=0)
+  {
+    if (is_file($dir)) return unlink($dir);
+    // attempt to create the folder we want empty
+    if (!$depth && !file_exists($dir)) {
+      if (!mkdir($dir, 0775, true)) throw new Exception("Directory not created: ".$dir);;
+      @chmod($dir, 0775);  // let @, if www-data is not owner but allowed to write
+      return;
+    }
+    // should be dir here
+    if (is_dir($dir)) {
+      $handle=opendir($dir);
+      while (false !== ($entry = readdir($handle))) {
+        if ($entry == "." || $entry == "..") continue;
+        self::dirclean($dir.'/'.$entry, $depth+1);
+      }
+      closedir($handle);
+      // do not delete the root dir
+      if ($depth > 0) rmdir($dir);
+      // timestamp newDir
+      else touch($dir);
+      return;
+    }
+  }
+
 
   /**
    * Recursive deletion of a directory

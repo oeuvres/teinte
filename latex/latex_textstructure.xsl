@@ -142,7 +142,7 @@ A light version for XSLT1, with local improvements.
   </xsl:template>
 
   <xsl:template match="
-    tei:back/tei:head
+      tei:back/tei:head
     | tei:body/tei:head
     | tei:div/tei:head
     | tei:div1/tei:head
@@ -157,65 +157,54 @@ A light version for XSLT1, with local improvements.
     <xsl:variable name="level">
       <xsl:call-template name="level"/>
     </xsl:variable>
-    <xsl:text>\begin{center}</xsl:text>
     <xsl:choose>
-      <xsl:when test="@type = 'sub'">
-        <xsl:text>\emph{</xsl:text>
-        <xsl:apply-templates/>
-        <xsl:text>}</xsl:text>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:apply-templates/>
-      </xsl:otherwise>
-    </xsl:choose>
-    <xsl:text>\end{center}&#10;</xsl:text>
-  </xsl:template>
-
-  <xsl:template match="
-      tei:back/tei:head[1]
-      | tei:body/tei:head[1]
-      | tei:div/tei:head[1]
-      | tei:div1/tei:head[1]
-      | tei:div2/tei:head[1]
-      | tei:div3/tei:head[1]
-      | tei:div4/tei:head[1]
-      | tei:div5/tei:head[1]
-      | tei:div6/tei:head[1]
-      | tei:front/tei:head[1]
-    ">
-    <xsl:param name="message"/>
-    <xsl:variable name="level">
-      <xsl:call-template name="level"/>
-    </xsl:variable>
-    <xsl:text>&#10;\</xsl:text>
-    <xsl:choose>
-      <xsl:when test="$documentclass = 'book'">
+      <xsl:when test="@type='kicker' and following-sibling::tei:head"/>
+      <!-- Title not for toc -->
+      <xsl:when test="preceding-sibling::tei:head[not(@type='kicker')]">
+        <xsl:text>\begin{center}</xsl:text>
         <xsl:choose>
-          <xsl:when test="$level &lt; 0">part</xsl:when>
-          <xsl:when test="$level = 0">chapter</xsl:when>
-          <xsl:when test="$level = 1">section</xsl:when>
-          <xsl:when test="$level = 2">subsection</xsl:when>
-          <xsl:when test="$level = 3">subsubsection</xsl:when>
-          <xsl:when test="$level = 4">paragraph</xsl:when>
-          <xsl:when test="$level = 5">subparagraph</xsl:when>
-          <xsl:when test="$level &gt; 5">subparagraph</xsl:when>
-          <xsl:otherwise>section</xsl:otherwise>
+          <xsl:when test="@type = 'sub'">
+            <xsl:text>\emph{</xsl:text>
+            <xsl:apply-templates/>
+            <xsl:text>}</xsl:text>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:apply-templates/>
+          </xsl:otherwise>
         </xsl:choose>
+        <xsl:text>\end{center}&#10;</xsl:text>
       </xsl:when>
+      <!-- Open sectionning for LaTeX -->
       <xsl:otherwise>
+        <xsl:text>&#10;\</xsl:text>
         <xsl:choose>
-          <xsl:when test="$level &lt; 0">part</xsl:when>
-          <xsl:when test="$level = 0">section</xsl:when>
-          <xsl:when test="$level = 1">subsection</xsl:when>
-          <xsl:when test="$level = 2">subsubsection</xsl:when>
-          <xsl:when test="$level = 3">paragraph</xsl:when>
-          <xsl:when test="$level = 4">subparagraph</xsl:when>
-          <xsl:when test="$level &gt; 4">subparagraph</xsl:when>
-          <xsl:otherwise>section</xsl:otherwise>
+          <xsl:when test="$documentclass = 'book'">
+            <xsl:choose>
+              <xsl:when test="$level &lt; 0">part</xsl:when>
+              <xsl:when test="$level = 0">chapter</xsl:when>
+              <xsl:when test="$level = 1">section</xsl:when>
+              <xsl:when test="$level = 2">subsection</xsl:when>
+              <xsl:when test="$level = 3">subsubsection</xsl:when>
+              <xsl:when test="$level = 4">paragraph</xsl:when>
+              <xsl:when test="$level = 5">subparagraph</xsl:when>
+              <xsl:when test="$level &gt; 5">subparagraph</xsl:when>
+              <xsl:otherwise>section</xsl:otherwise>
+            </xsl:choose>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:choose>
+              <xsl:when test="$level &lt; 0">part</xsl:when>
+              <xsl:when test="$level = 0">section</xsl:when>
+              <xsl:when test="$level = 1">subsection</xsl:when>
+              <xsl:when test="$level = 2">subsubsection</xsl:when>
+              <xsl:when test="$level = 3">paragraph</xsl:when>
+              <xsl:when test="$level = 4">subparagraph</xsl:when>
+              <xsl:when test="$level &gt; 4">subparagraph</xsl:when>
+              <xsl:otherwise>section</xsl:otherwise>
+            </xsl:choose>
+          </xsl:otherwise>
         </xsl:choose>
-      </xsl:otherwise>
-    </xsl:choose>
-    <!-- 
+        <!-- 
 Old logic of numbering, let Latex consumer choose, but get 
 parent::tei:body or ancestor::tei:floatingText
 or (ancestor::tei:back and $numberBackHeadings = '')
@@ -227,46 +216,65 @@ or parent::tei:div[contains(@rend, 'nonumber')]
 
 [{a title may contain [brackets]}]
         -->
-    <xsl:text>[{</xsl:text>
-    <xsl:variable name="title">
-      <xsl:apply-templates select="." mode="title"/>
-    </xsl:variable>
-    <xsl:value-of select="normalize-space($title)"/>
-    <xsl:text>}]</xsl:text>
-    <xsl:text>{</xsl:text>
-    <xsl:apply-templates/>
-    <xsl:text>}</xsl:text>
-    <!-- Update letf mark manual. We want some typo but no notes -->
-    <xsl:if test="../parent::tei:front | ../parent::tei:body | ../parent::tei:back">
-      <xsl:text>&#10;\renewcommand{\leftmark}{</xsl:text>
-      <xsl:apply-templates>
-        <xsl:with-param name="message">nonote</xsl:with-param>
-      </xsl:apply-templates>
-      <xsl:text>}</xsl:text>
-    </xsl:if>
-    <xsl:if test="../@xml:id">
-      <!-- Keep it there fo bookmarks (tested) -->
-      <xsl:call-template name="tei:makeHyperTarget">
-        <xsl:with-param name="id" select="../@xml:id"/>
-      </xsl:call-template>
-    </xsl:if>
-    <xsl:text>&#10;&#10;</xsl:text>
-    <xsl:for-each select=".//tei:note">
-      <xsl:if test="true()">\footnotetext{<xsl:apply-templates/>}&#10;</xsl:if>
-    </xsl:for-each>
-  </xsl:template>
-
-
-  <!-- Note problems in <head> -->
-  <xsl:template match="tei:head//tei:note">
-    <xsl:param name="message"/>
-    <xsl:choose>
-      <xsl:when test="contains($message, 'nonote')"/>
-      <xsl:otherwise>
-        <xsl:text>\protect\footnotemark </xsl:text>
+        <xsl:variable name="kicker">
+          <xsl:variable name="raw">
+            <xsl:apply-templates select="preceding-sibling::tei:head[@type='kicker']" mode="title"/>
+          </xsl:variable>
+          <xsl:value-of select="normalize-space($raw)"/>
+        </xsl:variable>
+        <xsl:variable name="title">
+          <xsl:apply-templates select="." mode="title"/>
+        </xsl:variable>
+        <xsl:variable name="kicker-sep">
+          <xsl:if test="$kicker != ''">
+            <xsl:call-template name="head-pun">
+              <xsl:with-param name="txt" select="$kicker"/>
+              <xsl:with-param name="next" select="$title"/>
+            </xsl:call-template>
+            <xsl:text> </xsl:text>
+          </xsl:if>
+        </xsl:variable>
+        <xsl:text>[{</xsl:text>
+        <xsl:variable name="raw">
+          <xsl:value-of select="$kicker"/>
+          <xsl:value-of select="$kicker-sep"/>
+          <xsl:value-of select="$title"/>
+        </xsl:variable>
+        <xsl:value-of select="normalize-space($raw)"/>
+        <xsl:text>}]</xsl:text>
+        <xsl:text>{</xsl:text>
+        <xsl:apply-templates select="preceding-sibling::tei:head[@type='kicker']/node()"/>
+        <xsl:value-of select="$kicker-sep"/>
+        <xsl:apply-templates/>
+        <xsl:text>}</xsl:text>
+        <!-- Update letf mark manual. We want some typo but no notes -->
+        <xsl:if test="../parent::tei:front | ../parent::tei:body | ../parent::tei:back">
+          <xsl:text>&#10;\renewcommand{\leftmark}{</xsl:text>
+          <xsl:value-of select="$kicker"/>
+          <xsl:value-of select="$kicker-sep"/>
+          <xsl:apply-templates>
+            <xsl:with-param name="message">nonote</xsl:with-param>
+          </xsl:apply-templates>
+          <xsl:text>}</xsl:text>
+        </xsl:if>
+        <xsl:if test="../@xml:id">
+          <!-- Keep it there fo bookmarks (tested) -->
+          <xsl:call-template name="tei:makeHyperTarget">
+            <xsl:with-param name="id" select="../@xml:id"/>
+          </xsl:call-template>
+        </xsl:if>
+        <xsl:text>&#10;&#10;</xsl:text>
+        <xsl:for-each select=".//tei:note">
+          <xsl:if test="true()">\footnotetext{<xsl:apply-templates/>}&#10;</xsl:if>
+        </xsl:for-each>
       </xsl:otherwise>
     </xsl:choose>
+    
+    
   </xsl:template>
+
+
+
 
 
 

@@ -53,6 +53,7 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
           <summary>
             <xsl:choose>
               <xsl:when test="key('split', generate-id())">
+                <xsl:attribute name="class">link</xsl:attribute>
                 <xsl:call-template name="a"/>
               </xsl:when>
               <xsl:otherwise>
@@ -93,12 +94,6 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
       </xsl:attribute>
       <!-- link only on last split child -->
       <xsl:choose>
-        <!-- no link when no split -->
-        <xsl:when test="descendant::*[key('split', generate-id())]">
-          <div>
-            <xsl:call-template name="title"/>
-          </div>
-        </xsl:when>
         <xsl:when test="key('split', generate-id())">
           <a>
             <xsl:attribute name="href">
@@ -111,6 +106,12 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
             </xsl:attribute>
             <xsl:call-template name="title"/>
           </a>
+        </xsl:when>
+        <!-- no link when no split -->
+        <xsl:when test="descendant::*[key('split', generate-id())]">
+          <div>
+            <xsl:call-template name="title"/>
+          </div>
         </xsl:when>
         <xsl:otherwise>
           <xsl:call-template name="a"/>

@@ -1190,6 +1190,25 @@ Could be correct for a text only version in <xsl:value-of select=""/>
     
   </xsl:template>
   
+  <xsl:template name="head-pun">
+    <xsl:param name="txt">
+      <xsl:apply-templates/>
+    </xsl:param>
+    <xsl:param name="next">
+      <xsl:value-of select="following-sibling::*[normalize-space(.)!=''][1]"/>
+    </xsl:param>
+    <xsl:variable name="norm" select="normalize-space($txt)"/>
+    <xsl:variable name="lastc" select="substring($norm, string-length($norm))"/>
+    <xsl:variable name="nextc" select="substring(normalize-space($next), 1, 1)"/>
+    <xsl:choose>
+      <xsl:when test="$norm = ''"/>
+      <xsl:when test="contains('0123456789', $lastc)">.</xsl:when>
+      <xsl:when test="contains('.,; –—-)!?»', $lastc)"/>
+      <xsl:when test="contains($lc, $nextc)">,</xsl:when>
+      <xsl:otherwise>.</xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  
   <xsl:template match="tei:l" mode="lspacer">
     <xsl:variable name="txt">
       <xsl:apply-templates mode="title"/>
@@ -1497,6 +1516,8 @@ Le mode label génère un intitulé court obtenu par une liste de valeurs locali
       <xsl:when test="not($prevblock) and $len &lt; 80"/> 
       <!-- first <p> of a series (> 2 lines), noindent -->
       <xsl:when test="not($prevblock)">noindent</xsl:when>
+      <!-- if preceded by an empty <p> -->
+      <xsl:when test="name($prevblock) = 'p' and normalize-space($prevblock)=''">noindent</xsl:when>
       <!-- if preceded by not <p> -->
       <xsl:when test="name($prevblock) != 'p' and not(parent::tei:item)">noindent</xsl:when>
       <!-- this para is center or right align -->
