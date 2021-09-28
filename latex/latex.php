@@ -216,26 +216,27 @@ class Latex {
    * Setup pdf compilation : generate a tex from tei
    * $skelfile is a requested tex template
    */
-  function setup($skelfile)
+  function setup($skelfile, $texname='')
   {
-    $filename = pathinfo($this->srcfile, PATHINFO_FILENAME);
+    $teiname = pathinfo($this->srcfile, PATHINFO_FILENAME);
+    if (!$texname) $texname = $teiname;
     $workdir = self::workdir($this->srcfile);
 
-    $grafdir = $workdir.$filename.'/';
+    $grafdir = $workdir.$texname.'/';
     Tools::dirclean($grafdir); // empty graf dir
 
     // resolve includes and graphics of tex template
     $tex = Latex::includes($skelfile, $workdir, $grafdir);
     // resolve image links in tei source
-    $this->teigraf($grafdir, $filename.'/');
-    $this->dom->save($workdir.$filename.'.xml'); // for debug, save a copy of XML
+    $this->teigraf($grafdir, $texname.'/');
+    $this->dom->save($workdir.$texname.'.xml'); // for debug, save a copy of XML
 
 
     $meta = self::$latex_meta_xsl->transformToXml($this->dom);
     $text = self::$latex_xsl->transformToXml($this->dom);
 
 
-    $texfile = $workdir.$filename.'.tex';
+    $texfile = $workdir.$texname.'.tex';
     file_put_contents(
       $texfile,
       str_replace(
@@ -246,7 +247,7 @@ class Latex {
     );
     // create a special tex with meta only ?
     file_put_contents(
-      $workdir.$filename.'_cover.tex',
+      $workdir.$texname.'_cover.tex',
       str_replace('%meta%', $meta, $tex),
     );
     return $texfile;

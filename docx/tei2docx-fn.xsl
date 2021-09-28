@@ -1,22 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:transform xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0" xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:w10="urn:schemas-microsoft-com:office:word" xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml" xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:wp14="http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing" xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas" xmlns:wpg="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup" xmlns:wpi="http://schemas.microsoft.com/office/word/2010/wordprocessingInk" xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape" xmlns:tei="http://www.tei-c.org/ns/1.0" exclude-result-prefixes="tei">
+<xsl:transform xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
+  xmlns:tei="http://www.tei-c.org/ns/1.0"
+  xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas" xmlns:cx="http://schemas.microsoft.com/office/drawing/2014/chartex" xmlns:cx1="http://schemas.microsoft.com/office/drawing/2015/9/8/chartex" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:wp14="http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:w10="urn:schemas-microsoft-com:office:word" xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml" xmlns:w15="http://schemas.microsoft.com/office/word/2012/wordml" xmlns:w16se="http://schemas.microsoft.com/office/word/2015/wordml/symex" xmlns:wpg="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup" xmlns:wpi="http://schemas.microsoft.com/office/word/2010/wordprocessingInk" xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml" xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape" 
+
+
+exclude-result-prefixes="tei">
   <xsl:import href="tei2docx.xsl"/>
   <xsl:template match="/">
-    <w:footnotes mc:Ignorable="w14 wp14">
-      <w:footnote w:id="-1" w:type="separator">
+    <w:footnotes mc:Ignorable="w14 w15 w16se wp14">
+      <w:footnote w:type="separator" w:id="-1">
         <w:p>
           <w:pPr>
-            <w:spacing w:after="0" w:before="0"/>
+            <w:spacing w:line="240" w:lineRule="auto"/>
           </w:pPr>
           <w:r>
             <w:separator/>
           </w:r>
         </w:p>
       </w:footnote>
-      <w:footnote w:id="0" w:type="continuationSeparator">
+      <w:footnote w:type="continuationSeparator" w:id="0">
         <w:p>
           <w:pPr>
-            <w:spacing w:after="0" w:before="0"/>
+            <w:spacing w:line="240" w:lineRule="auto"/>
           </w:pPr>
           <w:r>
             <w:continuationSeparator/>
@@ -163,10 +168,13 @@
             <w:rStyle w:val="Appelnotedebasdep"/>
           </w:rPr>
           <w:footnoteRef/>
+          <w:tab/>
+          <!--
           <w:t>
             <xsl:attribute name="xml:space">preserve</xsl:attribute>
             <xsl:text> </xsl:text>
           </w:t>
+          -->
         </w:r>
       </xsl:otherwise>
     </xsl:choose>

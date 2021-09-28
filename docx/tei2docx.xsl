@@ -397,19 +397,17 @@
   <xsl:template match="tei:closer | tei:opener | tei:q | tei:quote">
     <xsl:param name="border">
       <xsl:choose>
-        <xsl:when test="self::tei:q | self::tei:quote">border</xsl:when>
+        <xsl:when test="self::tei:q ">border</xsl:when>
       </xsl:choose>
     </xsl:param>
     <xsl:variable name="inmix" select="../text()[normalize-space(.) != '']|../tei:emph|../tei:hi"/>
     <xsl:choose>
       <!-- conteneur de blocs -->
       <xsl:when test=" tei:byline | tei:closer | tei:dateline | tei:l | tei:label | tei:lg | tei:opener | tei:p | tei:salute | tei:signed  ">
-        <w:p/>
         <xsl:apply-templates select="*">
           <xsl:with-param name="border" select="$border"/>
           <xsl:with-param name="parent" select="local-name(.)"/>
         </xsl:apply-templates>
-        <w:p/>
       </xsl:when>
       <!-- 
 ancestor::tei:p or ancestor::tei:l or parent::tei:cell
@@ -432,6 +430,7 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
     <xsl:param name="style">
       <xsl:choose>
         <xsl:when test="self::tei:p and parent::tei:note">Notedebasdepage</xsl:when>
+        <xsl:when test="self::tei:p and parent::tei:quote">quote</xsl:when>
         <!--
         <xsl:when test="$parent != '' and self::tei:p">
           <xsl:value-of select="$parent"/>

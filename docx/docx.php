@@ -2,6 +2,7 @@
 /**
  * Class adhoc pour générer un docx à partir d’un XML/TEI
  */
+include_once(dirname(dirname(__FILE__)).'/php/tools.php');
 
 set_time_limit(-1);
 // included file, do nothing
@@ -110,13 +111,14 @@ usage    : php -f docx.php (dstdir/)? srcdir/*.xml
   }
 
 
-  static function dom($src, $xml="") {
+  static function dom($teifile) {
+    $xml = file_get_contents($teifile);
+    $xml = preg_replace('@\s\s+@', ' ', $xml);
     $dom = new DOMDocument("1.0", "UTF-8");
     $dom->preserveWhiteSpace = false;
     $dom->formatOutput=true;
     $dom->substituteEntities=true;
-    if ($xml) $dom->loadXML($xml,  LIBXML_NOENT | LIBXML_NONET | LIBXML_NOWARNING ); // no warn for <?xml-model
-    else $dom->load($src,  LIBXML_NOENT | LIBXML_NONET | LIBXML_NOWARNING );
+    $dom->loadXML($xml,  LIBXML_NOENT | LIBXML_NONET | LIBXML_NOWARNING ); // no warn for <?xml-model
     return $dom;
   }
 

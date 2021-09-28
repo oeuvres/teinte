@@ -24,7 +24,7 @@ class Bnr {
         @chmod($dstdir, 0775);  // let @, if www-data is not owner but allowed to write
       }
     }
-    $name = pathinfo($teifile,  PATHINFO_FILENAME);
+    $name = basename($dstdir);
     Tools::mkdir($dstdir);
     $dstpath = $dstdir.$name;
     echo "teifile=",$teifile,"\n";
@@ -62,7 +62,7 @@ class Bnr {
 
   }
 
-  public static function pdf($teifile, $dstdir='')
+  public static function pdf($teifile, $dstdir='', $force=false)
   {
     if ($dstdir) {
       $dstdir = rtrim($dstdir, '/\\').'/';
@@ -71,21 +71,22 @@ class Bnr {
         @chmod($dstdir, 0775);  // let @, if www-data is not owner but allowed to write
       }
     }
+    $texname = basename($dstdir);
+    $dstfile = $dstdir.$texname.'.pdf';
+    if (file_exists($dstfile) && filemtime($teifile) < filemtime($dstfile)) return;
+
     $latex = new Latex();
     $latex->load($teifile);
-    $texfile = $latex->setup(self::$skeltex); // get the texfile installed with its resources
-    $texname = pathinfo($texfile, PATHINFO_FILENAME);
+    $texfile = $latex->setup(self::$skeltex, $texname); // get the texfile installed with its resources
     $workdir = dirname($texfile).'/';
     $cwd = getcwd();
     chdir($workdir); // change working directory
-    // default is a4 2 cols, transform to pdf
     exec("latexmk -xelatex -quiet -f ".$texname.'.tex');
     $tex = file_get_contents($texfile);
     if ($dstdir) {
       $src = $workdir.$texname.'.pdf';
-      $dst = $dstdir.$texname.'.pdf';
       // echo $src,' -',file_exists($src), '- ', $dst, "\n";
-      rename($src, $dst);
+      rename($src, $dstfile);
     }
 
     // A5
@@ -101,9 +102,8 @@ class Bnr {
   public static function cli()
   {
     array_shift($_SERVER['argv']); // shift first arg, the script filepath
-    if (!count($_SERVER['argv'])) exit("
-usage    : php bnr.php srcdir/*.xml\n");
     $basedir = dirname(dirname(dirname(__FILE__))).'/bnr-obtic/';
+    /*
     while($glob = array_shift($_SERVER['argv']) ) {
       foreach(glob($glob) as $teifile) {
         $name = pathinfo($teifile, PATHINFO_FILENAME);
@@ -111,7 +111,15 @@ usage    : php bnr.php srcdir/*.xml\n");
         self::export(realpath($teifile), $basedir.$name);
       }
     }
-
+    */
+    $handle = fopen(dirname(__FILE__)."/corpus.tsv", "r");
+    fgetcsv($handle, 0, "\t"); // passer la 1e ligne
+    while (($data = fgetcsv($handle, 0, "\t")) !== FALSE) {
+      $teifile = $data[0];
+      $name = $data[1];
+      self::export(realpath($teifile), $basedir.$name);
+      self::pdf(realpath($teifile), $basedir.$name);
+    }
   }
 }
 
