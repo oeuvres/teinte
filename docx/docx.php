@@ -45,6 +45,12 @@ class Docx {
     if (!count($_SERVER['argv'])) exit('
 usage    : php -f docx.php (dstdir/)? srcdir/*.xml
     ');
+    $force = false;
+    if ($_SERVER['argv'][0] == '-f') {
+      $force = true;
+      array_shift($_SERVER['argv']);
+    }
+
 
     $dstdir = "";
     $lastc = substr($_SERVER['argv'][0], -1);
@@ -61,16 +67,18 @@ usage    : php -f docx.php (dstdir/)? srcdir/*.xml
       foreach(glob($glob) as $srcfile) {
         $dstname = $dstdir . pathinfo( $srcfile, PATHINFO_FILENAME);
         $dst = $dstname.'.docx';
-        $i = 0;
-        $rename = $dst;
-        while ( file_exists( $rename ) ) {
-          if ( !$i ) echo "File $rename already exists, ";
-          $i++;
-          $rename = $dstname . '_' . $i . '.docx';
-        }
-        if ( $i ) {
-          rename( $dst, $rename );
-          echo "renamed to $rename\n";
+        if (!$force) {
+          $i = 0;
+          $rename = $dst;
+            while ( file_exists( $rename ) ) {
+            if ( !$i ) echo "File $rename already exists, ";
+            $i++;
+            $rename = $dstname . '_' . $i . '.docx';
+          }
+          if ( $i ) {
+            rename( $dst, $rename );
+            echo "renamed to $rename\n";
+          }
         }
         echo "$srcfile > $dst\n";
         self::export($srcfile, $dst);
@@ -113,7 +121,16 @@ usage    : php -f docx.php (dstdir/)? srcdir/*.xml
 
   static function dom($teifile) {
     $xml = file_get_contents($teifile);
-    $xml = preg_replace('@\s\s+@', ' ', $xml);
+    $re_norm = array(
+      '@\s\s+@' => ' ',
+      '@\s*(<pb[^>]*/>)\s*@' => ' $1',
+      '@(<(ab|head|p)[^>]*>)\s*(<pb[^>]*/>)\s*@' => '$3\n$1',
+    );
+    $xml = preg_replace(
+      array_keys($re_norm),
+      array_values($re_norm),
+      $xml
+    );
     $dom = new DOMDocument("1.0", "UTF-8");
     $dom->preserveWhiteSpace = false;
     $dom->formatOutput=true;

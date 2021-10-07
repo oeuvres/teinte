@@ -80,7 +80,7 @@ exclude-result-prefixes="tei">
                           <xsl:with-param name="aster" select="$aster"/>
                         </xsl:call-template>
                       </xsl:if>
-                      <xsl:apply-templates/>
+                      <xsl:call-template name="char"/>
                     </w:p>
                   </xsl:for-each>
                 </xsl:when>
@@ -94,7 +94,7 @@ exclude-result-prefixes="tei">
                         <xsl:with-param name="aster" select="$aster"/>
                       </xsl:call-template>
                     </xsl:if>
-                    <xsl:apply-templates/>
+                    <xsl:call-template name="char"/>
                   </w:p>
                 </xsl:otherwise>
               </xsl:choose>
@@ -113,7 +113,7 @@ exclude-result-prefixes="tei">
                     <xsl:with-param name="aster" select="$aster"/>
                   </xsl:call-template>
                 </xsl:if>
-                <xsl:apply-templates/>
+                <xsl:call-template name="char"/>
               </w:p>
             </xsl:otherwise>
           </xsl:choose>
@@ -127,7 +127,7 @@ exclude-result-prefixes="tei">
           <xsl:call-template name="noteret">
             <xsl:with-param name="aster" select="$aster"/>
           </xsl:call-template>
-          <xsl:apply-templates/>
+          <xsl:call-template name="char"/>
         </w:p>
       </xsl:otherwise>
     </xsl:choose>
@@ -168,13 +168,15 @@ exclude-result-prefixes="tei">
             <w:rStyle w:val="Appelnotedebasdep"/>
           </w:rPr>
           <w:footnoteRef/>
-          <w:tab/>
           <!--
+          <w:tab/>
+          -->
+        </w:r>
+        <w:r>
           <w:t>
             <xsl:attribute name="xml:space">preserve</xsl:attribute>
             <xsl:text> </xsl:text>
           </w:t>
-          -->
         </w:r>
       </xsl:otherwise>
     </xsl:choose>

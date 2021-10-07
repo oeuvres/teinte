@@ -5,6 +5,8 @@
   <xsl:strip-space elements="tei:TEI tei:TEI.2 tei:body tei:castList tei:div tei:div1 tei:div2  tei:docDate tei:docImprint tei:docTitle tei:fileDesc tei:front tei:group tei:index tei:listWit tei:publicationStmp tei:publicationStmt tei:sourceDesc tei:SourceDesc tei:sources tei:text tei:teiHeader tei:text tei:titleStmt"/>
   <xsl:preserve-space elements="tei:l tei:s tei:p"/>
   <xsl:param name="filename">tei</xsl:param>
+  <!-- 1: export <pb/>. Default: 0 -->
+  <xsl:param name="pb"/>
   <xsl:variable name="lf" select="'&#10;'"/>
   <xsl:template match="/">
     <w:document>
@@ -218,7 +220,7 @@
           </w:r>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:apply-templates/>
+          <xsl:call-template name="char"/>
         </xsl:otherwise>
       </xsl:choose>
     </w:p>
@@ -232,11 +234,11 @@
     <xsl:param name="id"/>
     <!-- identifier of a parent div on first child block (???) -->
     <xsl:if test="../@xml:id and (self::tei:head or not(preceding-sibling::*[. != '']))">
-      <w:bookmarkStart w:name="{../@xml:id}">
+      <w:tei w:name="{../@xml:id}">
         <xsl:attribute name="w:id">
           <xsl:number count="node()" level="any"/>
         </xsl:attribute>
-      </w:bookmarkStart>
+      </w:tei>
       <w:r>
         <w:rPr>
           <w:rStyle w:val="id"/>
@@ -281,6 +283,9 @@
       </xsl:when>
     </xsl:choose>
   </xsl:template>
+  
+  
+  
   <xsl:template match="tei:head" name="head">
     <xsl:variable name="style">
       <xsl:choose>
@@ -303,7 +308,7 @@
         <w:pStyle w:val="{$style}"/>
       </w:pPr>
       <xsl:call-template name="anchor"/>
-      <xsl:apply-templates/>
+      <xsl:call-template name="char"/>
     </w:p>
     <!--
     <xsl:if test="../tei:index and not(preceding-sibling::tei:head)">
@@ -313,8 +318,8 @@
         </w:r>
       </w:p>
     </xsl:if>
-    -->
     <xsl:apply-templates select="preceding-sibling::*[self::tei:index|self::tei:pb]"/>
+    -->
   </xsl:template>
   <xsl:template match="tei:table">
     <xsl:value-of select="$lf"/>
@@ -346,7 +351,7 @@
     <w:tc>
       <xsl:choose>
         <xsl:when test="not(tei:p) and not(tei:list) and not(tei:quote) and not(tei:l)">
-          <xsl:call-template name="block"/>
+          <xsl:call-template name="par"/>
         </xsl:when>
         <xsl:otherwise>
           <xsl:apply-templates/>
@@ -371,7 +376,7 @@
           <xsl:value-of select="@xml:id"/>
         </xsl:if>
       </xsl:variable>
-      <xsl:call-template name="block">
+      <xsl:call-template name="par">
         <xsl:with-param name="border" select="true()"/>
         <xsl:with-param name="parent" select="local-name(..)"/>
         <xsl:with-param name="id" select="$id"/>
@@ -390,9 +395,10 @@
           </xsl:if>
         </w:pPr>
         <xsl:call-template name="anchor"/>
-        <xsl:apply-templates/>
+        <xsl:call-template name="char"/>
       </w:p>
     </xsl:for-each>
+    <xsl:call-template name="vspace"/>
   </xsl:template>
   <xsl:template match="tei:closer | tei:opener | tei:q | tei:quote">
     <xsl:param name="border">
@@ -414,16 +420,22 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
       -->
       <!-- bloc -->
       <xsl:when test="parent::tei:back | parent::tei:body | parent::tei:cell | parent::tei:div | parent::tei:div1 | parent::tei:div2 | parent::tei:div3 | parent::tei:div4 | parent::tei:div5 | parent::tei:div6 | parent::tei:div7 | parent::tei:div8 | parent::tei:div9 | parent::tei:front">
-        <xsl:call-template name="block"/>
+        <xsl:call-template name="par"/>
       </xsl:when>
       <!-- inline -->
       <xsl:otherwise>
-        <xsl:call-template name="inline"/>
+        <xsl:call-template name="char">
+          <xsl:with-param name="style">
+            <xsl:choose>
+              <xsl:when test="self::tei:quote">quote-c</xsl:when>
+            </xsl:choose>
+          </xsl:with-param>
+        </xsl:call-template>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-    <!-- éléments génériques de niveau bloc -->
-  <xsl:template match=" tei:ab | tei:back/* | tei:body/* | tei:byline | tei:dateline | tei:div/* | tei:div1/* | tei:div2/* | tei:div3/* | tei:div4/* | tei:front/* | tei:label | tei:p  | tei:salute | tei:signed | tei:sp/* | tei:titlePage/* | tei:titlePart" name="block" priority="-1">
+  <!-- Elements known as pure block/para -->
+  <xsl:template match=" tei:ab | tei:back/* | tei:body/* | tei:byline | tei:dateline | tei:div/* | tei:div1/* | tei:div2/* | tei:div3/* | tei:div4/* | tei:front/* | tei:label | tei:p  | tei:salute | tei:signed | tei:sp/* | tei:titlePage/* | tei:titlePart" name="par" priority="-1">
     <xsl:param name="parent"/>
     <xsl:param name="border"/>
     <xsl:param name="fill"/>
@@ -474,10 +486,8 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
           <w:tab/>
         </w:r>
       </xsl:if>
-      <xsl:apply-templates/>
+      <xsl:call-template name="char"/>
     </w:p>
-    
-    
   </xsl:template>
   <xsl:template match="tei:l" name="l">
     <xsl:value-of select="$lf"/>
@@ -502,7 +512,7 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
             </xsl:call-template>
           </w:pPr>
           <xsl:call-template name="anchor"/>
-          <xsl:apply-templates/>
+          <xsl:call-template name="char"/>
         </w:p>
       </xsl:otherwise>
     </xsl:choose>
@@ -554,7 +564,7 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
         </w:r>
       </xsl:when>
       <!-- note de niveau paragraphe -->
-      <xsl:when test="text()[normalize-space(.) != '']|tei:hi|tei:emph">
+      <xsl:when test="text()[normalize-space(.) != '']|tei:emph|tei:hi">
         <xsl:value-of select="$lf"/>
         <w:p>
           <w:pPr>
@@ -579,7 +589,7 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
             <w:tab/>
           </w:r>
           -->
-          <xsl:apply-templates/>
+          <xsl:call-template name="char"/>
         </w:p>
       </xsl:when>
       <!-- note regroupant des blocs -->
@@ -634,7 +644,7 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
                     <w:tab/>
                   </w:r>
                 </xsl:if>
-                <xsl:apply-templates/>
+                <xsl:call-template name="char"/>
               </w:p>
             </xsl:otherwise>
           </xsl:choose>
@@ -654,19 +664,22 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
             <xsl:call-template name="rend-p"/>
           </w:pPr>
           <xsl:call-template name="anchor"/>
-          <xsl:apply-templates/>
+          <xsl:call-template name="char"/>
         </w:p>
       </xsl:when>
       <!-- niveau caractère -->
       <xsl:when test="ancestor::tei:p  or ancestor::tei:note or parent::tei:quote or parent::tei:cell or  ../text()[normalize-space(.) != '']">
-        <w:r>
-          <w:rPr>
-            <w:rStyle w:val="{local-name()}-c"/>
-          </w:rPr>
-          <w:t>
-            <xsl:value-of select="."/>
-          </w:t>
-        </w:r>
+        <xsl:call-template name="char">
+          <xsl:with-param name="style">
+            <xsl:choose>
+              <xsl:when test="self::tei:bibl">bibl-c</xsl:when>
+              <xsl:when test="self::tei:stage">stage-c</xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="local-name(.)"/>
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:with-param>
+        </xsl:call-template>
       </xsl:when>
       <!-- niveau bloc -->
       <xsl:otherwise>
@@ -676,12 +689,11 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
             <xsl:call-template name="rend-p"/>
           </w:pPr>
           <xsl:call-template name="anchor"/>
-          <xsl:apply-templates/>
+          <xsl:call-template name="char"/>
         </w:p>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-
   <xsl:template match="tei:speaker">
     <xsl:value-of select="$lf"/>
     <w:p>
@@ -689,7 +701,7 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
         <w:pStyle w:val="speaker"/>
       </w:pPr>
       <xsl:call-template name="anchor"/>
-      <xsl:apply-templates/>
+      <xsl:call-template name="char"/>
     </w:p>
   </xsl:template>
   <xsl:template match="tei:lb">
@@ -702,7 +714,6 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
           <xsl:when test="ancestor::tei:label"/>
           <xsl:when test="ancestor::tei:head"/>
           <xsl:when test="parent::*/@rend[contains(., 'center')]"/>
-
         </xsl:choose>
         <xsl:value-of select="$lf"/>
         <w:r>
@@ -714,6 +725,7 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
   <!-- saut de page -->
   <xsl:template match="tei:pb">
     <xsl:choose>
+      <xsl:when test="$pb = ''"/>
       <xsl:when test="parent::tei:body | parent::tei:cit | parent::tei:div | parent::tei:div1 | parent::tei:div2 | parent::tei:div3 | parent::tei:div4 | parent::tei:div5 | parent::tei:div6 | parent::tei:div7 | parent::tei:div8 | parent::tei:div9 | parent::tei:list | parent::tei:listBibl | parent::tei:quote[tei:l|tei:lg|tei:p] | parent::tei:sp">
         <w:p>
           <xsl:call-template name="anchor"/>
@@ -735,7 +747,7 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
               <xsl:text>]</xsl:text>
             </w:t>
             <xsl:if test=". != ''">
-              <xsl:apply-templates/>
+              <xsl:call-template name="char"/>
             </xsl:if>
           </w:r>
         </w:p>
@@ -780,26 +792,10 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
         </w:numPr>
       </w:pPr>
       <xsl:call-template name="anchor"/>
-      <xsl:apply-templates/>
+      <xsl:call-template name="char"/>
     </w:p>
   </xsl:template>
-  <!-- mise en forme inline -->
-  <xsl:template name="rend-c">
-    <xsl:param name="rend" select="@rend"/>
-    <xsl:variable name="string" select="concat(' ', normalize-space($rend), ' ')"/>
-    <xsl:if test="contains($string, ' i ') or contains($string, ' ital') or contains($string, ' refrain ')">
-      <w:i/>
-    </xsl:if>
-    <xsl:if test="contains($string, ' u ') or contains($string, ' under') or contains($string, ' sous') ">
-      <w:u w:val="single"/>
-    </xsl:if>
-    <xsl:if test="contains($string, ' sc ') or contains($string, ' small-caps ') or contains($string, ' smallcaps ')  or contains($string, ' pc ')">
-      <w:smallCaps/>
-    </xsl:if>
-    <xsl:if test="contains(concat(' ', ../@rend, ' '), 'small')">
-      <w:highlight w:val="yellow"/>
-    </xsl:if>
-  </xsl:template>
+  <!-- rendering para -->
   <xsl:template name="rend-p">
     <xsl:param name="rend" select="@rend"/>
     <xsl:variable name="string" select="concat(' ', normalize-space($rend), ' ')"/>
@@ -816,188 +812,132 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
       </xsl:when>
     </xsl:choose>
   </xsl:template>
-  <!-- Char level generic behaviors, priority 0 is needed -->
-  <xsl:template match="tei:item/* | tei:l/* | tei:p/* | tei:head/* | tei:emph | tei:hi | tei:name | tei:resp" priority="0" name="inline">
-    <xsl:param name="style"/>
-    <w:r>
-      <xsl:variable name="rPr">
-        <xsl:choose>
-          <xsl:when test="self::tei:hi and $style">
-            <w:rStyle w:val="{$style}"/>
-          </xsl:when>
-          <xsl:when test="self::tei:emph">
-            <w:i/>
-          </xsl:when>
-          <xsl:when test="self::tei:hi"/>
-          <xsl:otherwise>
-            <w:rStyle w:val="{local-name()}"/>
-          </xsl:otherwise>
-        </xsl:choose>
-        <xsl:call-template name="rend-c">
-          <!-- Faut-il ici calculer de l’héhritage ? Ex: ital dans ital ? -->
-          <xsl:with-param name="rend" select="@rend"/>
-        </xsl:call-template>
-      </xsl:variable>
-      <xsl:if test="count($rPr)">
-        <w:rPr>
-          <xsl:copy-of select="$rPr"/>
-        </w:rPr>
-      </xsl:if>
-      <!-- mauvais hack -->
-      <xsl:variable name="pre">
-        <xsl:choose>
-          <xsl:when test="self::tei:resp">
-            <xsl:text> (</xsl:text>
-          </xsl:when>
-        </xsl:choose>
-      </xsl:variable>
-      <xsl:variable name="post">
-        <xsl:choose>
-          <xsl:when test="self::tei:resp">
-            <xsl:text>) </xsl:text>
-          </xsl:when>
-        </xsl:choose>
-      </xsl:variable>
-      <w:t>
-        <xsl:attribute name="xml:space">preserve</xsl:attribute>
-        <xsl:value-of select="$pre"/>
-        <xsl:value-of select="."/>
-        <xsl:value-of select="$post"/>
-      </w:t>
-    </w:r>
+  
+  <!-- global inline -->
+  <xsl:template match="tei:l//* | tei:p//* | tei:head//*" priority="0">
+    <xsl:call-template name="char"/>
   </xsl:template>
-  <xsl:template match="tei:title">
-    <w:r>
-      <w:rPr>
-        <w:rStyle w:val="title-c"/>
-      </w:rPr>
-      <w:t>
-        <xsl:value-of select="."/>
-      </w:t>
-    </w:r>
-  </xsl:template>
-  <xsl:template match="tei:hi[starts-with(@rend, 'sup')]">
-    <xsl:param name="style"/>
-    <w:r>
-      <w:rPr>
-        <xsl:if test="$style">
-          <w:rStyle w:val="{$style}"/>
-        </xsl:if>
-        <w:vertAlign w:val="superscript"/>
-      </w:rPr>
-      <w:t>
-        <xsl:value-of select="."/>
-      </w:t>
-    </w:r>
-  </xsl:template>
-  <xsl:template match="tei:space">
-        <xsl:choose>
-          <xsl:when test="@quantity">
-            <w:r>
-              <w:t>
-                <xsl:attribute name="xml:space">preserve</xsl:attribute>
-                <xsl:value-of select="substring('                                                   ', 1, @quantity)"/>
-              </w:t>
-            </w:r>
-          </xsl:when>
-          <xsl:otherwise>
-            <w:r>
-              <w:tab/>
-            </w:r>
-          </xsl:otherwise>
-        </xsl:choose>
-  </xsl:template>
-  <xsl:template match="tei:hi[starts-with(@rend, 'sub')]">
-    <xsl:param name="style"/>
-    <w:r>
-      <w:rPr>
-        <xsl:if test="$style">
-          <w:rStyle w:val="{$style}"/>
-        </xsl:if>
-        <w:vertAlign w:val="subscript"/>
-      </w:rPr>
-      <w:t>
-        <xsl:value-of select="."/>
-      </w:t>
-    </w:r>
-  </xsl:template>
-  <xsl:template match="text()">
-    <xsl:param name="style"/>
-    <xsl:param name="rend">
+  
+  <!-- Char level -->
+  <xsl:template match="tei:emph | tei:hi | tei:name | tei:num | tei:persName | tei:resp | tei:title" name="char">
+    <!-- inherits a char style -->
+    <xsl:param name="style">
       <xsl:choose>
-        <xsl:when test="ancestor::tei:note">
-          <xsl:for-each select="ancestor::*[ancestor::tei:note]">
-            <xsl:value-of select="@rend"/>
-            <xsl:text> </xsl:text>
-          </xsl:for-each>
-        </xsl:when>
-        <xsl:when test="ancestor::tei:div">
-          <xsl:for-each select="ancestor::*[ancestor-or-self::tei:div]">
-            <xsl:value-of select="@rend"/>
-            <xsl:text> </xsl:text>
-          </xsl:for-each>
-        </xsl:when>
+        <xsl:when test="tei:hi"/>
+        <xsl:otherwise>
+          <xsl:value-of select="local-name()"/>
+        </xsl:otherwise>
       </xsl:choose>
     </xsl:param>
-    <!-- impossible to efficently test here in XSLT1 -->
-    <xsl:variable name="rPr">
-      <xsl:if test="$style">
-        <w:rStyle w:val="{$style}"/>
-      </xsl:if>
-      <xsl:call-template name="rend-c">
-        <xsl:with-param name="rend" select="$rend"/>
-      </xsl:call-template>
-    </xsl:variable>
+    <!-- rend inherits -->
+    <xsl:param name="rend"/>
+    <xsl:for-each select="node()">
+      <xsl:variable name="format">
+        <xsl:text> </xsl:text>
+        <xsl:value-of select="normalize-space(@rend)"/>
+        <xsl:text> </xsl:text>
+        <xsl:value-of select="normalize-space($rend)"/>
+        <xsl:text> </xsl:text>
+        <xsl:if test="self::tei:num">sc </xsl:if>
+        <xsl:if test="self::tei:title">i </xsl:if>
+      </xsl:variable>
+      <xsl:choose>
+        <xsl:when test="self::tei:hi and contains($format, ' sup ') ">
+          <w:r>
+            <w:rPr>
+              <w:vertAlign w:val="superscript"/>
+            </w:rPr>
+            <w:t>
+              <xsl:value-of select="normalize-space(.)"/>
+            </w:t>
+          </w:r>
+        </xsl:when>
+        <xsl:when test="self::tei:hi and contains($format, ' sub ')">
+          <w:r>
+            <w:rPr>
+              <w:vertAlign w:val="subscript"/>
+            </w:rPr>
+            <w:t>
+              <xsl:value-of select="normalize-space(.)"/>
+            </w:t>
+          </w:r>
+        </xsl:when>
+        <xsl:when test="self::tei:note">
+          <xsl:apply-templates select="."/>
+        </xsl:when>
+        <!-- for each element, recall -->
+        <xsl:when test="*">
+          <xsl:call-template name="char">
+            <xsl:with-param name="rend" select="$format"/>
+          </xsl:call-template>
+        </xsl:when>
+        <!-- text node or simple  -->
+        <xsl:otherwise>
+          <xsl:variable name="rPr">
+            <xsl:variable name="ital" select="ancestor::tei:emph | ancestor::tei:title"/>
+            <xsl:choose>
+              <!-- force italic ? -->
+              <xsl:when test="contains($format, ' i ') or contains($format, ' ital') or contains($format, ' it ')">
+                <w:i/>
+              </xsl:when>
+              <xsl:when test="self::tei:emph">
+                <xsl:if test="(count($ital) mod 2) = 0 ">
+                  <w:i/>
+                </xsl:if>
+              </xsl:when>
+            </xsl:choose>
+            <xsl:if test="contains($format, ' u ') or contains($format, ' under') ">
+              <w:u w:val="single"/>
+            </xsl:if>
+            <xsl:if test="self::tei:num or contains($format, ' sc ') or contains($format, ' small-caps ') or contains($format, ' smallcaps ')  or contains($format, ' pc ') ">
+              <w:smallCaps/>
+            </xsl:if>
+            <!--
+            <xsl:if test="contains(concat(' ', ../@rend, ' '), 'small')">
+              <w:highlight w:val="yellow"/>
+            </xsl:if>
+            -->
+          </xsl:variable>
+          <!-- impossible to test variable with no string -->
+          <w:r>
+            <w:rPr>
+              <xsl:copy-of select="$rPr"/>
+            </w:rPr>
+            <w:t>
+              <xsl:attribute name="xml:space">preserve</xsl:attribute>
+              <xsl:value-of select="."/>
+            </w:t>
+          </w:r>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:for-each>
+  </xsl:template>
+  
+  <xsl:template name="vspace">
+    <w:p>
+      <w:r/>
+    </w:p>
+  </xsl:template>
+
+  <xsl:template match="tei:space">
     <xsl:choose>
-      <!-- 
-      <xsl:when test="normalize-space(.)='' and (not(following-sibling::node()) or not(preceding-sibling::node()))"/>
-      -->
-      <xsl:when test="normalize-space(.)=''">
+      <xsl:when test="@quantity">
         <w:r>
-          <w:t xml:space="preserve"> </w:t>
+          <w:t>
+            <xsl:attribute name="xml:space">preserve</xsl:attribute>
+            <xsl:value-of select="substring('                                                   ', 1, @quantity)"/>
+          </w:t>
         </w:r>
       </xsl:when>
       <xsl:otherwise>
         <w:r>
-          <xsl:if test="count($rPr)">
-            <w:rPr>
-              <xsl:copy-of select="$rPr"/>
-            </w:rPr>
-          </xsl:if>
-          <!-- start with space -->
-          <xsl:variable name="pre">
-            <xsl:choose>
-              <!-- premier caractère n’est pas un espace, ne rien faire -->
-              <xsl:when test="normalize-space(substring(.,1, 1)) != ''"/>
-              <!-- premier nœud texte du bloc, pas d’espace en début de paragraphe -->
-              <xsl:when test="starts-with( local-name(../..), 'div') and position() = 1"/>
-              <xsl:otherwise>
-                <xsl:text> </xsl:text>
-              </xsl:otherwise>
-            </xsl:choose>
-          </xsl:variable>
-          <xsl:variable name="post">
-            <xsl:choose>
-              <xsl:when test="position() = last() and ancestor-or-self::tei:s">
-                <xsl:text> </xsl:text>
-              </xsl:when>
-              <xsl:when test="normalize-space(substring(.,string-length(.), 1)) != ''"/>
-              <xsl:when test="starts-with( local-name(../..), 'div') and position() = last()"/>
-              <xsl:otherwise>
-                <xsl:text> </xsl:text>
-              </xsl:otherwise>
-            </xsl:choose>
-          </xsl:variable>
-          <w:t>
-            <xsl:attribute name="xml:space">preserve</xsl:attribute>
-            <xsl:value-of select="$pre"/>
-            <xsl:value-of select="normalize-space(.)"/>
-            <xsl:value-of select="$post"/>
-          </w:t>
+          <w:tab/>
         </w:r>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
+
+
   <!-- | *[@target] | *[@ref] -->
   <xsl:template match="tei:ref | tei:graphic[@url]">
     <!-- target is created with tei2docx-rels.xsl -->
@@ -1027,17 +967,9 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
           </w:r>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:apply-templates>
-            <xsl:with-param name="style">
-              <xsl:choose>
-                <!-- Style sémantique autre que lien ? -->
-                <xsl:when test="false()">
-                  <xsl:value-of select="local-name()"/>
-                </xsl:when>
-                <xsl:otherwise>LienInternet</xsl:otherwise>
-              </xsl:choose>
-            </xsl:with-param>
-          </xsl:apply-templates>
+          <xsl:call-template name="char">
+            <xsl:with-param name="style">LienInternet</xsl:with-param>
+          </xsl:call-template>
         </xsl:otherwise>
       </xsl:choose>
     </w:hyperlink>
