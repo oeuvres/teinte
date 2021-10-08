@@ -27,43 +27,75 @@ class Bnr {
     $name = basename($dstdir);
     Tools::mkdir($dstdir);
     $dstpath = $dstdir.$name;
-    echo "teifile=",$teifile,"\n";
 
-    $dstepub = $dstpath.".epub";
-    $livre = new Epub($teifile, STDERR);
-    $livre->export($dstepub);
-    $cmd = dirname(dirname(__FILE__))."/epub/kindlegen"." ".$dstepub;
-    $output = '';
-    $last = exec($cmd, $output, $status);
+    if (!file_exists($teifile)) {
+      echo "404 not found \"$teifile\"\n";
+      return;
+    }
 
-    $dstmobi = $dstpath.".mobi";
-    if (!file_exists($dstmobi)) {
-      self::log(E_USER_ERROR, "\n".$status."\n".join("\n", $output)."\n".$last."\n");
+    // actions
+    $todo = array();
+    foreach (array('epub', 'html', 'txt', 'docx') as $ext) {
+      $dstfile = $dstpath.".$ext";
+      if (file_exists($dstfile) && filemtime($teifile) < filemtime($dstfile)) continue;
+      $todo[$ext] = $dstfile;
+    }
+    if (count($todo) < 1) return;
+
+    echo "teifile=",$teifile,"… ";
+
+
+    if (isset($todo['epub'])) {
+      echo "EPUB ";
+      $dstfile = $todo['epub'];
+      $livre = new Epub($teifile, STDERR);
+      $livre->export($dstfile);
+      $cmd = dirname(dirname(__FILE__))."/epub/kindlegen"." ".$dstfile;
+      $output = '';
+      $last = exec($cmd, $output, $status);
+      if (!file_exists($dstpath.".mobi")) {
+        self::log(E_USER_ERROR, "\n".$status."\n".join("\n", $output)."\n".$last."\n");
+      }
     }
 
     $dom = Tools::dom($teifile);
-    $dstfile = $dstpath.".html";
-    $theme = 'https://oeuvres.github.io/teinte/'; // where to find web assets like css and js for html file
-    $xsl = dirname(dirname(__FILE__)).'/tei2html.xsl';
-    $pars = array(
-      'theme' => $theme,
-    );
-    Tools::transformDoc($dom, $xsl, $dstfile, $pars);
+    if (isset($todo['html'])) {
+      echo "HTML ";
+      $dstfile = $todo['html'];
+      $theme = 'https://oeuvres.github.io/teinte/'; // where to find web assets like css and js for html file
+      $xsl = dirname(dirname(__FILE__)).'/tei2html.xsl';
+      $pars = array(
+        'theme' => $theme,
+      );
+      Tools::transformDoc($dom, $xsl, $dstfile, $pars);
+    }
 
-    $dstfile = $dstpath.".txt";
-    $xsl = dirname(dirname(__FILE__)).'/xsl/tei2md.xsl';
-    Tools::transformDoc($dom, $xsl, $dstfile);
+    if (isset($todo['txt'])) {
+      echo "MARKDOWN ";
+      $dstfile = $todo['txt'];
+      $xsl = dirname(dirname(__FILE__)).'/xsl/tei2md.xsl';
+      Tools::transformDoc($dom, $xsl, $dstfile);
+    }
 
-    $dstfile = $dstpath.".docx";
-    Docx::export($teifile, $dstfile);
+    if (isset($todo['docx'])) {
+      echo "DOCX ";
+      Docx::export($teifile, $todo['docx']);
+    }
 
 
-
+    echo "…done\n";
 
   }
 
   public static function pdf($teifile, $dstdir='', $force=false)
   {
+
+    if (!file_exists($teifile)) {
+      echo "404 not found \"$teifile\"\n";
+      return;
+    }
+
+
     if ($dstdir) {
       $dstdir = rtrim($dstdir, '/\\').'/';
       if (!file_exists($dstdir)) {
@@ -117,8 +149,12 @@ class Bnr {
     while (($data = fgetcsv($handle, 0, "\t")) !== FALSE) {
       $teifile = $data[0];
       $name = $data[1];
-      self::export(realpath($teifile), $basedir.$name);
-      self::pdf(realpath($teifile), $basedir.$name);
+      if (!file_exists($teifile)) {
+        echo "404 not found \"$teifile\"\n";
+        continue;
+      }
+      self::export($teifile, $basedir.$name);
+      self::pdf($teifile, $basedir.$name);
     }
   }
 }

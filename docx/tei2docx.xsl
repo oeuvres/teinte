@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:transform exclude-result-prefixes="tei" version="1.0" xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:w10="urn:schemas-microsoft-com:office:word" xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml" xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:wp14="http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing" xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas" xmlns:wpg="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup" xmlns:wpi="http://schemas.microsoft.com/office/word/2010/wordprocessingInk" xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  <xsl:import href="../xsl/common.xsl"/>
   <!-- indent "no", needed for OOo -->
   <xsl:output encoding="UTF-8" indent="no" method="xml"/>
   <xsl:strip-space elements="tei:TEI tei:TEI.2 tei:body tei:castList tei:div tei:div1 tei:div2  tei:docDate tei:docImprint tei:docTitle tei:fileDesc tei:front tei:group tei:index tei:listWit tei:publicationStmp tei:publicationStmt tei:sourceDesc tei:SourceDesc tei:sources tei:text tei:teiHeader tei:text tei:titleStmt"/>
@@ -231,57 +232,17 @@
   </xsl:template>
   <!-- Conserver les identifiants -->
   <xsl:template name="anchor">
-    <xsl:param name="id"/>
-    <!-- identifier of a parent div on first child block (???) -->
-    <xsl:if test="../@xml:id and (self::tei:head or not(preceding-sibling::*[. != '']))">
-      <w:tei w:name="{../@xml:id}">
-        <xsl:attribute name="w:id">
-          <xsl:number count="node()" level="any"/>
-        </xsl:attribute>
-      </w:tei>
-      <w:r>
-        <w:rPr>
-          <w:rStyle w:val="id"/>
-        </w:rPr>
-        <w:t>
-          <xsl:attribute name="xml:space">preserve</xsl:attribute>
-          <xsl:text>[</xsl:text>
-          <xsl:value-of select="../@xml:id"/>
-          <xsl:text>] </xsl:text>
-        </w:t>
-      </w:r>
-      <w:bookmarkEnd>
-        <xsl:attribute name="w:id">
-          <xsl:number count="node()" level="any"/>
-        </xsl:attribute>
-      </w:bookmarkEnd>
-    </xsl:if>
-    <xsl:choose>
-      <xsl:when test="$id">
-        <w:bookmarkStart w:name="{$id}">
-          <xsl:attribute name="w:id">
-            <xsl:number count="node()" level="any"/>
-          </xsl:attribute>
-        </w:bookmarkStart>
-        <w:bookmarkEnd>
-          <xsl:attribute name="w:id">
-            <xsl:number count="node()" level="any"/>
-          </xsl:attribute>
-        </w:bookmarkEnd>
-      </xsl:when>
-      <xsl:when test="@xml:id">
-        <w:bookmarkStart w:name="{@xml:id}">
-          <xsl:attribute name="w:id">
-            <xsl:number count="node()" level="any"/>
-          </xsl:attribute>
-        </w:bookmarkStart>
-        <w:bookmarkEnd>
-          <xsl:attribute name="w:id">
-            <xsl:number count="node()" level="any"/>
-          </xsl:attribute>
-        </w:bookmarkEnd>
-      </xsl:when>
-    </xsl:choose>
+    <xsl:param name="id" select="@xml:id"/>
+    <w:bookmarkStart w:name="{$id}">
+      <xsl:attribute name="w:id">
+        <xsl:number count="node()" level="any"/>
+      </xsl:attribute>
+    </w:bookmarkStart>
+    <w:bookmarkEnd>
+      <xsl:attribute name="w:id">
+        <xsl:number count="node()" level="any"/>
+      </xsl:attribute>
+    </w:bookmarkEnd>
   </xsl:template>
   
   
@@ -453,6 +414,11 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
         </xsl:otherwise>
       </xsl:choose>
     </xsl:param>
+    <xsl:param name="rend"/>
+    <xsl:apply-templates>
+      <xsl:with-param name="rend" select="normalize-space(concat($rend, ' ', @rend))"/>
+    </xsl:apply-templates>
+    
     <xsl:value-of select="$lf"/>
     <w:p>
       <w:pPr>
@@ -474,7 +440,9 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
           </w:pBdr>
           <w:shd w:color="auto" w:fill="{$fill}" w:val="clear"/>
         </xsl:if>
-        <xsl:call-template name="rend-p"/>
+        <xsl:call-template name="rend-p">
+          <xsl:with-param name="rend" select="normalize-space(concat($rend, ' ', @rend))"/>
+        </xsl:call-template>
       </w:pPr>
       <xsl:call-template name="anchor"/>
       <xsl:if test="parent::tei:note and not(preceding-sibling::*)">
@@ -490,6 +458,7 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
     </w:p>
   </xsl:template>
   <xsl:template match="tei:l" name="l">
+    <xsl:param name="rend"/>
     <xsl:value-of select="$lf"/>
     <xsl:choose>
       <!-- if empty verse, probably line group separator -->
@@ -508,18 +477,23 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
               </xsl:attribute>
             </w:pStyle>
             <xsl:call-template name="rend-p">
-              <xsl:with-param name="rend" select="concat(@rend, ' ', parent::*/@rend, ' ', ancestor::tei:quote/@rend)"/>
+              <xsl:with-param name="rend" select="concat(@rend, ' ', $rend)"/>
             </xsl:call-template>
           </w:pPr>
           <xsl:call-template name="anchor"/>
-          <xsl:call-template name="char"/>
+          <xsl:call-template name="char">
+            <xsl:with-param name="rend" select="concat(@rend, ' ', $rend)"/>
+          </xsl:call-template>
         </w:p>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
   <xsl:template match="tei:lg">
+    <xsl:param name="rend"/>
     <xsl:value-of select="$lf"/>
-    <xsl:apply-templates/>
+    <xsl:apply-templates>
+      <xsl:with-param name="rend" select="normalize-space(concat($rend, ' ', @rend))"/>
+    </xsl:apply-templates>
     <!-- Line group separator, empty para, not in style <l> for verse numbering -->
     <xsl:if test="following-sibling::*[1][self::tei:lg]">
       <xsl:value-of select="$lf"/>
@@ -598,21 +572,6 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
         <xsl:for-each select="*">
           <xsl:choose>
             <xsl:when test="self::tei:quote | self::tei:l | self::tei:lg">
-              <xsl:if test="position() = 1 and (../@n|../@xml:id)">
-                <w:p>
-                  <xsl:call-template name="anchor"/>
-                  <w:r>
-                    <w:rPr>
-                      <w:rStyle w:val="alert"/>
-                    </w:rPr>
-                    <w:t>
-                      <xsl:text>[</xsl:text>
-                      <xsl:value-of select="../@n|../@xml:id"/>
-                      <xsl:text>]</xsl:text>
-                    </w:t>
-                  </w:r>
-                </w:p>
-              </xsl:if>
               <xsl:apply-templates select="."/>
             </xsl:when>
             <xsl:otherwise>
@@ -628,22 +587,7 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
                     </xsl:otherwise>
                   </xsl:choose>
                 </w:pPr>
-                <xsl:if test="position() = 1 and (../@n|../@xml:id)">
-                  <xsl:call-template name="anchor"/>
-                  <w:r>
-                    <w:rPr>
-                      <w:rStyle w:val="alert"/>
-                    </w:rPr>
-                    <w:t>
-                      <xsl:text>[</xsl:text>
-                      <xsl:value-of select="../@n|../@xml:id"/>
-                      <xsl:text>]</xsl:text>
-                    </w:t>
-                  </w:r>
-                  <w:r>
-                    <w:tab/>
-                  </w:r>
-                </xsl:if>
+                <xsl:call-template name="anchor"/>
                 <xsl:call-template name="char"/>
               </w:p>
             </xsl:otherwise>
@@ -819,7 +763,7 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
   </xsl:template>
   
   <!-- Char level -->
-  <xsl:template match="tei:emph | tei:hi | tei:name | tei:num | tei:persName | tei:resp | tei:title" name="char">
+  <xsl:template match="tei:emph | tei:hi | tei:name | tei:num | tei:persName | tei:resp | tei:surname | tei:title" name="char">
     <!-- inherits a char style -->
     <xsl:param name="style">
       <xsl:choose>
@@ -838,6 +782,7 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
         <xsl:text> </xsl:text>
         <xsl:value-of select="normalize-space($rend)"/>
         <xsl:text> </xsl:text>
+        <xsl:if test="self::tei:surname">sc </xsl:if>
         <xsl:if test="self::tei:num">sc </xsl:if>
         <xsl:if test="self::tei:title">i </xsl:if>
       </xsl:variable>
@@ -874,16 +819,16 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
         <!-- text node or simple  -->
         <xsl:otherwise>
           <xsl:variable name="rPr">
-            <xsl:variable name="ital" select="ancestor::tei:emph | ancestor::tei:title"/>
             <xsl:choose>
               <!-- force italic ? -->
               <xsl:when test="contains($format, ' i ') or contains($format, ' ital') or contains($format, ' it ')">
-                <w:i/>
-              </xsl:when>
-              <xsl:when test="self::tei:emph">
-                <xsl:if test="(count($ital) mod 2) = 0 ">
-                  <w:i/>
-                </xsl:if>
+                <xsl:choose>
+                  <!-- TODO, better control of italic balancing -->
+                  <xsl:when test="ancestor-or-self::tei:emph"/>
+                  <xsl:otherwise>
+                    <w:i/>
+                  </xsl:otherwise>
+                </xsl:choose>
               </xsl:when>
             </xsl:choose>
             <xsl:if test="contains($format, ' u ') or contains($format, ' under') ">

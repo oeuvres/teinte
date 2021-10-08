@@ -1574,18 +1574,18 @@ Le mode label génère un intitulé court obtenu par une liste de valeurs locali
   <!--
     AGA, xslt 1 donc pas de fonction replace, un template pour y remedier.
   -->
-  <xsl:template name="string-replace-all">
+  <xsl:template name="replace">
     <xsl:param name="text"/>
+    <xsl:param name="search"/>
     <xsl:param name="replace"/>
-    <xsl:param name="by"/>
     <xsl:choose>
-      <xsl:when test="contains($text,$replace)">
-        <xsl:value-of select="substring-before($text,$replace)"/>
-        <xsl:value-of select="$by"/>
-        <xsl:call-template name="string-replace-all">
-          <xsl:with-param name="text" select="substring-after($text,$replace)"/>
+      <xsl:when test="contains($text,$search)">
+        <xsl:value-of select="substring-before($text,$search)"/>
+        <xsl:value-of select="$replace"/>
+        <xsl:call-template name="replace">
+          <xsl:with-param name="text" select="substring-after($text,$search)"/>
+          <xsl:with-param name="search" select="$search"/>
           <xsl:with-param name="replace" select="$replace"/>
-          <xsl:with-param name="by" select="$by"/>
         </xsl:call-template>
       </xsl:when>
       <xsl:otherwise>

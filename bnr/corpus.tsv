@@ -1,3 +1,7 @@
 path	nom
 /var/www/html/critique/vinet/vinet_litterature-francaise-19e-03.xml	vinet_1848_litterature_francaise_19e_III
 /var/www/html/critique/vinet/vinet_moralistes-16e-17e.xml	vinet_1859_moralistes_16e_17e
+/var/www/html/moliere/moliere_avare.xml	moliere_1669_avare
+/var/www/html/moliere/moliere_tartuffe.xml	moliere_1664_tartuffe
+/var/www/html/moliere/moliere_misanthrope.xml	moliere_1667_misanthrope
+/var/www/html/moliere/moliere_medecinmalgrelui.xml	moliere_1666_medecin_malgre_lui
