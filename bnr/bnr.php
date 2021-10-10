@@ -79,7 +79,7 @@ class Bnr {
 
     if (isset($todo['docx'])) {
       echo "DOCX ";
-      Docx::export($teifile, $todo['docx']);
+      Docx::export($teifile, $todo['docx'], dirname(__FILE__).'/template.docx');
     }
 
 

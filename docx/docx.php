@@ -14,20 +14,30 @@ else if (php_sapi_name() == "cli") Docx::cli();
 
 class Docx {
 
-  static function export($src, $dst) {
+  static function export($src, $dst, $template=null) {
+    if (!$template) $template = dirname(__FILE__).'/template.docx';
+    if (!file_exists($template)) {
+      throw new Exception("Template not found: ".$template);
+    }
     $filename = pathinfo ($src, PATHINFO_FILENAME);
     $dom=self::dom($src);
-    copy(dirname(__FILE__).'/template.docx', $dst);
+    copy($template, $dst);
     $zip = new ZipArchive;
     $zip->open($dst);
+
+    $re_clean = array(
+      '@(<w:rPr/>|<w:pPr/>)@' => '',
+    );
 
     $xml=self::xsl(dirname(__FILE__).'/tei2docx-comments.xsl', $dom, null, array('filename'=>$filename));
     $zip->addFromString('word/comments.xml', $xml);
 
     $xml=self::xsl(dirname(__FILE__).'/tei2docx.xsl', $dom, null, array('filename'=>$filename));
+    $xml = preg_replace(array_keys($re_clean), array_values($re_clean), $xml);
     $zip->addFromString('word/document.xml', $xml);
 
     $xml=self::xsl(dirname(__FILE__).'/tei2docx-fn.xsl', $dom, null, array('filename'=>$filename));
+    $xml = preg_replace(array_keys($re_clean), array_values($re_clean), $xml);
     $zip->addFromString('word/footnotes.xml', $xml);
 
     $xml=self::xsl(dirname(__FILE__).'/tei2docx-rels.xsl', $dom, null, array('filename'=>$filename));
@@ -123,16 +133,19 @@ usage    : php -f docx.php (dstdir/)? srcdir/*.xml
     $xml = file_get_contents($teifile);
     $re_norm = array(
       '@\s\s+@' => ' ',
+      '@(<(ab|head|p|stage)[^>]*>)\s+@' => '$1',
+      '@\s+(</(ab|head|p|stage)>)@' => '$1',
       '@\s*(<pb[^>]*/>)\s*@' => ' $1',
-      '@(<(ab|head|p)[^>]*>)\s*(<pb[^>]*/>)\s*@' => '$3\n$1',
+      '@(<(ab|head|p|stage)[^>]*>)\s*(<pb[^>]*/>)\s*@' => '$3\n$1',
     );
     $xml = preg_replace(
       array_keys($re_norm),
       array_values($re_norm),
       $xml
     );
+    // echo $xml;
     $dom = new DOMDocument("1.0", "UTF-8");
-    $dom->preserveWhiteSpace = false;
+    $dom->preserveWhiteSpace = true; // spaces are normalized upper, keep them
     $dom->formatOutput=true;
     $dom->substituteEntities=true;
     $dom->loadXML($xml,  LIBXML_NOENT | LIBXML_NONET | LIBXML_NOWARNING ); // no warn for <?xml-model

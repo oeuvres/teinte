@@ -233,16 +233,20 @@
   <!-- Conserver les identifiants -->
   <xsl:template name="anchor">
     <xsl:param name="id" select="@xml:id"/>
-    <w:bookmarkStart w:name="{$id}">
-      <xsl:attribute name="w:id">
-        <xsl:number count="node()" level="any"/>
-      </xsl:attribute>
-    </w:bookmarkStart>
-    <w:bookmarkEnd>
-      <xsl:attribute name="w:id">
-        <xsl:number count="node()" level="any"/>
-      </xsl:attribute>
-    </w:bookmarkEnd>
+    <xsl:choose>
+      <xsl:when test="normalize-space($id) != ''">
+        <w:bookmarkStart w:name="{$id}">
+          <xsl:attribute name="w:id">
+            <xsl:number count="node()" level="any"/>
+          </xsl:attribute>
+        </w:bookmarkStart>
+        <w:bookmarkEnd>
+          <xsl:attribute name="w:id">
+            <xsl:number count="node()" level="any"/>
+          </xsl:attribute>
+        </w:bookmarkEnd>
+      </xsl:when>
+    </xsl:choose>
   </xsl:template>
   
   
@@ -404,6 +408,7 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
       <xsl:choose>
         <xsl:when test="self::tei:p and parent::tei:note">Notedebasdepage</xsl:when>
         <xsl:when test="self::tei:p and parent::tei:quote">quote</xsl:when>
+        <xsl:when test="self::tei:p and parent::tei:sp"/>
         <!--
         <xsl:when test="$parent != '' and self::tei:p">
           <xsl:value-of select="$parent"/>
@@ -415,14 +420,12 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
       </xsl:choose>
     </xsl:param>
     <xsl:param name="rend"/>
-    <xsl:apply-templates>
-      <xsl:with-param name="rend" select="normalize-space(concat($rend, ' ', @rend))"/>
-    </xsl:apply-templates>
-    
     <xsl:value-of select="$lf"/>
     <w:p>
       <w:pPr>
-        <w:pStyle w:val="{$style}"/>
+        <xsl:if test="$style != ''">
+          <w:pStyle w:val="{$style}"/>
+        </xsl:if>
         <xsl:if test="$border != ''">
           <w:pBdr>
             <w:top w:color="auto" w:space="6" w:sz="2" w:val="single"/>
@@ -454,7 +457,9 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
           <w:tab/>
         </w:r>
       </xsl:if>
-      <xsl:call-template name="char"/>
+      <xsl:call-template name="char">
+        <xsl:with-param name="rend" select="normalize-space(concat($rend, ' ', @rend))"/>
+      </xsl:call-template>
     </w:p>
   </xsl:template>
   <xsl:template match="tei:l" name="l">
@@ -726,7 +731,7 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
   <xsl:template match="tei:list | tei:listBibl | tei:castList">
     <xsl:apply-templates/>
   </xsl:template>
-  <xsl:template match="tei:item | tei:castItem">
+  <xsl:template match="tei:item">
     <w:p>
       <w:pPr>
         <w:pStyle w:val="Paragraphedeliste"/>
@@ -735,6 +740,12 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
           <w:numId w:val="3"/>
         </w:numPr>
       </w:pPr>
+      <xsl:call-template name="anchor"/>
+      <xsl:call-template name="char"/>
+    </w:p>
+  </xsl:template>
+  <xsl:template match="tei:castItem">
+    <w:p>
       <xsl:call-template name="anchor"/>
       <xsl:call-template name="char"/>
     </w:p>
@@ -775,7 +786,7 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
     </xsl:param>
     <!-- rend inherits -->
     <xsl:param name="rend"/>
-    <xsl:for-each select="node()">
+    <xsl:for-each select="node()|text()">
       <xsl:variable name="format">
         <xsl:text> </xsl:text>
         <xsl:value-of select="normalize-space(@rend)"/>
@@ -785,6 +796,7 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
         <xsl:if test="self::tei:surname">sc </xsl:if>
         <xsl:if test="self::tei:num">sc </xsl:if>
         <xsl:if test="self::tei:title">i </xsl:if>
+        <xsl:if test="self::tei:hi[not(@rend)]">i </xsl:if>
       </xsl:variable>
       <xsl:choose>
         <xsl:when test="self::tei:hi and contains($format, ' sup ') ">
@@ -807,7 +819,7 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
             </w:t>
           </w:r>
         </xsl:when>
-        <xsl:when test="self::tei:note">
+        <xsl:when test="self::tei:note | tei:lb">
           <xsl:apply-templates select="."/>
         </xsl:when>
         <!-- for each element, recall -->
@@ -865,7 +877,13 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
   </xsl:template>
 
   <xsl:template match="tei:space">
+    <xsl:variable name="inline">
+      <xsl:call-template name="tei:isInline"/>
+    </xsl:variable>   
     <xsl:choose>
+      <xsl:when test="$inline = ''">
+        <w:p/>
+      </xsl:when>
       <xsl:when test="@quantity">
         <w:r>
           <w:t>
