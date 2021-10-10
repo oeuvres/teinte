@@ -1,10 +1,11 @@
 work/
 .~*
+~$*
+.DS_Store
 *.aux
 *.bak
 *.cb
 *.cb2
-.DS_Store
 *.dvi
 *.fdb_latexmk
 *.fls
