@@ -12,10 +12,23 @@
   <xsl:template match="/">
     <w:document>
       <w:body>
+        <w:sectPr w:rsidR="00E14980">
+          <w:footerReference w:type="default" r:id="rId8"/>
+          <w:pgMar w:top="1134" w:right="1134" w:bottom="1350" w:left="1134" w:header="0" w:footer="709" w:gutter="0"/>
+          <!--
+          <w:pgSz w:w="11906" w:h="16838"/>
+          <w:lnNumType w:countBy="5" w:distance="283" w:restart="continuous"/>
+          <w:cols w:space="720"/>
+          <w:formProt w:val="0"/>
+          <w:docGrid w:linePitch="360" w:charSpace="-31335"/>
+          -->
+        </w:sectPr>
         <xsl:apply-templates select="*"/>
+        <!--
         <w:sectPr>
           <w:pgMar w:top="1418" w:right="567" w:bottom="1418" w:left="851" w:header="0" w:footer="0" w:gutter="0"/>
         </w:sectPr>
+        -->
       </w:body>
     </w:document>
   </xsl:template>
@@ -408,7 +421,7 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
       <xsl:choose>
         <xsl:when test="self::tei:p and parent::tei:note">Notedebasdepage</xsl:when>
         <xsl:when test="self::tei:p and parent::tei:quote">quote</xsl:when>
-        <xsl:when test="self::tei:p and parent::tei:sp"/>
+        <xsl:when test="self::tei:p and parent::tei:sp">sp</xsl:when>
         <!--
         <xsl:when test="$parent != '' and self::tei:p">
           <xsl:value-of select="$parent"/>
@@ -819,7 +832,7 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
             </w:t>
           </w:r>
         </xsl:when>
-        <xsl:when test="self::tei:note | tei:lb">
+        <xsl:when test="self::tei:note | self::tei:lb">
           <xsl:apply-templates select="."/>
         </xsl:when>
         <!-- for each element, recall -->
