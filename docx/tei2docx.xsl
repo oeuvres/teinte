@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:transform exclude-result-prefixes="tei" version="1.0" xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:w10="urn:schemas-microsoft-com:office:word" xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml" xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:wp14="http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing" xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas" xmlns:wpg="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup" xmlns:wpi="http://schemas.microsoft.com/office/word/2010/wordprocessingInk" xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:import href="../xsl/common.xsl"/>
+  <xsl:param name="templPath"/>
   <!-- indent "no", needed for OOo -->
   <xsl:output encoding="UTF-8" indent="no" method="xml"/>
   <xsl:strip-space elements="tei:TEI tei:TEI.2 tei:body tei:castList tei:div tei:div1 tei:div2  tei:docDate tei:docImprint tei:docTitle tei:fileDesc tei:front tei:group tei:index tei:listWit tei:publicationStmp tei:publicationStmt tei:sourceDesc tei:SourceDesc tei:sources tei:text tei:teiHeader tei:text tei:titleStmt"/>
@@ -12,23 +13,16 @@
   <xsl:template match="/">
     <w:document>
       <w:body>
-        <w:sectPr w:rsidR="00E14980">
-          <w:footerReference w:type="default" r:id="rId8"/>
-          <w:pgMar w:top="1134" w:right="1134" w:bottom="1350" w:left="1134" w:header="0" w:footer="709" w:gutter="0"/>
-          <!--
-          <w:pgSz w:w="11906" w:h="16838"/>
-          <w:lnNumType w:countBy="5" w:distance="283" w:restart="continuous"/>
-          <w:cols w:space="720"/>
-          <w:formProt w:val="0"/>
-          <w:docGrid w:linePitch="360" w:charSpace="-31335"/>
-          -->
-        </w:sectPr>
-        <xsl:apply-templates select="*"/>
-        <!--
-        <w:sectPr>
-          <w:pgMar w:top="1418" w:right="567" w:bottom="1418" w:left="851" w:header="0" w:footer="0" w:gutter="0"/>
-        </w:sectPr>
-        -->
+        <xsl:choose>
+          <xsl:when test="$templPath != ''">
+            <xsl:variable name="templ" select="document($templPath)"/>
+            <xsl:apply-templates select="*"/>
+            <xsl:copy-of select="$templ/w:document/w:body/w:sectPr"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:apply-templates select="*"/>
+          </xsl:otherwise>
+        </xsl:choose>
       </w:body>
     </w:document>
   </xsl:template>
