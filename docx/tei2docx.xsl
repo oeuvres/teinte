@@ -256,13 +256,13 @@
     </xsl:choose>
   </xsl:template>
   
-  
+  <xsl:template match="tei:head[@type='kicker']"/>
   
   <xsl:template match="tei:head" name="head">
     <xsl:variable name="style">
       <xsl:choose>
         <!-- subtitle -->
-        <xsl:when test="preceding-sibling::*[1][self::tei:head]">Titre</xsl:when>
+        <xsl:when test="preceding-sibling::tei:head[not(@type) or @type!='kicker']">Titre</xsl:when>
         <xsl:when test="parent::tei:body | parent::tei:front | parent::tei:back">Titreprincipal</xsl:when>
         <xsl:when test="parent::tei:div1">Titre1</xsl:when>
         <xsl:when test="parent::tei:div2">Titre2</xsl:when>
@@ -280,6 +280,18 @@
         <w:pStyle w:val="{$style}"/>
       </w:pPr>
       <xsl:call-template name="anchor"/>
+      <xsl:for-each select="preceding-sibling::tei:head[@type='kicker']">
+        <xsl:call-template name="char"/>
+        <w:r>
+          <w:t>
+            <xsl:call-template name="head-pun"/>
+          </w:t>
+        </w:r>
+        <xsl:value-of select="$lf"/>
+        <w:r>
+          <w:br/>
+        </w:r>
+      </xsl:for-each>
       <xsl:call-template name="char"/>
     </w:p>
     <!--
