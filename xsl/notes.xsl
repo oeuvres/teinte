@@ -30,7 +30,7 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
         <xsl:if test="$notes">
           <section class="footnotes">
             <xsl:for-each select="exslt:node-set($notes)/*">
-              <xsl:sort select="@class"/>
+              <xsl:sort select="substring-before(concat(@class, ' '), ' ')"/>
               <xsl:copy-of select="."/>
             </xsl:for-each>
           </section>
