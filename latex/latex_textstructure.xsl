@@ -228,7 +228,7 @@ or parent::tei:div[contains(@rend, 'nonumber')]
         <xsl:variable name="kicker-sep">
           <xsl:if test="$kicker != ''">
             <xsl:call-template name="head-pun">
-              <xsl:with-param name="txt" select="$kicker"/>
+              <xsl:with-param name="prev" select="$kicker"/>
               <xsl:with-param name="next" select="$title"/>
             </xsl:call-template>
             <xsl:text> </xsl:text>

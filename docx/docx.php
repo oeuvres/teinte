@@ -29,19 +29,37 @@ class Docx {
       '@(<w:rPr/>|<w:pPr/>)@' => '',
     );
 
+    // a tmp file where to put files from template
+    $templPath = tempnam(sys_get_temp_dir(), "teinte_docx_");
+
+
     $xml=self::xsl(dirname(__FILE__).'/tei2docx-comments.xsl', $dom, null, array('filename'=>$filename));
     $zip->addFromString('word/comments.xml', $xml);
 
-    $xml=self::xsl(dirname(__FILE__).'/tei2docx.xsl', $dom, null, array('filename'=>$filename));
+    file_put_contents($templPath, $zip->getFromName('word/document.xml'));
+    $xml=self::xsl(dirname(__FILE__).'/tei2docx.xsl', $dom, null,
+      array(
+        'filename'=>$filename,
+        'templPath' => $templPath,
+      )
+    );
     $xml = preg_replace(array_keys($re_clean), array_values($re_clean), $xml);
     $zip->addFromString('word/document.xml', $xml);
+
+    file_put_contents($templPath, $zip->getFromName('word/_rels/document.xml.rels'));
+    $xml=self::xsl(dirname(__FILE__).'/tei2docx-rels.xsl', $dom, null,
+     array(
+       'filename'=>$filename,
+       'templPath' => $templPath,
+      )
+    );
+    $zip->addFromString('word/_rels/document.xml.rels', $xml);
+
 
     $xml=self::xsl(dirname(__FILE__).'/tei2docx-fn.xsl', $dom, null, array('filename'=>$filename));
     $xml = preg_replace(array_keys($re_clean), array_values($re_clean), $xml);
     $zip->addFromString('word/footnotes.xml', $xml);
 
-    $xml=self::xsl(dirname(__FILE__).'/tei2docx-rels.xsl', $dom, null, array('filename'=>$filename));
-    $zip->addFromString('word/_rels/document.xml.rels', $xml);
 
     $xml=self::xsl(dirname(__FILE__).'/tei2docx-fnrels.xsl', $dom, null, array('filename'=>$filename));
     $zip->addFromString('word/_rels/footnotes.xml.rels', $xml);
@@ -56,7 +74,8 @@ class Docx {
 usage    : php -f docx.php (dstdir/)? srcdir/*.xml
     ');
     $force = false;
-    if ($_SERVER['argv'][0] == '-f') {
+    $arg0 = $_SERVER['argv'][0];
+    if ($arg0 == '-f' || $arg0 == '-force'  || $arg0 == 'force') {
       $force = true;
       array_shift($_SERVER['argv']);
     }
@@ -133,10 +152,11 @@ usage    : php -f docx.php (dstdir/)? srcdir/*.xml
     $xml = file_get_contents($teifile);
     $re_norm = array(
       '@\s\s+@' => ' ',
-      '@(<(ab|head|p|stage)[^>]*>)\s+@' => '$1',
-      '@\s+(</(ab|head|p|stage)>)@' => '$1',
-      '@\s*(<pb[^>]*/>)\s*@' => ' $1',
-      '@(<(ab|head|p|stage)[^>]*>)\s*(<pb[^>]*/>)\s*@' => '$3\n$1',
+      '@\s*(<pb[^>]*/>)\s*@' => '$1 ',
+      '@\s*(<lb( [^>]*)?/>)\s*@' => '$1',
+      '@(<(ab|head|l|note|p|stage)( [^>]*)?>)\s+@' => '$1',
+      '@\s+(</(ab|head|l|note|p|stage)>)@' => '$1',
+      '@(<(ab|head|l|p|stage)( [^>]*)?>)\s*(<pb( [^>]*)?/>)\s+@' => '$1$4',
     );
     $xml = preg_replace(
       array_keys($re_norm),

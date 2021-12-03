@@ -7,11 +7,13 @@
 exclude-result-prefixes="tei">
   <xsl:import href="tei2docx.xsl"/>
   <xsl:template match="/">
-    <w:footnotes mc:Ignorable="w14 w15 w16se wp14">
+    <w:footnotes>
       <w:footnote w:type="separator" w:id="-1">
-        <w:p>
+        <w:p w14:paraId="703081DA" w14:textId="77777777" w:rsidR="002F4BC4" w:rsidRDefault="002F4BC4">
           <w:pPr>
-            <w:spacing w:line="240" w:lineRule="auto"/>
+            <w:rPr>
+              <w:sz w:val="12"/>
+            </w:rPr>
           </w:pPr>
           <w:r>
             <w:separator/>
@@ -19,15 +21,20 @@ exclude-result-prefixes="tei">
         </w:p>
       </w:footnote>
       <w:footnote w:type="continuationSeparator" w:id="0">
-        <w:p>
+        <w:p w14:paraId="62DB2BAB" w14:textId="77777777" w:rsidR="002F4BC4" w:rsidRDefault="002F4BC4">
           <w:pPr>
-            <w:spacing w:line="240" w:lineRule="auto"/>
+            <w:rPr>
+              <w:sz w:val="12"/>
+            </w:rPr>
           </w:pPr>
           <w:r>
             <w:continuationSeparator/>
           </w:r>
         </w:p>
       </w:footnote>
+      <!--
+    <w:footnotes mc:Ignorable="w14 w15 w16se wp14">
+      -->
       <xsl:apply-templates select="//tei:note[not(parent::tei:body | parent::tei:cell |parent::tei:div | parent::tei:div1 | parent::tei:div2 | parent::tei:div3 | parent::tei:div4 | parent::tei:div5 | parent::tei:div6 | parent::tei:div7 | parent::tei:div8 | parent::tei:div9 | ancestor::tei:note | parent::tei:sp)]"/>
     </w:footnotes>
   </xsl:template>

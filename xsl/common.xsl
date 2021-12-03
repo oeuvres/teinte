@@ -1192,13 +1192,13 @@ Could be correct for a text only version in <xsl:value-of select=""/>
   </xsl:template>
   
   <xsl:template name="head-pun">
-    <xsl:param name="txt">
+    <xsl:param name="prev">
       <xsl:apply-templates/>
     </xsl:param>
     <xsl:param name="next">
       <xsl:value-of select="following-sibling::*[normalize-space(.)!=''][1]"/>
     </xsl:param>
-    <xsl:variable name="norm" select="normalize-space($txt)"/>
+    <xsl:variable name="norm" select="normalize-space($prev)"/>
     <xsl:variable name="lastc" select="substring($norm, string-length($norm))"/>
     <xsl:variable name="nextc" select="substring(normalize-space($next), 1, 1)"/>
     <xsl:choose>
