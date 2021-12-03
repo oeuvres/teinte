@@ -29,13 +29,14 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
         </xsl:variable>
         <xsl:if test="$notes">
           <section class="footnotes">
-            <xsl:for-each select="exslt:node-set($notes)">
+            <xsl:for-each select="exslt:node-set($notes)/*">
               <xsl:sort select="@class"/>
               <xsl:copy-of select="."/>
             </xsl:for-each>
           </section>
         </xsl:if>
         <!--
+        <xsl:variable name="notes" select=".//tei:note"/>
         <xsl:if test="$notes">
           <section class="footnotes">
             <xsl:for-each select="exslt:node-set($notes)">
@@ -56,6 +57,18 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
   <xsl:template match="text()" mode="fn"/>
   <xsl:template match="*" mode="fn">
     <xsl:apply-templates mode="fn"/>
+  </xsl:template>
+
+  <!-- Le template principal affichant des notes hors flux -->
+  <xsl:template match="tei:note" mode="fn" name="fn">
+    <xsl:param name="resp"/>
+    <xsl:choose>
+      <!-- do not output block notes -->
+      <xsl:when test="parent::tei:app or parent::tei:back or parent::tei:div or parent::tei:div1 or parent::tei:div2 or parent::tei:div3 or parent::tei:front or parent::tei:notesStmt or parent::tei:sp"/>
+      <xsl:otherwise>
+        <xsl:call-template name="note"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   
   <xsl:template match="tei:note" mode="fn">
@@ -423,6 +436,7 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
           <xsl:choose>
             <xsl:when test="@resp='author'">1</xsl:when>
             <xsl:when test="@resp='editor'">a</xsl:when>
+            <xsl:otherwise>_</xsl:otherwise>
           </xsl:choose>
         </xsl:with-param>
       </xsl:call-template>
@@ -548,30 +562,6 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
           <xsl:otherwise> [ </xsl:otherwise>
         </xsl:choose>
         <xsl:apply-templates select="tei:sic/node() | tei:abbr/node() | tei:orig/node()"/>
-      </xsl:when>
-    </xsl:choose>
-  </xsl:template>
-  <!-- Le template principal affichant des notes hors flux -->
-  <xsl:template match="tei:note" mode="fn" name="fn">
-    <xsl:param name="resp"/>
-    <xsl:choose>
-      <!-- not a note, go in  -->
-      <xsl:when test="not(self::tei:note)">
-        <xsl:apply-templates mode="fn" select="*">
-          <xsl:with-param name="resp" select="$resp"/>
-        </xsl:apply-templates>
-      </xsl:when>
-      <!-- do not output block notes -->
-      <xsl:when test="parent::tei:app or parent::tei:back or parent::tei:div or parent::tei:div1 or parent::tei:div2 or parent::tei:div3 or parent::tei:front or parent::tei:notesStmt or parent::tei:sp"/>
-      <xsl:when test="$resp= '' and not(@resp)">
-        <xsl:call-template name="note"/>
-      </xsl:when>
-      <xsl:when test="@resp and @resp=$resp">
-        <xsl:call-template name="note"/>
-      </xsl:when>
-      <!-- note other than author or editor -->
-      <xsl:when test="$resp ='' and @resp and @resp != 'author'  and @resp != 'editor'">
-        <xsl:call-template name="note"/>
       </xsl:when>
     </xsl:choose>
   </xsl:template>
