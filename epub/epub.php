@@ -333,6 +333,7 @@ class Epub
     // transpose params
     if(isset($pars) && count($pars)) {
       foreach ($pars as $key => $value) {
+        if (!$value) $value = "";
         $this->_trans->setParameter(null, $key, $value);
       }
     }
