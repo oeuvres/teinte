@@ -1034,6 +1034,7 @@ aside .docDate {
 }
 
 .entry>.form {
+  font-weight: bold;
   margin-left: 0;
 }
 
@@ -1118,10 +1119,6 @@ hr.footnotes {
 
 .forename {
   font-variant: normal;
-}
-
-.form {
-  font-weight: bold;
 }
 
 div.l dfn.gloss {
