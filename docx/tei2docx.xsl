@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:transform exclude-result-prefixes="tei" version="1.0" xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:w10="urn:schemas-microsoft-com:office:word" xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml" xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:wp14="http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing" xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas" xmlns:wpg="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup" xmlns:wpi="http://schemas.microsoft.com/office/word/2010/wordprocessingInk" xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:transform version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:tei="http://www.tei-c.org/ns/1.0" exclude-result-prefixes="tei">
   <xsl:import href="../xsl/common.xsl"/>
+  <xsl:param name="libreO">True</xsl:param>
   <xsl:param name="templPath"/>
   <!-- indent "no", needed for OOo -->
   <xsl:output encoding="UTF-8" indent="no" method="xml"/>
@@ -11,7 +12,7 @@
   <xsl:param name="pb"/>
   <xsl:variable name="lf" select="'&#10;'"/>
   <xsl:template match="/">
-    <w:document>
+    <w:document xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:w10="urn:schemas-microsoft-com:office:word" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape" xmlns:wpg="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:wp14="http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing" xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml" mc:Ignorable="w14 wp14">
       <w:body>
         <xsl:choose>
           <xsl:when test="$templPath != ''">
@@ -191,7 +192,13 @@
     <xsl:value-of select="$lf"/>
     <w:p>
       <w:pPr>
-        <w:pStyle w:val="term"/>
+        <xsl:variable name="style">
+          <xsl:choose>
+            <xsl:when test="$libreO != ''">Term</xsl:when>
+            <xsl:otherwise>term</xsl:otherwise>
+          </xsl:choose>
+        </xsl:variable>
+        <w:pStyle w:val="{$style}"/>
       </w:pPr>
       <w:r>
         <w:t xml:space="preserve"><xsl:value-of select="$key"/> : </w:t>
@@ -255,9 +262,7 @@
       </xsl:when>
     </xsl:choose>
   </xsl:template>
-  
   <xsl:template match="tei:head[@type='kicker']"/>
-  
   <xsl:template match="tei:head" name="head">
     <xsl:variable name="style">
       <xsl:choose>
@@ -373,7 +378,13 @@
       <xsl:value-of select="$lf"/>
       <w:p>
         <w:pPr>
-          <w:pStyle w:val="epigraph"/>
+          <xsl:variable name="style">
+            <xsl:choose>
+              <xsl:when test="$libreO != ''">Epigraph</xsl:when>
+              <xsl:otherwise>epigraph</xsl:otherwise>
+            </xsl:choose>
+          </xsl:variable>
+          <w:pStyle w:val="{$style}"/>
           <xsl:if test="self::tei:bibl">
             <w:jc w:val="right"/>
           </xsl:if>
@@ -425,16 +436,26 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
     <xsl:param name="fill"/>
     <xsl:param name="style">
       <xsl:choose>
-        <xsl:when test="self::tei:p and parent::tei:note">Notedebasdepage</xsl:when>
-        <xsl:when test="self::tei:p and parent::tei:quote">quote</xsl:when>
-        <xsl:when test="self::tei:p and parent::tei:sp">sp</xsl:when>
-        <!--
-        <xsl:when test="$parent != '' and self::tei:p">
-          <xsl:value-of select="$parent"/>
+        <xsl:when test="$libreO">
+          <xsl:choose>
+            <xsl:when test="self::tei:p and parent::tei:note">Notedebasdepage</xsl:when>
+            <xsl:when test="self::tei:p and parent::tei:quote">Quote</xsl:when>
+            <xsl:when test="self::tei:p and parent::tei:sp">Sp</xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="translate(substring(local-name(), 1, 1), $lc, $uc)"/>
+              <xsl:value-of select="substring(local-name(), 2)"/>
+            </xsl:otherwise>
+          </xsl:choose>
         </xsl:when>
-        -->
         <xsl:otherwise>
-          <xsl:value-of select="local-name()"/>
+          <xsl:choose>
+            <xsl:when test="self::tei:p and parent::tei:note">Notedebasdepage</xsl:when>
+            <xsl:when test="self::tei:p and parent::tei:quote">quote</xsl:when>
+            <xsl:when test="self::tei:p and parent::tei:sp">sp</xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="local-name()"/>
+            </xsl:otherwise>
+          </xsl:choose>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:param>
@@ -495,7 +516,9 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
             <w:pStyle>
               <xsl:attribute name="w:val">
                 <xsl:choose>
+                  <xsl:when test="$libreO != '' and ancestor::tei:quote">Quotel</xsl:when>
                   <xsl:when test="ancestor::tei:quote">quotel</xsl:when>
+                  <xsl:when test="$libreO != ''">L</xsl:when>
                   <xsl:otherwise>l</xsl:otherwise>
                 </xsl:choose>
               </xsl:attribute>
@@ -566,7 +589,13 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
         <xsl:value-of select="$lf"/>
         <w:p>
           <w:pPr>
-            <w:pStyle w:val="note"/>
+            <xsl:variable name="style">
+              <xsl:choose>
+                <xsl:when test="$libreO != ''">Note</xsl:when>
+                <xsl:otherwise>note</xsl:otherwise>
+              </xsl:choose>
+            </xsl:variable>
+            <w:pStyle w:val="{$style}"/>
           </w:pPr>
           <xsl:call-template name="anchor"/>
           <!--
@@ -602,14 +631,20 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
               <xsl:value-of select="$lf"/>
               <w:p>
                 <w:pPr>
-                  <xsl:choose>
-                    <xsl:when test="self::tei:p">
-                      <w:pStyle w:val="note"/>
-                    </xsl:when>
-                    <xsl:otherwise>
-                      <w:pStyle w:val="{local-name()}"/>
-                    </xsl:otherwise>
-                  </xsl:choose>
+                  <xsl:variable name="style">
+                    <xsl:choose>
+                      <xsl:when test="$libreO != '' and self::tei:p">Note</xsl:when>
+                      <xsl:when test="self::tei:p">note</xsl:when>
+                      <xsl:when test="$libreO != ''">
+                        <xsl:value-of select="translate(substring(local-name(), 1, 1), $lc, $uc)"/>
+                        <xsl:value-of select="substring(local-name(), 2)"/>
+                      </xsl:when>
+                      <xsl:otherwise>
+                        <xsl:value-of select="local-name()"/>
+                      </xsl:otherwise>
+                    </xsl:choose>
+                  </xsl:variable>
+                  <w:pStyle w:val="{$style}"/>
                 </w:pPr>
                 <xsl:call-template name="anchor"/>
                 <xsl:call-template name="char"/>
@@ -628,7 +663,18 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
       <xsl:when test="parent::*[self::tei:quote|self::tei:cell|self::tei:note][tei:p|tei:l]">
         <w:p>
           <w:pPr>
-            <w:pStyle w:val="{local-name()}"/>
+            <xsl:variable name="style">
+              <xsl:choose>
+                <xsl:when test="$libreO != ''">
+                  <xsl:value-of select="translate(substring(local-name(), 1, 1), $lc, $uc)"/>
+                  <xsl:value-of select="substring(local-name(), 2)"/>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="local-name()"/>
+                </xsl:otherwise>
+              </xsl:choose>
+            </xsl:variable>
+            <w:pStyle w:val="{$style}"/>
             <xsl:call-template name="rend-p"/>
           </w:pPr>
           <xsl:call-template name="anchor"/>
@@ -653,7 +699,18 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
       <xsl:otherwise>
         <w:p>
           <w:pPr>
-            <w:pStyle w:val="{local-name()}"/>
+            <xsl:variable name="style">
+              <xsl:choose>
+                <xsl:when test="$libreO != ''">
+                  <xsl:value-of select="translate(substring(local-name(), 1, 1), $lc, $uc)"/>
+                  <xsl:value-of select="substring(local-name(), 2)"/>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="local-name()"/>
+                </xsl:otherwise>
+              </xsl:choose>
+            </xsl:variable>
+            <w:pStyle w:val="{$style}"/>
             <xsl:call-template name="rend-p"/>
           </w:pPr>
           <xsl:call-template name="anchor"/>
@@ -666,7 +723,13 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
     <xsl:value-of select="$lf"/>
     <w:p>
       <w:pPr>
-        <w:pStyle w:val="speaker"/>
+        <xsl:variable name="style">
+          <xsl:choose>
+            <xsl:when test="$libreO != ''">Speaker</xsl:when>
+            <xsl:otherwise>speaker</xsl:otherwise>
+          </xsl:choose>
+        </xsl:variable>
+        <w:pStyle w:val="{$style}"/>
       </w:pPr>
       <xsl:call-template name="anchor"/>
       <xsl:call-template name="char"/>
@@ -786,12 +849,10 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
       </xsl:when>
     </xsl:choose>
   </xsl:template>
-  
   <!-- global inline -->
   <xsl:template match="tei:l//* | tei:p//* | tei:head//*" priority="0">
     <xsl:call-template name="char"/>
   </xsl:template>
-  
   <!-- Char level -->
   <xsl:template match="tei:emph | tei:hi | tei:name | tei:num | tei:persName | tei:resp | tei:surname | tei:title" name="char">
     <!-- inherits a char style -->
@@ -888,17 +949,15 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
       </xsl:choose>
     </xsl:for-each>
   </xsl:template>
-  
   <xsl:template name="vspace">
     <w:p>
       <w:r/>
     </w:p>
   </xsl:template>
-
   <xsl:template match="tei:space">
     <xsl:variable name="inline">
       <xsl:call-template name="tei:isInline"/>
-    </xsl:variable>   
+    </xsl:variable>
     <xsl:choose>
       <xsl:when test="$inline = ''">
         <w:p/>
@@ -918,8 +977,6 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-
-
   <!-- | *[@target] | *[@ref] -->
   <xsl:template match="tei:ref | tei:graphic[@url]">
     <!-- target is created with tei2docx-rels.xsl -->
