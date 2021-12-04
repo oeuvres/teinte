@@ -1030,10 +1030,15 @@
               <element name="tagsDecl">
                 <oneOrMore>
                   <element name="rendition">
-                    <ref name="id-att"/>
-                    <attribute name="scheme">
-                      <value>css</value>
-                    </attribute>
+                    <optional>
+                      <ref name="id-att"/>
+                    </optional>
+                    <optional>
+                      <attribute name="scheme">
+                        <value>css</value>
+                      </attribute>
+                    </optional>
+                    <attribute name="selector"/>
                     <text/>
                     <!-- la règle css -->
                   </element>
