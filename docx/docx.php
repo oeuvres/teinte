@@ -33,7 +33,8 @@ class Docx
 
         // a tmp file where to put files from template
         $templPath = tempnam(sys_get_temp_dir(), "teinte_docx_");
-
+        $templPath = "file:///" 
+            . str_replace(DIRECTORY_SEPARATOR, "/", $templPath);
 
         $xml = self::xsl(dirname(__FILE__) . '/tei2docx-comments.xsl', $dom, null, array('filename' => $filename));
         $zip->addFromString('word/comments.xml', $xml);

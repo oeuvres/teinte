@@ -29,6 +29,11 @@
     <Relationships>
       <!-- Spécifique version MS.Word utilisée pour le template -->
       <xsl:variable name="templ" select="document($templPath)"/>
+      <xsl:comment>
+        <xsl:value-of select="$templPath"/>
+        
+        <xsl:copy-of select="$templ"/>
+      </xsl:comment>
       <xsl:copy-of select="$templ/rel:Relationships/rel:Relationship[@Target != ''][not(@TargetMode) or @TargetMode != 'External']"/>
       <!-- do not register targets of links in notes -->
       <xsl:for-each select=".//tei:ref | .//tei:graphic">

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:transform version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:tei="http://www.tei-c.org/ns/1.0" exclude-result-prefixes="tei">
   <xsl:import href="../xsl/common.xsl"/>
-  <xsl:param name="libreO">True</xsl:param>
+  <xsl:param name="libreO"/>
   <xsl:param name="templPath"/>
   <!-- indent "no", needed for OOo -->
   <xsl:output encoding="UTF-8" indent="no" method="xml"/>
