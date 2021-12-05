@@ -133,7 +133,7 @@ usage    : php -f docx.php (dstdir/)? srcdir/*.xml
         reset($_FILES);
         $tmp = current($_FILES);
         if ($tmp['name'] && !$tmp['tmp_name']) {
-            echo $tmp['name'], ' seems bigger than allowed size for upload in your php.ini : upload_max_filesize=', ini_get('upload_max_filesize'), ', post_max_size=', ini_get('post_max_size');
+            echo $tmp['name'], ' seems bigger than allowed size for upload in your php.ini: upload_max_filesize=', ini_get('upload_max_filesize'), ', post_max_size=', ini_get('post_max_size');
             return false;
         }
         $srcfile = $tmp['tmp_name'];

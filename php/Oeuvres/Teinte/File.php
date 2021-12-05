@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace Oeuvres\Teinte;
 
-use Exception;
+use Exception, ZipArchive;
 
 class File
 {
@@ -105,29 +105,77 @@ class File
     /**
      * Recursive copy of folder
      */
-    public static function rcopy($srcdir, $dstdir) 
-    {
-        $srcdir = rtrim($srcdir, "/\\").DIRECTORY_SEPARATOR;
-        $dstdir = rtrim($dstdir, "/\\").DIRECTORY_SEPARATOR;
-        self::mkdir($dstdir);
-        $dir = opendir($srcdir);
-        while(false !== ($filename = readdir($dir))) {
-            if ($filename[0] == '.') {
+    public static function rcopy(
+        string $srcDir, 
+        string $dstDir
+    ) {
+        $srcDir = rtrim($srcDir, "/\\").DIRECTORY_SEPARATOR;
+        $dstDir = rtrim($dstDir, "/\\").DIRECTORY_SEPARATOR;
+        self::mkdir($dstDir);
+        $dir = opendir($srcDir);
+        while(false !== ($srcName = readdir($dir))) {
+            if ($srcName[0] == '.') {
                 continue;
             }
-            $srcfile = $srcdir.$filename;
-            if (is_dir($srcfile)) {
-                self::rcopy($srcfile, $dstdir.$filename);
+            $srcFile = $srcDir.$srcName;
+            if (is_dir($srcFile)) {
+                self::rcopy($srcFile, $dstDir.$srcName);
             }
             else {
-                copy($srcfile, $dstdir.$filename);
+                copy($srcFile, $dstDir.$srcName);
             }
         }
         closedir($dir);
     }
 
     /**
-     * Build a hash from tsv file where first col is the key.
+     * Zip folder to a zip file
+     */
+    static public function zip(
+        string $zipFile, 
+        string $srcDir
+    ) {
+        $zip = new ZipArchive();
+        if (!file_exists($zipFile)) {
+            $zip->open($zipFile, ZIPARCHIVE::CREATE);
+        }
+        else {
+            $zip->open($zipFile);
+        }
+        self::zipDir($zip, $srcDir);
+        $zip->close();
+    }
+
+
+    /**
+     * The recursive method to zip dir
+     * start with files (especially for mimetype epub)
+     */
+    static private function zipDir(
+        object $zip, 
+        string $srcDir, 
+        string $entryDir = ""
+    ) {
+        $srcDir = rtrim($srcDir, "/\\") . '/';
+        // files
+        foreach (array_filter(glob($srcDir . '/*'), 'is_file') as $srcPath) {
+            $srcName = basename($srcPath);
+            if ($srcName == '.' || $srcName == '..') continue;
+            $entryPath = $entryDir . $srcName;
+            $zip->addFile($srcPath, $entryPath);
+        }
+        // dirs
+        foreach (glob($srcDir . '/*', GLOB_ONLYDIR) as $srcPath) {
+            $srcName = basename($srcPath);
+            if ($srcName == '.' || $srcName == '..') continue;
+            $entryPath = $entryDir . $srcName;
+            $zip->addEmptyDir($entryPath);
+            self::zipDir($zip, $srcPath, $entryPath);
+        }
+    }
+
+    /**
+     * Build a map from tsv file where first col is the key.
      */
     static function tsvhash($tsvfile, $sep="\t")
     {

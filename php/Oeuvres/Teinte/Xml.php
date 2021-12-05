@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace Oeuvres\Teinte;
 
 use DOMDocument, Exception, XSLTProcessor;
+use Psr\Log\LoggerInterface as LoggerInterface;
 
 class Xml
 {
@@ -16,28 +17,67 @@ class Xml
     private static $transcache = array();
     /** get a temp dir */
     private static $tmpdir;
+    /** libxml options for DOMDocument */
+    const LIBXML_OPTIONS = LIBXML_NOENT 
+        | LIBXML_NONET 
+        | LIBXML_NSCLEAN 
+        | LIBXML_NOCDATA 
+        | LIBXML_NOWARNING;
+    private static $logger;
+
+    public static function setLogger(LoggerInterface $logger) {
+        self::$logger = $logger;
+    }
 
     /**
-     * Get a DOM document with best options
+     * Get a DOM document with best options from a file path
      */
-    static function dom($xmlfile) {
+    public static function dom(string $xmlFile): DOMDocument
+    {
+        $dom = self::domSkel();
+        $dom->load($xmlFile, self::LIBXML_OPTIONS);
+        return $dom;
+    }
+
+    /**
+     * Get a DOM document with best options from an XML content
+     */
+    public static function domXml(string $xml): DOMDocument
+    {
+        $dom = self::domSkel();
+        $dom->loadXML($xml, self::LIBXML_OPTIONS);
+        return $dom;
+    }
+
+    /**
+     * Return an empty dom with options
+     */
+    private static function domSkel(): DOMDocument
+    {
         $dom = new DOMDocument();
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput = true;
         $dom->substituteEntities = true;
-        $dom->load($xmlfile, LIBXML_NOENT | LIBXML_NONET | LIBXML_NSCLEAN | LIBXML_NOCDATA | LIBXML_NOWARNING);
         return $dom;
     }
     /**
      * Xsl transform from xml file
      */
-    static function transform($xmlfile, $xslfile, $dst=null, $pars=null)
-    {
-        return self::transformDoc(self::dom($xmlfile), $xslfile, $dst, $pars);
+    static function transform(
+        string $xmlFile, 
+        string $xslFile, 
+        $dst = null, 
+        array $pars = null
+    ) {
+        return self::transformDoc(self::dom($xmlFile), $xslFile, $dst, $pars);
     }
 
-    static public function transformXml($xml, $xslfile, $dst=null, $pars=null)
-    {
+    static public function transformXml(
+        string $xml, 
+        string $xslfile, 
+        $dst=null, 
+        array $pars=null
+    ) {
         $dom = new DOMDocument();
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput=true;
@@ -50,8 +90,12 @@ class Xml
      * An xslt transformer with cache
      * TOTHINK : deal with errors
      */
-    static public function transformDoc($dom, $xslfile, $dst=null, $pars=null)
-    {
+    static public function transformDoc(
+        object $dom, 
+        string $xslfile, 
+        $dst = null, 
+        array $pars = null
+    ) {
         if (!is_a($dom, 'DOMDocument')) {
             throw new Exception('Source is not a DOM document, use transform() for a file, or transformXml() for an xml as a string.');
         }
