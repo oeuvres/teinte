@@ -18,11 +18,13 @@ class Xml
     /** get a temp dir */
     private static $tmpdir;
     /** libxml options for DOMDocument */
-    const LIBXML_OPTIONS = LIBXML_NOENT 
+    const LIBXML_OPTIONS = 
+          LIBXML_NOENT 
         | LIBXML_NONET 
         | LIBXML_NSCLEAN 
         | LIBXML_NOCDATA 
-        | LIBXML_NOWARNING;
+        | LIBXML_NOWARNING  // no warn for <?xml-model
+    ;
     private static $logger;
 
     public static function setLogger(LoggerInterface $logger) {
@@ -133,7 +135,7 @@ class Xml
         // add params
         if(isset($pars) && count($pars)) {
             foreach ($pars as $key => $value) {
-                $trans->setParameter(null, $key, $value);
+                $trans->setParameter("", $key, $value);
             }
         }
         // return a DOM document for efficient piping
@@ -152,7 +154,7 @@ class Xml
         // reset parameters ! or they will kept on next transform if transformer is reused
         if(isset($pars) && count($pars)) {
             foreach ($pars as $key => $value) {
-                $trans->removeParameter(null, $key);
+                $trans->removeParameter("", $key);
             }
         }
         return $ret;

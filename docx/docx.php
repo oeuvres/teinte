@@ -1,4 +1,14 @@
 <?php
+/**
+ * code convention https://www.php-fig.org/psr/psr-12/
+ */
+
+declare(strict_types=1);
+
+include_once(dirname(__DIR__) . '/php/autoload.php');
+
+use Oeuvres\Teinte\Xml;
+
 
 /**
  * Class adhoc pour générer un docx à partir d’un XML/TEI
@@ -36,26 +46,35 @@ class Docx
         $templPath = "file:///" 
             . str_replace(DIRECTORY_SEPARATOR, "/", $templPath);
 
-        $xml = self::xsl(dirname(__FILE__) . '/tei2docx-comments.xsl', $dom, null, array('filename' => $filename));
+        $xml = Xml::transformDoc(
+            $dom, 
+            __DIR__ . '/tei2docx-comments.xsl', 
+            null, 
+            array('filename' => $filename)
+        );
         $zip->addFromString('word/comments.xml', $xml);
 
         file_put_contents($templPath, $zip->getFromName('word/document.xml'));
-        $xml = self::xsl(
-            dirname(__FILE__) . '/tei2docx.xsl',
+        $xml = Xml::transformDoc(
             $dom,
+            dirname(__FILE__) . '/tei2docx.xsl',
             null,
             array(
                 'filename' => $filename,
                 'templPath' => $templPath,
             )
         );
-        $xml = preg_replace(array_keys($re_clean), array_values($re_clean), $xml);
+        $xml = preg_replace(
+            array_keys($re_clean), 
+            array_values($re_clean), 
+            $xml
+        );
         $zip->addFromString('word/document.xml', $xml);
 
         file_put_contents($templPath, $zip->getFromName('word/_rels/document.xml.rels'));
-        $xml = self::xsl(
-            dirname(__FILE__) . '/tei2docx-rels.xsl',
+        $xml = Xml::transformDoc(
             $dom,
+            dirname(__FILE__) . '/tei2docx-rels.xsl',
             null,
             array(
                 'filename' => $filename,
@@ -65,12 +84,26 @@ class Docx
         $zip->addFromString('word/_rels/document.xml.rels', $xml);
 
 
-        $xml = self::xsl(dirname(__FILE__) . '/tei2docx-fn.xsl', $dom, null, array('filename' => $filename));
-        $xml = preg_replace(array_keys($re_clean), array_values($re_clean), $xml);
+        $xml = Xml::transformDoc(
+            $dom,
+            dirname(__FILE__) . '/tei2docx-fn.xsl', 
+            null, 
+            array('filename' => $filename)
+        );
+        $xml = preg_replace(
+            array_keys($re_clean), 
+            array_values($re_clean), 
+            $xml
+        );
         $zip->addFromString('word/footnotes.xml', $xml);
 
 
-        $xml = self::xsl(dirname(__FILE__) . '/tei2docx-fnrels.xsl', $dom, null, array('filename' => $filename));
+        $xml = Xml::transformDoc(
+            $dom,
+            dirname(__FILE__) . '/tei2docx-fnrels.xsl',
+            null,
+            array('filename' => $filename)
+        );
         $zip->addFromString('word/_rels/footnotes.xml.rels', $xml);
 
         $zip->close();
@@ -174,27 +207,10 @@ usage    : php -f docx.php (dstdir/)? srcdir/*.xml
             $xml
         );
         // echo $xml;
-        $dom = new DOMDocument("1.0", "UTF-8");
-        $dom->preserveWhiteSpace = true; // spaces are normalized upper, keep them
-        $dom->formatOutput = true;
-        $dom->substituteEntities = true;
-        $dom->loadXML($xml,  LIBXML_NOENT | LIBXML_NONET | LIBXML_NOWARNING); // no warn for <?xml-model
+        $dom = Xml::domXml($xml);
+        // spaces are normalized upper, keep them
+        $dom->preserveWhiteSpace = true; 
         return $dom;
     }
 
-    /**
-     * Transformation xsl
-     */
-    static function xsl($xslFile, $dom, $dst = null, $pars = null)
-    {
-        $xsl = new DOMDocument("1.0", "UTF-8");
-        $xsl->load($xslFile);
-        $proc = new XSLTProcessor();
-        $proc->importStyleSheet($xsl);
-        // transpose params
-        if ($pars && count($pars)) foreach ($pars as $key => $value) $proc->setParameter('', $key, $value);
-        // we should have no errors here
-        if ($dst) $proc->transformToUri($dom, $dst);
-        else return $proc->transformToXML($dom);
-    }
 }

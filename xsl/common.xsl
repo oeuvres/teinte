@@ -55,6 +55,7 @@ Gobal TEI parameters and variables are divided in different categories
     <xsl:choose>
       <xsl:when test="$xslbase != ''">
         <xsl:value-of select="$xslbase"/>
+        <xsl:text>theme/</xsl:text>
       </xsl:when>
       <xsl:otherwise><xsl:value-of select="$http"/>oeuvres.github.io/teinte/theme/</xsl:otherwise>
     </xsl:choose>

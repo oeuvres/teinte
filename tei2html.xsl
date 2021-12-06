@@ -52,7 +52,7 @@ XSLT 1.0 is compatible browser, PHP, Python, Java…
       <!-- Complete doc -->
       <xsl:otherwise>
         <!--  browser will not like doctype -->
-        <xsl:if test="$xslbase != $theme">
+        <xsl:if test="not(starts-with($theme, $xslbase))">
           <xsl:text disable-output-escaping="yes">&lt;!DOCTYPE html></xsl:text>
           <xsl:value-of select="$lf"/>
         </xsl:if>
@@ -70,6 +70,11 @@ XSLT 1.0 is compatible browser, PHP, Python, Java…
             -->
             <link rel="stylesheet" type="text/css" href="{$theme}teinte.css"/>
             <link rel="stylesheet" type="text/css" href="{$theme}layout.css"/>
+            <style>
+.name {background: rgba(192, 192, 192, 0.5)}
+.persName {background: rgba(255, 255, 0, 0.5)}
+.placeName {background: rgba(0, 0, 128, 0.3)}
+            </style>
           </head>
           <body>
             <xsl:if test="normalize-space($bodyclass)">
