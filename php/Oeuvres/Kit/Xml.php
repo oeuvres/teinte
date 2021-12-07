@@ -1,6 +1,10 @@
 <?php
 /**
- * code convention https://www.php-fig.org/psr/psr-12/
+ * Part of Teinte https://github.com/oeuvres/teinte
+ * Copyright (c) 2020 frederic.glorieux@fictif.org
+ * Copyright (c) 2013 frederic.glorieux@fictif.org & LABEX OBVIL
+ * Copyright (c) 2012 frederic.glorieux@fictif.org
+ * BSD-3-Clause https://opensource.org/licenses/BSD-3-Clause
  */
 
 declare(strict_types=1);
@@ -13,6 +17,7 @@ use Psr\Log\LoggerInterface;
 /**
  * A set of well configured method for XML manipulation
  * with memory of some odd tricks.
+ * code convention https://www.php-fig.org/psr/psr-12/
  */
 class Xml
 {
@@ -175,6 +180,41 @@ class Xml
             }
         }
         return $ret;
+    }
+    /**
+     * Replace tags of html file by spaces,
+     * to get text with same offset index of words
+     * allowing indexation and highlighting. Keep line breaks for line numbers.
+     * Support of some html5 tag to strip not indexable content.
+     * 2x faster than a char loop
+     */
+    static public function detag(string $html):string
+    {
+        // preg_replace_callback is safer and 2x faster than the /e modifier
+        $html = preg_replace_callback(
+            array(
+                // s flag so that '.' could match \n
+                // .*? ungreedy
+                '@<!.*?>@s', // exclude doctype and comments
+                '@<\?.*?\?>@s', // exclude PI
+                '@<(head|header|footer|nav|noindex)[ >].*?</\1>@s', // suppress nav, let <aside> for notes
+                '@<(small|tt|a)[^>]*>[0-9]+</\1>@', // line or note of number
+                '@<a class="noteref".*?</a>@', // suppress footnote call
+                '@<[^>]+>@' // wash tags
+            ),
+            array(__CLASS__, 'blank'),
+            $html
+        );
+        return $html;
+    }
+    /**
+     * blanking a string, keeping new lines
+     */
+    private static function blank(string $string):string
+    {
+        if (is_array($string)) $string = $string[0];
+        // if (strpos($string, '<tt class="num')===0) return "_NUM_".str_repeat(" ", strlen($string) - 5);
+        return preg_replace("/[^\n]/", " ", $string);
     }
 
 }

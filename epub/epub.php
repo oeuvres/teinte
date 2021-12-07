@@ -1,12 +1,10 @@
-<?php  // encoding="UTF-8"
+<?php
 /**
- *
- * code convention https://www.php-fig.org/psr/psr-12/
- * 
- * © 2013–2017 frederic.glorieux@fictif.org et LABEX OBVIL
- * © 2012–2013 frederic.glorieux@fictif.org
- * LGPL http://www.gnu.org/licenses/lgpl.html
- *
+ * Part of Teinte https://github.com/oeuvres/teinte
+ * Copyright (c) 2020 frederic.glorieux@fictif.org
+ * Copyright (c) 2013 frederic.glorieux@fictif.org & LABEX OBVIL
+ * Copyright (c) 2012 frederic.glorieux@fictif.org
+ * BSD-3-Clause https://opensource.org/licenses/BSD-3-Clause
  */
 
 declare(strict_types=1);
@@ -21,6 +19,7 @@ use Psr\Log\LoggerInterface;
 
 /**
  * Transform TEI in epub
+ * code convention https://www.php-fig.org/psr/psr-12/
  */
 // cli usage
 set_time_limit(-1);

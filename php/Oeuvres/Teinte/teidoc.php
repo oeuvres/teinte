@@ -385,39 +385,5 @@ class Teidoc
         $this->dom = $this->transform($xslfile, new DOMDocument(), $pars);
     }
 
-    /**
-     * Replace tags of html file by spaces, to get text with same offset index of words
-     * allowing indexation and highlighting. Keep line breaks for line numbers.
-     * Support of some html5 tag to strip not indexable content.
-     * 2x faster than a char loop
-     */
-    static public function detag($html)
-    {
-        // preg_replace_callback is safer and 2x faster than the /e modifier
-        $html = preg_replace_callback(
-            array(
-                // s flag so that '.' could match \n
-                // .*? ungreedy
-                '@<!.*?>@s', // exclude doctype and comments
-                '@<\?.*?\?>@s', // exclude PI
-                '@<(head|header|footer|nav|noindex)[ >].*?</\1>@s', // suppress nav, let <aside> for notes
-                '@<(small|tt|a)[^>]*>[0-9]+</\1>@', // line or note of number
-                '@<a class="noteref".*?</a>@', // suppress footnote call
-                '@<[^>]+>@' // wash tags
-            ),
-            array(__CLASS__, 'blank'),
-            $html
-        );
-        return $html;
-    }
-    /**
-     * blanking a string, keeping new lines
-     */
-    static public function blank($string)
-    {
-        if (is_array($string)) $string = $string[0];
-        // if (strpos($string, '<tt class="num')===0) return "_NUM_".str_repeat(" ", strlen($string) - 5);
-        return preg_replace("/[^\n]/", " ", $string);
-    }
 
 }

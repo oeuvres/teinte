@@ -1,6 +1,10 @@
 <?php
 /**
- * code convention https://www.php-fig.org/psr/psr-12/
+ * Part of Teinte https://github.com/oeuvres/teinte
+ * Copyright (c) 2020 frederic.glorieux@fictif.org
+ * Copyright (c) 2013 frederic.glorieux@fictif.org & LABEX OBVIL
+ * Copyright (c) 2012 frederic.glorieux@fictif.org
+ * BSD-3-Clause https://opensource.org/licenses/BSD-3-Clause
  */
 
 declare(strict_types=1);
@@ -14,14 +18,20 @@ use Psr\Log\LoggerInterface;
 
 /**
  * Class adhoc pour générer un docx à partir d’un XML/TEI
+ * code convention https://www.php-fig.org/psr/psr-12/
  */
 
 set_time_limit(-1);
-
-
+Docx::init();
 class Docx
 {
     private static LoggerInterface $logger;
+    private static $xslDir;
+
+    public static function init()
+    {
+        self::$xslDir = dirname(dirname(dirname(__DIR__))) . "/xsl";
+    }
 
     public static function setLogger(LoggerInterface $logger) {
         self::$logger = $logger;
@@ -29,7 +39,7 @@ class Docx
 
     static function export($src, $dst, $template = null)
     {
-        if (!$template) $template = dirname(__FILE__) . '/template.docx';
+        if (!$template) $template = self::$xslDir . '/docx/template.docx';
         if (!file_exists($template)) {
             throw new Exception("Template not found: " . $template);
         }
@@ -49,7 +59,7 @@ class Docx
             . str_replace(DIRECTORY_SEPARATOR, "/", $templPath);
 
         $xml = Xml::transformDoc(
-            __DIR__ . '/Docx/tei2docx-comments.xsl', 
+            self::$xslDir . '/docx/tei2docx-comments.xsl', 
             $dom,
             null, 
             array('filename' => $filename)
@@ -58,7 +68,7 @@ class Docx
 
         file_put_contents($templPath, $zip->getFromName('word/document.xml'));
         $xml = Xml::transformDoc(
-            dirname(__FILE__) . '/Docx/tei2docx.xsl',
+            self::$xslDir . '/docx/tei2docx.xsl',
             $dom,
             null,
             array(
@@ -75,7 +85,7 @@ class Docx
 
         file_put_contents($templPath, $zip->getFromName('word/_rels/document.xml.rels'));
         $xml = Xml::transformDoc(
-            dirname(__FILE__) . '/Docx/tei2docx-rels.xsl',
+            self::$xslDir . '/docx/tei2docx-rels.xsl',
             $dom,
             null,
             array(
@@ -87,7 +97,7 @@ class Docx
 
 
         $xml = Xml::transformDoc(
-            dirname(__FILE__) . '/Docx/tei2docx-fn.xsl',
+            self::$xslDir . '/docx/tei2docx-fn.xsl',
             $dom,
             null, 
             array('filename' => $filename)
@@ -101,7 +111,7 @@ class Docx
 
 
         $xml = Xml::transformDoc(
-            dirname(__FILE__) . '/Docx/tei2docx-fnrels.xsl',
+            self::$xslDir . '/docx/tei2docx-fnrels.xsl',
             $dom,
             null,
             array('filename' => $filename)
