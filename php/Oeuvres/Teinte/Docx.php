@@ -5,9 +5,11 @@
 
 declare(strict_types=1);
 
-include_once(dirname(__DIR__) . '/php/autoload.php');
+namespace Oeuvres\Teinte;
 
-use Oeuvres\Teinte\Xml;
+use Exception, ZipArchive;
+use Oeuvres\Kit\Xml;
+use Psr\Log\LoggerInterface;
 
 
 /**
@@ -15,15 +17,15 @@ use Oeuvres\Teinte\Xml;
  */
 
 set_time_limit(-1);
-// included file, do nothing
-if (isset($_SERVER['SCRIPT_FILENAME']) && basename($_SERVER['SCRIPT_FILENAME']) != basename(__FILE__));
-else if (isset($_SERVER['ORIG_SCRIPT_FILENAME']) && realpath($_SERVER['ORIG_SCRIPT_FILENAME']) != realpath(__FILE__));
-// direct command line call, work
-else if (php_sapi_name() == "cli") Docx::cli();
 
 
 class Docx
 {
+    private static LoggerInterface $logger;
+
+    public static function setLogger(LoggerInterface $logger) {
+        self::$logger = $logger;
+    }
 
     static function export($src, $dst, $template = null)
     {
@@ -34,7 +36,7 @@ class Docx
         $filename = pathinfo($src, PATHINFO_FILENAME);
         $dom = self::dom($src);
         copy($template, $dst);
-        $zip = new ZipArchive;
+        $zip = new ZipArchive();
         $zip->open($dst);
 
         $re_clean = array(
@@ -47,8 +49,8 @@ class Docx
             . str_replace(DIRECTORY_SEPARATOR, "/", $templPath);
 
         $xml = Xml::transformDoc(
-            $dom, 
-            __DIR__ . '/tei2docx-comments.xsl', 
+            __DIR__ . '/Docx/tei2docx-comments.xsl', 
+            $dom,
             null, 
             array('filename' => $filename)
         );
@@ -56,8 +58,8 @@ class Docx
 
         file_put_contents($templPath, $zip->getFromName('word/document.xml'));
         $xml = Xml::transformDoc(
+            dirname(__FILE__) . '/Docx/tei2docx.xsl',
             $dom,
-            dirname(__FILE__) . '/tei2docx.xsl',
             null,
             array(
                 'filename' => $filename,
@@ -73,8 +75,8 @@ class Docx
 
         file_put_contents($templPath, $zip->getFromName('word/_rels/document.xml.rels'));
         $xml = Xml::transformDoc(
+            dirname(__FILE__) . '/Docx/tei2docx-rels.xsl',
             $dom,
-            dirname(__FILE__) . '/tei2docx-rels.xsl',
             null,
             array(
                 'filename' => $filename,
@@ -85,8 +87,8 @@ class Docx
 
 
         $xml = Xml::transformDoc(
+            dirname(__FILE__) . '/Docx/tei2docx-fn.xsl',
             $dom,
-            dirname(__FILE__) . '/tei2docx-fn.xsl', 
             null, 
             array('filename' => $filename)
         );
@@ -99,8 +101,8 @@ class Docx
 
 
         $xml = Xml::transformDoc(
+            dirname(__FILE__) . '/Docx/tei2docx-fnrels.xsl',
             $dom,
-            dirname(__FILE__) . '/tei2docx-fnrels.xsl',
             null,
             array('filename' => $filename)
         );
@@ -109,53 +111,6 @@ class Docx
         $zip->close();
     }
 
-    public static function cli()
-    {
-        array_shift($_SERVER['argv']); // shift first arg, the script filepath
-        if (!count($_SERVER['argv'])) exit('
-usage    : php -f docx.php (dstdir/)? srcdir/*.xml
-    ');
-        $force = false;
-        $arg0 = $_SERVER['argv'][0];
-        if ($arg0 == '-f' || $arg0 == '-force'  || $arg0 == 'force') {
-            $force = true;
-            array_shift($_SERVER['argv']);
-        }
-
-
-        $dstdir = "";
-        $lastc = substr($_SERVER['argv'][0], -1);
-        if ('/' == $lastc || '\\' == $lastc) {
-            $dstdir = array_shift($_SERVER['argv']);
-            $dstdir = rtrim($dstdir, '/\\') . '/';
-            if (!file_exists($dstdir)) {
-                mkdir($dstdir, 0775, true);
-                @chmod($dstdir, 0775);  // let @, if www-data is not owner but allowed to write
-            }
-        }
-
-        while ($glob = array_shift($_SERVER['argv'])) {
-            foreach (glob($glob) as $srcfile) {
-                $dstname = $dstdir . pathinfo($srcfile, PATHINFO_FILENAME);
-                $dst = $dstname . '.docx';
-                if (!$force) {
-                    $i = 0;
-                    $rename = $dst;
-                    while (file_exists($rename)) {
-                        if (!$i) echo "File $rename already exists, ";
-                        $i++;
-                        $rename = $dstname . '_' . $i . '.docx';
-                    }
-                    if ($i) {
-                        rename($dst, $rename);
-                        echo "renamed to $rename\n";
-                    }
-                }
-                echo "$srcfile > $dst\n";
-                self::export($srcfile, $dst);
-            }
-        }
-    }
 
     /**
      *  Apply code to an uploaded file

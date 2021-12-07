@@ -13,9 +13,11 @@ declare(strict_types=1);
 
 include_once(dirname(__DIR__) . '/php/autoload.php');
 
-use Oeuvres\Teinte\File as File;
-use Oeuvres\Teinte\Xml as Xml;
-use Oeuvres\Teinte\Logger;
+use Oeuvres\Teinte\File;
+use Oeuvres\Teinte\Xml;
+use Psr\Log\NullLogger;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Transform TEI in epub
@@ -29,13 +31,13 @@ else if (php_sapi_name() == "cli") {
     Epub::cli();
 }
 
-class Epub
+class Epub implements LoggerAwareInterface
 {
     /** Static parameters, used for example to communicate between XSL tests and calls */
     public $p = array(
         "workDir" => null, // where to produce generated files
         "srcDir" => null, // the folder of the source TEI file if XML given by file
-        "filename" => null, // the name of the file to output
+        "dstName" => null, // the name of the file to output
     );
     /** file path of source document, used to resolve relative links accros methods */
     private $srcFile;
@@ -47,13 +49,13 @@ class Epub
     private static $debug;
     /** time counter, should be static for the xsl callback */
     private static $time;
-    /** A logger, maybe a stream or a callable, used by self::log() */
-    private static $logger;
     /** Different predefined sizes for covers  */
     private static $size = array(
         "small" => array(150, 200),
         "medium" => array(500, 700),
     );
+    /** A PSR-3 logger, maybe a stream or a callable, used by self::log() */
+    private LoggerInterface $logger;
 
 
 
@@ -62,19 +64,27 @@ class Epub
      */
     public function __construct(
         $srcFile, 
-        object $logger = null, 
+        ?LoggerInterface $logger = null, 
         array $pars = []
     ) {
+        if ($logger) {
+            $this->logger = $logger;
+        }
+        else {
+            $this->logger = new NullLogger();
+        }
+        Xml::setLogger($this->logger);
         if (!is_array($pars)) $pars = [];
         $this->p = array_merge($this->p, $pars);
+        // constructor do not allow multiple signature
         if (is_a($srcFile, 'DOMDocument')) {
             $this->dom = $srcFile;
         } 
         else {
             $this->srcfile = $srcFile;
             $this->p['srcDir'] = dirname($srcFile) . '/';
-            if (!$this->p['fileName']) {
-                $this->p['fileName'] = pathinfo($srcFile, PATHINFO_FILENAME);
+            if (!$this->p['dstName']) {
+                $this->p['dstName'] = pathinfo($srcFile, PATHINFO_FILENAME);
             }
         }
         // if ( $this->p['srcDir'] && is_writable( $this->p['srcDir'] ) ) $this->p['workDir'] = $this->p['srcDir'];
@@ -84,18 +94,21 @@ class Epub
         self::$time = microtime(true);
         self::$logger = $logger;
     }
+
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
     /**
      * Load sourceFile
      */
     public function load()
     {
         if ($this->srcFile) {
-            // for the source doc
-            $this->_dom = new DOMDocument("1.0", "UTF-8");
             // normalize indentation of XML before all processing
             $xml = file_get_contents($this->srcFile);
             $xml = preg_replace(array('@\r\n@', '@\r@', '@\n[ \t]+@'), array("\n", "\n", "\n"), $xml);
-            // $this->doc->recover=true; // no recover, display errors
             // LIBXML_PARSEHUGE inconnu en Centos 5.1
             if (!$this->_dom->loadXML($xml, LIBXML_NOENT | LIBXML_NONET | LIBXML_NOWARNING | LIBXML_NSCLEAN |  LIBXML_COMPACT)) {
                 self::log("XML error " . $this->srcFile . "\n");
@@ -105,18 +118,18 @@ class Epub
         // load
         $this->_dom->preserveWhiteSpace = false;
         $this->_dom->formatOutput = true;
-        if ($this->srcFile) $this->_dom->documentURI = realpath($this->srcFile);
+
         // should resolve xinclude
         $this->_dom->xinclude(LIBXML_NOENT | LIBXML_NONET | LIBXML_NOWARNING | LIBXML_NOERROR | LIBXML_NSCLEAN | LIBXML_PARSEHUGE); //
 
-        self::log(E_USER_NOTICE, 'load ' . round(microtime(true) - self::$_time, 3) . " s.");
+        $this->logger->info('load ' . round(microtime(true) - self::$time, 3) . " s.");
         // @xml:id may be used as a href path, example images
         $this->p['xmlid'] = $this->_dom->documentElement->getAttributeNS('http://www.w3.org/XML/1998/namespace', 'id');
         $this->p['n'] = $this->_dom->documentElement->getAttribute('n');
-        if ($this->p['fileName']); // OK
-        else if ($this->p['n']) $this->p['fileName'] = $this->p['n'];
-        else if ($this->p['xmlid']) $this->p['fileName'] = $this->p['xmlid'];
-        else $this->p['fileName'] = "unlivre";
+        if ($this->p['dstName']); // OK
+        else if ($this->p['n']) $this->p['dstName'] = $this->p['n'];
+        else if ($this->p['xmlid']) $this->p['dstName'] = $this->p['xmlid'];
+        else $this->p['dstName'] = "unlivre";
         return $this->_dom;
     }
 
@@ -139,11 +152,11 @@ class Epub
         $dstinfo = pathinfo($dstfile);
         // for multi user rights and name collision, a random name ?
         $dstdir = $this->p['workDir'] . '/' . $dstinfo['fileName'] . '-epub/';
-        Tools::dirclean($dstdir); // create a clean directory
+        File::dirclean($dstdir); // create a clean directory
         $dstdir = str_replace('\\', '/', realpath($dstdir) . '/'); // absolute path needed for xsl
 
         // copy the template folder
-        Tools::rcopy($template, $dstdir);
+        File::rcopy($template, $dstdir);
         // check if there is a colophon where to write a date
         if (file_exists($f = $dstdir . 'OEBPS/colophon.xhtml')) {
             $cont = file_get_contents($f);
@@ -166,7 +179,7 @@ class Epub
         // copy source Dom to local, before modification by images
         // copy referenced images (received modified doc after copy)
         $doc = $this->images($this->_dom, $imagesdir, $dstdir . 'OEBPS/' . $imagesdir);
-        self::log(E_USER_NOTICE, 'epub, images ' . round(microtime(true) - self::$_time, 3) . " s.\n");
+        self::log(E_USER_NOTICE, 'epub, images ' . round(microtime(true) - self::$time, 3) . " s.\n");
         // cover logic, before all generators
         $params['cover'] = null;
         $cover = false;
@@ -174,13 +187,13 @@ class Epub
         else if (file_exists($this->p['srcDir'] . $this->p['fileName'] . '.png')) $cover = $this->p['fileName'] . '.png';
         else if (file_exists($this->p['srcDir'] . $this->p['fileName'] . '.jpg')) $cover = $this->p['fileName'] . '.jpg';
         if ($cover) {
-            Tools::dirclean($dstdir . 'OEBPS/' . $imagesdir);
+            File::dirclean($dstdir . 'OEBPS/' . $imagesdir);
             copy($this->p['srcDir'] . $cover, $dstdir . 'OEBPS/' . $imagesdir . $cover);
         }
         if ($cover) $params['cover'] = $imagesdir . $cover;
         $params['_html'] = '.xhtml';
         // create xhtml pages
-        $report = self::transform(
+        $report = Xml::transform(
             __DIR__ . '/tei2epub.xsl',
             $doc,
             null,
@@ -192,7 +205,7 @@ class Epub
             )
         );
         // opf file
-        self::transform(
+        Xml::transformDoc(
             __DIR__ . '/tei2opf.xsl',
             $doc,
             $dstdir . 'OEBPS/content.opf',
@@ -203,9 +216,9 @@ class Epub
                 // 'fileName' => $this->p['fileName'],
             )
         );
-        self::log(E_USER_NOTICE, 'epub, opf ' . round(microtime(true) - self::$_time, 3) . " s.");
+        self::log(E_USER_NOTICE, 'epub, opf ' . round(microtime(true) - self::$time, 3) . " s.");
         /* ncx not needed in epub3 but useful under firefox epubreader */
-        self::transform(
+        Xml::transformDoc(
             __DIR__ . '/tei2ncx.xsl',
             $doc,
             $dstdir . 'OEBPS/toc.ncx',
@@ -216,7 +229,7 @@ class Epub
                 // 'fileName' => $this->p['fileName'],
             )
         );
-        self::log(E_USER_NOTICE, 'epub, ncx ' . round(microtime(true) - self::$_time, 3) . " s.");
+        self::log(E_USER_NOTICE, 'epub, ncx ' . round(microtime(true) - self::$time, 3) . " s.");
         // because PHP zip do not yet allow store without compression (PHP7)
         // an empty epub is prepared with the mimetype
         copy(realpath(__DIR__) . '/mimetype.epub', $dstfile);
@@ -227,9 +240,9 @@ class Epub
             if (!@mkdir($dir, 0775, true)) exit($dir . " impossible à créer.\n");
             @chmod($dir, 0775);  // let @, if www-data is not owner but allowed to write
         }
-        self::zip($dstfile, $dstdir);
+        File::zip($dstfile, $dstdir);
         if (!self::$debug) { // delete tmp dir if not debug
-            Tools::dirclean($dstdir); // this is a strange behaviour, new dir will empty dir
+            File::dirclean($dstdir); // this is a strange behaviour, new dir will empty dir
             rmdir($dstdir);
         }
         // shall we return entire content of the file ?
@@ -285,7 +298,7 @@ class Epub
         // test first if dst dir (example, epub for sqlite)
         if (isset($dstdir)) {
             // create images folder only if images detected
-            if (!file_exists($dstdir)) Tools::dirclean($dstdir);
+            if (!file_exists($dstdir)) File::dirclean($dstdir);
             // destination
             $i = 2;
             // avoid duplicated files
@@ -349,26 +362,6 @@ class Epub
         // reset parameters ! or they will kept on next transform
         if (isset($pars) && count($pars)) foreach ($pars as $key => $value) $this->_trans->removeParameter('', $key);
         return $ret;
-    }
-    /**
-     * Custom error handler
-     * Especially used for xsl:message coming from transform()
-     * To avoid Apache time limit, php could output some bytes during long transformations
-     */
-    static function log($errno, $errstr = null, $errfile = null, $errline = null, $errcontext = null)
-    {
-        $errstr = preg_replace("/XSLTProcessor::transform[^:]*:/", "", $errstr, -1, $count);
-        if ($count) { // is an XSLT error or an XSLT message, reformat here
-            if (strpos($errstr, 'error') !== false) return false;
-            else if ($errno == E_WARNING) $errno = E_USER_WARNING;
-        }
-        // a debug message in normal mode, do nothing
-        if ($errno == E_USER_NOTICE && !self::$debug) return true;
-        // not a user message, let work default handler
-        else if ($errno != E_USER_ERROR && $errno != E_USER_WARNING) return false;
-        if (!self::$_logger);
-        else if (is_resource(self::$_logger)) fwrite(self::$_logger, $errstr . "\n");
-        else if (is_string(self::$_logger) && function_exists(self::$_logger)) call_user_func(self::$_logger, $errstr);
     }
 
     /**

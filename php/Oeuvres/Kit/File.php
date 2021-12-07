@@ -6,26 +6,34 @@
 
 declare(strict_types=1);
 
-namespace Oeuvres\Teinte;
+namespace Oeuvres\Kit;
 
 use Exception, ZipArchive;
 
 class File
 {
+    static function dirnorm($dir)
+    {
+        $dir = rtrim(trim($dir), "\\/");
+        if (!$dir) {
+            return "";
+        }
+        return $dir . DIRECTORY_SEPARATOR;
+    }
 
     /**
      * A safe mkdir dealing with rights
      */
-    static function mkdir(string $dir)
+    static function mkdir(string $dir):bool
     {
         if (is_dir($dir)) {
-            return $dir;
+            return false;
         }
         if (!mkdir($dir, 0775, true)) {
             throw new Exception("Directory not created: ".$dir);
         }
         @chmod($dir, 0775);  // let @, if www-data is not owner but allowed to write
-        return $dir;
+        return true;
     }
 
     /**

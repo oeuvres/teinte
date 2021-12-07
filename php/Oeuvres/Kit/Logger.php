@@ -5,7 +5,7 @@
 
 declare(strict_types=1);
 
-namespace Oeuvres\Teinte;
+namespace Oeuvres\Kit;
 
 use Psr\Log\AbstractLogger;
 use Psr\Log\InvalidArgumentException;
@@ -128,5 +128,48 @@ class Logger extends AbstractLogger
 
         return strtr($message, $replacements);
     }
+
+    /**
+     * TO REWRITE
+     * Custom error handler
+     * Especially used for xsl:message coming from transform()
+     * To avoid Apache time limit, php could output some bytes during long transformations
+     */
+    static function err(
+        $errno, 
+        $errstr=null, 
+        $errfile=null, 
+        $errline=null, 
+        $errcontext=null
+    ) {
+        $errstr=preg_replace("/XSLTProcessor::transform[^:]*:/", "", $errstr, -1, $count);
+        /** 
+        if ($count) { // is an XSLT error or an XSLT message, reformat here
+            if(strpos($errstr, 'error')!== false) {
+                return false;
+            }
+            else if ($errno == E_WARNING) {
+                $errno = E_USER_WARNING;
+            }
+        }
+        // a debug message in normal mode, do nothing
+        if ($errno == E_USER_NOTICE && !self::$debug) {
+            return true;
+        }
+        // ?? not a user message, let work default handler
+        // else if ($errno != E_USER_ERROR && $errno != E_USER_WARNING ) return false;
+
+        if (!$errstr && $errno) {
+            $errstr = $errno;
+        }
+        if (is_resource(self::$logger)) {
+            fwrite(self::$logger, $errstr."\n");
+        }
+        else if (is_string(self::$logger) && function_exists(self::$logger)) {
+            call_user_func(self::$logger, $errstr);
+        } 
+        */
+    }
+
 }
 Logger::init();

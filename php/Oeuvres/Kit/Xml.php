@@ -1,16 +1,19 @@
 <?php
 /**
  * code convention https://www.php-fig.org/psr/psr-12/
- *
  */
 
 declare(strict_types=1);
 
-namespace Oeuvres\Teinte;
+namespace Oeuvres\Kit;
 
-use DOMDocument, Exception, XSLTProcessor;
-use Psr\Log\LoggerInterface as LoggerInterface;
+use Exception, DOMDocument, XSLTProcessor;
+use Psr\Log\LoggerInterface;
 
+/**
+ * A set of well configured method for XML manipulation
+ * with memory of some odd tricks.
+ */
 class Xml
 {
     /** XSLTProcessors */
@@ -25,7 +28,7 @@ class Xml
         | LIBXML_NOCDATA 
         | LIBXML_NOWARNING  // no warn for <?xml-model
     ;
-    private static $logger;
+    private static LoggerInterface $logger;
 
     public static function setLogger(LoggerInterface $logger) {
         self::$logger = $logger;
@@ -34,20 +37,34 @@ class Xml
     /**
      * Get a DOM document with best options from a file path
      */
-    public static function dom(string $xmlFile): DOMDocument
+    public static function dom(string $srcFile): DOMDocument
     {
         $dom = self::domSkel();
-        $dom->load($xmlFile, self::LIBXML_OPTIONS);
+        // $dom->recover=true; // no recover, display errors
+        if (!$dom->load($srcFile, self::LIBXML_OPTIONS)) {
+            // display error here ?
+            self::$logger->error("XML error " . $srcFile);
+            return null;
+        }
+        $dom->documentURI = realpath($srcFile);
+
         return $dom;
     }
 
     /**
      * Get a DOM document with best options from an XML content
      */
-    public static function domXml(string $xml): DOMDocument
+    public static function domXml(string $xml, ?string $srcFile=""): DOMDocument
     {
         $dom = self::domSkel();
-        $dom->loadXML($xml, self::LIBXML_OPTIONS);
+        if (!$dom->loadXML($xml, self::LIBXML_OPTIONS)) {
+            // get error here ?
+            self::$logger->error("XML error " . $srcFile);
+            return null;
+        }
+        if ($srcFile) {
+            $dom->documentURI = realpath($srcFile);
+        }
         return $dom;
     }
 
@@ -66,12 +83,12 @@ class Xml
      * Xsl transform from xml file
      */
     static function transform(
-        string $xmlFile, 
         string $xslFile, 
+        string $xmlFile, 
         $dst = null, 
         array $pars = null
     ) {
-        return self::transformDoc(self::dom($xmlFile), $xslFile, $dst, $pars);
+        return self::transformDoc($xslFile, self::dom($xmlFile), $dst, $pars);
     }
 
     static public function transformXml(
@@ -85,7 +102,7 @@ class Xml
         $dom->formatOutput=true;
         $dom->substituteEntities=true;
         $dom->loadXml($xml, LIBXML_NOENT | LIBXML_NONET | LIBXML_NSCLEAN | LIBXML_NOCDATA | LIBXML_NOWARNING);
-        return self::transformDoc($dom, $xslfile, $dst, $pars);
+        return self::transformDoc($xslfile, $dom, $dst, $pars);
     }
 
     /**
@@ -93,8 +110,8 @@ class Xml
      * TOTHINK : deal with errors
      */
     static public function transformDoc(
-        object $dom, 
         string $xslfile, 
+        object $dom, 
         $dst = null, 
         array $pars = null
     ) {

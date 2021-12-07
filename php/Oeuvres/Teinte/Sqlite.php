@@ -11,6 +11,8 @@ namespace Oeuvres\Teinte;
 
 use PDO;
 
+use Oeuvres\Kit\File;
+
 class Sqlite
 {
     /**
