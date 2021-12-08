@@ -1,33 +1,43 @@
 <?php
-set_time_limit(-1);
-// included file, do nothing
-if (isset($_SERVER['SCRIPT_FILENAME']) && basename($_SERVER['SCRIPT_FILENAME']) != basename(__FILE__));
-else if (isset($_SERVER['ORIG_SCRIPT_FILENAME']) && realpath($_SERVER['ORIG_SCRIPT_FILENAME']) != realpath(__FILE__));
-// direct command line call, work
-else if (php_sapi_name() == "cli") Teidoc::cli();
+/**
+ * Part of Teinte https://github.com/oeuvres/teinte
+ * Copyright (c) 2020 frederic.glorieux@fictif.org
+ * Copyright (c) 2013 frederic.glorieux@fictif.org & LABEX OBVIL
+ * Copyright (c) 2012 frederic.glorieux@fictif.org
+ * BSD-3-Clause https://opensource.org/licenses/BSD-3-Clause
+ */
 
+declare(strict_types=1);
+
+namespace Oeuvres\Teinte;
+
+use DOMDocument;
+use Exception, DOMXpath;
+use Oeuvres\Kit\Xml;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\NullLogger;
 
 /**
- * Sample pilot for Teinte transformations of XML/TEI
+ * A dom TEI document, process some oddities, for example image relative links.
+ * Useful for html, epub, even docx
  */
-class Teidoc
+class Teidoc implements LoggerAwareInterface
 {
     /** TEI/XML DOM Document to process */
     private $dom;
-    /** Xpath processor */
+    /** Xpath processor for the doc */
     private $xpath;
     /** filepath */
     private $file;
     /** filename without extension */
-    private $filename;
+    private $name;
     /** file freshness */
     private $filemtime;
     /** file size */
     private $filesize;
-    /** XSLTProcessors */
-    private static $trans = array();
     /** A file where  */
-    private $logger;
+    private LoggerInterface $logger;
     /** formats */
     public static $ext = array(
         'article' => '_art.html',
@@ -39,30 +49,87 @@ class Teidoc
         'toc' => '_toc.html',
     );
     /**
-     * Constructor, load file and prepare work
+     * Start with an empty object, and build things
      */
-    public function __construct($tei, $logger = null)
+    public function __construct(LoggerInterface $logger = null)
     {
-        if (is_a($tei, 'DOMDocument')) {
-            $this->dom = $tei;
-        } else if (is_string($tei)) { // maybe file or url
-            $this->file = $tei;
-            $this->filemtime = filemtime($tei);
-            $this->filesize = filesize($tei); // ?? URL ?
-            $this->filename = pathinfo($tei, PATHINFO_FILENAME);
-            // loading error, do something ?
-            if (!$this->load($tei)) throw new Exception("BAD XML: " . $tei . "\n");
-        } else {
-            throw new Exception('Teinte, what is it? ' . print_r($tei, true));
-        }
-        $this->logger = $logger;
+        if ($logger == null) $logger = new NullLogger();
+        $this->setLogger($logger);
         $this->xpath();
+    }
+
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+        Xml::setLogger($this->logger);
     }
 
     public function isEmpty()
     {
         return !$this->dom;
     }
+
+    /**
+     * Mimic DOMDocument::load, load from a file path
+     * Prefered way, provides more metadata.
+     */
+    public function load(string $teiFile):DOMDocument
+    {
+        $this->file = $teiFile;
+        $this->filmtime = filemtime($teiFile);
+        $this->filesize = filesize($teiFile); // ?? if URL ?
+        $this->name = pathinfo($teiFile, PATHINFO_FILENAME);
+        return $this->loadXml(file_get_contents($teiFile));
+    }
+    /**
+     * Get file name
+     */
+    public function name():string
+    {
+        return $this->name;
+    }
+
+    /**
+     * An XML string, normalize and load it as DOM
+     */
+    public function loadXml(string $xml):DOMDocument
+    {
+        // should we keep here original XML to replay chain ?
+        $xml = self::normTei($xml);
+        $this->dom = Xml::domXml($xml);
+        // spaces are normalized upper, keep them
+        $this->dom->preserveWhiteSpace = true;
+        return $this->dom;
+    }
+
+    /**
+     * Load a TEI string, and normalize things, especially 
+     * spaces, for docx (bad indent produce bad spacing)
+     */
+    public static function normTei(string $srcXml):string
+    {
+        $block = "(ab|bibl|byline|dateline|desc|head|l|label|lb|p|signed|salute)";
+        $re_norm = array(
+            '@\r\n?@' => "\n", // normalize EOL
+            '@[ \t]*\n[ \t]*@' => "\n", // suppress trailing spaces
+            "@\n([,.)\]}])@u" => "$1", // bad indent may have broke some pun
+            "@(<$block(>| [^>]*>))\s+@" => "$1", // spaces at start of para
+            "@\s+(</$block>)@" => '$1', // space before end of para
+            /* Something have to be done with <pb/>
+            '@(<(ab|head|l|p|stage)( [^>]*)?>)\s*(<pb( [^>]*)?/>)\s+@' => '$1$4',
+            */
+        );
+        $xml = preg_replace(
+            array_keys($re_norm),
+            array_values($re_norm),
+            $srcXml
+        );
+        /* libxml indent is quite nice, 
+        but may produce undesired line break for some inlines containing inlines
+        */
+        return $xml;
+    }
+
 
     /**
      * Set and return an XPath processor
@@ -208,8 +275,9 @@ class Teidoc
      */
     public function toc($destfile = null, $root = "ol")
     {
-        return $this->transform(
+        return Xml::transformDoc(
             dirname(__FILE__) . '/xsl/tei2toc.xsl',
+            $this->dom,
             $destfile,
             array(
                 'root' => $root,
@@ -222,8 +290,9 @@ class Teidoc
      */
     public function article($destfile = null)
     {
-        return $this->transform(
+        return Xml::transformDoc(
             dirname(__FILE__) . '/tei2html.xsl',
+            $this->dom,
             $destfile,
             array(
                 'root' => 'article',
@@ -235,6 +304,7 @@ class Teidoc
     /**
      * Output a txt fragment with no html tags for full-text searching
      */
+    /*
     public function ft($destfile = null)
     {
         $html = $this->article();
@@ -242,6 +312,7 @@ class Teidoc
         if ($destfile) file_put_contents($destfile, $html);
         return $html;
     }
+    */
 
     /**
      * Output html
@@ -249,8 +320,9 @@ class Teidoc
     public function html($destfile = null, $theme = null)
     {
         if (!$theme) $theme = 'http://oeuvres.github.io/teinte/'; // where to find web assets like css and jslog for html file
-        return $this->transform(
+        return Xml::transformDoc(
             dirname(__FILE__) . '/tei2html.xsl',
+            $this->dom,
             $destfile,
             array(
                 'theme' => $theme,
@@ -258,48 +330,7 @@ class Teidoc
             )
         );
     }
-    /**
-     * Output markdown
-     */
-    public function markdown($destfile = null)
-    {
-        return $this->transform(dirname(__FILE__) . '/xsl/tei2md.xsl', $destfile, array('filename' => $this->filename));
-    }
-    /**
-     * Output iramuteq text
-     */
-    public function iramuteq($destfile = null)
-    {
-        return $this->transform(dirname(__FILE__) . '/xsl/tei2iramuteq.xsl', $destfile, array('filename' => $this->filename));
-    }
-    /**
-     * Output txm XML
-     */
-    public function txm($destfile = null)
-    {
-        return $this->transform(dirname(__FILE__) . '/xsl/tei4txm.xsl', $destfile, array('filename' => $this->filename));
-    }
-    /**
-     * Output naked text
-     */
-    public function naked($destfile = null)
-    {
-        $txt = $this->transform(dirname(__FILE__) . '/xsl/tei2naked.xsl', null, array('filename' => $this->filename));
-        /* TRÈS MAUVAISE IDÉE
-    $txt = preg_replace(
-      array(
-        "@([\s\(\[])(c|C|d|D|j|J|usqu|Jusqu|l|L|lorsqu|m|M|n|N|puisqu|Puisqu|qu|Qu|quoiqu|Quoiqu|s|S|t|T)['’]@u",
-     ),
-      array(
-        '$1$2e '
-     ),
-      $txt
-   );
-    */
-        if (!$destfile) return $txt;
-        file_put_contents($destfile, $txt);
-        return $destfile;
-    }
+
     /**
      * Output a split version of book
      */
@@ -326,7 +357,7 @@ class Teidoc
         $nl = $dom->getElementsByTagNameNS('http://www.tei-c.org/ns/1.0', 'graphic');
         $pad = strlen('' . $nl->count());
         foreach ($nl as $el) {
-            $this->img($el->getAttributeNode("url"), str_pad($count, $pad, '0', STR_PAD_LEFT), $hrefdir, $dstdir);
+            $this->img($el->getAttributeNode("url"), str_pad(strval($count), $pad, '0', STR_PAD_LEFT), $hrefdir, $dstdir);
             $count++;
         }
         /*
@@ -342,20 +373,29 @@ class Teidoc
      */
     public function img($att, $count, $hrefdir = "", $dstdir = null)
     {
-        if (!isset($att) || !$att || !$att->value) return;
+        if (!isset($att) || !$att || !$att->value) {
+            return;
+        }
         $src = $att->value;
         // do not modify data image
-        if (strpos($src, 'data:image') === 0) return;
-
+        if (strpos($src, 'data:image') === 0) {
+            return;
+        }
         // test if coming fron the internet
         if (substr($src, 0, 4) == 'http');
         // test if relative file path
-        else if (file_exists($test = dirname($this->file) . '/' . $src)) $src = $test;
+        else if (file_exists($test = dirname($this->file) . '/' . $src)) {
+            $src = $test;
+        }
+        /*
         // vendor specific etc/filename.jpg
-        else if (isset(self::$pars['srcdir']) && file_exists($test = self::$pars['srcdir'] . self::$pars['filename'] . '/' . substr($src, strpos($src, '/') + 1))) $src = $test;
+        else if (isset(self::$pars['srcdir']) 
+            && file_exists($test = self::$pars['srcdir'] . self::$pars['filename'] . '/' . substr($src, strpos($src, '/') + 1))
+        ) $src = $test;
+        */
         // if not file exists, escape and alert (?)
         else if (!file_exists($src)) {
-            $this->log("Image not found: " . $src);
+            $this->logger->warning("Image not found: " . $src);
             return;
         }
         $srcparts = pathinfo($src);
@@ -375,14 +415,6 @@ class Teidoc
         $att->value = $hrefdir . $srcparts['filename'] . '.' . $srcparts['extension'];
         // resize image before copy ?
         // NO delete of <graphic> element if broken link
-    }
-
-    /**
-     * Preprocess TEI with a transformation
-     */
-    public function pre($xslfile, $pars = null)
-    {
-        $this->dom = $this->transform($xslfile, new DOMDocument(), $pars);
     }
 
 

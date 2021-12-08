@@ -1,6 +1,10 @@
 <?php
 /**
- * code convention https://www.php-fig.org/psr/psr-12/
+ * Part of Teinte https://github.com/oeuvres/teinte
+ * Copyright (c) 2020 frederic.glorieux@fictif.org
+ * Copyright (c) 2013 frederic.glorieux@fictif.org & LABEX OBVIL
+ * Copyright (c) 2012 frederic.glorieux@fictif.org
+ * BSD-3-Clause https://opensource.org/licenses/BSD-3-Clause
  */
 
 declare(strict_types=1);
@@ -70,7 +74,7 @@ class Logger extends AbstractLogger
     /**
      * Get verbosity by string.
      */
-    public function getVerbosity():string
+    public function getLevel():string
     {
         return self::$levelMapInt[$this->verbosity];
     }
@@ -78,7 +82,7 @@ class Logger extends AbstractLogger
     /**
      * Set verbosity by log level.
      */
-    public function setVerbosity(string $level)
+    public function setLevel(string $level)
     {
         self::checkLevel($level);
         $this->verbosity = self::$levelMapString[$level];
@@ -98,7 +102,8 @@ class Logger extends AbstractLogger
         if ($levelInt > self::$levelMapString[LogLevel::ERROR]) {
             $out = STDOUT;
         }
-        fwrite($out, $this->interpolate($message, $context) . "\n");
+        fwrite($out, "[". $level ."] "
+            . $this->interpolate($message, $context) . "\n");
         return true;
     }
 

@@ -13,12 +13,15 @@ namespace Oeuvres\Kit;
 
 use Exception, DOMDocument, XSLTProcessor;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * A set of well configured method for XML manipulation
- * with memory of some odd tricks.
+ * with record of some odd tricks,
+ * and xsl parsing cache for repeated transformations.
  * code convention https://www.php-fig.org/psr/psr-12/
  */
+Xml::init();
 class Xml
 {
     /** XSLTProcessors */
@@ -35,7 +38,14 @@ class Xml
     ;
     private static LoggerInterface $logger;
 
-    public static function setLogger(LoggerInterface $logger) {
+    public static function init()
+    {
+        self::$logger = new NullLogger();
+        libxml_use_internal_errors(true);
+    }
+
+    public static function setLogger(LoggerInterface $logger)
+    {
         self::$logger = $logger;
     }
 
@@ -47,13 +57,38 @@ class Xml
         $dom = self::domSkel();
         // $dom->recover=true; // no recover, display errors
         if (!$dom->load($srcFile, self::LIBXML_OPTIONS)) {
-            // display error here ?
-            self::$logger->error("XML error " . $srcFile);
+            self::logLibxml(libxml_get_errors());
+            // do not send exception for a dom error, go next
             return null;
         }
         $dom->documentURI = realpath($srcFile);
-
         return $dom;
+    }
+
+    public static function logLibxml(array $errors)
+    {
+        foreach ($errors as $error) {
+            $message = "";
+            if ($error->file) {
+                $message .= $error->file;
+            }
+            $message .= "  " . ($error->line) . ":" . ($error->column) . " \t";
+            $message .= "err:" . $error->code . " — ";
+            $message .= trim($error->message);
+            if ($error->code == 1) { // <xsl:message>
+                self::$logger->info("<xsl:message> " . trim($error->message));
+            }
+            else if ($error->level == LIBXML_ERR_WARNING) {
+                self::$logger->warning($message);
+            }
+            else if ($error->level == LIBXML_ERR_ERROR) {
+                self::$logger->error($message);
+            }
+            else if ($error->level ==  LIBXML_ERR_FATAL) {
+                self::$logger->critical($message);
+            }
+        }
+        libxml_clear_errors();
     }
 
     /**
@@ -63,8 +98,7 @@ class Xml
     {
         $dom = self::domSkel();
         if (!$dom->loadXML($xml, self::LIBXML_OPTIONS)) {
-            // get error here ?
-            self::$logger->error("XML error " . $srcFile);
+            self::logLibxml(libxml_get_errors());
             return null;
         }
         if ($srcFile) {
@@ -84,48 +118,72 @@ class Xml
         $dom->substituteEntities = true;
         return $dom;
     }
+
     /**
-     * Xsl transform from xml file
+     * xsl:tranform, result as a dom document
      */
-    static function transform(
-        string $xslFile, 
-        string $xmlFile, 
-        $dst = null, 
+    public static function transformToDoc(
+        string $xslfile, 
+        DOMDocument $dom, 
         array $pars = null
     ) {
-        return self::transformDoc($xslFile, self::dom($xmlFile), $dst, $pars);
+        return self::transform(
+            $xslfile,
+            $dom,
+            null, // local code to say not a a string
+            $pars
+        );
     }
 
-    static public function transformXml(
-        string $xml, 
+    /**
+     * xsl:tranform, result as an XML string
+     */
+    public static function transformToXML(
         string $xslfile, 
-        $dst=null, 
-        array $pars=null
+        DOMDocument $dom, 
+        array $pars = null
     ) {
-        $dom = new DOMDocument();
-        $dom->preserveWhiteSpace = false;
-        $dom->formatOutput=true;
-        $dom->substituteEntities=true;
-        $dom->loadXml($xml, LIBXML_NOENT | LIBXML_NONET | LIBXML_NSCLEAN | LIBXML_NOCDATA | LIBXML_NOWARNING);
-        return self::transformDoc($xslfile, $dom, $dst, $pars);
+        return self::transform(
+            $xslfile,
+            $dom,
+            "", // local code to say fill the string
+            $pars
+        );
     }
-
+    /**
+     * xsl:tranform, result to a file
+     */
+    public static function transformToURI(
+        string $xslfile, 
+        DOMDocument $dom,
+        string $uri,
+        array $pars = null
+    ) {
+        return self::transform(
+            $xslfile,
+            $dom,
+            $uri,
+            $pars
+        );
+    }
+    
     /**
      * An xslt transformer with cache
      * TOTHINK : deal with errors
      */
-    static public function transformDoc(
-        string $xslfile, 
-        object $dom, 
-        $dst = null, 
+    private static function transform(
+        string $xslFile, 
+        DOMDocument $dom,
+        ?string $dst,
         array $pars = null
     ) {
-        if (!is_a($dom, 'DOMDocument')) {
-            throw new Exception('Source is not a DOM document, use transform() for a file, or transformXml() for an xml as a string.');
-        }
-        $key = realpath($xslfile);
+        $key = realpath($xslFile);
         // cache compiled xsl
         if (!isset(self::$transcache[$key])) {
+            if (!file_exists($xslFile)) {
+                throw new Exception("XSLT, file not found " . $xslFile."\n");
+            }
+
             $trans = new XSLTProcessor();
             $trans->registerPHPFunctions();
             // allow generation of <xsl:document>
@@ -148,9 +206,11 @@ class Xml
             else {
                 ini_set("xsl.security_prefs",  $prefs);
             }
-            $xsldom = new DOMDocument();
-            $xsldom->load($xslfile);
-            $trans->importStyleSheet($xsldom);
+            $xsldom = self::dom($xslFile);
+            if (!$trans->importStyleSheet($xsldom)) {
+                self::logLibxml(libxml_get_errors());
+                throw new Exception("XSLT, impossible to compile " . $xslFile."\n");
+            }
             self::$transcache[$key] = $trans;
         }
         $trans = self::$transcache[$key];
@@ -160,19 +220,27 @@ class Xml
                 $trans->setParameter("", $key, $value);
             }
         }
+
+        // TODO here, set a good logger for xsl
+
         // return a DOM document for efficient piping
-        if (is_a($dst, 'DOMDocument')) {
+        if ($dst === null) {
             $ret = $trans->transformToDoc($dom);
         }
-        else if ($dst != '') {
+        // return XML as a string
+        else if ($dst === '') {
+            $ret =$trans->transformToXML($dom);
+        }
+        // write to uri
+        else {
             File::mkdir(dirname($dst));
             $trans->transformToURI($dom, $dst);
             $ret = $dst;
         }
-        // no dst file, return String
-        else {
-            $ret =$trans->transformToXML($dom);
-        }
+        // here we should have XSL message only
+        $errors = libxml_get_errors();
+        if (count($errors)) self::logLibxml($errors);
+
         // reset parameters ! or they will kept on next transform if transformer is reused
         if(isset($pars) && count($pars)) {
             foreach ($pars as $key => $value) {

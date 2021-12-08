@@ -37,17 +37,17 @@ class Docx
         self::$logger = $logger;
     }
 
-    static function export($src, $dst, $template = null)
+    static function export($srcFile, $dstFile, $template = null)
     {
         if (!$template) $template = self::$xslDir . '/docx/template.docx';
         if (!file_exists($template)) {
             throw new Exception("Template not found: " . $template);
         }
-        $filename = pathinfo($src, PATHINFO_FILENAME);
-        $dom = self::dom($src);
-        copy($template, $dst);
+        $teidoc = new Teidoc(self::$logger);
+        $dom = $teidoc->load($srcFile);
+        copy($template, $dstFile);
         $zip = new ZipArchive();
-        $zip->open($dst);
+        $zip->open($dstFile);
 
         $re_clean = array(
             '@(<w:rPr/>|<w:pPr/>)@' => '',
@@ -62,7 +62,7 @@ class Docx
             self::$xslDir . '/docx/tei2docx-comments.xsl', 
             $dom,
             null, 
-            array('filename' => $filename)
+            array('filename' => $teidoc->name())
         );
         $zip->addFromString('word/comments.xml', $xml);
 
@@ -72,7 +72,7 @@ class Docx
             $dom,
             null,
             array(
-                'filename' => $filename,
+                'filename' => $teidoc->name(),
                 'templPath' => $templPath,
             )
         );
@@ -89,7 +89,7 @@ class Docx
             $dom,
             null,
             array(
-                'filename' => $filename,
+                'filename' => $teidoc->name(),
                 'templPath' => $templPath,
             )
         );
@@ -100,7 +100,7 @@ class Docx
             self::$xslDir . '/docx/tei2docx-fn.xsl',
             $dom,
             null, 
-            array('filename' => $filename)
+            array('filename' => $teidoc->name())
         );
         $xml = preg_replace(
             array_keys($re_clean), 
@@ -114,7 +114,7 @@ class Docx
             self::$xslDir . '/docx/tei2docx-fnrels.xsl',
             $dom,
             null,
-            array('filename' => $filename)
+            array('filename' => $teidoc->name())
         );
         $zip->addFromString('word/_rels/footnotes.xml.rels', $xml);
 
@@ -152,30 +152,6 @@ class Docx
         readfile($dstfile);
         unlink($dstfile);
         exit();
-    }
-
-
-    static function dom($teifile)
-    {
-        $xml = file_get_contents($teifile);
-        $re_norm = array(
-            '@\s\s+@' => ' ',
-            '@\s*(<pb[^>]*/>)\s*@' => '$1 ',
-            '@\s*(<lb( [^>]*)?/>)\s*@' => '$1',
-            '@(<(ab|head|l|note|p|stage)( [^>]*)?>)\s+@' => '$1',
-            '@\s+(</(ab|head|l|note|p|stage)>)@' => '$1',
-            '@(<(ab|head|l|p|stage)( [^>]*)?>)\s*(<pb( [^>]*)?/>)\s+@' => '$1$4',
-        );
-        $xml = preg_replace(
-            array_keys($re_norm),
-            array_values($re_norm),
-            $xml
-        );
-        // echo $xml;
-        $dom = Xml::domXml($xml);
-        // spaces are normalized upper, keep them
-        $dom->preserveWhiteSpace = true; 
-        return $dom;
     }
 
 }

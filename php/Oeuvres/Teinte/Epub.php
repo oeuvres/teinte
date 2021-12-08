@@ -9,10 +9,8 @@
 
 declare(strict_types=1);
 
-include_once(dirname(__DIR__) . '/php/autoload.php');
-
-use Oeuvres\Teinte\File;
-use Oeuvres\Teinte\Xml;
+use Oeuvres\Kit\File;
+use Oeuvres\Kit\Xml;
 use Psr\Log\NullLogger;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;

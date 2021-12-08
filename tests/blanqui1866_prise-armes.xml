@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="http://oeuvres.github.io/teinte/teinte.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<?xml-stylesheet type="text/xsl" href="../teinte/tei2html.xsl"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0" xml:lang="fr">
+  <teiHeader>
+    <fileDesc>
+      <titleStmt>
+        <title>Instructions pour une prise d’armes</title>
+        <author key="Blanqui, Auguste (1805, 1881)">Blanqui</author>
+      </titleStmt>
+      <editionStmt>
+        <edition>hurlus.fr</edition>
+      </editionStmt>
+      <publicationStmt>
+        <publisher>hurlus.fr</publisher>
+        <date when="2021"/>
+        <availability status="restricted">
+          <licence target="https://creativecommons.org/publicdomain/zero/1.0/deed.fr"/>
+        </availability>
+      </publicationStmt>
+      <sourceDesc>
+        <bibl>
+          <ref target="https://www.marxists.org/francais/blanqui/1866/instructions.htm">marxists.org</ref>
+        </bibl>
+        <bibl><emph>Auguste Blanqui. Instructions pour une prise d’armes. L'Éternité par les astres, hypothèse astronomique et autres textes</emph>, Société encyclopédique française, Editions de la Tête de Feuilles. 1972. Transcrit par Andy Blunden.</bibl>
+      </sourceDesc>
+    </fileDesc>
+    <profileDesc>
+      <langUsage>
+        <language ident="fr"/>
+      </langUsage>
+      <creation>
+        <date when="1866"/>
+      </creation>
+    </profileDesc>
+  </teiHeader>
+  <text>
+    <body>
+      <div>
+        <head>Instructions pour une prise d’armes</head>
+        <p>Ce programme est purement militaire et laisse entièrement de côté la question politique et sociale, dont ce n’est point ici la place : il va sans dire d’ailleurs, que la révolution doit se faire au profit du travail contre la tyrannie du capital, et reconstituer la société sur la base de la justice.</p>
+        <p>Une insurrection parisienne, d’après les vieux errements, n’a plus aujourd’hui aucune chance de succès.</p>
+        <p>En 1830, le seul élan populaire a pu suffire à jeter bas un pouvoir surpris et terrifié par une prise d’armes, événement inouï, qui était à mille lieux de ses prévisions.</p>
+        <p>Cela était bon une fois. La leçon a profité au gouvernement, resté monarchique et contre-révolutionnaire, bien que sorti d’une Révolution. Il s’est mis à étudier la guerre des rues, et il y a repris bientôt la supériorité naturelle de l’art et de la discipline sur l’inexpérience et la confusion.</p>
+        <p>Cependant, dira-t-on, le peuple en 1848, a vaincu par la méthode de 1830. Soit. Mais point d’illusions ! La victoire de février n’est qu’un raccroc. Si <hi rend="sc">Louis-Philippe</hi> s’était sérieusement défendu, force serait restée aux uniformes.</p>
+        <p>A preuve les journées de juin. C'est là qu’on a pu voir combien est funeste la tactique, ou plutôt l’absence de tactique de l’insurrection. Jamais elle n’avait eu la partie aussi belle : dix chances contre une.</p>
+        <p>D'un côté, le Gouvernement en pleine anarchie, les troupes demoralisées : de l’autre, tous les travailleurs debout et presque certains du succès. Comment ont-ils succombé ? Par défaut d’organisation. Pour se rendre compte de leur défaite, il suffit d’analyser leur stratégie.</p>
+        <p>Le soulèvement éclate. Aussitôt, dans les quartiers du travail, les barricades s’élèvent ça et là, à l’aventure, sur une multitude de points.</p>
+        <p>Cinq, dix, vingt, trente, cinquante hommes, réunis par hasard, la plupart sans armes, commencent à renverser des voitures, lèvent et entassent des pavés pour barrer la voie publique, tantôt au milieu des rues, plus souvent à leur intersection. Quantité de ces barrages seraient à peine un obstacle au passage de la cavalerie.</p>
+        <p>Parfois, après une grossière ébauche de retranchement, les constructeurs s’éloignent pour aller à la recherche de fusils et de munitions.</p>
+        <p>En juin, on a compté plus de six cents barricades, une trentaine au plus ont fait à elles seules tous les frais de la bataille. Les autres, dix-neuf sur vingt, n’ont pas brûlé une amorce. De là, ces glorieux bulletins qui racontaient avec fracas l’enlèvement de cinquante barricades, où il ne se trouvait pas une âme.</p>
+        <p>Tandis qu’on dépave ainsi les rues, d’autres petites bandes vont désarmer les corps de garde ou saisir la poudre et les armes chez les arquebusiers. Tout cela se fait, sans concert ni direction, au gré de la fantaisie individuelle.</p>
+        <p>Peu à peu, cependant, un certain nombre de barricades, plus hautes, plus fortes, mieux construites, attirent de préférence les défenseurs qui s’y concentrent. Ce n’est point le calcul, mais le hasard qui détermine l’emplacement de ces fortifications principales. Quelques-unes seulement, par une sorte d’inspiration militaire assez concevable, occupent les grands débouchés.</p>
+        <p>Durant cette première période de l’insurrection, les troupes, de leur côté, se sont réunies. Les généraux reçoivent et étudient les rapports de police. Ils se gardent bien d’aventurer leurs détachements sans données certaines, au risque d’un échec qui démoraliserait le soldat. Dès qu’ils connaissent bien les positions des insurgés, ils massent les régiments sur divers points qui constitueront désormais la base des opérations.</p>
+        <p>Les armées sont en présence. Voyons leurs manœuvres. Ici va se montrer à nu le vice de la tactique populaire, cause certaine des désastres.</p>
+        <p>Point de direction ni de commandement général, pas même de concert entre les combattants. Chaque barricade a son groupe particulier, plus ou moins nombreux, mais toujours isolé. Qu'il compte dix ou cent hommes, il n’entretient aucune communication avec les autres postes. Souvent il n’y a pas même un chef pour diriger la défense, et s’il y en a, son influence est à peu près nulle. Les soldats n’en font qu’à leur tête. Ils restent, ils partent, ils reviennent, suivant leur bon plaisir. Le soir, ils vont se coucher.</p>
+        <p>Par suite de ces allées et venues continuelles, on voit le nombre des citoyens présents varier rapidement, du tiers, de moitié, quelquefois des trois quarts. Personne ne peut compter sur personne. De là défiance du succès et découragement.</p>
+        <p>De ce qui se passe ailleurs on ne sait rien et on ne s’embarrasse pas davantage. Les canards circulent, tantôt noirs, tantôt roses. On écoute paisiblement le canon et la fusillade, en buvant sur le comptoir du marchand de vins. Quant à porter secours aux positions assaillies, on n’en a pas même l’idée. « Que chacun défende son poste, et tout ira bien », disent les plus solides. Ce singulier raisonnement tient à ce que la plupart des insurgés se battent dans leur propre quartier, faute capitale qui a des conséquences désastreuses, notamment les dénonciations des voisins, après la défaite.</p>
+        <p>Car, avec un pareil système, la défaite ne peut manquer. Elle arrive à la fin dans la personne de deux ou trois régiments qui tombent sur la barricade et en écrasent les quelques défenseurs. Toute la bataille n’est que la répétition monotone de cette manœuvre invariable. Tandis que les insurgés fument leur pipe derrière les tas de pavés, l’ennemi porte successivement toutes ses forces sur un point, puis sur un second, un troisième, un quatrième, et il extermine ainsi en détail l’insurrection.</p>
+        <p>Le populaire n’a garde de contrarier cette commode besogne. Chaque groupe attend philosophiquement son tour et ne s’aviserait pas de courir à l’aide du voisin en danger. Non « il défend son poste, il ne peut pas abandonner son poste. »</p>
+        <p>Et voilà comme on périt par l’absurde !</p>
+        <p>Lorsque, grâce à une si lourde faute, la grande révolte Parisienne de 1848 a été brisée comme verre par le plus pitoyable des gouvernements, quelle catastrophe n’aurait-on pas à redouter, si on recommençait la même sottise devant un militarisme farouche, qui a maintenant à son service les récentes conquêtes de la science et de l’art, les chemins de fer, le télégraphe électrique, les canons rayés, le fusil Chassepot ?</p>
+        <p>Par exemple, ce qu’il ne faut pas compter comme un des nouveaux avantages de l’ennemi, ce sont les voies stratégiques qui sillonnent maintenant la ville dans tous les sens. On les craint, on a tort. Il n’y a pas à s’en inquiéter. Loin d’avoir créé un danger de plus à l’insurrection, comme on se l’imagine, elles offrent au contraire un mélange d’inconvénients et d’avantages pour les deux partis. Si la troupe y circule avec plus d’aisance, par contre elle y est exposée fort à découvert.</p>
+        <p>De telles rues sont impraticables sous la fusillade. En outre, les balcons, bastions en miniature, fournissent des feux de flanc que ne comportent point les fenêtres ordinaires. Enfin, ces longues avenues en ligne droite méritent parfaitement le nom de boulevards qu’on leur a donné. Ce sont en effet de véritables boulevards qui constituent des fronts naturels d’une très grande force.</p>
+        <p>L'arme par excellence dans la guerre des rues, c’est le fusil. Le canon fait plus de bruit que de besogne. L'artillerie ne pourrait agir sérieusement que par l’incendie. Mais une telle atrocité, employée en grand et comme système, tournerait bientôt contre ses auteurs et ferait leur perte.</p>
+        <p>La grenade, qu’on a pris la mauvaise habitude d’appeler bombe, est un moyen secondaire, sujet d’ailleurs à une foule d’inconvénients; elle consomme beaucoup de poudre pour peu d’effet, est d’un maniement très dangereux, n’a aucune portée et ne peut agir que des fenêtres. Les pavés font presque autant de mal et ne coûtent pas si cher. Les ouvriers n’ont pas d’argent à perdre.</p>
+        <p>Pour l’intérieur des maisons, le revolver et l’arme blanche, baïonnette, épée, sabre et poignard. Dans un abordage la pique ou la pertuisane de huit pieds triompherait de la baïonnette.</p>
+        <p>L'armée n’a sur le peuple que deux grands avantages, le fusil Chassepot et l’organisation. Ce dernier surtout est immense, irrésistible. Heureusement on peut le lui ôter, et dans ce cas, l’ascendant passe du côté de l’insurrection.</p>
+        <p>Dans les luttes civiles, les soldats sauf de rares exceptions, ne marchent qu’avec répugnance, par contrainte et par eau-de-vie. Ils voudraient bien être ailleurs et regardent plus volontiers derrière que devant eux. Mais une main de fer les retient esclaves et victimes d’une discipline impitoyable ; sans affection pour le pouvoir, ils n’obéissent qu’à la crainte et sont incapables de la moindre initiative. Un détachement coupé est un détachement perdu. Les chefs ne l’ignorent pas, s’inquiètent avant tout de maintenir les communications entre tous leurs corps. Cette nécessité annule une partie de leur effectif.</p>
+        <p>Dans les rangs populaires, rien de semblable. Là on se bat pour une idée. Là on ne trouve que des volontaires, et leur mobile est l’enthousiasme, non la peur. Supérieurs à l’adversaire par le dévouement, ils le sont bien plus encore par l’intelligence. Ils l’emportent sur lui dans l’ordre moral et même physique, par la conviction, la vigueur, la fertilité des ressources, la vivacité de corps et d’esprit, ils ont la tête et le cœur. Nulle troupe au monde n’égale ces hommes d’élite.</p>
+        <p>Que leur manque-t-il donc pour vaincre ? Il leur manque l’unité et l’ensemble qui fécondent, en les faisant concourir au même but, toutes ces qualités que l’isolement frappe d’impuissance. Il leur manque l’organisation. Sans elle, aucune chance. L'organisation, c’est la victoire; l’éparpillement, c’est la mort.</p>
+        <p>Juin 1848 a mis cette vérité hors de conteste. Que serait-ce donc aujourd’hui ? Avec les vieux procédés, le peuple tout entier succomberait si la troupe voulait tenir, et elle tiendra tant qu’elle ne verra devant elle que des forces irrégulières, sans direction. Au contraire, l’aspect d’une armée parisienne en bon ordre manœuvrant selon les règles de la tactique frappera les soldats de stupeur et fera tomber leur résistance.</p>
+        <p>Une organisation militaire, surtout quand il faut l’improviser sur le champ de bataille, n’est pas une petite affaire pour notre parti. Elle suppose un commandement en chef et, jusqu’à un certain point, la série habituelle des officiers de tous grades. Où prendre ce personnel ? Les bourgeois révolutionnaires et socialistes sont rares et le peu qu’il y en a ne fait que la guerre de plume. Ces messieurs s’imaginent bouleverser le monde avec leurs livres et leurs journaux, et depuis seize ans ils barbouillent du papier à perte de vue, sans se fatiguer de leurs déboires, ils souffrent avec une patience chevaline le mors, la selle, la cravache, et ne lâcheraient pas une ruade. Fi donc ! Rendre les coups ! C'est bon pour des goujats.</p>
+        <p>Ces héros de l’écritoire professent pour l’épée le même dédain que l’épauletier pour leurs tartines. Ils ne semblent pas se douter que la force est la seule garantie de la liberté, qu’un pays est esclave où les citoyens ignorent le métier des armes et en abandonnent le privilège à une caste ou a une corporation.</p>
+        <p>Dans les républiques de l’antiquité, chez les Grecs et les Romains, tout le monde savait et pratiquait l’art de la guerre. Le militaire de profession était une espèce inconnue. <hi rend="sc">Cicéron</hi> était général, <hi rend="sc">César</hi> avocat. En quittant la toge pour l’uniforme, le premier venu se trouvait colonel ou capitaine et ferré à glace sur l’article. Tant qu’il n’en sera pas de même en France, nous resterons les Pékins taillés à merci par les traîneurs de sabre.</p>
+        <p>Des milliers de jeunes gens instruits, ouvriers et bourgeois, frémissent sous un joug abhorré. Pour le briser, songent-ils à prendre l’épée ? Non ! la plume, toujours la plume, rien que la plume. Pourquoi donc pas l’une et l’autre, comme l’exige le devoir d’un Républicain ? En temps de tyrannie, écrire est bien, combattre est mieux, quand la plume esclave demeure impuissante. Eh bien ! point ! On fait un journal, on va en prison, et nul ne songe à ouvrir un livre de manœuvres, pour y apprendre en vingt-quatre heures le métier qui fait toute la force de nos oppresseurs, et qui nous mettrait dans la main notre revanche et leur châtiment.</p>
+        <p>Mais à quoi bon ces plaintes ? C'est la sotte habitude de notre temps de se lamenter au lieu de réagir. La mode est aux jérémiades. Jérémie pose dans toutes les attitudes, il pleure, flagelle, il dogmatise, il régente, il tonne, fléau lui-même entre tous les fléaux. Laissons ces bobèches de l’élégie, fossoyeurs de la liberté ! Le devoir d’un révolutionnaire, c’est la lutte toujours, la lutte quand même, la lutte jusqu’à extinction.</p>
+        <p>Les cadres manquent pour former une armée ? Eh bien ! Il faut en improviser sur le terrain même, pendant l’action. Le peuple de Paris fournira les éléments, anciens soldats, ex-gardes nationaux. Leur rareté obligera de réduire à un minimum le chiffre des officiers et sous-officiers. Il n’importe. Le zèle, l’ardeur, l’intelligence des volontaires, compenseront ce déficit.</p>
+        <p>L'essentiel, c’est de s’organiser. Plus de ces soulèvements tumultueux, à dix mille têtes isolées, agissant au hasard, en désordre, sans nulle pensée d’ensemble, chacun dans son coin et selon sa fantaisie ! Plus de ces barricades à tort et à travers, qui gaspillent le temps, encombrent les rues, et entravent la circulation, nécessaire à un parti comme à l’autre. Le Républicain doit avoir la liberté de ses mouvements aussi bien que les troupes.</p>
+        <p>Point de courses inutiles, de tohu-bohu, de clameurs ! Les minutes et les pas sont également précieux. Surtout ne pas se claquemurer dans son quartier ainsi que les insurgés n’ont jamais manqué de le faire, à leur grande dommage. Cette manie, après avoir causé la défaite, a facilité les proscriptions. Il faut s’en guérir, sous peine de catastrophe.</p>
+        <p>Ces préliminaires posés, indiquons le mode d’organisation.</p>
+        <p>L'unité principale est le bataillon. Il se compose de huit compagnies ou pelotons.</p>
+        <p>Chaque compagnie compte un lieutenant, quatre sergents, cinquantesix soldats; en tout soixante et un hommes.</p>
+        <p>Deux compagnies forment une division commandée par un capitaine. Le bataillon présente par conséquent treize officiers, savoir: un commandant, quatre capitaines, huit lieutenants, plus 32 sergents, 448 soldats et le porte-drapeau, total: 494 hommes. Les tambours sont en sus, si on en trouve.</p>
+        <p>La rareté prévue de l’élément qui forme les cadres, oblige de supprimer dans chaque compagnie deux officiers, le capitaine et le sous-lieutenant, deux sous-officiers, le sergent-major et le fourrier, enfin les huit caporaux. L'état-major de la compagnie se trouve ainsi réduit de seize à cinq individus. Il est vrai qu’elle est moins nombreuse que dans l’armée, où elle compte 90 hommes sur pied de guerre. Proportion gardée, c’est une différence d’état-major de cinq à onze.</p>
+        <p>Le chiffre de la compagnie est faible, afin de faciliter les manœuvres tant du peloton que du bataillon.</p>
+        <p>Le capitaine, au lieu de commander un peloton comme dans la troupe, en commande deux, c’est-à-dire une division. Cependant les manœuvres par division n’auront presque jamais lieu. A peu près impraticables dans Paris, elles ne peuvent servir qu’à plier le bataillon en masse Par divisions, sur une place ou une grande voie. Mais il importe de donner un chef spécial à la division, soit qu’elle occupe une, deux ou quatre barricades. Dans le premier cas, la barricade est importante par le nombre de ses défenseurs. Dans les deux autres, il est essentiel de ne pas laisser dans une direction supérieure les deux ou quatre petits postes.</p>
+      </div>
+      <div>
+        <head>Organisation du peloton</head>
+        <p>Le peloton se divise en deux sections, chacune de 28 soldats et de deux sous-officiers.</p>
+        <p>La section se subdivise en deux demi-sections, chacune de 14 soldats et un sous-officier.</p>
+        <p>Place des officiers et sous-officiers dans le peloton en bataille.</p>
+        <p>Le lieutenant à la droite de son peloton, au premier rang.</p>
+        <p>Le premier sergent derrière le lieutenant, au second rang.</p>
+        <p>Le deuxième sergent, à la gauche de la section de droite, au premier rang.</p>
+        <p>Le troisième sergent, derrière le deuxième, à la droite de la section de gauche, au second rang.</p>
+        <p>Le quatrième sergent, à la gauche de la section de gauche et du peloton, au premier rang.</p>
+      </div>
+      <div>
+        <head>Des guides</head>
+        <p>Le premier sergent est guide de droit du peloton et de la section de droite. Il est guide de droite et de gauche de la première demi-section de droite.</p>
+        <p>Le deuxième sergent est guide de gauche de la section de droite. Il est guide de droite et de gauche de la seconde demi-section de droite. Il est porte-fanion du peloton.</p>
+        <p>Le troisième sergent est guide de droite de la section de gauche. Il est guide de droite et de gauche de la première demi-section de gauche.</p>
+        <p>Le quatrième sergent est guide de gauche du peloton et de la section de gauche. Il est guide de droite et de gauche de la seconde demi-section de gauche.</p>
+        <p>Placer les officiers et sous-officiers, quand le bataillon est en colonne, la droite ou la gauche en tête.</p>
+        <list type="ol" rend="1">
+          <item>En colonne, par pelotons, le lieutenant se tient à droite du peloton. Le premier, deuxième et quatrième sergents, au premier rang, le troisième au second rang, derrière le deuxième ;</item>
+          <item>En colonne par sections, le lieutenant se tient à droite de la section de tête. Les quatre sergents à droite et à gauche de leurs sections respectives au premier rang ;</item>
+          <item>En colonne par demi-sections le lieutenant se tient à la droite de la demi-section de tête. Les quatre sergents, étant guides de droite et de gauche de leurs demi-sections, sont tantôt à droite, tantôt à gauche, selon le commandement, toujours au premier rang.</item>
+        </list>
+        <p>Les deux sergents qui se trouvent aux extrémités du bataillon en bataille, en sont guides de droite et de gauche et se tiennent au premier rang. Le lieutenant du peloton de droite, s’écarte à droite, pour faire place au guide.</p>
+        <p>Place des capitaines, en bataille et en colonne :</p>
+        <p rend="i">Le bataillon étant en bataille, les capitaines se tiennent à quelques pas en arrière du centre de leurs divisions respectives. Le bataillon étant en colonne, chaque capitaine se tient sur le flanc gauche de sa division.</p>
+        <p>Le chef de bataillon n’a point de place fixe.</p>
+        <p><emph>Nota</emph>. - Les quatre sous-officiers restent constamment dans les rangs qu’ils encadrent. Ils ne sont jamais en serre-file comme dans la troupe. Les ouvriers Parisiens, volontaires au service de la liberté, n’ont pas besoin de sergents pousseculs.</p>
+        <p>Place du porte-drapeau, en bataille et en colonne</p>
+        <list type="ol" rend="1">
+          <item><emph>en bataille, le porte-drapeau est à la gauche du quatrième peloton, au premier rang</emph> ;</item>
+          <item>en colonne, par divisions, le porte-drapeau est au centre, à égale distance entre la seconde et la troisième divisions ;</item>
+          <item>en colonne, par pelotons, le porte-drapeau est à gauche, dans l’alignement des guides, à égale distance entre le quatrième et le cinquième peloton ;</item>
+          <item>en colonne par sections, ou par demi-sections, le porte-drapeau est au centre, à. égale distance entre le quatrième et le cinquième peloton.</item>
+        </list>
+        <p>Le drapeau est rouge, <emph>- chaque compagnie a son fanion ou guidon de couleur particulière</emph> :</p>
+        <list type="ol" rend="1">
+          <item><emph>peloton-fanion rouge</emph> ;</item>
+          <item>
+            <emph>peloton-fanion violet;</emph>
+          </item>
+          <item>
+            <emph>peloton-fanion verd (<emph>sic</emph>);</emph>
+          </item>
+          <item>
+            <emph>peloton-fanion jaune;</emph>
+          </item>
+          <item>
+            <emph>peloton-fanion bleu;</emph>
+          </item>
+          <item>
+            <emph>peloton-fanion rose;</emph>
+          </item>
+          <item>
+            <emph>peloton-fanion orange;</emph>
+          </item>
+          <item>
+            <emph>peloton-fanion noir.</emph>
+          </item>
+        </list>
+        <p>Les officiers et sous-officiers porteront, comme insignes, un ruban de couleur du guidon de leur compagnie, les lieutenants au bras gauche, entre l’épaule et le coude, les sergents au poignet gauche. Le ruban de la 8e compagnie sera noir à double lisere rouge.</p>
+        <p>Les capitaines porteront entre l’épaule et le coude un ruban de la couleur de chacune des deux compagnies formant leur division, au bras droit du peloton impair, au bras gauche celui du peloton pair. Le ruban noir du 4e capitaine aura double liseré rouge.</p>
+        <p>Le chef de bataillon porte au bras gauche, entre l’épaule et le coude, un large ruban rouge, à frange pendante.</p>
+        <p>Le numéro de chaque. bataillon sera inscrit au haut de la hampe du fanion de ses huit compagnies.</p>
+        <p>Les diverses couleurs tant des fanions que des officiers et sous-officiers, ont pour but de faire reconnaître a première vue dans la mêlée les différentes compagnies et d’opérer un prompt ralliement.</p>
+        <p>Chaque homme occupant deux pieds dans le rang, la demi-section a cinq mètres de front, la section dix, le peloton, vingt, la division, quarante, le bataillon, cent soixante.</p>
+        <p>Il faut toujours manœuvrer avec 70 ou 75 centimètres de distance entre les deux rangs, afin que le second rang ne soit pas obligé d’emboîter le pas, chose très incommode pour des novices. Si on doit faire feu, le deuxième rang serre le premier, afin de passer les fusils entre les têtes des hommes du premier rang.</p>
+      </div>
+      <div>
+        <head>Des manœuvres</head>
+        <p>Tous les officiers doivent connaître parfaitement l’école de peloton et l’école de bataillon. Pour savoir le moins, il est bon de savoir le plus. Néanmoins, il est évident qu’il n’y aura lieu d’employer qu’un petit nombre des mouvements décrits dans l’une et l’autre école. Il est donc essentiel d’étudier ceux-là de préférence. Ils ont surtout pour but de régulariser la formation en bataille.</p>
+        <p>Voici les principaux</p>
+        <list type="ol" rend="1">
+          <item>Le bataillon étant en bataille rompre à droite ou à gauche soit par pelotons, soit par sections, soit par demi-sections ;</item>
+          <item>Le bataillon étant en bataille, rompre en arrière à droite ou à gauche, soit par pelotons, soit par sections, soit par demi-sections.
+            <lb/><emph>Nota-bene.</emph> - Dans ce dernier mouvement, faire par le flanc sans dédoubler. - Du reste, l’autre manière de rompre est préférable ;</item>
+          <item>Le bataillon marchant en colonne par pelotons, rompre les pelotons;</item>
+          <item>Le bataillon marchant en colonne par sections, rompre les sections.
+            <lb/><emph>Nota-bene</emph>. - Ces deux derniers mouvements doivent s’exécuter au pas de gymnastique, afin de ne pas perdre de temps ni de terrain;</item>
+          <item>Le bataillon marchant en colonne par demi-sections, former les sections;</item>
+          <item>Le bataillon marchant en colonne par sections, former les pelotons.
+            <lb/><emph>Nota-bene.</emph> - Les pelotons ayant vingt mètres de front, le bataillon ne pourra marcher en colonne par pelotons que sur les plus larges chaussées.
+            <lb/>La marche la plus habituelle sera en colonne par sections qui n’occupe que onze de front.
+            <lb/>On rompra les sections, avant d’entrer dans une rue ayant moins de douze mètres de large;</item>
+          <item>Le bataillon marchant en colonne par pelotons, ou par sections, ou par demi-sections, le former à droite ou à gauche en bataille.<emph>
+            <lb/>Nota-bene.</emph> - Cette formation en bataille étant la plus prompte, est la meilleure. Mais elle présente des difficultés. On ne peut former régulièrement la colonne à droite ou à gauche en bataille, que si les pelotons, ou les sections ou les demi-sections ont exactement conservé leurs distances, c’est-à-dire si la distance qui les sépare est égale à leur front. Si elle est plus grande, il reste des vides dans le bataillon formé en bataille. Si, au contraire, la distance est moindre que le front, les fractions du bataillon, en arrivant à l’alignement, se heurtent et s’entassent les unes sur les autres, faute de place ;</item>
+          <item>La colonne étant en marche par pelotons, par sections ou par demi-sections, la former sur la droite ou sur la gauche en bataille.
+            <lb/><emph>Nota-bene.</emph> - Ce mouvement n’a pas les inconvénients du précédent, et devant l’ennemi, il a l’avantage d’ouvrir le feu dès le début de la formation. Mais, pour mettre simplement la colonne en bataille, il est d’une extrême lenteur.</item>
+        </list>
+        <p>Le mouvement de flanc, par dédoublement, a le très grand avantage de former instantanément le bataillon en colonne, s’il est en bataille, ou en bataille, s’il est en colonne. Mais il a cet inconvénient qu’il est impossible de serrer la colonne. En outre, les deux mouvements: faire par le flanc, et faire front, sont difficiles pour des hommes qui n’ont jamais été exercés. Néanmoins il sera utile d’enseigner cette manœuvre au bataillon, aussitôt qu’il sera organisé. L'intelligence des ouvriers Parisiens leur en fera comprendre le mécanisme en quelques minutes.</p>
+        <p>Lorsqu’un bataillon en marche doit faire tête de colonne à droite ou à gauche, pour entrer dans une rue latérale, il faut employer le mouvement « tournez à droite », ou « tournez à gauche », préférable à la conversion régulière qui est plus lente et plus difficile.</p>
+        <p>Tous les changements de direction de la colonne doivent se faire par ce même mouvement « tournez à droite ou à gauche ».</p>
+        <p>Le bataillon devra toujours marcher et manœuvrer au pas de route, c’est-à-dire les deux rangs à distance de 70 ou 75 centimètres, afin que le second rang ne soit pas obligé d’emboîter le pas, et marche en liberté.</p>
+        <p>Tous les mouvements devront être exécutés avec rapidité, sans se piquer de précision ni d’élégance. La promptitude avant tout.</p>
+        <p>Le port d’armes en sous-officier, le fusil dans la main droite, le bras allongé le long de la cuisse, la sous-garde tournée en avant.</p>
+        <p>Il faudra faire appel aux hommes qui savent battre la caisse. Les tambours sont de première nécessité pour les commandements.</p>
+      </div>
+      <div>
+        <head>Manœuvres par divisions</head>
+        <p>Les manœuvres par divisions ne peuvent être que fort rares dans Paris. Il importe néanmoins d’étudier les suivantes:</p>
+        <list type="ol" rend="1">
+          <item>Le bataillon étant en colonne par pelotons, serrés en masse, ou à demi-distance ou à distance entière, former les divisions ;</item>
+          <item>Le bataillon étant en bataille, le ployer en colonne serrée par division sur l’une quelconque des quatre divisions, la droite ou la gauche en tête ;</item>
+          <item>Le bataillon étant en colonne serrée par divisions, en marche ou de pied ferme, le déployer sur l’une quelconque des quatre divisions. La colonne par peloton.</item>
+        </list>
+        <p><emph>Esquisse de la marche à suivre dans une prise d’armes à Paris.</emph></p>
+        <p>Les hommes qui prennent l’initiative du mouvement, ont choisi d’avance un commandant en chef et un certain nombre d’officiers, dont les fonctions commencent avec l’insurrection elle-même.</p>
+      </div>
+      <div>
+        <head>Manière d’organiser</head>
+        <p>Aussitôt que des citoyens accourent, à la vue du soulèvement, les faire mettre en bataille sur deux rangs.</p>
+        <p>Les engager au silence et au calme, leur adresser une brève allocution. Leur annoncer ensuite que tout citoyen marchant sous le drapeau de la République, recevra des vivres et cinq francs par jour, en indemnité de salaire, pendant la durée de la lutte.</p>
+        <p>Inviter tous ceux qui ont servi dans l’armée ou fait partie de la garde nationale, à sortir des rangs et à se présenter sur le front de la ligne.</p>
+        <p>Les classer en officiers, sous-officiers et simples soldats. Mettre en réserve les premiers comme officiers supérieurs, choisir les sous-officiers pour lieutenants, chefs de pelotons, les simples soldats pour sergents.</p>
+        <p>Distribuer aux lieutenants et aux sergents un imprimé qui leur explique l’organisation de l’armée populaire et les diverses mesures à prendre.</p>
+        <p>Les caser à leurs places respectives comme-officiers et sous-officiers et encadrer entre eux les soldats de chaque peloton, et former ainsi les compagnies jusqu’à épuisement du personnel présent.</p>
+        <p>S'il n’y a pas assez d’hommes pour compléter un bataillon, ranger a la suite des pelotons constitués, les cadres de ceux qui restent à former, cadres prêts à recevoir les volontaires nouveaux.</p>
+        <p>Si, au contraire, c’est le personnel des cadres qui est insuffisant, faire appel aux hommes qui se sentent assez d’intelligence pour commander, leur assigner les fonctions de lieutenant et de sergents, et leur donner l’imprimé qui les mettra au courant de l’organisation.</p>
+        <p>Le nombre des pelotons ainsi formés restant inférieur à huit, déclarer néanmoins le bataillon constitué.</p>
+        <p>S'il est supérieur à huit, constituer avec l’excédent un deuxième bataillon, qui se complétera par l’adjonction de nouveaux volontaires.</p>
+        <p>Distribuer aux lieutenants et aux sergents les rubans de diverses couleurs qu’ils doivent porter comme insignes; déployer le drapeau du bataillon, ainsi que les fanions des compagnies qui seront confiés aux deuxièmes sergents.</p>
+        <p>Aussitôt le drapeau déployé, faire prêter aux officiers, sous-officiers et soldats le serment ci-après :</p>
+        <p>« Je jure de combattre jusqu’à la mort pour la République, d’obéir aux ordres des chefs, et de ne pas m’écarter un seul instant du drapeau, ni de jour ni de nuit, avant que la bataille soit terminée. »</p>
+        <p>Distribuer les armes disponibles aux compagnons et aux bataillons, dans l’ordre chronologique de leur formation; premiers organisés, premiers armés.</p>
+        <p>S'il n’existe que quelques fusils, les donner aux sergents porte-fanions.</p>
+        <p>Les officiers et sous-officiers feront constamment aux soldats les recommandations suivantes:</p>
+        <p>« Ne jamais perdre une seconde - rester en ordre - observer le silence (sauf le cri de Vive la République poussé seulement à un signal donné) - marcher d’un pas rapide. Dans le cas d’un engagement, n’agir que d’après le commandement. Si on a le dessous, se rallier vite et sans tumulte au drapeau et aux fanions. - Si on a le dessus, garder les rangs, sans bruit, ni cri, prêts à marcher. - Exécuter tous les ordres avec rapidité et si on doit s’éloigner du drapeau pour les remplir, le rallier vivement, aussitôt l’ordre accompli. »</p>
+        <p>Le cri de Vive la République ne doit être poussé qu’au signal des chefs, parce qu’une marche silencieuse est souvent de la plus impérieuse nécessité.</p>
+        <p>Qu'on soit en marche ou en halte, organiser aussitôt tous les ouvriers qui se rencontreront sur le passage de la colonne.</p>
+        <p>S'il y a des cadres en excédent, ils marcheront à la queue de la colonne, dans l’ordre des numéros de leurs compagnies, incorporant en chemin, sans s’arrêter, tous les hommes de bonne volonté trouvés sur la route.</p>
+        <p>Les officiers et sous-officiers des pelotons ainsi formés pendant la marche, demandent immédiatement aux citoyens incorporés s’ils ont servi dans l’armée ou appartenu à la garde nationale; et ils font sortir sur le flanc de la colonne ceux qui se trouvent dans ce cas.</p>
+        <p>Des officiers d’état-major accompagnent la colonne afin de constituer avec ces nouveaux éléments des cadres de compagnies et de bataillons, en assignant les grades d’après la règle indiquée plus haut. Ils distribuent les rubans servant d’insignes, font déployer les fanions et les drapeaux des nouveaux corps qui se mettent à la suite.</p>
+        <p>L'organisation des nouveaux bataillons continuera ainsi sans înterruption, pendant la durée de la lutte. Toute colonne en marche ralliera les ouvriers rencontrés sur son chemin et les formera en compagnies et en bataillons d’après les procédés ci-dessus.</p>
+        <p>Aussitôt que le nombre des bataillons dépassera neuf, ils pourront être réunis par régiments et par brigades.</p>
+        <p>Dès le début de l’insurrection, des citoyens dévoués seront chargés de couper les fils télégraphiques et de détruire les communications du gouvernement avec la province.</p>
+      </div>
+      <div>
+        <head>Mesures insurrectionnelles</head>
+        <p>Aussitôt que la chose sera possible, le commandant en chef établira des commissions d’armement, de vivres et de sûreté publique.</p>
+      </div>
+      <div>
+        <head>Commission d’armement</head>
+        <p>La commission d’armement fera rechercher, soit dans les magasins et fabriques d’arquebuserie, soit chez les particuliers, toutes les armes disponibles, fusils de guerre et de chasse, pistolets, revolvers, sabres et épées, ainsi que les poudres entreposées chez les débitants ou réunies en dépôt, notamment chez les artificiers.</p>
+        <p>Elle requerra le plomb en existence chez les plombiers, les moules à balles de tous calibres chez les quincailliers, fera fabriquer des mandrins par les tourneurs, des mesures à poudre, installera des ateliers où les femmes et les enfants seront employés moyennant salaire à la fonte des balles et à la confection des cartouches.</p>
+        <p>Elle fera préparer des fanions, des drapeaux et des rubans pour insignes.</p>
+        <p>Elle requerra chez les fabricants de produits chimiques, les matières qui entrent dans les diverses sortes de poudres notamment l’acide sulfurique et l’acide nitrique anhydres ou concentrés, éléments du fulmicoton. On mettra en réquisition pour ces travaux les élèves en pharmacie.</p>
+      </div>
+      <div>
+        <head>Commission des vivres</head>
+        <p>La commission des vivres requerra chez les boulangers, bouchers et dans les entrepôts de liquides, le pain, la viande, les vins et liqueurs nécessaires à la consommation de l’armée Républicaine, Elle mettra en réquisition les traiteurs, restaurateurs et autres établissements de ce genre pour la préparation des vivres.</p>
+        <p>Il y aura, par chaque bataillon, un commissaire des vivres chargé de veiller à la distribution et de faire connaître à la commission les besoins du bataillon.</p>
+      </div>
+      <div>
+        <head>Commision de sûreté publique</head>
+        <p>La commission de sûreté publique a pour mission de, déjouer les trames de la police et les manœuvres des contre-révolutionnaires, de faire imprimer, distribuer et afficher les proclamations ou arrêtés du Commandant en chef, de surveiller les télégraphes, les chemins de fer, les établissements impériaux, en un mot, de dissoudre les moyens d’action de l’ennemi, d’organiser et d’assurer ceux de la République.</p>
+        <p>Les fonds nécessaires pour le service de ces trois commissions et pour le paiement de l’indemnité quotidienne de cinq francs, allouée aux citoyens présents sous les drapeaux, seront prélevées sur les caisses publiques.</p>
+        <p>Il sera délivré aux marchands et industriels, récépissé régulier des livraisons de marchandises quelconques par eux fournies, sur réquisition. Ces fournitures seront soldées par le gouvernement républicain.</p>
+        <p>Les trois commissions rendront compte de leurs travaux, d’heure en heure au commandant en chef et exécuteront ses ordres.</p>
+        <p>Il sera formé un service spécial pour les ambulances.</p>
+      </div>
+      <div>
+        <head>Des barricades</head>
+        <p>Aucun mouvement militaire ne devant avoir lieu que d’après l’ordre du commandant en chef, il ne sera élevé de barricades que sur les emplacements désignés par lui.</p>
+        <p>Sous peine d’une prompte débâcle, les barricades ne peuvent plus être aujourd’hui une œuvre comme en 1830 et 1848, confuse et désordonnée. Elles doivent faire partie d’un plan d’opération, arrêté d’avance.</p>
+        <p>Dans ce système, chaque retranchement est occupe par une garnison qu’on abandonne point à elle-même, qui reste en communication suivie avec les réserves et en reçoit constamment des renforts proportionnés aux dangers de l’attaque.</p>
+        <p>Le tohu-bohu et l’éparpillement ne constituaient pas le seul vice des anciennes barricades. Leur construction n’était pas moins défectueuse.</p>
+        <p>Amas informe de pavés, entremêlés de voitures sur le flanc, de poutres et de planches, ce mauvais barrage n’était pas un obstacle pour l’infanterie qui l’enlevait au pas de course. Quelques gros retranchements peut-être, faisaient exception. Encore pas un seul n’était à l’abri de l’escalade. Ils servaient eux-mêmes d’échelle.</p>
+        <p>Arrêter les troupes, les contraindre à un siège, résister même assez longtemps au canon, telle est. la destination d’une barricade. Il faut donc la construire d’après ces données, pour qu’elle atteigne son triple but. Jusqu’ici, elle n’y a pas satisfait le moins du monde.</p>
+      </div>
+      <div>
+        <head>Croquis de barricade</head>
+        <figure>
+          <graphic url="https://hurlus.github.io/tei/blanqui1866_prise-armes/barricade.png"/>
+          <head>Profil de la barricade complète, rempart et contre-garde avec glacis. Le rempart et le mur interne de la contre-garde sont maçonnés en plâtre.</head>
+        </figure>
+        <p>Dans l’état actuel de Paris, malgré l’invasion du macadam, le pavé reste toujours le véritable élément de la fortification passagère, à condition toutefois d’en faire un usage plus sérieux que par le passé. C'est une affaire de bon sens et de calcul.</p>
+        <p>L'ancien pavé, qui tapisse encore la majeure partie de la voie publique est un cube de 25 centimètres de côté. On peut, dès lors, supputer par avance le nombre de ces blocs qui sera mis en œuvre pour bâtir un mur, dont les trois dimensions, longueur, largeur et hauteur sont déterminées.</p>
+      </div>
+      <div>
+        <head>Barricade régulière</head>
+        <p>La barricade complète consiste dans un rempart et sa contre-garde ou couvre-face.</p>
+        <p>Le rempart est en pavés maçonnés au plâtre, large d’un mètre, haut de trois, encastré par des extrémités dans les murs de façade des maisons.</p>
+        <p>La contre-garde, placée à six mètres en avant du rempart se compose de deux parties attenantes l’une à l’autre, savoir : un mur interne de mêmes dimensions et constructions que le rempart, et un glacis en pavés secs amoncelés s’étendant sur une longueur de quatre mètres jusqu’à l’entrée de la rue.</p>
+        <p>Un mètre cube contient 64 pavés de 25 centimètres de côté. Le rempart ainsi que le mur interne de la contre-garde ont toujours deux facteurs fixes, la hauteur 3 mètres, la largeur ou épaisseur un mètre. La longueur seule varie. Elle dépend de la largeur de la rue.</p>
+        <p>En supposant ici la rue de 12 mètres, et par conséquent, le chiffre 12, facteur commun pour le rempart, le mur interne maçonné du glacis, et le glacis lui-même, on aura:</p>
+        <table rend="center">
+          <spanGrp type="colgroup">
+            <span type="col" style="width: 55%" rend="col1"/>
+            <span type="col" style="width: 30%" rend="col2"/>
+            <span type="col" style="width: 15%" rend="col3"/>
+          </spanGrp>
+          <row>
+            <cell rend="middle">Le rempart</cell>
+            <cell rend="middle">= 3 × 1 × 12</cell>
+            <cell rend="middle">= 36</cell>
+          </row>
+          <row>
+            <cell rend="middle">Le mur interne du glacis</cell>
+            <cell rend="middle">= 3 × 1 × 12</cell>
+            <cell rend="middle">= 36</cell>
+          </row>
+          <row>
+            <cell rend="middle">Le glacis</cell>
+            <cell rend="middle">= <hi rend="u">3 × 4 × 12</hi></cell>
+            <cell rend="middle">= 72</cell>
+          </row>
+          <row>
+            <cell rend="middle"/>
+            <cell rend="center middle">2</cell>
+            <cell rend="middle"/>
+          </row>
+        </table>
+        <p>Le cube total de la barricade et de sa contre-garde sera de 144 mètres qui, à 64 pavés par mètre cube, donnent 9186 pavés, représentant 191 rangées à 4 × 12 ou 48 par rangées. Ces 192 rangées occupent 48 mètres de long. Ainsi la rue serait dépavée dans une longueur de 48 mètres, pour fournir les matériaux du retranchement complet.</p>
+        <p>Le calcul n’ayant pas tenu compte de la place occupée par le plâtre dans le rempart et le mur interne de la contre-garde le nombre de pavés serait diminué d’autant. Il serait moindre encore dans le glacis, par suite des vides existant entre les pavés entassés en désordre.</p>
+        <p>Les petits pavés rectangulaires qui ont remplacé en partie le macadam des grandes voies, pourraient servir également à l’érection des barricades. Mais le travail des parties maçonnées serait plus long et consommerait plus de plâtre.</p>
+        <p>Dans tous les cas, il est bien évident qu’un pareil retranchement ne serait pas bâclé dans une heure. Or, il importe de se mettre en défense le plus promptement possible. On peut parer à cette difficulté.</p>
+        <p>Le détachement chargé de construire et d’occuper la barricade doit se rendre sur le terrain avec une voiture de sacs de plâtre, plus des brouettes, des voitures à bras, des leviers, des pics, des pelles, des pioches, des marteaux, des ciseaux à froid, des truelles, des seaux, des auges. Les réquisitions de tous ces objets seront faites chez les marchands respectifs dont les adresses se trouvent dans l’Almanach du Commerce. On choisira les plus voisins du point de départ.</p>
+        <p>Une fois sur le terrain, le chef du poste fait commencer le rempart à 15 mètres environ du débouché de la rue, et au lieu de trois mètres de hauteur, ne lui en donne que la moitié.</p>
+        <p>Ce mur de quatre pieds et demi a précisément la hauteur normale pour le tir d’un fantassin debout. On peut l’escalader sans doute, mais l’opération n’est pas commode. C'est déjà un obstacle respectable. Or, ce massif n’a que 18 mètres cubes ou 1152 pavés, qui représente 24 rangées ou 6 mètres de longueur à dépaver. Cela peut se faire assez rapidement.</p>
+        <p>On achève ensuite le rempart jusqu’à trois mètres à mi-hauteur (1 m 1/2), c’est-à-dire à un mètre et demi, on laisse, de distance en distance, des trous destinés à recevoir des solives, sur lesquelles on posera des planches formant banquette pour le tir.</p>
+        <p>Le dessus du mur interne de la contre-garde doit être plan, sans inclinaison ni en dedans ni en dehors afin de ne pas donner prise au boulet qui écrêterait la partie la plus haute amincie.</p>
+        <p>Le dessus du rempart peut être incliné légèrement, afin de ménager au tir une certaine plongée. Il sera crépi et lissé à la truelle, ainsi que la paroi faisant face à la contre-garde.</p>
+        <p>Les trous pratiqués à mi-hauteur pour l’échafaudage de construction, tant au mur de la contre-garde qu’au rempart seront bouchés avec soin. Les parois du rempart et de la contre-garde qui se font face, devront être lissées à la truelle, et n’offrir aucune aspérité favorisant l’escalade.</p>
+        <p>Les rangées de pavés de chaque assise de deux murs seront posées en échiquier, ainsi que les assises elles-mêmes, par rapport l’une à l’autre.</p>
+        <p>Si le rempart dépassait en hauteur le mur de la contre-garde, les boulets démoliraient la partie saillante. Dans le cas cependant où du rempart on voudrait tirer au loin sur l’ennemi, il suffirait d’y placer des sacs à plâtre remplis de terre. Les combattants se hausseraient eux-mêmes au moyen de pavés.</p>
+        <p>Du reste, le retranchement est plutôt une barrière qu’un champ d’action. C'est aux fenêtres que se trouve le véritable poste de combat. De là, des centaines de tirailleurs peuvent diriger dans tous les sens un feu meurtrier.</p>
+        <p>L'officier chargé de défendre le débouché d’une rue, fait occuper, en arrivant, les maisons des deux angles par le tiers de son monde, les hommes les mieux armés, détache en avant quelques vedettes pour éclairer les rues et prévenir une surprise, et commence les travaux du retranchement avec les précautions et dans l’ordre indiqués plus haut.</p>
+        <p>Si une attaque survient avant l’achèvement du mur simple, d’un mètre et demi de haut, l’officier se retire avec tout son monde dans les maisons des deux angles, après avoir mis en sûreté dans une cour intérieure, voiture, chevaux, matériel de toute espèce. Il se défend par les feux des fenêtres et les pavés lancés des étages supérieurs. Les petits pavés rectangulaires des grandes voies macadamisées sont excellents pour cet usage.</p>
+        <p>L'attaque repoussée, il reprend et presse sans relâche la construction de la barricade en dépit des interruptions. Au besoin des renforts arrivent.</p>
+        <p>Cette besogne terminée, on se met en communication avec les deux barricades latérales, en perçant les gros murs qui séparent les maisons situées sur le front de défense. La même opération s’exécute simultanément, dans les maisons des deux côtés de la rue barricadée jusqu’à son extrémité, puis en retour à droite et à gauche, le long de la rue parallèle au front de défense, en arrière.</p>
+        <p>Les ouvertures sont pratiquées au premier et au dernier étage, afin d’avoir deux routes; le travail se poursuit à la fois dans quatre directions.</p>
+        <p>Tous les îlots ou pâtés de maisons appartenant aux rues barricadées, doivent être percés dans leur pourtour, de manière que les combattants puissent entrer et sortir par la rue parallèle de derrière, hors de la vue et de la portée de l’ennemi.</p>
+        <p>Dans ce travail, la garnison de chaque barricade doit se rencontrer à mi-chemin, tant sur le front de défense que dans la rue de derrière avec les deux garnisons des deux barricades voisines, de droite et de gauche.</p>
+        <figure>
+          <graphic url="https://hurlus.github.io/tei/blanqui1866_prise-armes/phalanstere.png"/>
+          <head>Plan d’un phalanstère en grande échelle</head>
+        </figure>
+        <p>Exemple de barricades sur un front de défense, reliées entre elles par le percement des maisons des îlots adjacents.</p>
+        <p>Le boulevard Sébastopol étant supposé front de défense, on a pris sur ce front une étendue d’environ 140 mètres, qui comprend les débouchés de trois rues et un peu au-delà, savoir les rues Aubry-le-Boucher, de la Reynie, et des Lombards.</p>
+        <p>Les trois rues sont fermées à leur issue sur le boulevard, par des barricades avec contre-gardes. Les dimensions et les distances sont rigoureusement exactes sur le plan.</p>
+        <p>La garnison du retranchement La Reynie, après avoir complété les constructions de la rue et simultanément même percé des maisons le long du boulevard, vers la rue Aubry-le-Boucher, à droite, et vers la rue des Lombards, à gauche.</p>
+        <p>Elle fait la même opération des deux côtés de la rue de la Reynie, en gagnant la rue des Cinq-Diamants, et parvenue à l’extrémité, tourne à gauche, vers la rue Aubry-le-Boucher, à droite vers la rue des Lombards, en continuant son travail.</p>
+        <p>De leur côté, les garnisons des barricades Aubry-le-Boucher et Lombards vont à la rencontre des travailleurs La Reynie, d’après la même méthode, et la jonction s’opère à mi-chemin.</p>
+        <p>Les maisons ont été indiquées au hasard sur le boulevard Sébastopol, mais dans les rues de La Reynie, Aubry-le-Boucher, des Lombards et des Cinq-Diamants, le nombre des maisons ou plutôt des gros murs qui les séparent a été relevé avec exactitude sur un ancien plan très détaillé.</p>
+        <p>La Garnison La Reynie aurait donc à percer, entre la moitié des maisons du boulevard, entre les deux rues latérales, douze murs dans la rue de La Reynie, cinq d’un côté, sept de l’autre, plus sept autres dans la rue des Cinq-Diamants, cinq à droite, deux à gauche.</p>
+        <p>En admettant dix maisons sur le front Sébastopol, ce qui ne donne à chacune que neuf mètres de façade, il y aurait donc en tout 24 murs à percer, six pour chaque escouade de travailleurs, puisqu’on procéderait dans quatre directions à la fois.</p>
+        <p>Du reste, si on est en nombre, on peut percer en même temps toutes les maisons de la rue barricadée et de la rue de derrière, puisqu’on a ses communications libres, en arrière du retranchement.</p>
+        <p>L'intérieur des îlots consiste généralement en cours et jardins. On pourrait ouvrir des communications à travers ces espaces, séparés d’ordinaire par de faibles murs. La chose sera même indispensable sur les points que leur importance ou leur situation spéciale exposent aux attaques les plus sérieuses.</p>
+        <p>Il sera donc utile d’organiser des compagnies d’ouvriers non-combattants, maçons, charpentiers, etc., pour exécuter les travaux conjointement avec l’infanterie.</p>
+        <p>Lorsque sur le front de défense, une maison est plus particulièrement menacée, on démolit l’escalier du rez-de-chaussée, et l’on pratique des ouvertures dans les planchers des diverses chambres du premier étage, afin de tirer sur les soldats qui envahiraient le rez-de-chaussée pour y attacher des pétards. L'eau bouillante jouerait aussi un rôle utile dans cette circonstance.</p>
+        <p>Si l’attaque embrasse une grande étendue de front, on coupe les escaliers, et on perce les planchers dans toutes les maisons exposes. En règle générale, lorsque le temps et les autres travaux de défense plus urgents le permettent, il faut détruire l’escalier du rez-de-chaussée dans toutes les maisons de l’îlot, sauf une, à l’endroit de la rue derrière le moins exposé.</p>
+        <p>La troupe enlève toujours assez facilement les barricades, à cause du petit nombre de leurs défenseurs, de l’isolement où on les abandonne, et du défaut de confiance mutuelle dû à l’absence d’organisation et de commandement. Les choses prendraient une toute autre face, avec une direction énergique et l’envoi successif de puissants renforts.</p>
+        <p>Jusqu’ici dans les luttes parisiennes, les insurgés sont toujours demeurés inactifs derrière leur semblant de barricades, oisiveté fatale chez des combattants très mal armés, sans artillerie, presque sans munitions. La bravoure seule ne suffit pas à compenser tous les désavantages matériels.</p>
+        <p>Les ouvriers Parisiens semblent ignorer leur principale force, la supériorité de l’intelligence et de l’adresse. Inépuisables en ressources, ingenieux, tenaces, initiés à toutes les puissances de l’industrie, il leur serait facile d’improviser en peu d’heures tout un matériel de guerre. Charpentiers, menuisiers, mécaniciens, fondeurs, tourneurs, maçons, ils peuvent suffire à tout, et opposer à l’ennemi cent sapeurs du génie pour un.</p>
+        <p>Mais il faut pour cela une activité incessante. Pas un seul homme ne doit rester inoccupé. Quand une besogne est finie, on en commence une autre, il y a toujours quelque chose à faire. En voici quelques-unes qui ont leur importance : Emmancher droites sur des hampes de sept pieds des lames de faux dont on a redressé au feu le crochet de la base et coupé le bourrelet formant dos, on fait tourner les hampes chez le tourneur le plus proche. Les lames de faux se trouvent en quantité chez les quincailliers.</p>
+        <p>Enlever les portes des appartements ou prendre des planches dans les magasins, les percer d’étroites meurtrières, longues de dix centimètres, les doubler d’épaisses feuilles des tôles percées de la même façon, et garnir de ces volets mobiles l’ouverture des fenêtres, le devant et les côtés des balcons pour diriger des feux de flanc dans la longueur des rues.</p>
+        <p>Amonceler des pavés à tous les étages, les plus petits au quatrième, au cinquième, aux mansardes, les plus gros au second et au troisième. En munir surtout les chambres situées au-dessus du retranchement.</p>
+        <p>Tout chef de barricade fera prendre chez les marchands les plus proches, les matériaux ou engins utiles à la défense, il mettra en réquisition les industriels, tels que tourneurs, menuisiers, serruriers, etc..., pour le confectionnement des objets que les soldats de la garnison ne seraient pas en mesure de fabriquer eux-mêmes. Il délivrera en échange des récépissés réguliers, valant factures.</p>
+        <p>Les commandants de barricades ne retiendront pas auprès d’eux les recrues qui viendraient les rejoindre. Ils les adresseront à leur supérieur immédiat, les lieutenants au capitaine, les capitaines au chef de bataillon, afin que ces hommes soient dirigés sur la réserve où s’opèrent l’organisation des nouveaux corps.</p>
+        <p>Cette règle est dictée par des motifs impérieux: 1° l’indemnité ne peut être allouée aux volontaires que sur constatation officielle de leur présence sous le drapeau, avec date précise; 2° le commandant en chef doit toujours connaître le chiffre exact des forces de chaque retranchement; 3° le bon ordre exige que l’effectif des compagnies et des bataillons demeure à peu près uniforme.</p>
+        <p>Les commandants de barricade adresseront des rapports fréquents à leurs supérieurs qui les feront tenir au quartier général.</p>
+      </div>
+      <div>
+        <head>Défense des barricades</head>
+        <p>En supposant que l’armée tienne pied et s’acharne à la lutte, il est aisé de pressentir sa méthode d’attaque contre les positions républicaines.</p>
+        <p>D'abord, des détachements plus ou moins nombreux tirant aux fenêtres pendant leur marche, s’avanceront pour enlever une barricade. S'ils sont repoussés, et peut-être même sans avoir couru cette chance, ils perceront les maisons des îlots qui font face aux insurgés, et arriveront ainsi par l’intérieur sur le front de défense.</p>
+        <p>Les deux parties n’étant plus alors séparées que par la largeur de la rue, les soldats dirigeront un feu violent sur les fenêtres en face, pour chasser les défenseurs. Il faut s’attendre aussi que la troupe, en cas de résistance un peu longue, amènera du canon à travers l’îlot quelle occupe.</p>
+        <p>Elle le mettra en batterie sous une porte cochère, vis-à-vis une des maisons du front de défense, puis ouvrant soudainement la porte, canonnera les murs à bout portant, pour jeter bas l’édifice. Il ne tombera pas aux premiers coups, il faut un certain temps.</p>
+        <p>Dès que le canon sera démasqué, les Républicains tireront sur les artilleurs par les ouvertures du rez-de-chaussée, soupiraux, portes et balcons ayant vue sur l’allée de la porte cochère. On percera rapidement des meurtrières vis-à-vis, afin de multiplier les feux.</p>
+        <p>Règle générale : il est inutile de riposter aux soldats qui fusillent des fenêtres. C'est perdre sa poudre. L'ennemi en a de reste. Elle est rare chez les insurgés. Il est donc indispensable de la ménager. On se garantira des balles au moyen des volets doublés de tôle qui garnissent les fenêtres des balcons.</p>
+        <p>La garnison, dédaignant le feu des croisées, surveillera la rue pour empêcher l’ennemi de la traverser. Dès qu’il tentera le passage, il faut le fusiller à outrance, l’accabler de pierres et de pavés, du haut des maisons. En même temps, on se tiendra prêt à la fusiller, à l’arroser d’eau bouillante par le plancher du premier étage, s’il pénétrait dans le rez-de-chaussée, malgré le barricadement des portes et des fenêtres. Durant le combat, veiller avec soin à ce qu’il ne puisse attacher des pétards. Ne pas ménager les pavés, les bouteilles pleines d’eau, même les meubles, à défaut d’autres projectiles. Oter les volets en tôle des hauts étages, pour lancer les pierres, en évitant les balles d’en face.</p>
+        <p>Quant au retranchement, il ne sera pas facile d’en avoir raison. Le boulet ne pourrait atteindre le rempart que par le tir à ricochet, et le faible intervalle de six mètres, qui le sépare de la contre-garde, rendrait ce tir inefficace.</p>
+        <p>L'obus sera également impuissant. il viendra faire explosion en avant ou en arrière ou dans l’intervalle des deux ouvrages, et ses éclats écorcheront le plâtre des murailles, rien de plus. Car il ne trouvera là personne. La barricade sera défendue par les fenêtres.</p>
+        <figure>
+          <graphic url="https://hurlus.github.io/tei/blanqui1866_prise-armes/secteur.png"/>
+          <head>Plan du secteur envisagé</head>
+        </figure>
+        <p>L'assaut serait très meurtrier pour les assaillants. Il faudrait essuyer la fusillade jusqu’au pied du glacis, et à partir de ce point, braver un péril plus redoutable encore, il ne serait possible de descendre du mur interne, puis de franchir le rempart qu’avec des échelles de huit pieds, bagage incommode, et sous une grêle de pavés et de balles.</p>
+        <p>Si, en construisant la barricade, on a pu enfermer une ou deux portes cochères, dans l’intervalle de six mètres, entre le rempart et sa contregarde, des pelotons de faucheurs massés derrière les battants de la porte qui s’ouvrira tout à coup, se jetteront sur les soldats qui seraient descendus de la contre-garde et les mettront en pièces dans cette souricière car leurs baïonnettes ne seront pas de longueur contre leurs pertuisanes.</p>
+        <p>S'il n’existe point de porte cochère, les faucheurs se masseront au rez-de-chaussée afin de s’élancer par les portes d’allées ainsi que par les fenêtres basses. Au préalable, le commandant aura fait cesser la pluie de balles et de pavés, ce que la troupe pourra prendre pour un signe de défaite, méprise qui lui deviendrait fatale.</p>
+        <p>Si l’ennemi est rebuté par la longue résistance d’une ou de plusieurs barricades, il recourra peut-être à l’incendie des maisons par les obus. Eteindre le feu sera difficile. Si on n’y réussit pas, la retraite deviendra inévitable. Il faudra se replier de maison en maison sur une deuxième ligne de défense. Les troupes ne joueraient pas longtemps ce jeu-là. On ne fera pas de Paris une seconde Saragosse.</p>
+        <p>La lutte des barricades fournira au commandant en chef l’occasion de prendre à son tour l’offensive et de jeter des colonnes d’attaque sur les flancs et les derrières des assaillants.</p>
+        <p>Les blessés seront évacués sur les ambulances, désignées aux chefs de corps; les morts seront transportés aux hôpitaux.</p>
+      </div>
+      <div>
+        <head>Des mines</head>
+        <p>Les troupes pourraient avoir recours à la mine pour forcer un front de défense trop tenace. C'est un moyen puissant, mais assez peu probable. L'ennemi n’en usera certainement pas au début. Ce moyen est long et dénote d’ailleurs une certaine timidité, qui ébranlerait l’esprit du soldat en lui montrant l’insurrection très redoutable.</p>
+        <p>Cependant il se peut que la nécessité fasse passer par-dessus cet inconvénient. Dans ce cas, le système d’égouts prend une grande importance. Dans toutes les rues où il s’en trouve, ils deviendraient le point de départ des galeries de mines.</p>
+        <p>L'ennemi a un plan détaillé des égouts de Paris. Ils sont de plusieurs dimensions. La carte des plus grands, dit égouts collecteurs, est connue de tout le monde. On la trouve dans le second volume de Paris-Guide. Mais ceux-là ne forment que le très petit nombre. La masse des canaux moyens et des rigoles demeure inconnue. Il serait utile de s’en enquérir auprès des ouvriers égoutiers.</p>
+        <p>Pendant le combat, il sera indispensable de faire reconnaître ces voies souterraines, par de nombreux détachements, auxquels on tracera un itinéraire. Ils seront munis d’échelles pour remonter à volonté par tous les regards.</p>
+        <p>On barricadera les embranchements qui aboutissent aux collecteurs eux-mêmes, d’après un plan réglé sur celui des opérations à ciel ouvert.</p>
+        <p>Toute rue servant de défense peut être traversée par une galerie de mine, il faudra donc s’assurer si elle recouvre un égout, et dans ce cas, occuper l’égout par des barricades, lorsque le front de défense sera attaqué avec vigueur par l’ennemi.</p>
+        <p>Des sentinelles le parcourront à pas de loup, posant l’oreille contre la paroi du côté des troupes, afin d’entendre le bruit de la sape et avertir aussitôt. Du reste, l’ennemi ne tenterait de pénétrer dans l’égout par la sape que s’il ne pouvait y arriver par la voie naturelle des embranchements, sa rencontre dans ses détours souterrains serait donc l’indice de ses projets de mine. Ces rencontres viendraient accroître les difficultés de l’opération et la rendre moins probable.</p>
+        <p>Dans les rues sans égouts, s’il en existe, la galerie serait creusée directement, à partir d’une cave, pour traverser la rue jusqu’à la maison vis-à-vis. Ce travail serait plus difficile à découvrir et à surprendre que celui des égouts. Des sentinelles devront coller l’oreille au mur de la cave bordant la rue, afin d’écouter le bruit des mineurs. La garnison, prévenue, les attendrait à l’issue pour leur faire un mauvais parti.</p>
+        <p>Somme toute, la guerre de mine est peu probable; celle d’égout l’est davantage.</p>
+      </div>
+      <div>
+        <head>Des habitants des maisons occupées</head>
+        <p>Les habitants des maisons occupées par les républicains seront invités dans leur propre intérêt, à se retirer avec leur numéraire, leurs valeurs quelconques et leur argenterie, après avoir fermé tous les meubles. On leur rappellera, d’après l’exemple du 2 décembre, que les soldats de Bonaparte, en pénétrant dans toute maison d’où il est parti un coup de feu, égorgent sans distinction hommes et femmes, vieillards au lit et enfants à la mamelle.</p>
+        <p>Si les vieillards, les femmes et les enfants se retirent, les hommes devront les suivre. On ne les laissera pas demeurer seuls au logis.</p>
+        <p>Lorsqu’on aura percé les murs de toutes les maisons d’un îlot, on pourra faire retirer les familles qui habitent le front de défense, dans la partie de derrière de l’îlot.</p>
+        <p>Dans le cas où, par suite de communications interceptées, les vivres viendraient à leur manquer, les Républicains leur en donneront, en prévenant du fait les commissaires de bataillon pour qu’ils approvisionnent en conséquence.</p>
+        <p>Il faut encore le répéter: la condition <emph>sine qua non</emph> de la victoire, c’est l’organisation, l’ensemble, l’ordre et la discipline. Il est douteux que les troupes résistent longtemps à une insurrection organisée et agissant avec tout l’appareil d’une force gouvernementale. L'hésitation les gagnera, puis le trouble, puis le découragement, enfin la débâcle.</p>
+      </div>
+
+    </body>
+  </text>
+</TEI>

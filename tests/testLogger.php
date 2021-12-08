@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 include_once(dirname(__DIR__) . '/php/autoload.php');
 
-use Oeuvres\Teinte\Logger;
+use Oeuvres\Kit\Logger;
 use Psr\Log\LogLevel;
 
 $logger = new Logger(LogLevel::ERROR);
