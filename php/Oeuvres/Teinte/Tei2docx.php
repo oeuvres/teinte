@@ -12,32 +12,41 @@ declare(strict_types=1);
 namespace Oeuvres\Teinte;
 
 use Exception, ZipArchive;
+use Oeuvres\Kit\File;
 use Oeuvres\Kit\Xml;
 use Psr\Log\LoggerInterface;
 
 
 /**
- * Class adhoc pour générer un docx à partir d’un XML/TEI
+ * Output a MS.Word conmformat docx from TEI.
  * code convention https://www.php-fig.org/psr/psr-12/
  */
 
-set_time_limit(-1);
-Docx::init();
-class Docx
+class Docx extends Tei2
 {
-    private static LoggerInterface $logger;
-    private static $xslDir;
-
-    public static function init()
+    private string $template;
+    /**
+     * Set a docx file as a template,
+     * usually the same for a collection of tei docs.
+     */
+    function template(?string $template):string
     {
-        self::$xslDir = dirname(dirname(dirname(__DIR__))) . "/xsl";
+        if (!$template && $this->template) {
+            return $this->template;
+        }
+        if (!$template) {
+            $template = self::$xslDir . '/docx/template.docx';
+        }
+        File::readable($template); // check if file exists
+        // test if it’s a zip now ?
+    }
+    function toDom(\DOMDocument $dom):?\DOMDocument
+    {
+        $this->logger->error(__METHOD__." dom export not relevant");
+        return null;
     }
 
-    public static function setLogger(LoggerInterface $logger) {
-        self::$logger = $logger;
-    }
-
-    static function export($srcFile, $dstFile, $template = null)
+    function toUri($dstFile, $template = null)
     {
         if (!$template) $template = self::$xslDir . '/docx/template.docx';
         if (!file_exists($template)) {
@@ -145,7 +154,7 @@ class Docx
         header('Pragma: public');
 
         $dstfile = tempnam(dirname($tmp['tmp_name']), "Reteint");
-        self::export($srcfile, $dstfile);
+        // self::export($srcfile, $dstfile);
         header('Content-Length: ' . filesize($dstfile));
         ob_clean();
         flush();

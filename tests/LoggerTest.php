@@ -7,11 +7,12 @@ include_once(dirname(__DIR__) . '/php/autoload.php');
 use Oeuvres\Kit\Logger;
 use Psr\Log\LogLevel;
 
+
 $logger = new Logger(LogLevel::ERROR);
 echo "LogLevel=",LogLevel::ERROR,"\n";
 logs();
 echo "\n\nLogLevel=",LogLevel::DEBUG,"\n";
-$logger->setVerbosity(LogLevel::DEBUG);
+$logger->setLevel(LogLevel::DEBUG);
 logs();
 
 

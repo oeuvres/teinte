@@ -8,10 +8,3 @@ spl_autoload_register(function ($class) {
     }
     else throw new Exception("Impossible to load " . $file);
 });
-// ensure timezone, not a good place, but not found yet better
-if(ini_get('date.timezone')) {
-    date_default_timezone_set(ini_get('date.timezone'));
-}
-else {
-    date_default_timezone_set("Europe/Paris");
-}

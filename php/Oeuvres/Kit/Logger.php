@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Oeuvres\Kit;
 
+use \DateTime;
 use Psr\Log\AbstractLogger;
 use Psr\Log\InvalidArgumentException;
 use Psr\Log\LogLevel;
@@ -23,8 +24,8 @@ use Psr\Log\LogLevel;
  */
 class Logger extends AbstractLogger
 {
-    private  $ERR = STDERR;
-    private  $OUT = STDOUT;
+    /** Default prefix for message */
+    private $prefix; 
 
     /** Logging levels */
     private static $levelMapInt = [
@@ -45,12 +46,22 @@ class Logger extends AbstractLogger
     public static function init()
     {
         self::$levelMapString = array_flip(self::$levelMapInt);
+        // ensure timezone ()
+        if(ini_get('date.timezone')) {
+            date_default_timezone_set(ini_get('date.timezone'));
+        }
+        else {
+            date_default_timezone_set("Europe/Paris");
+        }
     }
 
-    public function __construct(string $level = LogLevel::ERROR)
-    {
+    public function __construct(
+        string $level = LogLevel::ERROR, 
+        ?string $prefix = "[{level}] {time}\t"
+    ) {
         self::checkLevel($level);
         $this->verbosity = self::$levelMapString[$level];
+        $this->prefix = $prefix;
     }
 
     private static function checkLevel(string $level)
@@ -102,8 +113,14 @@ class Logger extends AbstractLogger
         if ($levelInt > self::$levelMapString[LogLevel::ERROR]) {
             $out = STDOUT;
         }
-        fwrite($out, "[". $level ."] "
-            . $this->interpolate($message, $context) . "\n");
+        $date = new DateTime();
+        $context['level'] = $level;
+        $context['datetime'] = $date->format('Y-m-d H:i:s');
+        $context['time'] = $date->format('H:i:s');
+        fwrite(
+            $out, 
+            $this->interpolate($this->prefix.$message, $context) . "\n"
+        );
         return true;
     }
 
@@ -137,8 +154,6 @@ class Logger extends AbstractLogger
     /**
      * TO REWRITE
      * Custom error handler
-     * Especially used for xsl:message coming from transform()
-     * To avoid Apache time limit, php could output some bytes during long transformations
      */
     static function err(
         $errno, 
@@ -147,7 +162,6 @@ class Logger extends AbstractLogger
         $errline=null, 
         $errcontext=null
     ) {
-        $errstr=preg_replace("/XSLTProcessor::transform[^:]*:/", "", $errstr, -1, $count);
         /** 
         if ($count) { // is an XSLT error or an XSLT message, reformat here
             if(strpos($errstr, 'error')!== false) {

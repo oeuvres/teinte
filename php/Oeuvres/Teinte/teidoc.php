@@ -36,7 +36,7 @@ class Teidoc implements LoggerAwareInterface
     private $filemtime;
     /** file size */
     private $filesize;
-    /** A file where  */
+    /** Somewhere to log in  */
     private LoggerInterface $logger;
     /** formats */
     public static $ext = array(
@@ -55,13 +55,11 @@ class Teidoc implements LoggerAwareInterface
     {
         if ($logger == null) $logger = new NullLogger();
         $this->setLogger($logger);
-        $this->xpath();
     }
 
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
-        Xml::setLogger($this->logger);
     }
 
     public function isEmpty()

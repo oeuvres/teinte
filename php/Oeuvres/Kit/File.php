@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Oeuvres\Kit;
 
-use Exception, ZipArchive;
+use Exception, InvalidArgumentException, ZipArchive;
 
 /**
  * code convention https://www.php-fig.org/psr/psr-12/
@@ -28,6 +28,30 @@ class File
         return $dir . DIRECTORY_SEPARATOR;
     }
 
+    /**
+     * Check existence of a file to read,
+     * and send informative Exception if it’s not OK.
+     */
+    public static function readable(string $file, ?string $source = null):bool
+    {
+        if ($source) $source = "\n" . $source;
+        if (!file_exists($file)) {
+            throw new InvalidArgumentException(
+                $source."\n    \"\033[91m$file\033[0m\" path not found\n"
+            );
+        }
+        if (!is_file($file)) {
+            throw new InvalidArgumentException(
+                $source."\n    \"\033[91m$file\033[0m\" not a file \n"
+            );
+        }
+        if (!is_readable($file)) {
+            throw new InvalidArgumentException(
+                $source."\n    \"\033[91m$file\033[0m\" file not readable (but exists)\n"
+            );
+        }
+        return true;
+    }
     /**
      * A safe mkdir dealing with rights
      */

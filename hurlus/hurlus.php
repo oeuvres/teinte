@@ -9,6 +9,10 @@ include_once(dirname(dirname(__FILE__)) . '/latex/latex.php');
 if (isset($argv[0]) && realpath($argv[0]) == realpath(__FILE__)) Hurlus::cli(); //direct CLI
 class Hurlus
 {
+    private static function init()
+    {
+        
+    }
 
     public static function pdf($teifile, $dstdir = '')
     {

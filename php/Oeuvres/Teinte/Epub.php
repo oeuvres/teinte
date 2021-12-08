@@ -19,14 +19,6 @@ use Psr\Log\LoggerInterface;
  * Transform TEI in epub
  * code convention https://www.php-fig.org/psr/psr-12/
  */
-// cli usage
-set_time_limit(-1);
-// file is include do nothing
-if (realpath($_SERVER['SCRIPT_FILENAME']) != realpath(__FILE__));
-// used as cli
-else if (php_sapi_name() == "cli") {
-    Epub::cli();
-}
 
 class Epub implements LoggerAwareInterface
 {
@@ -42,8 +34,6 @@ class Epub implements LoggerAwareInterface
     private $dom;
     /** Xpath processor */
     private $xpath;
-    /** Log level, should be static for the xsl callback */
-    private static $debug;
     /** time counter, should be static for the xsl callback */
     private static $time;
     /** Different predefined sizes for covers  */

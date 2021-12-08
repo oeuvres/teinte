@@ -7,7 +7,7 @@
  * BSD-3-Clause https://opensource.org/licenses/BSD-3-Clause
  */
 
-declare(strict_types=1);
+// declare(strict_types=1);
 
 namespace Oeuvres\Kit;
 
@@ -33,15 +33,15 @@ class Xml
           LIBXML_NOENT 
         | LIBXML_NONET 
         | LIBXML_NSCLEAN 
-        | LIBXML_NOCDATA 
-        | LIBXML_NOWARNING  // no warn for <?xml-model
+        | LIBXML_NOCDATA
+        // | LIBXML_NOWARNING  // no warn for <?xml-model
     ;
     private static LoggerInterface $logger;
 
     public static function init()
     {
         self::$logger = new NullLogger();
-        libxml_use_internal_errors(true);
+        libxml_use_internal_errors(true); // keep XML error for this process
     }
 
     public static function setLogger(LoggerInterface $logger)
@@ -52,15 +52,14 @@ class Xml
     /**
      * Get a DOM document with best options from a file path
      */
-    public static function dom(string $srcFile): DOMDocument
+    public static function dom(string $srcFile): ?DOMDocument
     {
         $dom = self::domSkel();
         // $dom->recover=true; // no recover, display errors
-        if (!$dom->load($srcFile, self::LIBXML_OPTIONS)) {
-            self::logLibxml(libxml_get_errors());
-            // do not send exception for a dom error, go next
-            return null;
-        }
+        // suspend error reporting
+        $ret = @$dom->load($srcFile, self::LIBXML_OPTIONS);
+        self::logLibxml(libxml_get_errors());
+        if (!$ret) return null;
         $dom->documentURI = realpath($srcFile);
         return $dom;
     }
@@ -138,7 +137,7 @@ class Xml
     /**
      * xsl:tranform, result as an XML string
      */
-    public static function transformToXML(
+    public static function transformToXml(
         string $xslfile, 
         DOMDocument $dom, 
         array $pars = null
@@ -153,7 +152,7 @@ class Xml
     /**
      * xsl:tranform, result to a file
      */
-    public static function transformToURI(
+    public static function transformToUri(
         string $xslfile, 
         DOMDocument $dom,
         string $uri,
@@ -180,10 +179,7 @@ class Xml
         $key = realpath($xslFile);
         // cache compiled xsl
         if (!isset(self::$transcache[$key])) {
-            if (!file_exists($xslFile)) {
-                throw new Exception("XSLT, file not found " . $xslFile."\n");
-            }
-
+            File::readable($xslFile, __METHOD__."()");
             $trans = new XSLTProcessor();
             $trans->registerPHPFunctions();
             // allow generation of <xsl:document>
@@ -229,12 +225,12 @@ class Xml
         }
         // return XML as a string
         else if ($dst === '') {
-            $ret =$trans->transformToXML($dom);
+            $ret =$trans->transformToXml($dom);
         }
         // write to uri
         else {
             File::mkdir(dirname($dst));
-            $trans->transformToURI($dom, $dst);
+            $trans->transformToUri($dom, $dst);
             $ret = $dst;
         }
         // here we should have XSL message only
