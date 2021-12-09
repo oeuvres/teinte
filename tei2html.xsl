@@ -14,10 +14,10 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
 XSLT 1.0 is compatible browser, PHP, Python, Java…
 -->
 <xsl:transform version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" xmlns:tei="http://www.tei-c.org/ns/1.0" exclude-result-prefixes="tei">
-  <xsl:include href="xsl/flow.xsl"/>
-  <xsl:include href="xsl/notes.xsl"/>
-  <xsl:include href="xsl/teiHeader.xsl"/>
-  <xsl:include href="xsl/toc.xsl"/>
+  <xsl:include href="xsl/html/flow.xsl"/>
+  <xsl:include href="xsl/html/notes.xsl"/>
+  <xsl:include href="xsl/html/teiHeader.xsl"/>
+  <xsl:include href="xsl/html/toc.xsl"/>
   <!-- Name of this xsl  -->
   <xsl:param name="this">tei2html.xsl</xsl:param>
   <!-- used as a body class -->
@@ -36,92 +36,70 @@ XSLT 1.0 is compatible browser, PHP, Python, Java…
       <xsl:text> </xsl:text>
       <xsl:value-of select="$folder"/>
     </xsl:variable>
-    <xsl:choose>
-      <!-- Just a div element -->
-      <xsl:when test="$root= $article">
-        <article>
-          <xsl:call-template name="att-lang"/>
-          <xsl:if test="normalize-space($bodyclass)">
-            <xsl:attribute name="class">
-              <xsl:value-of select="normalize-space($bodyclass)"/>
-            </xsl:attribute>
-          </xsl:if>
-          <xsl:apply-templates/>
-        </article>
-      </xsl:when>
-      <!-- Complete doc -->
-      <xsl:otherwise>
-        <!--  browser will not like doctype -->
-        <xsl:if test="not(starts-with($theme, $xslbase))">
-          <xsl:text disable-output-escaping="yes">&lt;!DOCTYPE html></xsl:text>
-          <xsl:value-of select="$lf"/>
-        </xsl:if>
-        <html>
-          <xsl:call-template name="att-lang"/>
-          <head>
-            <meta charset="UTF-8"/>
-            <link rel="preconnect" href="https://fonts.googleapis.com"/>
-            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin"/>
-            <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;0,900;1,300;1,700&amp;display=swap" rel="stylesheet"/>
-            <meta name="modified" content="{$date}"/>
-            <!-- déclaration classes css locale (permettre la surcharge si généralisation) -->
-            <!-- à travailler
-            <xsl:apply-templates select="/*/tei:teiHeader/tei:encodingDesc/tei:tagsDecl"/>
-            -->
-            <link rel="stylesheet" type="text/css" href="{$theme}teinte.css"/>
-            <link rel="stylesheet" type="text/css" href="{$theme}layout.css"/>
-            <style>
+    <html>
+      <xsl:call-template name="att-lang"/>
+      <head>
+        <meta charset="UTF-8"/>
+        <link rel="preconnect" href="https://fonts.googleapis.com"/>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin"/>
+        <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;0,900;1,300;1,700&amp;display=swap" rel="stylesheet"/>
+        <meta name="modified" content="{$date}"/>
+        <!-- déclaration classes css locale (permettre la surcharge si généralisation) -->
+        <!-- à travailler
+        <xsl:apply-templates select="/*/tei:teiHeader/tei:encodingDesc/tei:tagsDecl"/>
+        -->
+        <link rel="stylesheet" type="text/css" href="{$theme}teinte.css"/>
+        <link rel="stylesheet" type="text/css" href="{$theme}layout.css"/>
+        <style>
 .name {background: rgba(192, 192, 192, 0.5)}
 .persName {background: rgba(255, 255, 0, 0.5)}
 .placeName {background: rgba(0, 0, 128, 0.3)}
-            </style>
-          </head>
-          <body>
-            <xsl:if test="normalize-space($bodyclass)">
-              <xsl:attribute name="class">
-                <xsl:value-of select="normalize-space($bodyclass)"/>
-              </xsl:attribute>
-            </xsl:if>
-            <div class="container" id="viewport">
-              <div id="text" class="text">
-                <xsl:apply-templates/>
-              </div>
-              <aside id="sidebar">
-                <nav>
-                  <header>
-                    <a>
-                      <xsl:attribute name="href">
-                        <xsl:for-each select="/*/tei:text">
-                          <xsl:call-template name="href"/>
-                        </xsl:for-each>
-                      </xsl:attribute>
-                      <xsl:if test="$byline">
-                        <xsl:copy-of select="$byline"/>
-                        <xsl:text> </xsl:text>
-                      </xsl:if>
-                      <xsl:if test="$docdate != ''">
-                        <span class="docDate">
-                          <xsl:text> (</xsl:text>
-                          <xsl:value-of select="$docdate"/>
-                          <xsl:text>)</xsl:text>
-                        </span>
-                      </xsl:if>
-                      <br/>
-                      <xsl:copy-of select="$doctitle"/>
-                    </a>
-                  </header>
-                  <xsl:call-template name="toc"/>
-                </nav>
-              </aside>
-            </div>
-            <xsl:if test="count(key('prettify', 1))">
-              <script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js">//</script>
-            </xsl:if>
-            <script type="text/javascript" charset="utf-8" src="{$theme}Tree.js">//</script>
-          </body>
-        </html>
-      </xsl:otherwise>
-    </xsl:choose>
+        </style>
+      </head>
+      <body>
+        <xsl:if test="normalize-space($bodyclass)">
+          <xsl:attribute name="class">
+            <xsl:value-of select="normalize-space($bodyclass)"/>
+          </xsl:attribute>
+        </xsl:if>
+        <div class="container" id="viewport">
+          <div id="text" class="text">
+            <xsl:apply-templates/>
+          </div>
+          <aside id="sidebar">
+            <nav>
+              <header>
+                <a>
+                  <xsl:attribute name="href">
+                    <xsl:for-each select="/*/tei:text">
+                      <xsl:call-template name="href"/>
+                    </xsl:for-each>
+                  </xsl:attribute>
+                  <xsl:if test="$byline">
+                    <xsl:copy-of select="$byline"/>
+                    <xsl:text> </xsl:text>
+                  </xsl:if>
+                  <xsl:if test="$docdate != ''">
+                    <span class="docDate">
+                      <xsl:text> (</xsl:text>
+                      <xsl:value-of select="$docdate"/>
+                      <xsl:text>)</xsl:text>
+                    </span>
+                  </xsl:if>
+                  <br/>
+                  <xsl:copy-of select="$doctitle"/>
+                </a>
+              </header>
+              <xsl:call-template name="toc"/>
+            </nav>
+          </aside>
+        </div>
+        <xsl:if test="count(key('prettify', 1))">
+          <script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js">//</script>
+        </xsl:if>
+        <script type="text/javascript" charset="utf-8" src="{$theme}Tree.js">//</script>
+      </body>
+    </html>
   </xsl:template>
   <!-- Metadata maybe controlled with this view -->
   <xsl:template match="tei:index">

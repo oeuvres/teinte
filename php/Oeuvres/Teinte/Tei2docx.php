@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Part of Teinte https://github.com/oeuvres/teinte
  * Copyright (c) 2020 frederic.glorieux@fictif.org
@@ -11,25 +12,30 @@ declare(strict_types=1);
 
 namespace Oeuvres\Teinte;
 
-use Exception, ZipArchive;
+use Exception, DOMDocument, ZipArchive;
 use Oeuvres\Kit\File;
 use Oeuvres\Kit\Xml;
 use Psr\Log\LoggerInterface;
-
 
 /**
  * Output a MS.Word conmformat docx from TEI.
  * code convention https://www.php-fig.org/psr/psr-12/
  */
 
-class Docx extends Tei2
+class Tei2docx extends Tei2
 {
-    private string $template;
+    /** A docx file used as a template */
+    private string $template = "";
+    protected $ext = '.docx';
+    protected $name = 'docx';
+    protected $label = 'Microsoft.Word 2007 format';
+
+
     /**
      * Set a docx file as a template,
      * usually the same for a collection of tei docs.
      */
-    function template(?string $template):string
+    function template(?string $template = null):string
     {
         if (!$template && $this->template) {
             return $this->template;
@@ -39,22 +45,36 @@ class Docx extends Tei2
         }
         File::readable($template); // check if file exists
         // test if it’s a zip now ?
+        $this->template = $template;
+        return $this->template;
     }
-    function toDom(\DOMDocument $dom):?\DOMDocument
+
+    /**
+     * @ override
+     */
+    function toDoc(DOMDocument $dom):?\DOMDocument
+    {
+        $this->logger->error(__METHOD__." dom export not relevant");
+        return null;
+    }
+    /**
+     * @ override
+     */
+    function toXml(DOMDocument $dom):?string
     {
         $this->logger->error(__METHOD__." dom export not relevant");
         return null;
     }
 
-    function toUri($dstFile, $template = null)
+    /**
+     * @ override
+     */
+    function toUri($dom, $dstFile)
     {
-        if (!$template) $template = self::$xslDir . '/docx/template.docx';
-        if (!file_exists($template)) {
-            throw new Exception("Template not found: " . $template);
-        }
-        $teidoc = new Teidoc(self::$logger);
-        $dom = $teidoc->load($srcFile);
-        copy($template, $dstFile);
+        $this->logger->info("Tei2\033[92m" . $this->name() ." \033[0m $dstFile");
+        File::writable($dstFile);
+        $name = pathinfo($dom->documentURI, PATHINFO_FILENAME);
+        copy($this->template(), $dstFile);
         $zip = new ZipArchive();
         $zip->open($dstFile);
 
@@ -66,22 +86,21 @@ class Docx extends Tei2
         $templPath = tempnam(sys_get_temp_dir(), "teinte_docx_");
         $templPath = "file:///" 
             . str_replace(DIRECTORY_SEPARATOR, "/", $templPath);
+        // $this->logger->debug(__METHOD__.' $templPath='.$templPath);
 
-        $xml = Xml::transformDoc(
+        $xml = Xml::transformToXml(
             self::$xslDir . '/docx/tei2docx-comments.xsl', 
             $dom,
-            null, 
-            array('filename' => $teidoc->name())
         );
         $zip->addFromString('word/comments.xml', $xml);
 
+        // generation of word/document.xml needs some links
+        // from template, espacially for head and foot page.
         file_put_contents($templPath, $zip->getFromName('word/document.xml'));
-        $xml = Xml::transformDoc(
+        $xml = Xml::transformToXml(
             self::$xslDir . '/docx/tei2docx.xsl',
             $dom,
-            null,
             array(
-                'filename' => $teidoc->name(),
                 'templPath' => $templPath,
             )
         );
@@ -92,24 +111,24 @@ class Docx extends Tei2
         );
         $zip->addFromString('word/document.xml', $xml);
 
-        file_put_contents($templPath, $zip->getFromName('word/_rels/document.xml.rels'));
-        $xml = Xml::transformDoc(
+        // keep some relations in footnotes from temèplate
+        file_put_contents(
+            $templPath, 
+            $zip->getFromName('word/_rels/document.xml.rels')
+        );
+        $xml = Xml::transformToXml(
             self::$xslDir . '/docx/tei2docx-rels.xsl',
             $dom,
-            null,
             array(
-                'filename' => $teidoc->name(),
                 'templPath' => $templPath,
             )
         );
         $zip->addFromString('word/_rels/document.xml.rels', $xml);
 
 
-        $xml = Xml::transformDoc(
+        $xml = Xml::transformToXml(
             self::$xslDir . '/docx/tei2docx-fn.xsl',
             $dom,
-            null, 
-            array('filename' => $teidoc->name())
         );
         $xml = preg_replace(
             array_keys($re_clean), 
@@ -119,15 +138,17 @@ class Docx extends Tei2
         $zip->addFromString('word/footnotes.xml', $xml);
 
 
-        $xml = Xml::transformDoc(
+        $xml = Xml::transformToXml(
             self::$xslDir . '/docx/tei2docx-fnrels.xsl',
             $dom,
-            null,
-            array('filename' => $teidoc->name())
         );
         $zip->addFromString('word/_rels/footnotes.xml.rels', $xml);
-
-        $zip->close();
+        // 
+        if (!$zip->close()) {
+            $this->logger->error(
+                "Tei2" . $this->name() ." ERROR writing \033[91m$dstFile\033[0m"
+            );
+        }
     }
 
 
@@ -164,3 +185,5 @@ class Docx extends Tei2
     }
 
 }
+
+// EOF

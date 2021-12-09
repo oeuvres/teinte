@@ -32,6 +32,8 @@ abstract class Tei2 implements LoggerAwareInterface
     protected $label;
     /** Some description */
     protected $desc;
+    /** A mime type for serving */
+    protected $mime;
     /** Somewhere to log in  */
     protected LoggerInterface $logger;
 
@@ -79,7 +81,7 @@ abstract class Tei2 implements LoggerAwareInterface
     public function dstFile(string $srcFile, ?string $dstDir = null):string
     {
         if ($this->ext == null) {
-            throw new InvalidArgumentException(__CLASS__ . "::EXT undefined" );
+            throw new InvalidArgumentException(static::class . "->ext undefined" );
         }
         if(!$dstDir) {
             $dstDir = dirname($srcFile) . DIRECTORY_SEPARATOR;
@@ -100,7 +102,7 @@ abstract class Tei2 implements LoggerAwareInterface
      * Export transformation as an XML string
      * (maybe not relevant for aggregated formats: docx, epub, site…)
      */
-    abstract public function toXml(DOMDocument $dom):string;
+    abstract public function toXml(DOMDocument $dom):?string;
     /**
      * Export transformation as a Dom
      * (maybe not relevant for aggregated formats: docx, epub, site…)

@@ -29,6 +29,22 @@ class File
     }
 
     /**
+     * Check if a file is writable and inform why not
+     */
+    public static function writable(string $file, ?string $source = null):bool
+    {
+        self::readable($file, $source);
+        if ($source) $source = "\n" . $source;
+        if (!is_writable($file)) {
+            throw new InvalidArgumentException(
+                $source."\n    \"\033[91m$file\033[0m\" file not writable\n"
+            );
+        }
+        return true;
+    }
+
+
+    /**
      * Check existence of a file to read,
      * and send informative Exception if it’s not OK.
      */

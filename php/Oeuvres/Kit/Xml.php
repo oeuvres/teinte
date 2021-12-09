@@ -74,10 +74,11 @@ class Xml
             $message .= "  " . ($error->line) . ":" . ($error->column) . " \t";
             $message .= "err:" . $error->code . " — ";
             $message .= trim($error->message);
+            /* xslt error could be other than message
             if ($error->code == 1) { // <xsl:message>
                 self::$logger->info("<xsl:message> " . trim($error->message));
-            }
-            else if ($error->level == LIBXML_ERR_WARNING) {
+            } */
+            if ($error->level == LIBXML_ERR_WARNING) {
                 self::$logger->warning($message);
             }
             else if ($error->level == LIBXML_ERR_ERROR) {

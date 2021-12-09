@@ -31,7 +31,7 @@ abstract class Tei2simple extends Tei2
     }
     public function toUri(DOMDocument $dom, string $dstFile)
     {
-        $this->logger->debug(__METHOD__." $dstFile");
+        $this->logger->info("Tei2\033[92m" . $this->name() ." \033[0m $dstFile");
         return Xml::transformToUri(
             self::$xslDir.$this->xsl,
             $dom,

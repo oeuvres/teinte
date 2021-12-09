@@ -18,7 +18,7 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
   xmlns:tei="http://www.tei-c.org/ns/1.0"
   exclude-result-prefixes="tei" 
   >
-  <xsl:import href="common.xsl"/>
+  <xsl:import href="../common.xsl"/>
   <xsl:strip-space elements="tei:TEI tei:TEI.2 tei:body tei:castList  tei:div tei:div1 tei:div2  tei:docDate tei:docImprint tei:docTitle tei:fileDesc tei:front tei:group tei:index tei:listWit tei:publicationStmp tei:publicationStmt tei:sourceDesc tei:SourceDesc tei:sources tei:text tei:teiHeader tei:text tei:titleStmt"/>
   <!-- Generate an absolute table of sections -->
   <xsl:template name="toc">

@@ -57,7 +57,7 @@ class Logger extends AbstractLogger
 
     public function __construct(
         string $level = LogLevel::ERROR, 
-        ?string $prefix = "[{level}] {time}\t"
+        ?string $prefix = "[{level}] {time} "
     ) {
         self::checkLevel($level);
         $this->verbosity = self::$levelMapString[$level];
