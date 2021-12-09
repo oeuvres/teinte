@@ -20,26 +20,30 @@ use Oeuvres\Kit\File;
 /**
  * A Teidoc exporter.
  */
-abstract class Tei2 implements LoggerAwareInterface
+abstract class AbstractTei2 implements LoggerAwareInterface
 {
     /** Where is the xsl pack, set in one place, do not repeat */
     static protected $xslDir;
-    /** output extension */
-    protected $ext;
+    /** Do init at startup */
+    static private $init; 
     /** Should be the same as in the class name Tei2{NAME} */
-    protected $name;
+    const NAME = null;
+    /** Prefered extension for exported files */
+    const EXT = null;
     /** A more human name for this exporter */
-    protected $label;
+    const LABEL = null;
     /** Some description */
-    protected $desc;
+    const DESC = null;
     /** A mime type for serving */
-    protected $mime;
+    const MIME = null;
     /** Somewhere to log in  */
     protected LoggerInterface $logger;
 
     public static function init()
     {
-        // TO THINK, good way to configure with packages
+        if (self::$init) return;
+        self::$init = true;
+        // TO THINK, good way to configure xsl pack
         self::$xslDir = dirname(dirname(dirname(__DIR__))) . "/xsl/";
     }
 
@@ -48,6 +52,9 @@ abstract class Tei2 implements LoggerAwareInterface
      */
     public function __construct(?LoggerInterface $logger = null)
     {
+        // check the required constant for newly instantiate format
+        assert(static::NAME != null, static::class . "::NAME must be defined");
+        assert( static::EXT != null, static::class . "::EXT must be defined as prefered file extension for this format");
         if ($logger == null) $logger = new NullLogger();
         $this->setLogger($logger);
     }
@@ -58,31 +65,8 @@ abstract class Tei2 implements LoggerAwareInterface
         $this->logger = $logger;
     }
 
-    public function ext():string
-    {
-        return $this->ext;
-    }
-
-    public function name():string
-    {
-        return $this->name;
-    }
-
-    public function label():string
-    {
-        return $this->label;
-    }
-
-    public function desc():string
-    {
-        return $this->desc;
-    }
-
     public function dstFile(string $srcFile, ?string $dstDir = null):string
     {
-        if ($this->ext == null) {
-            throw new InvalidArgumentException(static::class . "->ext undefined" );
-        }
         if(!$dstDir) {
             $dstDir = dirname($srcFile) . DIRECTORY_SEPARATOR;
         }
@@ -90,7 +74,7 @@ abstract class Tei2 implements LoggerAwareInterface
             $dstDir = File::dirnorm($dstDir);
         }
         $dstName =  pathinfo($srcFile, PATHINFO_FILENAME);
-        $dstFile = $dstDir . $dstName . $this->ext;
+        $dstFile = $dstDir . $dstName . static::EXT;
         return $dstFile;
     }
 
@@ -109,6 +93,6 @@ abstract class Tei2 implements LoggerAwareInterface
      */
     abstract public function toDoc(DOMDocument $dom):?DOMDocument;
 }
-Tei2::init();
+AbstractTei2::init();
 
 // EOF

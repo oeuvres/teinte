@@ -16,12 +16,12 @@ namespace Oeuvres\Teinte;
  * Export a TEI document as an html fragment <article>
  */
 
-class Tei2article extends Tei2simple
+class Tei2article extends AbstractTei2simple
 {
-    protected $ext = '_art.html';
-    protected $name = 'article';
-    protected $label = '<article> text+notes';
-    protected $xsl = "tei2article.xsl";
+    const NAME = 'article';
+    const EXT = '_art.html';
+    const LABEL = '<article> text+notes';
+    const XSL = "tei2article.xsl";
 }
 
 // EOF

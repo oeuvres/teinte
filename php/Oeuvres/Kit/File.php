@@ -33,13 +33,13 @@ class File
      */
     public static function writable(string $file, ?string $source = null):bool
     {
-        self::readable($file, $source);
-        if ($source) $source = "\n" . $source;
-        if (!is_writable($file)) {
+        if (is_writable($file)) return true;
+        if (is_readable($file)) {
             throw new InvalidArgumentException(
-                $source."\n    \"\033[91m$file\033[0m\" file not writable\n"
+                "\n".$source."\n    \"\033[91m$file\033[0m\" file not writable\n"
             );
         }
+        self::readable($file, $source);
         return true;
     }
 
@@ -50,23 +50,22 @@ class File
      */
     public static function readable(string $file, ?string $source = null):bool
     {
+        if (is_readable($file)) return true;
+        // shall we log here or break by exception ?
         if ($source) $source = "\n" . $source;
-        if (!file_exists($file)) {
+        if (is_file($file)) {
             throw new InvalidArgumentException(
-                $source."\n    \"\033[91m$file\033[0m\" path not found\n"
+                $source."\n    \"\033[91m$file\033[0m\" file exist but not readable \n"
             );
         }
-        if (!is_file($file)) {
+        if (file_exists($file)) {
             throw new InvalidArgumentException(
-                $source."\n    \"\033[91m$file\033[0m\" not a file \n"
+                $source."\n    \"\033[91m$file\033[0m\" path exits but is not a file\n"
             );
         }
-        if (!is_readable($file)) {
-            throw new InvalidArgumentException(
-                $source."\n    \"\033[91m$file\033[0m\" file not readable (but exists)\n"
-            );
-        }
-        return true;
+        throw new InvalidArgumentException(
+            $source."\n    \"\033[91m$file\033[0m\" file not found\n"
+        );
     }
     /**
      * A safe mkdir dealing with rights

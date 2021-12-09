@@ -19,11 +19,26 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\NullLogger;
 
 /**
- * A dom TEI document, process some oddities, for example image relative links.
- * Useful for html, epub, even docx
+ * Tei exports are designed as a Strategy pattern
+ * {@see \Oeuvres\Teinte\AbstractTei2}
+ * This class is the Context to use the different strategies.
+ * All initialisations are as lazy as possible,
+ * with frugal object creations.
  */
-class Teidoc implements LoggerAwareInterface
+class TeiExporter implements LoggerAwareInterface
 {
+    /** Static list of available format, populated on demand */
+    public static $ext = array(
+        'article' => null,
+        'dc' => null,
+        'docx' => null,
+        'html' => null,
+        // 'iramuteq' => null,
+        // 'detag' => null,
+        // 'markdown' => null,
+        // 'naked' => '.txt',
+        'toc' => null,
+    );
     /** TEI/XML DOM Document to process */
     private $dom;
     /** Xpath processor for the doc */
@@ -38,16 +53,6 @@ class Teidoc implements LoggerAwareInterface
     private $filesize;
     /** Somewhere to log in  */
     private LoggerInterface $logger;
-    /** formats */
-    public static $ext = array(
-        'article' => '_art.html',
-        'detag' => '.txt',
-        'html' => '.html',
-        'iramuteq' => '.txt',
-        'markdown' => '.txt',
-        'naked' => '.txt',
-        'toc' => '_toc.html',
-    );
     /**
      * Start with an empty object, and build things
      */
@@ -268,37 +273,8 @@ class Teidoc implements LoggerAwareInterface
         if (isset(self::$ext[$format])) return call_user_func(array($this, $format), $destfile);
         else if (STDERR) fwrite(STDERR, $format . " ? format not yet implemented\n");
     }
-    /**
-     * Output toc
-     */
-    public function toc($destfile = null, $root = "ol")
-    {
-        return Xml::transformDoc(
-            dirname(__FILE__) . '/xsl/tei2toc.xsl',
-            $this->dom,
-            $destfile,
-            array(
-                'root' => $root,
-            )
-        );
-    }
 
-    /**
-     * Output an html fragment
-     */
-    public function article($destfile = null)
-    {
-        return Xml::transformDoc(
-            dirname(__FILE__) . '/tei2html.xsl',
-            $this->dom,
-            $destfile,
-            array(
-                'root' => 'article',
-                'folder' => basename(dirname($this->file)),
-            )
-        );
-    }
-
+    
     /**
      * Output a txt fragment with no html tags for full-text searching
      */
@@ -311,23 +287,6 @@ class Teidoc implements LoggerAwareInterface
         return $html;
     }
     */
-
-    /**
-     * Output html
-     */
-    public function html($destfile = null, $theme = null)
-    {
-        if (!$theme) $theme = 'http://oeuvres.github.io/teinte/'; // where to find web assets like css and jslog for html file
-        return Xml::transformDoc(
-            dirname(__FILE__) . '/tei2html.xsl',
-            $this->dom,
-            $destfile,
-            array(
-                'theme' => $theme,
-                'folder' => basename(dirname($this->file)),
-            )
-        );
-    }
 
     /**
      * Output a split version of book
@@ -417,3 +376,5 @@ class Teidoc implements LoggerAwareInterface
 
 
 }
+
+// EOF

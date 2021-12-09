@@ -22,13 +22,13 @@ use Psr\Log\LoggerInterface;
  * code convention https://www.php-fig.org/psr/psr-12/
  */
 
-class Tei2docx extends Tei2
+class Tei2docx extends AbstractTei2
 {
     /** A docx file used as a template */
     private string $template = "";
-    protected $ext = '.docx';
-    protected $name = 'docx';
-    protected $label = 'Microsoft.Word 2007 format';
+    const NAME = 'docx';
+    const EXT = '.docx';
+    const LABEL = 'Microsoft.Word 2007 format';
 
 
     /**
@@ -71,7 +71,7 @@ class Tei2docx extends Tei2
      */
     function toUri($dom, $dstFile)
     {
-        $this->logger->info("Tei2\033[92m" . $this->name() ." \033[0m $dstFile");
+        $this->logger->info("Tei2\033[92m" . static::NAME ." \033[0m $dstFile");
         File::writable($dstFile);
         $name = pathinfo($dom->documentURI, PATHINFO_FILENAME);
         copy($this->template(), $dstFile);
@@ -146,7 +146,7 @@ class Tei2docx extends Tei2
         // 
         if (!$zip->close()) {
             $this->logger->error(
-                "Tei2" . $this->name() ." ERROR writing \033[91m$dstFile\033[0m"
+                "Tei2" . static::NAME ." ERROR writing \033[91m$dstFile\033[0m\nMaybe an app has an handle on this file. Is this docx open in MS.Word or LibreO.Writer?"
             );
         }
     }

@@ -2,11 +2,11 @@
 <!--
 
 LGPL  http://www.gnu.org/licenses/lgpl.html
-© 2005 ajlsm.com (Cybertheses) et Frederic.Glorieux@fictif.org
-© 2007 Frederic.Glorieux@fictif.org
-© 2010 Frederic.Glorieux@fictif.org et École nationale des chartes
-© 2012 Frederic.Glorieux@fictif.org 
 © 2013 Frederic.Glorieux@fictif.org et LABEX OBVIL
+© 2012 Frederic.Glorieux@fictif.org 
+© 2010 Frederic.Glorieux@fictif.org et École nationale des chartes
+© 2007 Frederic.Glorieux@fictif.org
+© 2005 ajlsm.com (Cybertheses) et Frederic.Glorieux@fictif.org
 
 Syntaxe texte de référence : Markdown
 
@@ -24,7 +24,7 @@ TODO: listes, tables, liens
   exclude-result-prefixes="tei"
 >
   <!-- TEI common, metadatas -->
-  <xsl:import href="common.xsl"/>
+  <xsl:import href="../common.xsl"/>
   <xsl:output omit-xml-declaration="yes" encoding="UTF-8" method="text" indent="yes"/>
   <!-- Permet l'indentation des éléments de structure -->
   <xsl:strip-space elements="tei:TEI tei:TEI.2 tei:body tei:castList  tei:div tei:div1 tei:div2  tei:docDate tei:docImprint tei:docTitle tei:fileDesc tei:front tei:group tei:index tei:listWit tei:publicationStmp tei:publicationStmt tei:sourceDesc tei:SourceDesc tei:sources tei:text tei:teiHeader tei:text tei:titleStmt"/>

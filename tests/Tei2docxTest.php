@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 include_once(dirname(__DIR__) . '/php/autoload.php');
 
-use Oeuvres\Teinte\Tei2docx;
+use Oeuvres\Teinte\{Tei2docx, TeiExporter};
 use Oeuvres\Kit\Xml;
 use Oeuvres\Kit\Logger;
 use Oeuvres\Teinte\Teidoc;
@@ -15,7 +15,7 @@ $logger = new Logger(LogLevel::DEBUG);
 Xml::setLogger($logger);
 $srcFile = __DIR__.'/blanqui1866_prise-armes.xml';
 $xml = file_get_contents($srcFile);
-$xml = Teidoc::normTei($xml); // normalize spaces for docx
+$xml = TeiExporter::normTei($xml); // normalize spaces for docx
 $dom = Xml::domXml($xml);
 $tei2docx = new Tei2docx($logger);
 $tei2docx->toUri(

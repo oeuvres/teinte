@@ -12,14 +12,16 @@ declare(strict_types=1);
 namespace Oeuvres\Teinte;
 
 /**
- * Export a Teidoc as a Dublic Core record (for OAI)
+ * Export an XML/TEI document as text formatted for IRaMuteQ,
+ * a text analysis platform.
+ * http://www.iramuteq.org/
  */
-class Tei2dc extends AbstractTei2simple
+class Tei2iramuteq extends AbstractTei2simple
 {
-    const EXT = '_dc.xml';
-    const NAME = 'dc';
-    const LABEL = 'Dublin Core (metadata)';
-    const XSL = "misc/tei2dc.xsl";
+    const EXT = '_ira.txt';
+    const NAME = 'iramuteq';
+    const LABEL = 'IRaMuteQ';
+    const XSL = "txt/tei2iramuteq.xsl";
 }
 
 // EOF

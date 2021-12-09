@@ -20,13 +20,21 @@ Tei2simpleTest::run();
 class Tei2simpleTest
 {
     static private $formats = array(
-        "dc",
         "article",
+        "dc",
+        "iramuteq",
+        "markdown",
         "toc",
     );
     static public function run()
     {
         $logger = new Logger(LogLevel::DEBUG);
+        $logger->info("Test simple TEI exports");
+        foreach(self::$formats as $format) {
+            $class = "Oeuvres\\Teinte\\Tei2".$format;
+            echo "    ",$class::NAME,": \t",$class::LABEL,"\n";
+        }
+
         Xml::setLogger($logger);
         $srcFile = __DIR__.'/blanqui1866_prise-armes.xml';
         $dom = Xml::dom($srcFile);

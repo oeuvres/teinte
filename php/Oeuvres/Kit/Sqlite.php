@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace Oeuvres\Teinte;
+namespace Oeuvres\Kit;
 
 use PDO;
 

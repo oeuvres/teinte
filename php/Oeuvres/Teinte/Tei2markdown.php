@@ -12,14 +12,14 @@ declare(strict_types=1);
 namespace Oeuvres\Teinte;
 
 /**
- * Export a Teidoc as a Dublic Core record (for OAI)
+ * Export an XML/TEI document as valid markdown
  */
-class Tei2dc extends AbstractTei2simple
+class Tei2markdown extends AbstractTei2simple
 {
-    const EXT = '_dc.xml';
-    const NAME = 'dc';
-    const LABEL = 'Dublin Core (metadata)';
-    const XSL = "misc/tei2dc.xsl";
+    const EXT = '.md';
+    const NAME = 'markdown';
+    const LABEL = 'Markdown (formatted text)';
+    const XSL = "txt/tei2markdown.xsl";
 }
 
 // EOF
