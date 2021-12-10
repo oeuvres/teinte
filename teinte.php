@@ -11,53 +11,28 @@ declare(strict_types=1);
 
 include_once(__DIR__ . '/php/autoload.php');
 
-use Oeuvres\Kit\File;
+use Psr\Log\{LogLevel};
+use Oeuvres\Kit\{File, Logger};
+use Oeuvres\Teinte\{TeiSource, TeiExportFactory};
 
 /**
  * A simple command line for Teinte output formats
  */
-Teinte::init();
 Teinte::cli();
 class Teinte {
-    /** formats */
-    public static $transfos = array();
-    public static function init() {
-        self::$transfos['docx'] = array(
-            'ext' => '.docx', 
-            'function' => function($srcFile, $dstFile) {
-                return Oeuvres\Teinte\Docx::export($srcFile, $dstFile);
-            }
-        );
-        self::$transfos['html'] = array(
-            'ext' => '.html', 
-            /*
-            'function' => function($srcFile, $dstFile) {
-                return Oeuvres\Teinte\Docx::export($srcFile, $dstFile);
-            }
-            */
-        );
-
-        /*
-        'html' => '.html',
-        'docx' => 
-        'iramuteq' => '.txt',
-        'markdown' => '.txt',
-        'naked' => '.txt',
-        'article' => '_art.html',
-        'toc' => '_toc.html',
-        'detag' => '.txt',
-        */
-    }
     public static function help():string 
     {
-        $formats = implode('  ', array_keys(self::$transfos));
         return '
+php teinte.php -f -d output/dir/  format "teidir/*.xml"
 Tranform your tei files in different formats
-    php teinte.php -f -d output/dir/  format "teidir/*.xml"
-    -f         : 0-1 no test of freshness, force deletion of destination file
-    -d destdir : 0-1 destination directory for generated files
-    format     : 1-n ' . $formats . '
-    globs      : 1-n parameters, files or globs
+
+-f         : 0-1 force deletion of destination file (no test of freshness)
+-d destdir : 0-1 destination directory for generated files
+format     : 1 or more among
+
+' . TeiExportFactory::help() . '
+globs      : 1-n parameters, files or globs
+
 ';
     }
     public static function cli() {
@@ -72,14 +47,14 @@ Tranform your tei files in different formats
         if ($count < 2) exit(self::help());
         // loop on args to find first format
         for ($i = 1; $i < $count; $i++) {
-            if (isset(self::$transfos[$argv[$i]])) break;
+            if (TeiExportFactory::has($argv[$i])) break;
         }
         if ($i == $count) {
             exit("\nNo available format found for transform\n" . self::help());
         }
         $formats = array();
         for (; $i < $count; $i++) {
-            if (!isset(self::$transfos[$argv[$i]])) break;
+            if (!TeiExportFactory::has($argv[$i])) break;
             $formats[$argv[$i]] = null;
         }
         if ($i == $count) {
@@ -109,11 +84,12 @@ Tranform your tei files in different formats
         ?string $dstDir = "",
         ?bool $force = false
     ) {
+        $logger = new Logger(LogLevel::INFO);
+        $source = new TeiSource($logger);
         foreach (glob($glob) as $srcFile) {
-            $dstName =  pathinfo($srcFile, PATHINFO_FILENAME);
             $nodone = true;
             foreach($formats as $format) {
-                $dstFile = $dstDir . $dstName . self::$transfos[$format]['ext'];
+                $dstFile = $source->dstFile($srcFile, $format, $dstDir);
                 if ($force); // overwrite
                 else if (!file_exists($dstFile)); // do not exist
                 else if (filemtime($srcFile) <= filemtime($dstFile)) {
@@ -121,30 +97,13 @@ Tranform your tei files in different formats
                 }
                 if ($nodone) {
                     echo "$srcFile\n";
+                    $source->load($srcFile);
                     $nodone = false;
                 }
-                echo "[$format]\t";
-                self::$transfos[$format]['function']($srcFile, $dstFile);
-                echo "$dstFile\n";
+                $source->toUri($format, $dstFile);
            }
-
-            /*
-            if (!$force) {
-                $i = 0;
-                $rename = $dst;
-                while (file_exists($rename)) {
-                    if (!$i) echo "File $rename already exists, ";
-                    $i++;
-                    $rename = $dstname . '_' . $i . '.docx';
-                }
-                if ($i) {
-                    rename($dst, $rename);
-                    echo "renamed to $rename\n";
-                }
-            }
-            */
-            // self::export($srcfile, $dst);
         }
     }
-    
 }
+
+// EOL

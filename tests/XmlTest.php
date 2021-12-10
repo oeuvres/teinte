@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 include_once(dirname(__DIR__) . '/php/autoload.php');
 
-use Oeuvres\Teinte\Teidoc;
 use Oeuvres\Kit\Xml;
 use Oeuvres\Kit\Logger;
 use Psr\Log\LogLevel;

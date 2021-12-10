@@ -65,8 +65,15 @@ abstract class AbstractTei2 implements LoggerAwareInterface
         $this->logger = $logger;
     }
 
-    public function dstFile(string $srcFile, ?string $dstDir = null):string
-    {
+    /**
+     * Build a prefered file path from source path,
+     * according to the preferred extension format,
+     * and a destination directory if provided.
+     */
+    public static function dstFile(
+        string $srcFile, 
+        ?string $dstDir = null
+    ):string {
         if(!$dstDir) {
             $dstDir = dirname($srcFile) . DIRECTORY_SEPARATOR;
         }

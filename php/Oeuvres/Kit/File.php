@@ -29,10 +29,14 @@ class File
     }
 
     /**
-     * Check if a file is writable and inform why not
+     * Check if a file is writable, if it does not exists
+     * go to the parent folder to test if it is writable.
      */
     public static function writable(string $file, ?string $source = null):bool
     {
+        while (!file_exists($file)) { // if not file exists, go up to parents
+            $file = dirname($file);
+        }
         if (is_writable($file)) return true;
         if (is_readable($file)) {
             throw new InvalidArgumentException(

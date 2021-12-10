@@ -11,34 +11,20 @@ declare(strict_types=1);
 
 namespace Oeuvres\Teinte;
 
-use DOMDocument;
-use Exception, DOMXpath;
+use Exception, DOMDocument, DOMXpath;
+use Psr\Log\{LoggerInterface, LogLevel, LoggerAwareInterface, NullLogger};
 use Oeuvres\Kit\Xml;
-use Psr\Log\LoggerInterface;
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\NullLogger;
+use Oeuvres\Teinte\{AbstractTei2, TeiExportFactory};
 
 /**
  * Tei exports are designed as a Strategy pattern
  * {@see \Oeuvres\Teinte\AbstractTei2}
  * This class is the Context to use the different strategies.
- * All initialisations are as lazy as possible,
- * with frugal object creations.
+ * All initialisations are as lazy as possible
+ * to scan fast big directories.
  */
-class TeiExporter implements LoggerAwareInterface
+class TeiSource implements LoggerAwareInterface
 {
-    /** Static list of available format, populated on demand */
-    public static $ext = array(
-        'article' => null,
-        'dc' => null,
-        'docx' => null,
-        'html' => null,
-        // 'iramuteq' => null,
-        // 'detag' => null,
-        // 'markdown' => null,
-        // 'naked' => '.txt',
-        'toc' => null,
-    );
     /** TEI/XML DOM Document to process */
     private $dom;
     /** Xpath processor for the doc */
@@ -46,7 +32,7 @@ class TeiExporter implements LoggerAwareInterface
     /** filepath */
     private $file;
     /** filename without extension */
-    private $name;
+    private $filename;
     /** file freshness */
     private $filemtime;
     /** file size */
@@ -54,7 +40,7 @@ class TeiExporter implements LoggerAwareInterface
     /** Somewhere to log in  */
     private LoggerInterface $logger;
     /**
-     * Start with an empty object, and build things
+     * Start with an empty object
      */
     public function __construct(LoggerInterface $logger = null)
     {
@@ -65,6 +51,47 @@ class TeiExporter implements LoggerAwareInterface
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
+        Xml::setLogger($this->logger);
+    }
+
+    /**
+     * Transform current dom and write to file.
+     */
+    public function toUri(string $format, String $uri)
+    {
+        $transfo = TeiExportFactory::get($format, $this->logger);
+        $transfo->toUri($this->dom, $uri);
+    }
+
+    /**
+     * Transform current dom and returns XML
+     * (when relevant)
+     */
+    public function toXml(string $format): string
+    {
+        $transfo = TeiExportFactory::get($format, $this->logger);
+        return $transfo->toXml($this->dom);
+    }
+
+    /**
+     * Transform current and returns result as dom
+     * (when relevant)
+     */
+    public function toDoc(string $format): DOMDocument
+    {
+        $transfo = TeiExportFactory::get($format, $this->logger);
+        return $transfo->toDoc($this->dom);
+    }
+
+    /**
+     * Build a destination file path according to a preferred format
+     * extnsion. Nothing is supposed to be loaded, such path is used
+     * for testing.
+     */
+    function dstFile(string $srcFile, string $format, ?string $dstDir):string
+    {
+        $transfo = TeiExportFactory::get($format, $this->logger);
+        return $transfo->dstFile($srcFile, $dstDir);
     }
 
     public function isEmpty()
@@ -73,27 +100,19 @@ class TeiExporter implements LoggerAwareInterface
     }
 
     /**
-     * Mimic DOMDocument::load, load from a file path
-     * Prefered way, provides more metadata.
+     * Load XML/TEI as a file (preferred way).
      */
-    public function load(string $teiFile):DOMDocument
+    public function load(string $teiFile): DOMDocument
     {
         $this->file = $teiFile;
-        $this->filmtime = filemtime($teiFile);
+        $this->filename = pathinfo($teiFile, PATHINFO_FILENAME);
+        $this->filemtime = filemtime($teiFile);
         $this->filesize = filesize($teiFile); // ?? if URL ?
-        $this->name = pathinfo($teiFile, PATHINFO_FILENAME);
         return $this->loadXml(file_get_contents($teiFile));
-    }
-    /**
-     * Get file name
-     */
-    public function name():string
-    {
-        return $this->name;
     }
 
     /**
-     * An XML string, normalize and load it as DOM
+     * Load XML/TEI as string, normalize and load it as DOM
      */
     public function loadXml(string $xml):DOMDocument
     {
@@ -145,35 +164,32 @@ class TeiExporter implements LoggerAwareInterface
         return $this->xpath;
     }
     /**
-     * Get the filename (with no extention)
-     */
-    public function filename($filename = null)
-    {
-        if ($filename) $this->filename = $filename;
-        return $this->filename;
-    }
-    /**
-     * Read a readonly property
-     */
-    public function filemtime($filemtime = null)
-    {
-        if ($filemtime) $this->filemtime = $filemtime;
-        return $this->filemtime;
-    }
-    /**
-     * For a readonly property
-     */
-    public function filesize($filesize = null)
-    {
-        if ($filesize) $this->filesize = $filesize;
-        return $this->filesize;
-    }
-    /**
      * For a readonly property
      */
     public function file()
     {
         return $this->file;
+    }
+    /**
+     * Get the filename (with no extention)
+     */
+    public function filename()
+    {
+        return $this->filename;
+    }
+    /**
+     * Read a readonly property
+     */
+    public function filemtime()
+    {
+        return $this->filemtime;
+    }
+    /**
+     * For a readonly property
+     */
+    public function filesize()
+    {
+        return $this->filesize;
     }
     /**
      * Book metadata
@@ -265,15 +281,6 @@ class TeiExporter implements LoggerAwareInterface
 
         return $meta;
     }
-    /**
-     *
-     */
-    public function export($format, $destfile = null)
-    {
-        if (isset(self::$ext[$format])) return call_user_func(array($this, $format), $destfile);
-        else if (STDERR) fwrite(STDERR, $format . " ? format not yet implemented\n");
-    }
-
     
     /**
      * Output a txt fragment with no html tags for full-text searching
@@ -288,15 +295,6 @@ class TeiExporter implements LoggerAwareInterface
     }
     */
 
-    /**
-     * Output a split version of book
-     */
-    public function site($dstdir = null)
-    {
-        // create dest folder
-        // if none given, use filename
-        // collect images pointed by xml file and copy them in the folder
-    }
     /**
      * Extract <graphic> elements from a DOM doc, copy linked images in a flat dstdir
      * copy linked images in an images folder $dstdir, and modify relative link

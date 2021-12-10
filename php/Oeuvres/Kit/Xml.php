@@ -56,7 +56,7 @@ class Xml
     {
         $dom = self::domSkel();
         // $dom->recover=true; // no recover, display errors
-        // suspend error reporting
+        // suspend error reporting, libxml messages are better
         $ret = @$dom->load($srcFile, self::LIBXML_OPTIONS);
         self::logLibxml(libxml_get_errors());
         if (!$ret) return null;
@@ -64,6 +64,9 @@ class Xml
         return $dom;
     }
 
+    /**
+     * Output the very informative libxml messages by the logger
+     */
     public static function logLibxml(array $errors)
     {
         foreach ($errors as $error) {
@@ -92,20 +95,19 @@ class Xml
     }
 
     /**
-     * Get a DOM document with best options from an XML content
+     * Returns a DOM object
      */
-    public static function domXml(string $xml, ?string $srcFile=""): DOMDocument
+    public static function domXml(string $xml): DOMDocument
     {
         $dom = self::domSkel();
-        if (!$dom->loadXML($xml, self::LIBXML_OPTIONS)) {
-            self::logLibxml(libxml_get_errors());
-            return null;
-        }
-        if ($srcFile) {
-            $dom->documentURI = realpath($srcFile);
-        }
+        // suspend error reporting, libxml messages are better
+        $ret = $dom->loadXml($xml, self::LIBXML_OPTIONS);
+        self::logLibxml(libxml_get_errors());
+        self::$logger->debug('$dom->load()=' . var_export($ret, true));
+        if (!$ret) return null;
         return $dom;
     }
+
 
     /**
      * Return an empty dom with options
