@@ -1,3 +1,9 @@
+# python odds
+__pycache__/
+*.egg-info/
+*.py[cod]
+
+
 tests/out/
 work/
 .~*

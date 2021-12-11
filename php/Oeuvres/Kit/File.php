@@ -40,7 +40,7 @@ class File
         if (is_writable($file)) return true;
         if (is_readable($file)) {
             throw new InvalidArgumentException(
-                "\n".$source."\n    \"\033[91m$file\033[0m\" file not writable\n"
+                "\n".$source."\n    \"\033[91m$file\033[0m\" file exists but not writable\n"
             );
         }
         self::readable($file, $source);

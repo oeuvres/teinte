@@ -1656,7 +1656,7 @@ dégrossi le travail, mais du reste à faire  -->
         <!-- xsl:message>Acte <xsl:value-of select="ancestor::text[1]/@n"/>, date non prise en charge <xsl:value-of select="."/></xsl:message --> </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-  <!-- Pour débogage afficher un path -->
+  <!-- For debug, a linear xpath for an element -->
   <xsl:template name="idpath">
     <xsl:for-each select="ancestor-or-self::*">
       <xsl:text>/</xsl:text>

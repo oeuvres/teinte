@@ -1,5 +1,6 @@
 <?php 
-// isset is a little bit faster but not enough compared of clqrity contract
+// isset has almost the same speed as array_key_exist
+// 
 $arr = array();
 for ($i=0; $i < 5000; $i++) {
     $arr['pref'.$i] = true;
