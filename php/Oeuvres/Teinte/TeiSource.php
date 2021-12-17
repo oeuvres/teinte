@@ -1,10 +1,10 @@
 <?php
 /**
  * Part of Teinte https://github.com/oeuvres/teinte
+ * BSD-3-Clause https://opensource.org/licenses/BSD-3-Clause
  * Copyright (c) 2020 frederic.glorieux@fictif.org
  * Copyright (c) 2013 frederic.glorieux@fictif.org & LABEX OBVIL
  * Copyright (c) 2012 frederic.glorieux@fictif.org
- * BSD-3-Clause https://opensource.org/licenses/BSD-3-Clause
  */
 
 declare(strict_types=1);
@@ -12,9 +12,9 @@ declare(strict_types=1);
 namespace Oeuvres\Teinte;
 
 use Exception, DOMDocument, DOMXpath;
-use Psr\Log\{LoggerInterface, LogLevel, LoggerAwareInterface, NullLogger};
+use Psr\Log\{LoggerInterface, LoggerAwareInterface, NullLogger};
 use Oeuvres\Kit\Xml;
-use Oeuvres\Teinte\{AbstractTei2, TeiExportFactory};
+use Oeuvres\Teinte\{TeiExportFactory};
 
 /**
  * Tei exports are designed as a Strategy pattern
@@ -25,6 +25,8 @@ use Oeuvres\Teinte\{AbstractTei2, TeiExportFactory};
  */
 class TeiSource implements LoggerAwareInterface
 {
+    /** Somewhere to log in  */
+    private LoggerInterface $logger;
     /** TEI/XML DOM Document to process */
     private $dom;
     /** Xpath processor for the doc */
@@ -37,8 +39,6 @@ class TeiSource implements LoggerAwareInterface
     private $filemtime;
     /** file size */
     private $filesize;
-    /** Somewhere to log in  */
-    private LoggerInterface $logger;
     /**
      * Start with an empty object
      */

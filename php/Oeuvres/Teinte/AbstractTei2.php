@@ -11,10 +11,8 @@ declare(strict_types=1);
 
 namespace Oeuvres\Teinte;
 
-use DOMDocument, InvalidArgumentException;
-use Psr\Log\LoggerInterface;
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\NullLogger;
+use DOMDocument;
+use Psr\Log\{LoggerAwareInterface, LoggerInterface, NullLogger};
 use Oeuvres\Kit\File;
 
 /**
@@ -60,9 +58,10 @@ abstract class AbstractTei2 implements LoggerAwareInterface
     }
 
 
-    public function setLogger(LoggerInterface $logger)
+    public function setLogger(LoggerInterface $logger):AbstractTei2
     {
         $this->logger = $logger;
+        return $this;
     }
 
     /**
@@ -88,17 +87,17 @@ abstract class AbstractTei2 implements LoggerAwareInterface
     /**
      * Write transformation as an Uri, which is mainly, a file
      */
-    abstract public function toUri(DOMDocument $dom, string $dstFile);
+    abstract public function toUri(DOMDocument $dom, string $dstFile, ?array $pars=null);
     /**
      * Export transformation as an XML string
      * (maybe not relevant for aggregated formats: docx, epub, site…)
      */
-    abstract public function toXml(DOMDocument $dom):?string;
+    abstract public function toXml(DOMDocument $dom, ?array $pars=null):?string;
     /**
      * Export transformation as a Dom
      * (maybe not relevant for aggregated formats: docx, epub, site…)
      */
-    abstract public function toDoc(DOMDocument $dom):?DOMDocument;
+    abstract public function toDoc(DOMDocument $dom, ?array $pars=null):?DOMDocument;
 }
 AbstractTei2::init();
 

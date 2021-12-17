@@ -22,7 +22,7 @@ abstract class AbstractTei2simple extends AbstractTei2
 {
     /** Path to the xslt file, relative to the xsl pack root */
     const XSL = null;
-
+    /** Build the transformer with a logger and check mandatory params */
     public function __construct(?LoggerInterface $logger = null)
     {
         parent::__construct(...func_get_args());
@@ -36,29 +36,32 @@ abstract class AbstractTei2simple extends AbstractTei2
         );
     }
 
-    public function toUri(DOMDocument $dom, string $dstFile)
+    public function toUri(DOMDocument $dom, string $dstFile, ?array $pars=null)
     {
         $this->logger->info("Tei2\033[92m" . static::NAME . "->toUri()\033[0m " . $dstFile);
         return Xml::transformToUri(
             self::$xslDir.static::XSL,
             $dom,
             $dstFile,
+            $pars,
         );
     }
-    public function toXml(DOMDocument $dom):string
+    public function toXml(DOMDocument $dom, ?array $pars=null):string
     {
         return Xml::transformToXml(
             self::$xslDir.static::XSL,
             $dom,
+            $pars,
         );
 
     }
 
-    public function toDoc(DOMDocument $dom):DOMDocument
+    public function toDoc(DOMDocument $dom, ?array $pars=null):DOMDocument
     {
         return Xml::transformToDoc(
             self::$xslDir.static::XSL,
             $dom,
+            $pars,
         );
 
     }

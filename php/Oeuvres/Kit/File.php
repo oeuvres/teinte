@@ -89,7 +89,7 @@ class File
     /**
      * Delete all files in a directory, create it if not exist
      */
-    static public function dirclean(string $dir, int $depth = 0)
+    static public function cleandir(string $dir, int $depth = 0)
     {
         if (is_file($dir)) {
             return unlink($dir);
@@ -109,7 +109,7 @@ class File
                 if ($entry == "." || $entry == "..") {
                     continue;
                 }
-                self::dirclean($dir.'/'.$entry, $depth+1);
+                self::cleandir($dir.'/'.$entry, $depth+1);
             }
             closedir($handle);
             // do not delete the root dir

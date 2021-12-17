@@ -52,7 +52,7 @@ class Tei2docx extends AbstractTei2
     /**
      * @ override
      */
-    function toDoc(DOMDocument $dom):?\DOMDocument
+    function toDoc(DOMDocument $dom, ?array $pars=null):?\DOMDocument
     {
         $this->logger->error(__METHOD__." dom export not relevant");
         return null;
@@ -60,16 +60,16 @@ class Tei2docx extends AbstractTei2
     /**
      * @ override
      */
-    function toXml(DOMDocument $dom):?string
+    function toXml(DOMDocument $dom, ?array $pars=null):?string
     {
-        $this->logger->error(__METHOD__." dom export not relevant");
+        $this->logger->error(__METHOD__." xml export not relevant");
         return null;
     }
 
     /**
      * @ override
      */
-    function toUri($dom, $dstFile)
+    function toUri($dom, $dstFile, ?array $pars=null)
     {
         $this->logger->info("Tei2\033[92m" . static::NAME ." \033[0m $dstFile");
         File::writable($dstFile);

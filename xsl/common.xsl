@@ -38,7 +38,7 @@ Gobal TEI parameters and variables are divided in different categories
   <!-- base href for generated links -->
   <xsl:param name="base"/>
   <!-- Allow to change the extension of generated links -->
-  <xsl:param name="_html">.html</xsl:param>
+  <xsl:param name="_ext">.html</xsl:param>
   <!-- Corpus name passed by caller, used as a body class -->
   <xsl:param name="corpusid"/>
   <!-- If true, output processing instructions for a text indexer consumer -->
@@ -1402,7 +1402,7 @@ Could be correct for a text only version in <xsl:value-of select=""/>
       <xsl:when test="$class = 'noteref' and $fnpage != ''">
         <xsl:value-of select="$base"/>
         <xsl:value-of select="$fnpage"/>
-        <xsl:value-of select="$_html"/>
+        <xsl:value-of select="$_ext"/>
         <xsl:text>#</xsl:text>
         <xsl:value-of select="$id"/>
       </xsl:when>
@@ -1410,20 +1410,20 @@ Could be correct for a text only version in <xsl:value-of select=""/>
       <xsl:when test="self::*[key('split', generate-id())]">
         <xsl:value-of select="$base"/>
         <xsl:value-of select="$id"/>
-        <xsl:value-of select="$_html"/>
+        <xsl:value-of select="$_ext"/>
       </xsl:when>
       <!-- parent of a split section -->
       <xsl:when test="descendant::*[key('split', generate-id())]">
         <xsl:value-of select="$base"/>
         <xsl:value-of select="$id"/>
-        <xsl:value-of select="$_html"/>
+        <xsl:value-of select="$_ext"/>
       </xsl:when>
       <!-- Child of a split section -->
       <xsl:when test="ancestor::*[key('split', generate-id())]">
         <xsl:value-of select="$base"/>
         <xsl:for-each select="ancestor::*[key('split', generate-id())][1]">
           <xsl:call-template name="id"/>
-          <xsl:value-of select="$_html"/>
+          <xsl:value-of select="$_ext"/>
         </xsl:for-each>
         <xsl:text>#</xsl:text>
         <xsl:value-of select="$id"/>
@@ -1450,7 +1450,7 @@ Could be correct for a text only version in <xsl:value-of select=""/>
       <xsl:when test="ancestor::tei:*[local-name(../..)='TEI']">
         <xsl:for-each select="ancestor::tei:*[local-name(../..)='TEI'][1]">
           <xsl:call-template name="id"/>
-          <xsl:value-of select="$_html"/>
+          <xsl:value-of select="$_ext"/>
         </xsl:for-each>
         <xsl:text>#</xsl:text>
         <xsl:value-of select="$id"/>

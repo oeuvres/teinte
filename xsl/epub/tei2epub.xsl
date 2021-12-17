@@ -13,10 +13,10 @@ https://kdp.amazon.com/self-publishing/help?topicId=A1JPUWCSD6F59O
 -->
 <xsl:transform xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.1" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns="http://www.w3.org/1999/xhtml" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xmlns:opf="http://www.idpf.org/2007/opf" exclude-result-prefixes="epub html tei opf" extension-element-prefixes="">
   <!-- Use import to allow overriding -->
-  <xsl:include href="../xsl/flow.xsl"/>
-  <xsl:include href="../xsl/notes.xsl"/>
-  <xsl:include href="../xsl/teiHeader.xsl"/>
-  <xsl:include href="../xsl/toc.xsl"/>
+  <xsl:include href="../html/flow.xsl"/>
+  <xsl:include href="../html/notes.xsl"/>
+  <xsl:include href="../html/teiHeader.xsl"/>
+  <xsl:include href="../html/toc.xsl"/>
   <!-- ensure override on common -->
   <xsl:include href="epub.xsl"/>
   <xsl:output indent="yes" method="xml" encoding="UTF-8"/>

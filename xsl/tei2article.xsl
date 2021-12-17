@@ -4,7 +4,7 @@
 Produce a valid xhtml fragment <article>, ready to be included in a page
 Just the /TEI/text content (with footnotes) but no /html/head or toc.
 
-LGPL  http://www.gnu.org/licenses/lgpl.html
+BSD-3-Clause https://opensource.org/licenses/BSD-3-Clause
 © 2019 Frederic.Glorieux@fictif.org & LABEX OBVIL & Optéos
 © 2013 Frederic.Glorieux@fictif.org & LABEX OBVIL
 © 2012 Frederic.Glorieux@fictif.org
@@ -12,7 +12,7 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
 © 2007 Frederic.Glorieux@fictif.org
 © 2005 ajlsm.com (Cybertheses)
 
-XSLT 1.0 is compatible browser, PHP, Python, Java…
+XSLT 1.0, compatible browser, PHP, Python, Java…
 -->
 <xsl:transform version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" xmlns:tei="http://www.tei-c.org/ns/1.0" exclude-result-prefixes="tei">
   <xsl:import href="html/flow.xsl"/>
