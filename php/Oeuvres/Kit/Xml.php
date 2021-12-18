@@ -1,13 +1,13 @@
 <?php
 /**
  * Part of Teinte https://github.com/oeuvres/teinte
+ * BSD-3-Clause https://opensource.org/licenses/BSD-3-Clause
  * Copyright (c) 2020 frederic.glorieux@fictif.org
  * Copyright (c) 2013 frederic.glorieux@fictif.org & LABEX OBVIL
  * Copyright (c) 2012 frederic.glorieux@fictif.org
- * BSD-3-Clause https://opensource.org/licenses/BSD-3-Clause
  */
 
-// declare(strict_types=1);
+declare(strict_types=1);
 
 namespace Oeuvres\Kit;
 
@@ -36,10 +36,13 @@ class Xml
         | LIBXML_NOCDATA
         // | LIBXML_NOWARNING  // no warn for <?xml-model
     ;
-    private static LoggerInterface $logger;
+    private static $logger;
 
     public static function init()
     {
+        if (!extension_loaded("xsl")) {
+            throw new Exception('PHP xsl extension required. Check your php.ini');
+        }
         self::$logger = new NullLogger();
         libxml_use_internal_errors(true); // keep XML error for this process
     }
@@ -52,7 +55,7 @@ class Xml
     /**
      * Get a DOM document with best options from a file path
      */
-    public static function dom(string $srcFile): ?DOMDocument
+    public static function load(string $srcFile): ?DOMDocument
     {
         $dom = self::domSkel();
         // $dom->recover=true; // no recover, display errors
@@ -97,13 +100,14 @@ class Xml
     /**
      * Returns a DOM object
      */
-    public static function domXml(string $xml): DOMDocument
+    public static function loadXml(string $xml): DOMDocument
     {
         $dom = self::domSkel();
         // suspend error reporting, libxml messages are better
         $ret = $dom->loadXml($xml, self::LIBXML_OPTIONS);
         self::logLibxml(libxml_get_errors());
-        self::$logger->debug('$dom->load()=' . var_export($ret, true));
+        // self::$logger->debug('$dom->load()=' . var_export($ret, true));
+        // exception ?
         if (!$ret) return null;
         return $dom;
     }
@@ -179,10 +183,18 @@ class Xml
         ?string $dst,
         array $pars = null
     ) {
-        $key = realpath($xslFile);
+
+        if (strpos($xslFile, "http") === 0) {
+            $key = $xslFile;
+        }
+        else {
+            $key = realpath($xslFile);
+        }
+        if (!$key) {
+            throw new Exception("XSL file not found\n\"$key\"");
+        } 
         // cache compiled xsl
         if (!isset(self::$transcache[$key])) {
-            File::readable($xslFile, __METHOD__."()");
             $trans = new XSLTProcessor();
             $trans->registerPHPFunctions();
             // allow generation of <xsl:document>
@@ -205,7 +217,10 @@ class Xml
             else {
                 ini_set("xsl.security_prefs",  $prefs);
             }
-            $xsldom = self::dom($xslFile);
+            // for xsl through http://, allow net download of resources 
+            $xsldom = new DOMDocument();
+            $xsldom->load($xslFile);
+            self::logLibxml(libxml_get_errors());
             if (!$trans->importStyleSheet($xsldom)) {
                 self::logLibxml(libxml_get_errors());
                 throw new Exception("XSLT, impossible to compile " . $xslFile."\n");
@@ -216,6 +231,7 @@ class Xml
         // add params
         if(isset($pars) && count($pars)) {
             foreach ($pars as $key => $value) {
+                if (!$value) $value = "";
                 $trans->setParameter("", $key, $value);
             }
         }

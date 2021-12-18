@@ -12,7 +12,7 @@ declare(strict_types=1);
 include_once(__DIR__ . '/php/autoload.php');
 
 use Psr\Log\{LogLevel};
-use Oeuvres\Kit\{File, Logger};
+use Oeuvres\Kit\{File, LoggerCli};
 use Oeuvres\Teinte\{TeiSource, TeiExportFactory};
 
 /**
@@ -67,7 +67,7 @@ globs      : 1-n parameters, files or globs
             $dstDir = $options['d'];
             File::mkdir($dstDir);
         }
-        $dstDir = File::dirnorm($dstDir);
+        $dstDir = File::normdir($dstDir);
         // loop on globs
         for (; $i < $count; $i++) {
             self::export (
@@ -84,7 +84,7 @@ globs      : 1-n parameters, files or globs
         ?string $dstDir = "",
         ?bool $force = false
     ) {
-        $logger = new Logger(LogLevel::INFO);
+        $logger = new LoggerCli(LogLevel::INFO);
         $source = new TeiSource($logger);
         foreach (glob($glob) as $srcFile) {
             $nodone = true;

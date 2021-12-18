@@ -19,7 +19,7 @@ use Exception, InvalidArgumentException, ZipArchive;
 
 class File
 {
-    static function dirnorm($dir)
+    static function normdir($dir)
     {
         $dir = rtrim(trim($dir), "\\/");
         if (!$dir) {
@@ -89,17 +89,14 @@ class File
     /**
      * Delete all files in a directory, create it if not exist
      */
-    static public function cleandir(string $dir, int $depth = 0)
+    static public function cleandir(string $dir, ?int $depth = 0)
     {
         if (is_file($dir)) {
             return unlink($dir);
         }
         // attempt to create the folder we want empty
         if (!$depth && !file_exists($dir)) {
-            if (!mkdir($dir, 0775, true)) {
-                throw new Exception("Directory not created: ".$dir);
-            }
-            @chmod($dir, 0775);  // let @, if www-data is not owner but allowed to write
+            self::mkdir($dir);
             return;
         }
         // should be dir here

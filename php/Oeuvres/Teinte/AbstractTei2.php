@@ -77,7 +77,7 @@ abstract class AbstractTei2 implements LoggerAwareInterface
             $dstDir = dirname($srcFile) . DIRECTORY_SEPARATOR;
         }
         else {
-            $dstDir = File::dirnorm($dstDir);
+            $dstDir = File::normdir($dstDir);
         }
         $dstName =  pathinfo($srcFile, PATHINFO_FILENAME);
         $dstFile = $dstDir . $dstName . static::EXT;
