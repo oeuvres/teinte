@@ -50,22 +50,13 @@ Sections
   <xsl:template match="tei:front">
     <xsl:param name="from"/>
     <xsl:param name="level" select="count(ancestor::tei:group)"/>
-    <xsl:variable name="element">
-      <xsl:choose>
-        <xsl:when test="$format = $epub2">div</xsl:when>
-        <xsl:otherwise>section</xsl:otherwise>
-      </xsl:choose>
-    </xsl:variable>
-    <xsl:element name="{$element}" namespace="http://www.w3.org/1999/xhtml">
-      <xsl:if test="$format = $epub3">
-        <xsl:attribute name="epub:type">frontmatter</xsl:attribute>
-      </xsl:if>
+    <section epub:type="frontmatter">
       <xsl:call-template name="atts"/>
       <xsl:apply-templates select="*">
         <xsl:with-param name="level" select="$level"/>
         <xsl:with-param name="from" select="$from"/>
       </xsl:apply-templates>
-    </xsl:element>
+    </section>
   </xsl:template>
   <xsl:template match="tei:back">
     <xsl:param name="from"/>
@@ -74,44 +65,26 @@ Sections
     <xsl:choose>
       <xsl:when test="normalize-space(.) = ''"/>
       <xsl:otherwise>
-        <xsl:variable name="element">
-          <xsl:choose>
-            <xsl:when test="$format = $epub2">div</xsl:when>
-            <xsl:otherwise>section</xsl:otherwise>
-          </xsl:choose>
-        </xsl:variable>
-        <xsl:element name="{$element}" namespace="http://www.w3.org/1999/xhtml">
-          <xsl:if test="$format = $epub3">
-            <xsl:attribute name="epub:type">backmatter</xsl:attribute>
-          </xsl:if>
+        <section epub:type="backmatter">
           <xsl:call-template name="atts"/>
           <xsl:apply-templates select="*">
             <xsl:with-param name="level" select="$level "/>
             <xsl:with-param name="from" select="$from"/>
           </xsl:apply-templates>
-        </xsl:element>
+        </section>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
   <xsl:template match="tei:body">
     <xsl:param name="from"/>
     <xsl:param name="level" select="count(ancestor::tei:group)"/>
-    <xsl:variable name="element">
-      <xsl:choose>
-        <xsl:when test="$format = $epub2">div</xsl:when>
-        <xsl:otherwise>section</xsl:otherwise>
-      </xsl:choose>
-    </xsl:variable>
-    <xsl:element name="{$element}" namespace="http://www.w3.org/1999/xhtml">
-      <xsl:if test="$format = $epub3">
-        <xsl:attribute name="epub:type">bodymatter</xsl:attribute>
-      </xsl:if>
+    <section epub:type="bodymatter">
       <xsl:call-template name="atts"/>
       <xsl:apply-templates>
         <xsl:with-param name="level" select="$level "/>
         <xsl:with-param name="from" select="$from"/>
       </xsl:apply-templates>
-    </xsl:element>
+    </section>
   </xsl:template>
   <!--
     TODO ? notes dans les groupes ?
@@ -141,7 +114,6 @@ Sections
     <xsl:param name="el">
       <xsl:choose>
         <xsl:when test="self::tei:group">div</xsl:when>
-        <xsl:when test="$format = $epub2">div</xsl:when>
         <xsl:otherwise>section</xsl:otherwise>
       </xsl:choose>
     </xsl:param>
@@ -154,7 +126,6 @@ Sections
       </xsl:call-template>
       <!-- attributs epub3 -->
       <xsl:choose>
-        <xsl:when test="$format != $epub3"/>
         <xsl:when test="@type = 'bibliography'">
           <xsl:attribute name="epub:type">bibliography</xsl:attribute>
         </xsl:when>
@@ -181,7 +152,6 @@ Sections
       <!-- First element is an empty(?) page break, may come from numerisation or text-processor -->
       <xsl:variable name="name" select="local-name()"/>
       <xsl:choose>
-        <xsl:when test="$format != $epub2 and $format != $epub3"/>
         <!-- first section with close to the parent title, no page break -->
         <xsl:when test="not(preceding-sibling::*[$name = local-name()]) and not(preceding-sibling::tei:p|preceding-sibling::tei:quote)"/>
         <!-- start of a file  -->
@@ -240,29 +210,17 @@ Sections
   <!-- Floating division -->
   <xsl:template match="tei:floatingText">
     <xsl:param name="from"/>
-    <xsl:param name="el">
-      <xsl:choose>
-        <xsl:when test="$format = 'html5'">aside</xsl:when>
-        <xsl:otherwise>div</xsl:otherwise>
-      </xsl:choose>
-    </xsl:param>
-    <xsl:element name="{$el}" namespace="http://www.w3.org/1999/xhtml">
+    <aside>
       <xsl:call-template name="atts"/>
       <xsl:apply-templates>
         <xsl:with-param name="from" select="$from"/>
       </xsl:apply-templates>
-    </xsl:element>
+    </aside>
   </xsl:template>
   <!-- Cartouche d'entête d'acte -->
   <xsl:template match="tei:group/tei:text/tei:front ">
     <xsl:param name="from"/>
-    <xsl:param name="el">
-      <xsl:choose>
-        <xsl:when test="$format = 'html5'">header</xsl:when>
-        <xsl:otherwise>div</xsl:otherwise>
-      </xsl:choose>
-    </xsl:param>
-    <xsl:element name="{$el}" namespace="http://www.w3.org/1999/xhtml">
+    <header>
       <xsl:call-template name="atts"/>
       <!--
           <xsl:choose>
@@ -281,7 +239,7 @@ Sections
       <xsl:apply-templates select=".//tei:witness[@ana='edited']" mode="according">
         <xsl:with-param name="from" select="$from"/>
       </xsl:apply-templates>
-    </xsl:element>
+    </header>
   </xsl:template>
   <!-- Éléments coupés de la sortie, ou à implémenter -->
   <xsl:template match="tei:divGen "/>
@@ -311,21 +269,12 @@ Sections
   <!-- Page de titre -->
   <xsl:template match="tei:titlePage">
     <xsl:param name="from"/>
-    <xsl:param name="el">
-      <xsl:choose>
-        <xsl:when test="$format = 'html5'">section</xsl:when>
-        <xsl:otherwise>div</xsl:otherwise>
-      </xsl:choose>
-    </xsl:param>
-    <xsl:element name="{$el}" namespace="http://www.w3.org/1999/xhtml">
-      <xsl:if test="$format = $epub3">
-        <xsl:attribute name="epub:type">titlepage</xsl:attribute>
-      </xsl:if>
+    <section epub:type="titlepage">
       <xsl:call-template name="atts"/>
       <xsl:apply-templates>
         <xsl:with-param name="from" select="$from"/>
       </xsl:apply-templates>
-    </xsl:element>
+    </section>
   </xsl:template>
   <xsl:template match="tei:titlePage/tei:performance"/>
   <!-- <h[1-6]> titres avec niveaux hiérarchiques génériques selon le nombre d'ancêtres, il est possible de paramétrer le niveau, pour commencer à 1 en haut de document généré -->
@@ -1238,21 +1187,6 @@ Tables
     <xsl:choose>
       <xsl:when test="normalize-space(@n) = ''"/>
       <xsl:when test="$text =''"/>
-      <xsl:when test="$format = $epub2">
-        <xsl:if test="$mixed != ''">
-          <xsl:text> </xsl:text>
-        </xsl:if>
-        <sub>
-          <xsl:if test="$id != ''">
-            <xsl:attribute name="id">
-              <xsl:value-of select="$id"/>
-            </xsl:attribute>
-          </xsl:if>
-        </sub>
-        <xsl:if test="$mixed != ''">
-          <xsl:text> </xsl:text>
-        </xsl:if>
-      </xsl:when>
       <xsl:otherwise>
         <xsl:if test="$mixed != ''">
           <xsl:value-of select="$lf"/>
@@ -1444,13 +1378,7 @@ Tables
         <!-- bug in LibreOffice
         <xsl:when test="$format=$html5">time</xsl:when>
         -->
-        <xsl:otherwise>span</xsl:otherwise>
-      </xsl:choose>
-    </xsl:variable>
-    <xsl:variable name="att">
-      <xsl:choose>
-        <xsl:when test="$format=$html5">datetime</xsl:when>
-        <xsl:otherwise>title</xsl:otherwise>
+        <xsl:otherwise>time</xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
     <xsl:variable name="value">
@@ -1492,7 +1420,7 @@ Tables
       <xsl:when test=". = '' and $value != ''">
         <xsl:element name="{$el}" namespace="http://www.w3.org/1999/xhtml">
           <xsl:call-template name="atts"/>
-          <xsl:attribute name="{$att}">
+          <xsl:attribute name="datetime">
             <xsl:value-of select="$value"/>
           </xsl:attribute>
           <xsl:value-of select="$value"/>
@@ -1502,7 +1430,7 @@ Tables
         <xsl:element name="{$el}" namespace="http://www.w3.org/1999/xhtml">
           <xsl:call-template name="atts"/>
           <xsl:if test="$value != ''">
-            <xsl:attribute name="{$att}">
+            <xsl:attribute name="datetime">
               <xsl:value-of select="$value"/>
             </xsl:attribute>
           </xsl:if>
@@ -1542,35 +1470,26 @@ Tables
   </xsl:template>
   <!-- email -->
   <xsl:template match="tei:email">
-    <xsl:choose>
-      <xsl:when test="$format=$epub2">
-        <a href="mailto:{normalize-space(.)}">
-          <xsl:value-of select="normalize-space(.)"/>
-        </a>
-      </xsl:when>
-      <!-- hide email for publication on web -->
-      <xsl:otherwise>
-        <xsl:variable name="string">
-          <xsl:value-of select="substring-before(., '@')"/>
-          <xsl:text>'+'\x40'+'</xsl:text>
-          <xsl:value-of select="substring-after(., '@')"/>
-        </xsl:variable>
-        <xsl:text>&lt;</xsl:text>
-        <a>
-          <xsl:call-template name="atts"/>
-          <xsl:attribute name="href">#</xsl:attribute>
-          <xsl:attribute name="onmouseover">if(this.ok) return; this.href='mailto:<xsl:value-of select="$string"/>'; this.ok=true; </xsl:attribute>
-          <xsl:text>&#x200c;</xsl:text>
-          <xsl:value-of select="substring-before(., '@')"/>
-          <xsl:text>&#x200c;</xsl:text>
-          <xsl:text>＠</xsl:text>
-          <xsl:text>&#x200c;</xsl:text>
-          <xsl:value-of select="substring-after(., '@')"/>
-          <xsl:text>&#x200c;</xsl:text>
-        </a>
-        <xsl:text>&gt;</xsl:text>
-      </xsl:otherwise>
-    </xsl:choose>
+    <!-- hide email for publication on web -->
+    <xsl:variable name="string">
+      <xsl:value-of select="substring-before(., '@')"/>
+      <xsl:text>'+'\x40'+'</xsl:text>
+      <xsl:value-of select="substring-after(., '@')"/>
+    </xsl:variable>
+    <xsl:text>&lt;</xsl:text>
+    <a>
+      <xsl:call-template name="atts"/>
+      <xsl:attribute name="href">#</xsl:attribute>
+      <xsl:attribute name="onmouseover">if(this.ok) return; this.href='mailto:<xsl:value-of select="$string"/>'; this.ok=true; </xsl:attribute>
+      <xsl:text>&#x200c;</xsl:text>
+      <xsl:value-of select="substring-before(., '@')"/>
+      <xsl:text>&#x200c;</xsl:text>
+      <xsl:text>＠</xsl:text>
+      <xsl:text>&#x200c;</xsl:text>
+      <xsl:value-of select="substring-after(., '@')"/>
+      <xsl:text>&#x200c;</xsl:text>
+    </a>
+    <xsl:text>&gt;</xsl:text>
   </xsl:template>
   <!-- Pointeur sans label -->
   <xsl:template match="tei:ptr">
@@ -1600,13 +1519,7 @@ Tables
   -->
   <xsl:template match="tei:figure | tei:facsimile">
     <xsl:param name="from"/>
-    <xsl:param name="el">
-      <xsl:choose>
-        <xsl:when test="$format = 'html5'">figure</xsl:when>
-        <xsl:otherwise>div</xsl:otherwise>
-      </xsl:choose>
-    </xsl:param>
-    <xsl:element name="{$el}" namespace="http://www.w3.org/1999/xhtml">
+    <figure>
       <xsl:attribute name="id">
         <xsl:call-template name="id"/>
       </xsl:attribute>
@@ -1614,29 +1527,19 @@ Tables
       <xsl:apply-templates>
         <xsl:with-param name="from" select="$from"/>
       </xsl:apply-templates>
-    </xsl:element>
+    </figure>
   </xsl:template>
   <xsl:template match="tei:figure/tei:figDesc | tei:figure/tei:desc | tei:figure/tei:head">
     <xsl:param name="from"/>
     <xsl:choose>
       <xsl:when test=".=''"/>
-      <xsl:when test="$format = 'html5'">
+      <xsl:otherwise>
         <figcaption>
           <xsl:call-template name="atts"/>
           <xsl:apply-templates>
             <xsl:with-param name="from" select="$from"/>
           </xsl:apply-templates>
         </figcaption>
-      </xsl:when>
-      <xsl:otherwise>
-        <div>
-          <xsl:call-template name="atts">
-            <xsl:with-param name="class">figcaption</xsl:with-param>
-          </xsl:call-template>
-          <xsl:apply-templates>
-            <xsl:with-param name="from" select="$from"/>
-          </xsl:apply-templates>
-        </div>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -2130,7 +2033,7 @@ Elements block or inline level
           </xsl:with-param>
         </xsl:call-template>
       </xsl:when>
-      <xsl:when test="@corresp and contains(@type, 'embed') and $format != $epub2">
+      <xsl:when test="@corresp and contains(@type, 'embed')">
         <figure>
           <xsl:call-template name="atts">
             <xsl:with-param name="class">corresp</xsl:with-param>

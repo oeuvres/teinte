@@ -16,6 +16,8 @@ XSLT 1.0 is compatible browser, PHP, Python, Java…
   <xsl:include href="html/notes.xsl"/>
   <xsl:include href="html/teiHeader.xsl"/>
   <xsl:include href="html/toc.xsl"/>
+  <!-- Where to find static assets like CSS or JS -->
+  <xsl:param name="theme">https://oeuvres.github.io/teinte/theme/</xsl:param>
   <!-- used as a body class -->
   <xsl:param name="folder"/>
   <!--  -->

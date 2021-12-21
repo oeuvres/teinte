@@ -34,19 +34,25 @@ class Xml
         | LIBXML_NONET 
         | LIBXML_NSCLEAN 
         | LIBXML_NOCDATA
-        // | LIBXML_NOWARNING  // no warn for <?xml-model
+        // | LIBXML_NOWARNING  // ? hide warn for <?xml-model
     ;
     private static $logger;
 
+    /**
+     * Intialize static variables
+     */
     public static function init()
     {
         if (!extension_loaded("xsl")) {
-            throw new Exception('PHP xsl extension required. Check your php.ini');
+            throw new Exception('PHP xsl extension required. Check your php.ini. On Debian like systems: sudo apt install php-xml');
         }
         self::$logger = new NullLogger();
         libxml_use_internal_errors(true); // keep XML error for this process
     }
 
+    /**
+     * 
+     */
     public static function setLogger(LoggerInterface $logger)
     {
         self::$logger = $logger;
@@ -68,7 +74,7 @@ class Xml
     }
 
     /**
-     * Output the very informative libxml messages by the logger
+     * Output the informative libxml messages by the logger
      */
     public static function logLibxml(array $errors)
     {

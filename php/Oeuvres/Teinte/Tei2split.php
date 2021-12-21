@@ -23,7 +23,7 @@ class Tei2split extends AbstractTei2
 {
     const NAME = 'split';
     const EXT = '/';
-    const LABEL = 'split tei chapters in <div>';
+    const LABEL = 'split chapters in <tei:div>';
     const XSL = "tei2site.xsl";
 
     /**

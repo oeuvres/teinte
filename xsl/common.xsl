@@ -49,17 +49,6 @@ Gobal TEI parameters and variables are divided in different categories
   <xsl:param name="xslbase">
     <xsl:call-template name="xslbase"/>
   </xsl:param>
-  <!-- Allow caller to override protocol for theme (https) -->
-  <xsl:param name="http">https://</xsl:param>
-  <xsl:param name="theme">
-    <xsl:choose>
-      <xsl:when test="$xslbase != ''">
-        <xsl:value-of select="$xslbase"/>
-        <xsl:text>theme/</xsl:text>
-      </xsl:when>
-      <xsl:otherwise><xsl:value-of select="$http"/>oeuvres.github.io/teinte/theme/</xsl:otherwise>
-    </xsl:choose>
-  </xsl:param>
   <!-- Generation date, maybe modified by caller -->
   <xsl:param name="date">
     <xsl:choose>
@@ -82,8 +71,6 @@ Gobal TEI parameters and variables are divided in different categories
       <xsl:otherwise/>
     </xsl:choose>
   </xsl:param>
-  <!-- Choose an output format (has been used for epub) -->
-  <xsl:param name="format">html5</xsl:param>
   <!-- Name of file, from the caller -->
   <xsl:param name="filename"/>
   <!-- doc name -->
@@ -1532,7 +1519,7 @@ Le mode label génère un intitulé court obtenu par une liste de valeurs locali
     
   </xsl:template>
   
-  <!-- pour obtenir un chemin relatif à l'XSLT appliquée -->
+  <!-- In case of direct XSLT transformation in browser, get the folder -->
   <xsl:template name="xslbase">
     <xsl:param name="path" select="/processing-instruction('xml-stylesheet')[contains(., 'xsl')]"/>
     <xsl:choose>
@@ -1574,7 +1561,7 @@ Le mode label génère un intitulé court obtenu par une liste de valeurs locali
   </xsl:template>
 
   <!--
-    AGA, xslt 1 donc pas de fonction replace, un template pour y remedier.
+    Xslt 1 has no replace function, a workaround
   -->
   <xsl:template name="replace">
     <xsl:param name="text"/>
@@ -1668,7 +1655,7 @@ dégrossi le travail, mais du reste à faire  -->
       </xsl:if>
     </xsl:for-each>
   </xsl:template>
-  <!-- Mettre un point à la fin d'un contenu -->
+  <!-- Add un final as a separator -->
   <xsl:template name="dot">
     <xsl:param name="current" select="."/>
     <xsl:variable name="lastChar" select="substring($current, string-length($current))"/>

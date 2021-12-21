@@ -19,11 +19,11 @@ use Oeuvres\Kit\{File,Xml};
  * Export a TEI document as an html fragment <article>
  */
 
-class Tei2split extends AbstractTei2
+class Tei2site extends AbstractTei2
 {
     const NAME = 'site';
     const EXT = '/';
-    const LABEL = 'split tei chapters in <tei:div>';
+    const LABEL = 'Split tei chapters in a browsable html site';
     const XSL = "tei2site.xsl";
 
     /**
@@ -33,13 +33,12 @@ class Tei2split extends AbstractTei2
     {
         if (!$pars) $pars = array();
         // mkdir to have realpath
-        File::cleandir($dstFile);
-        $dst_dir = realpath($dstFile) . '/';
+        $dst_dir = File::cleandir($dstFile) . "/";
         $dst_dir = "file:///" . str_replace(DIRECTORY_SEPARATOR, "/", $dst_dir);
         $pars = array_merge($pars, array("dst_dir" => $dst_dir));
         $this->logger->info("Tei2\033[92m" . static::NAME . "->toUri()\033[0m " . $dst_dir);
         return Xml::transformToXml(
-            self::$xslDir.'tei2split.xsl',
+            self::$xslDir.'tei2site.xsl',
             $dom,
             $pars,
         );

@@ -118,7 +118,7 @@ class TeiSource implements LoggerAwareInterface
     {
         // should we keep here original XML to replay chain ?
         $xml = self::normTei($xml);
-        $this->dom = Xml::domXml($xml);
+        $this->dom = Xml::loadXml($xml);
         // spaces are normalized upper, keep them
         $this->dom->preserveWhiteSpace = true;
         return $this->dom;

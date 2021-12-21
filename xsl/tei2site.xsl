@@ -16,11 +16,15 @@ Split a single TEI book in different html chapters
   xmlns:tei="http://www.tei-c.org/ns/1.0"
   exclude-result-prefixes="tei"
 >
-  <xsl:import href="tei2split.xsl"/>
+  <xsl:import href="tei2split.xsl"/>  
   <xsl:import href="html/flow.xsl"/>
   <xsl:import href="html/notes.xsl"/>
   <xsl:import href="html/toc.xsl"/>
   <xsl:output indent="yes" encoding="UTF-8" method="xml" />
+  <!-- Still needed for creation of filenames -->
+  <xsl:variable name="split" select="true()"/>
+  <!-- Where to find static assets like CSS or JS -->
+  <xsl:param name="theme">https://oeuvres.github.io/teinte/theme/</xsl:param>
   <!-- extension for generated files and links -->
   <xsl:param name="_ext">.html</xsl:param>
 
@@ -48,10 +52,15 @@ Split a single TEI book in different html chapters
         <xsl:call-template name="head">
           <xsl:with-param name="title" select="$title"/>
         </xsl:call-template>
-        <link rel="stylesheet" type="text/css" href="{$theme}tei2html.css"/>
+        <link rel="stylesheet" type="text/css" href="{$theme}teinte.css"/>
+        <link rel="stylesheet" type="text/css" href="{$theme}layout.css"/>
         <script type="text/javascript" src="{$theme}Tree.js">//</script>
       </head>
       <body class="article {$corpusid}">
+        <header>
+          <xsl:call-template name="prevnext"/>
+          <xsl:call-template name="argument"/>
+        </header>
         <article>
           <xsl:attribute name="class">
             

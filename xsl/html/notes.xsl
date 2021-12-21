@@ -183,19 +183,9 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
       </xsl:choose>
     </xsl:variable>
     <xsl:if test="$notes != ''">
-      <xsl:variable name="el">
-        <xsl:choose>
-          <xsl:when test="$format=$epub2">div</xsl:when>
-          <xsl:otherwise>section</xsl:otherwise>
-        </xsl:choose>
-      </xsl:variable>
-      <xsl:element name="{$el}" namespace="http://www.w3.org/1999/xhtml">
-        <xsl:if test="$format = $epub3">
-          <xsl:attribute name="epub:type">footnotes</xsl:attribute>
-        </xsl:if>
-        <xsl:attribute name="class">footnotes</xsl:attribute>
+      <section epub:type="footnotes" class="footnotes">
         <xsl:copy-of select="$notes"/>
-      </xsl:element>
+      </section>
     </xsl:if>
   </xsl:template>
   <!-- Inline view for apparatus note -->
@@ -213,10 +203,7 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
     <xsl:variable name="html">
       <xsl:choose>
         <xsl:when test="$text='' and count(*)=1 and tei:p">
-          <span class="note" id="{$id}">
-            <xsl:if test="$format = $epub3">
-              <xsl:attribute name="epub:type">note</xsl:attribute>
-            </xsl:if>
+          <span class="note" id="{$id}" epub:type="note">
             <xsl:call-template name="noteback">
               <xsl:with-param name="class"/>
               <xsl:with-param name="from" select="$from"/>
@@ -263,24 +250,14 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
       </xsl:choose>
     </xsl:if>
   </xsl:template>
-  <!-- section de notes déjà inscrite dans la source -->
+  <!-- Block of notes  -->
   <xsl:template match="tei:div[@type='notes' or @type='footnotes']">
-    <xsl:variable name="el">
-      <xsl:choose>
-        <xsl:when test="$format=$epub2">div</xsl:when>
-        <xsl:otherwise>section</xsl:otherwise>
-      </xsl:choose>
-    </xsl:variable>
-    <xsl:element name="{$el}" namespace="http://www.w3.org/1999/xhtml">
-      <xsl:attribute name="class">footnotes</xsl:attribute>
+    <section epub:type="footnotes" class="footnotes">
       <xsl:attribute name="id">
         <xsl:call-template name="id"/>
       </xsl:attribute>
-      <xsl:if test="$format = $epub3">
-        <xsl:attribute name="epub:type">footnotes</xsl:attribute>
-      </xsl:if>
       <xsl:apply-templates/>
-    </xsl:element>
+    </section>
   </xsl:template>
   <!-- Note, ref link already in text -->
   <xsl:template match="tei:ref[@type='note']">
@@ -321,10 +298,7 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
           </xsl:choose>
         </xsl:variable>
         <!-- FBRreader -->
-        <a class="{$class}" href="{$target}" id="{$id}_">
-          <xsl:if test="$format = $epub3">
-            <xsl:attribute name="epub:type">noteref</xsl:attribute>
-          </xsl:if>
+        <a class="{$class}" href="{$target}" id="{$id}_" epub:type="noteref">
           <xsl:value-of select="$n"/>
         </a>
       </xsl:otherwise>
@@ -446,9 +420,7 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
       <xsl:attribute name="role">
         <xsl:text>note</xsl:text>
       </xsl:attribute>
-      <xsl:if test="$format = $epub3">
-        <xsl:attribute name="epub:type">note</xsl:attribute>
-      </xsl:if>
+      <xsl:attribute name="epub:type">note</xsl:attribute>
       <xsl:variable name="noteback">
         <xsl:choose>
           <xsl:when test="@place = 'margin'"/>
@@ -585,10 +557,7 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
       </xsl:variable>
       <!-- FBRreader -->
       <sup>
-        <a class="noteref" href="#{$id}" name="_{$id}">
-          <xsl:if test="$format = $epub3">
-            <xsl:attribute name="epub:type">noteref</xsl:attribute>
-          </xsl:if>
+        <a class="noteref" href="#{$id}" name="_{$id}" epub:type="noteref">
           <!-- xsl:attribute name="onclick">if(this.cloc) {this.parentNode.className='cit_n'; this.cloc=null; } else { this.cloc=true;  this.parentNode.className='cit_n_bibl'}; return true;</xsl:attribute -->
           <xsl:attribute name="onmouseover">this.parentNode.className='cit_n_bibl'</xsl:attribute>
           <xsl:attribute name="onmouseout">this.parentNode.className='cit_n'</xsl:attribute>

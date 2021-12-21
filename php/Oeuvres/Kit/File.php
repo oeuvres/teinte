@@ -30,12 +30,17 @@ class File
 
     /**
      * Check if a file is writable, if it does not exists
-     * go to the parent folder to test if it is writable.
+     * go to the parent folder to test if it is possible to create.
      */
     public static function writable(string $file, ?string $source = null):bool
     {
         while (!file_exists($file)) { // if not file exists, go up to parents
             $file = dirname($file);
+        }
+        if (is_link($file)) {
+            throw new InvalidArgumentException(
+                "\n".$source."\n    \"\033[91m$file\033[0m\" is a link, maybe dangerous to write in\n"
+            );
         }
         if (is_writable($file)) return true;
         if (is_readable($file)) {
@@ -87,73 +92,59 @@ class File
     }
 
     /**
-     * Delete all files in a directory, create it if not exist
+     * Ensure an empty dir with no contents, create it if not exist
      */
-    static public function cleandir(string $dir, ?int $depth = 0)
+    static public function cleandir(string $dir): ?string
     {
-        if (is_file($dir)) {
-            return unlink($dir);
-        }
+        File::writable($dir);
         // attempt to create the folder we want empty
-        if (!$depth && !file_exists($dir)) {
+        if (!file_exists($dir)) {
             self::mkdir($dir);
-            return;
+            return realpath($dir);
         }
-        // should be dir here
-        if (is_dir($dir)) {
-            $handle=opendir($dir);
-            while (false !== ($entry = readdir($handle))) {
-                if ($entry == "." || $entry == "..") {
-                    continue;
-                }
-                self::cleandir($dir.'/'.$entry, $depth+1);
-            }
-            closedir($handle);
-            // do not delete the root dir
-            if ($depth > 0) {
-                rmdir($dir);
-            }
-            // timestamp newDir
-            else {
-                touch($dir);
-            }
-            return;
-        }
+        self::rmdir($dir, true);
+        touch($dir); // change timestamp
+        return realpath($dir);
     }
-
 
     /**
      * Recursive deletion of a directory
-     * If $keep = true, keep directory with its acl
+     * If $keep = true, base directory is kept with its acl
      */
-    static function rmdir(string $dir, bool $keep = false) {
-        $dir = rtrim($dir, "/\\").DIRECTORY_SEPARATOR;
-        if (!is_dir($dir)) {
-            return $dir; // maybe deleted
+    static private function rmdir(string $dir, bool $keep = false)
+    {
+        // nothing to delete, go away
+        if (!file_exists($dir)) {
+            return false;
         }
+        if (is_file($dir)) {
+            throw new Exception("\"$dir\" is a file, not a directory to remove");
+        }
+
         if (!($handle = opendir($dir))) {
-            throw new Exception("Read impossible " . $dir);
+            throw new Exception("\"$dir\" impossible to open for remove");
         }
-        while(false !== ($filename = readdir($handle))) {
-            if ($filename == "." || $filename == "..") {
+        while (false !== ($entry = readdir($handle))) {
+            if ($entry == "." || $entry == "..") {
                 continue;
             }
-            $file = $dir.$filename;
-            if (is_link($file)) {
-                throw new Exception("Delete a link? ".$file);
+            $path = $dir.DIRECTORY_SEPARATOR.$entry;
+            if (is_link($path) || is_file($path)) {
+                if (!unlink($path)) {
+                    throw new Exception("\"$path\" impossible to delete");
+                }
             }
-            else if (is_dir($file)) {
-                self::rmdir($file);
+            else if (is_dir($path)) {
+                self::rmdir($path);
             }
             else {
-                unlink($file);
+                throw new Exception("\"$path\" what’s that? Not file nor dir");
             }
         }
         closedir($handle);
         if (!$keep) {
             rmdir($dir);
         }
-        return $dir;
     }
 
 

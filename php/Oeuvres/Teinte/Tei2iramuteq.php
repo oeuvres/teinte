@@ -20,7 +20,7 @@ class Tei2iramuteq extends AbstractTei2simple
 {
     const EXT = '_ira.txt';
     const NAME = 'iramuteq';
-    const LABEL = 'IRaMuteQ';
+    const LABEL = 'IRaMuteQ (formatted text)';
     const XSL = "txt/tei2iramuteq.xsl";
 }
 

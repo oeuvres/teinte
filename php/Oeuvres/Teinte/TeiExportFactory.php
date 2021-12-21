@@ -30,6 +30,7 @@ class TeiExportFactory
         // 'detag' => null,
         'markdown' => null,
         // 'naked' => '.txt',
+        'site' => null,
         'split' => null,
         'toc' => null,
     );
