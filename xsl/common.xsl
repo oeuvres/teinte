@@ -760,11 +760,11 @@ Gobal TEI parameters and variables are divided in different categories
       </xsl:when>
       <xsl:when test="not(ancestor::tei:group) and (self::tei:div or starts-with(local-name(), 'div'))">
         <xsl:choose>
-          <xsl:when test="ancestor::tei:body">body-</xsl:when>
-          <xsl:when test="ancestor::tei:front">front-</xsl:when>
-          <xsl:when test="ancestor::tei:back">back-</xsl:when>
+          <xsl:when test="ancestor::tei:body">s</xsl:when>
+          <xsl:when test="ancestor::tei:front">front</xsl:when>
+          <xsl:when test="ancestor::tei:back">back</xsl:when>
         </xsl:choose>
-        <xsl:number count="tei:div|tei:div1|tei:div2|tei:div3|tei:div4" format="1-1" level="multiple"/>
+        <xsl:number count="tei:div|tei:div1|tei:div2|tei:div3|tei:div4|tei:div5|tei:div6|tei:div7" format="1-1" level="multiple"/>
       </xsl:when>
       <!-- Simple hierarchy for <div>  -->
       <xsl:when test="self::tei:div and not(ancestor::tei:group)">

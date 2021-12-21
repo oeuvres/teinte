@@ -1,0 +1,130 @@
+/* CSS for Javascript teinte.tree.js */
+
+ol.tree,
+ul.tree,
+menu.tree {
+    padding: 0;
+    margin: 1em 0 1em 0;
+    list-style: none;
+    line-height: 105%;
+}
+
+.tree a {
+    color: black;
+    text-decoration: none;
+    border-bottom: none;
+    padding: 0 1ex 0 0;
+}
+
+.tree a:hover {
+    color: gray;
+}
+
+.tree ol,
+.tree ul,
+.tree menu {
+    list-style-type: none;
+    padding: 0 0 0 0;
+    margin: 2px 0 2px -9px;
+    border-left: dotted 1px transparent;
+}
+
+.tree li {
+    margin: 0;
+    background-repeat: no-repeat;
+    background-position: -1px 4px;
+    list-style-image: none;
+    list-style: none;
+    padding: 1px 0 1px 18px;
+    border: 1px solid transparent;
+}
+
+.tree ol:hover,
+.tree ul:hover {
+    border-left: dotted 1px #333;
+}
+
+.tree li.more,
+.tree li.less {
+    cursor: default
+}
+
+.tree li:before {
+    font-family: Arial, 'Liberation Sans', 'DejaVu Sans', 'FreeSans', 'Lucida Sans Unicode', sans-serif;
+    color: #666;
+    margin-left: -2ex;
+    float: left;
+}
+
+.tree li.more:before {
+    content: '▶ ';
+}
+
+
+/* ► */
+
+.tree li.less:before {
+    content: '▽ ';
+}
+
+
+/*  */
+
+.tree li:before {
+    content: '○ ';
+    font-weight: 900;
+    color: #999;
+}
+
+
+/* '○' */
+
+
+/* treejs is a class set by Tree.js to ensure that hidden blocks could be seen with no js, this order is important */
+
+@media screen {
+    .treejs li.less ol,
+    .treejs li.less ul {
+        display: block;
+    }
+    .treejs li.less>ol,
+    .treejs li.less>ul {
+        border-left: 1px dotted #FFF;
+    }
+    .treejs li.more ol,
+    .treejs li.more ul {
+        display: none;
+    }
+}
+
+@media print {
+    .tree li {
+        margin-top: none;
+        margin-bottom: none;
+        border: none;
+    }
+}
+
+.tree mark,
+.tree .mark,
+.tree .hi {
+    background: transparent;
+    padding-left: 2px;
+    border-left: 4px #888888 solid;
+}
+
+li a.here {
+    font-weight: bold;
+    color: #000;
+}
+
+li.here {
+    color: #000;
+    background-color: #FFFFFF;
+    border-top: 1px #E2DED0 solid;
+    border-bottom: 1px #E2DED0 solid;
+}
+
+li.here mark {
+    background: inherit;
+}

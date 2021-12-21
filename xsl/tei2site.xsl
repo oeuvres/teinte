@@ -24,9 +24,51 @@ Split a single TEI book in different html chapters
   <!-- Still needed for creation of filenames -->
   <xsl:variable name="split" select="true()"/>
   <!-- Where to find static assets like CSS or JS -->
-  <xsl:param name="theme">https://oeuvres.github.io/teinte/theme/</xsl:param>
+  <xsl:param name="theme">../../../../teinte/theme/</xsl:param>
   <!-- extension for generated files and links -->
   <xsl:param name="_ext">.html</xsl:param>
+
+
+  <xsl:template name="navigation">
+    <xsl:param name="tei"/>
+    <xsl:param name="href">
+      <xsl:value-of select="$dst_dir"/>
+      <xsl:call-template name="href"/>
+    </xsl:param>
+    
+    <xsl:document 
+      href="{$href}" 
+      omit-xml-declaration="yes" 
+      encoding="UTF-8" 
+      indent="yes"
+      >
+      <html  
+        xmlns:dc="http://purl.org/dc/terms/"
+        xmlns:dbo="http://dbpedia.org/ontology/"
+        xmlns:epub="http://www.idpf.org/2007/ops"
+        >
+        <xsl:call-template name="att-lang"/>
+        <xsl:call-template name="head"/>
+        <body class="article {$corpusid}">
+          <header>
+            <xsl:call-template name="breadcrumb"/>
+            <xsl:call-template name="prevnext"/>
+          </header>
+          <main>
+            <article>
+              <xsl:apply-templates select="$tei">
+                <!-- Titles start with <h1> -->
+                <xsl:with-param name="level" select="1"/>
+              </xsl:apply-templates>
+            </article>
+            <nav>
+              <xsl:call-template name="tocrel"/>
+            </nav>
+          </main>
+        </body>
+      </html>
+    </xsl:document>
+  </xsl:template>
 
   <!-- Content of document to write -->
   <xsl:template name="cont">
@@ -47,30 +89,29 @@ Split a single TEI book in different html chapters
       xmlns:epub="http://www.idpf.org/2007/ops"
       >
       <xsl:call-template name="att-lang"/>
-      <head>
-        <meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
-        <xsl:call-template name="head">
-          <xsl:with-param name="title" select="$title"/>
-        </xsl:call-template>
-        <link rel="stylesheet" type="text/css" href="{$theme}teinte.css"/>
-        <link rel="stylesheet" type="text/css" href="{$theme}layout.css"/>
-        <script type="text/javascript" src="{$theme}Tree.js">//</script>
-      </head>
+      <xsl:call-template name="head">
+        <xsl:with-param name="title" select="$title"/>
+      </xsl:call-template>
       <body class="article {$corpusid}">
         <header>
+          <xsl:call-template name="breadcrumb"/>
           <xsl:call-template name="prevnext"/>
-          <xsl:call-template name="argument"/>
         </header>
-        <article>
-          <xsl:attribute name="class">
-            
-            
-          </xsl:attribute>
-          <xsl:apply-templates select="$tei">
-            <!-- Titles start with <h1> -->
-            <xsl:with-param name="level" select="1"/>
-          </xsl:apply-templates>
-        </article>
+        <main>
+          <article>
+            <xsl:attribute name="class">
+              
+              
+            </xsl:attribute>
+            <xsl:apply-templates select="$tei">
+              <!-- Titles start with <h1> -->
+              <xsl:with-param name="level" select="1"/>
+            </xsl:apply-templates>
+          </article>
+        </main>
+        <footer>
+          <xsl:call-template name="prevnext"/>
+        </footer>
       </body>
     </html>
     
@@ -101,145 +142,38 @@ Split a single TEI book in different html chapters
           <xsl:when test="self::tei:front"/>
           <xsl:when test="self::tei:back"/>
           <xsl:otherwise>
-            <xsl:call-template name="a-label">
+            <xsl:call-template name="rel">
               <xsl:with-param name="base" select="$base"/>
             </xsl:call-template>
-            <xsl:text> » </xsl:text>
+            <xsl:if test="position() != last()">
+              <xsl:text> » </xsl:text>
+            </xsl:if>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:for-each>
+      <!--
       <xsl:call-template name="a-label">
         <xsl:with-param name="base" select="$base"/>
       </xsl:call-template>
+      -->
     </nav>
   </xsl:template>
   
+  
+  
   <!-- a prev/next navigation -->
   <xsl:template name="prevnext">
-    <xsl:param name="valign">middle</xsl:param>
     <nav class="prevnext">
-      <table align="center" width="100%" class="prevnext">
-        <tr>
-          <td  align="left" class="prev" width="50%">
-            <!-- like to the element just before, maybe a very far cousin
-            for-each seems more efficient than apply-templates
-            -->
-            <xsl:variable name="prev">
-              <!-- SLOW -->
-              <xsl:for-each select="preceding::*[key('split', generate-id())][not(self::tei:titlePage)][1]">
-                <xsl:call-template name="a-label">
-                  <xsl:with-param name="rel">prev</xsl:with-param>
-                </xsl:call-template>
-              </xsl:for-each>
-            </xsl:variable>
-            <xsl:choose>
-              <xsl:when test="$prev != ''">
-                <xsl:copy-of select="$prev"/>
-              </xsl:when>
-              <xsl:otherwise>
-                <!-- if no before, go back to welcome page ? -->
-                <!--
-                <xsl:for-each select="ancestor::tei:text[1]">
-                  <xsl:call-template name="a-label">
-                    <xsl:with-param name="rel">parent</xsl:with-param>
-                    <xsl:with-param name="prefix"><abbr>←</abbr><xsl:text> </xsl:text></xsl:with-param>
-                  </xsl:call-template>
-                </xsl:for-each>
-                -->
-              </xsl:otherwise>
-            </xsl:choose>
-          </td>
-          <!--
-          <td  align="center" valign="{$valign}" class="up">
-            <xsl:for-each select="ancestor-or-self::tei:* ">
-              <xsl:choose>
-                <xsl:when test="tei:head|tei:titlePage">
-                  <div>
-                    <xsl:call-template name="a-label">
-                      <xsl:with-param name="rel">up</xsl:with-param>
-                    </xsl:call-template>
-                  </div>
-                </xsl:when>
-                <xsl:when test="count(.|/*/tei:text) = 1">
-                  <div>
-                    <xsl:call-template name="a-label">
-                      <xsl:with-param name="rel">up</xsl:with-param>
-                    </xsl:call-template>
-                  </div>
-                </xsl:when>
-              </xsl:choose>
-            </xsl:for-each>
-          </td>
-          -->
-          <td  align="right" class="next" width="50%">
-            <!-- first child or descendant ? -->
-            <xsl:variable name="child">
-              <xsl:for-each select="descendant::*[not(self::tei:titlePage)][key('split', generate-id())][1]">
-                <xsl:call-template name="a-label">
-                  <xsl:with-param name="rel">next</xsl:with-param>
-                </xsl:call-template>
-              </xsl:for-each>
-            </xsl:variable>
-            <xsl:choose>
-              <xsl:when test="$child != ''">
-                <xsl:copy-of select="$child"/>
-              </xsl:when>
-              <xsl:otherwise>
-                <!-- Next splitable node, be careful to body without head -->
-                <xsl:variable name="next">
-                  <xsl:for-each select="following::*[not(self::tei:titlePage)][key('split', generate-id())][1]">
-                    <xsl:call-template name="a-label">
-                      <xsl:with-param name="rel">next</xsl:with-param>
-                    </xsl:call-template>
-                  </xsl:for-each>
-                </xsl:variable>
-                <xsl:choose>
-                  <xsl:when test="$next != ''">
-                    <xsl:copy-of select="$next"/>
-                  </xsl:when>
-                  <!-- seems end, go back to welcome page ? -->
-                  <!--
-                  <xsl:otherwise>
-                    <xsl:for-each select="ancestor::tei:text[1]">
-                      <xsl:call-template name="a-label">
-                        <xsl:with-param name="rel">parent</xsl:with-param>
-                        <xsl:with-param name="suffix"><xsl:text> </xsl:text><abbr>→</abbr></xsl:with-param>
-                      </xsl:call-template>
-                    </xsl:for-each>
-                  </xsl:otherwise>
-                  -->
-                </xsl:choose>
-              </xsl:otherwise>
-            </xsl:choose>
-          </td>
-        </tr>
-      </table>
+      <div class="prev">
+        <xsl:call-template name="prev"/>
+      </div>
+      <div class="next">
+        <xsl:call-template name="next"/>
+      </div>
     </nav>
   </xsl:template>
-  <!-- Plus efficace qu'une xpath lourde.
-preceding::*[ descendant-or-self::*[key('split', generate-id())] ][1]
-  -->
-  <xsl:template match="*" mode="prev" name="prev-a">
-    <xsl:param name="secure"/>
-    <xsl:choose>
-      <xsl:when test="not($secure)">
-        <xsl:apply-templates select="preceding::*[1]" mode="prev">
-          <xsl:with-param name="secure" select="true()"/>
-        </xsl:apply-templates>
-      </xsl:when>
-      <xsl:when test="descendant-or-self::*[key('split', generate-id())]">
-        <xsl:call-template name="a-label"/>
-      </xsl:when>
-      <xsl:when test="not(preceding::*[1])"/>
-      <xsl:otherwise>
-        <xsl:apply-templates select="preceding::*[1]" mode="prev">
-          <xsl:with-param name="secure" select="true()"/>
-        </xsl:apply-templates>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
   <!-- link to a section, shortening too big title -->
-  <xsl:template name="a-label">
+  <xsl:template name="rel">
     <!-- rel attribute -->
     <xsl:param name="rel"/>
     <!-- class attribute -->
@@ -287,11 +221,11 @@ preceding::*[ descendant-or-self::*[key('split', generate-id())] ][1]
             </xsl:call-template>
           </xsl:when>
           <!-- Titre trop complet ?
-        <xsl:when test="self::tei:text">
-          <xsl:copy-of select="$prefix"/>
-          <xsl:copy-of select="$t"/>
-        </xsl:when>
-        -->
+      <xsl:when test="self::tei:text">
+        <xsl:copy-of select="$prefix"/>
+        <xsl:copy-of select="$t"/>
+      </xsl:when>
+      -->
           <xsl:when test="string-length($title) &gt; 50">
             <xsl:attribute name="title">
               <xsl:value-of select="$title"/>
@@ -318,27 +252,29 @@ preceding::*[ descendant-or-self::*[key('split', generate-id())] ][1]
     <xsl:variable name="titlebranch">
       <xsl:call-template name="titlebranch"/>
     </xsl:variable>
-    <title>
-      <xsl:choose>
-        <xsl:when test="$title!=''">
-          <xsl:value-of select="normalize-space($title)"/>
-        </xsl:when>
-        <xsl:when test="normalize-space($titlebranch)!=''">
-          <xsl:value-of select="normalize-space($titlebranch)"/>
-        </xsl:when>
-        <xsl:when test="normalize-space($docid)!=''">
-          <xsl:value-of select="normalize-space($docid)"/>
-        </xsl:when>
-        <!-- TODO localize -->
-        <xsl:otherwise>
-          <xsl:call-template name="message">
-            <xsl:with-param name="id">notitle</xsl:with-param>
-          </xsl:call-template>          
-        </xsl:otherwise>
-      </xsl:choose>
-    </title>
-    <!-- Short title for item -->
-    <!-- mode meta do not work anymore
+    <head>
+      <meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+      <title>
+        <xsl:choose>
+          <xsl:when test="$title!=''">
+            <xsl:value-of select="normalize-space($title)"/>
+          </xsl:when>
+          <xsl:when test="normalize-space($titlebranch)!=''">
+            <xsl:value-of select="normalize-space($titlebranch)"/>
+          </xsl:when>
+          <xsl:when test="normalize-space($docid)!=''">
+            <xsl:value-of select="normalize-space($docid)"/>
+          </xsl:when>
+          <!-- TODO localize -->
+          <xsl:otherwise>
+            <xsl:call-template name="message">
+              <xsl:with-param name="id">notitle</xsl:with-param>
+            </xsl:call-template>          
+          </xsl:otherwise>
+        </xsl:choose>
+      </title>
+      <!-- Short title for item -->
+      <!-- mode meta do not work anymore
     <xsl:variable name="label">
       <xsl:if test="ancestor::tei:text[@n]">
         <xsl:value-of select="ancestor::tei:text/@n"/>
@@ -348,36 +284,41 @@ preceding::*[ descendant-or-self::*[key('split', generate-id())] ][1]
     </xsl:variable>
     <meta name="label" content="{normalize-space($label)}"/>
     -->
-    <!-- Chapter metas when relevant, like author, date, maybe we should go uper if nothing found -->
-    <xsl:apply-templates select="." mode="meta"/>
-    <!-- Maydo
+      <!-- Chapter metas when relevant, like author, date, maybe we should go uper if nothing found -->
+      <xsl:apply-templates select="." mode="meta"/>
+      <!-- Maydo
     <xsl:if test="$seriestitle != ''">
       <link rel="dc:isPartOf" href="." title="{normalize-space($seriestitle)}"/>
     </xsl:if>
     -->
-    <!-- Consumer may use this ancestor string to build a breadcrumb -->
-    <xsl:for-each select="ancestor::*">
-      <xsl:choose>
-        <xsl:when test="self::tei:body"/>
-        <xsl:when test="self::tei:front"/>
-        <xsl:when test="self::tei:back"/>
-        <xsl:when test="self::tei:text"/>
-        <xsl:when test="self::tei:TEI"/>
-        <xsl:otherwise>
-          <link rel="dc:isPartOf">
-            <xsl:attribute name="href">
-              <xsl:call-template name="href"/>
-            </xsl:attribute>
-            <xsl:attribute name="label">
-              <xsl:variable name="label">
-                <xsl:apply-templates select="." mode="label"/>
-              </xsl:variable>
-              <xsl:value-of select="normalize-space($label)"/>
-            </xsl:attribute>
-          </link>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:for-each>
+      <!-- Consumer may use this ancestor string to build a breadcrumb -->
+      <xsl:for-each select="ancestor::*">
+        <xsl:choose>
+          <xsl:when test="self::tei:body"/>
+          <xsl:when test="self::tei:front"/>
+          <xsl:when test="self::tei:back"/>
+          <xsl:when test="self::tei:text"/>
+          <xsl:when test="self::tei:TEI"/>
+          <xsl:otherwise>
+            <link rel="dc:isPartOf">
+              <xsl:attribute name="href">
+                <xsl:call-template name="href"/>
+              </xsl:attribute>
+              <xsl:attribute name="label">
+                <xsl:variable name="label">
+                  <xsl:apply-templates select="." mode="label"/>
+                </xsl:variable>
+                <xsl:value-of select="normalize-space($label)"/>
+              </xsl:attribute>
+            </link>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:for-each>
+      <link rel="stylesheet" type="text/css" href="{$theme}teinte.css"/>
+      <link rel="stylesheet" type="text/css" href="{$theme}teinte.layout.css"/>
+      <link rel="stylesheet" type="text/css" href="{$theme}teinte.tree.css"/>
+      <script type="text/javascript" src="{$theme}teinte.tree.js">//</script>
+    </head>
   </xsl:template>
   
   

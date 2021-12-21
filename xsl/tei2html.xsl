@@ -38,16 +38,14 @@ XSLT 1.0 is compatible browser, PHP, Python, Java…
       <xsl:call-template name="att-lang"/>
       <head>
         <meta charset="UTF-8"/>
-        <link rel="preconnect" href="https://fonts.googleapis.com"/>
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin"/>
-        <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;0,900;1,300;1,700&amp;display=swap" rel="stylesheet"/>
         <meta name="modified" content="{$date}"/>
         <!-- déclaration classes css locale (permettre la surcharge si généralisation) -->
         <!-- à travailler
         <xsl:apply-templates select="/*/tei:teiHeader/tei:encodingDesc/tei:tagsDecl"/>
         -->
         <link rel="stylesheet" type="text/css" href="{$theme}teinte.css"/>
-        <link rel="stylesheet" type="text/css" href="{$theme}layout.css"/>
+        <link rel="stylesheet" type="text/css" href="{$theme}teinte.layout.css"/>
+        <link rel="stylesheet" type="text/css" href="{$theme}teinte.tree.css"/>
         <style>
 .name {background: rgba(192, 192, 192, 0.5)}
 .persName {background: rgba(255, 255, 0, 0.5)}
@@ -92,10 +90,7 @@ XSLT 1.0 is compatible browser, PHP, Python, Java…
             </nav>
           </aside>
         </div>
-        <xsl:if test="count(key('prettify', 1))">
-          <script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js">//</script>
-        </xsl:if>
-        <script type="text/javascript" charset="utf-8" src="{$theme}Tree.js">//</script>
+        <script type="text/javascript" charset="utf-8" src="{$theme}teinte.tree.js">//</script>
       </body>
     </html>
   </xsl:template>

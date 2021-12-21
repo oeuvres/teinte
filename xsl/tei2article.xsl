@@ -17,11 +17,6 @@ XSLT 1.0, compatible browser, PHP, Python, Java…
 <xsl:transform version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" xmlns:tei="http://www.tei-c.org/ns/1.0" exclude-result-prefixes="tei">
   <xsl:import href="html/flow.xsl"/>
   <xsl:import href="html/notes.xsl"/>
-  <!--
-  <xsl:include href="common.xsl"/>
-  -->
-  <!-- Name of this xsl  -->
-  <xsl:param name="this">tei2html.xsl</xsl:param>
   <!-- Maybe used as a body class -->
   <xsl:param name="folder"/>
   <!--  -->

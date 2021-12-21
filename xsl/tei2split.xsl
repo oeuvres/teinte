@@ -63,34 +63,24 @@ use="generate-id(.)"/>
   <!-- Do not output text -->
   <xsl:template match="text()" mode="split"/>
   
-  <!-- section container -->
-  <xsl:template match="tei:back | tei:body | tei:front" mode="split">
-    <xsl:choose>
-      <!-- simple content -->
-      <xsl:when test="tei:p|tei:l|tei:list|tei:argument|tei:table|tei:docTitle|tei:docAuthor">
-        <xsl:call-template name="document"/>
-      </xsl:when>
-      <!-- Sections, blocks will be lost -->
-      <xsl:when test="descendant::*[key('split', generate-id())]">
-        <xsl:apply-templates select="tei:argument  | tei:div | tei:div0 | tei:div1 |  tei:castList | tei:epilogue | tei:performance | tei:prologue | tei:set | tei:titlePage" mode="split"/>
-      </xsl:when>
-    </xsl:choose>
-  </xsl:template> 
+
   
   <!-- Sections, candidates for split -->
   <xsl:template match="
-    tei:group/tei:text | tei:group |
-    tei:div | tei:div0 | tei:div1 | tei:div2 | tei:div3 | tei:div4 | tei:div5 | tei:div6 | tei:div7 
+    tei:text| tei:group/tei:text | tei:group | tei:back | tei:body | tei:front
+  | tei:div | tei:div0 | tei:div1 | tei:div2 | tei:div3 | tei:div4 | tei:div5 | tei:div6 | tei:div7 
     " mode="split">
     <xsl:param name="type"/>
+    <!-- take content before sections -->
+    <xsl:variable name="before" select="generate-id(
+      tei:back | tei:body | tei:front
+    | tei:group|tei:div|tei:div0|tei:div1|tei:div2|tei:div3|tei:div4|tei:div5|tei:div6)"/>
+    <xsl:variable name="blocks" select="tei:*[following-sibling::*[generate-id(.)=$before]]"/>
     <xsl:choose>
       <!-- there are children to split, so we should do something special with what is before (and also after)
           Is it a great idea to open a file/page for such division which could contain no more than a title ?      
       -->
       <xsl:when test="descendant::*[key('split', generate-id())]">
-        <!-- take content before sections -->
-        <xsl:variable name="before" select="generate-id(tei:group|tei:div|tei:div0|tei:div1|tei:div2|tei:div3|tei:div4|tei:div5|tei:div6)"/>
-        <xsl:variable name="blocks" select="tei:*[following-sibling::*[generate-id(.)=$before]]"/>
         <!-- Get last pb ? -->
         <xsl:variable name="lastpb">
           <!-- if a page break just before, catch it -->
@@ -101,14 +91,22 @@ use="generate-id(.)"/>
         
         <!-- TO synchronize with tei2opf.xsl -->
         <xsl:choose>
-          <xsl:when test="(self::tei:front|self::tei:body|self::tei:back) and not(tei:p|tei:l|tei:list|tei:argument|tei:table)"/>
           <xsl:when test="$blocks[tei:*[local-name()!='head'][local-name()!='pb'][local-name()!='index']]">
             <xsl:call-template name="document">
               <xsl:with-param name="tei" select="$blocks"/>
+              <xsl:with-param name="subtoc" select="true()"/>
             </xsl:call-template>
           </xsl:when>
+          <xsl:otherwise>
+            <xsl:call-template name="navigation">
+              <xsl:with-param name="tei" select="$blocks"/>
+            </xsl:call-template>
+          </xsl:otherwise>
         </xsl:choose>
-        <xsl:apply-templates select=" tei:div | tei:div0 | tei:div1 | tei:div2 | tei:div3 | tei:div4 | tei:div5 | tei:div6 | tei:div7 " mode="split"/>
+        <xsl:apply-templates select="
+          tei:back | tei:body | tei:front
+        | tei:div | tei:div0 | tei:div1 | tei:div2 | tei:div3 | tei:div4 | tei:div5 | tei:div6 | tei:div7
+        " mode="split"/>
         <!-- What about content after last section ? -->
       </xsl:when>
       <!-- Should be a leave with no children to split -->
@@ -123,10 +121,67 @@ use="generate-id(.)"/>
     </xsl:choose>
   </xsl:template>
   
+  <!-- 
+Process prev/next element 
+  -->
+  <xsl:template name="rel"/>
+  
+  <xsl:template name="prev">
+    <xsl:for-each select="preceding::*[key('split', generate-id())][not(self::tei:titlePage)][1]">
+      <xsl:call-template name="rel">
+        <xsl:with-param name="rel">prev</xsl:with-param>
+      </xsl:call-template>
+    </xsl:for-each>
+  </xsl:template>
+  
+  <xsl:template name="next">
+    <xsl:variable name="child" select="descendant::*[not(self::tei:titlePage)][key('split', generate-id())][1]"/>
+    <xsl:choose>
+      <xsl:when test="$child">
+        <xsl:for-each select="$child">
+          <xsl:call-template name="rel">
+            <xsl:with-param name="rel">next</xsl:with-param>
+          </xsl:call-template>
+        </xsl:for-each>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:for-each select="following::*[not(self::tei:titlePage)][key('split', generate-id())][1]">
+          <xsl:call-template name="rel">
+            <xsl:with-param name="rel">next</xsl:with-param>
+          </xsl:call-template>
+        </xsl:for-each>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  
+  <xsl:template match="*" name="prev-obsolet">
+    <xsl:param name="secure"/>
+    <xsl:choose>
+      <xsl:when test="not($secure)">
+        <xsl:apply-templates select="preceding::*[1]" mode="prev">
+          <xsl:with-param name="secure" select="true()"/>
+        </xsl:apply-templates>
+      </xsl:when>
+      <xsl:when test="descendant-or-self::*[key('split', generate-id())]">
+        <xsl:copy-of select="."/>
+      </xsl:when>
+      <xsl:when test="not(preceding::*[1])"/>
+      <xsl:otherwise>
+        <xsl:apply-templates select="preceding::*[1]" mode="prev">
+          <xsl:with-param name="secure" select="true()"/>
+        </xsl:apply-templates>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  
 
   <!-- Metadata, one day, should do something -->
   <xsl:template match="tei:teiHeader" mode="split"/>
   
+  <!-- Called for sections nodes without content (except a title) -->
+  <xsl:template name="navigation">
+    
+  </xsl:template>
    
   <!-- Write a document -->
   <xsl:template name="document">
