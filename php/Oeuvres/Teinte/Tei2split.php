@@ -22,9 +22,9 @@ use Oeuvres\Kit\{File,Xml};
 class Tei2split extends AbstractTei2
 {
     const NAME = 'split';
-    const EXT = '/';
+    const EXT = '_xml/';
     const LABEL = 'split chapters in <tei:div>';
-    const XSL = "tei2site.xsl";
+    const XSL = "tei2split.xsl";
 
     /**
      * @ override
@@ -32,14 +32,14 @@ class Tei2split extends AbstractTei2
     public function toUri(DOMDocument $dom, string $dstFile, ?array $pars=array())
     {
         if (!$pars) $pars = array();
-        // mkdir to have realpath
-        File::cleandir($dstFile);
-        $dst_dir = realpath($dstFile) . '/';
-        $dst_dir = "file:///" . str_replace(DIRECTORY_SEPARATOR, "/", $dst_dir);
+        $dst_dir = File::cleandir($dstFile) . "/";
+        if (DIRECTORY_SEPARATOR == "\\") {
+            $dst_dir = "file:///" . str_replace('\\', '/', $dst_dir);
+        }
         $pars = array_merge($pars, array("dst_dir" => $dst_dir));
         $this->logger->info("Tei2\033[92m" . static::NAME . "->toUri()\033[0m " . $dst_dir);
         return Xml::transformToXml(
-            self::$xslDir.'tei2split.xsl',
+            self::$xslDir.static::XSL,
             $dom,
             $pars,
         );

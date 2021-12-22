@@ -3,7 +3,8 @@
 
 TEI to HTML, main flow of text
 
-LGPL  http://www.gnu.org/licenses/lgpl.html
+Part of Teinte https://github.com/oeuvres/teinte
+BSD-3-Clause https://opensource.org/licenses/BSD-3-Clause
 © 2019 Frederic.Glorieux@fictif.org et OPTEOS
 © 2013 Frederic.Glorieux@fictif.org et LABEX OBVIL
 © 2012 Frederic.Glorieux@fictif.org

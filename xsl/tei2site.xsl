@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-LGPL  http://www.gnu.org/licenses/lgpl.html
-© 2010 Frederic.Glorieux@fictif.org et École nationale des chartes
-© 2012 Frederic.Glorieux@fictif.org 
-© 2013 Frederic.Glorieux@fictif.org et LABEX OBVIL
+Part of Teinte https://github.com/oeuvres/teinte
+BSD-3-Clause https://opensource.org/licenses/BSD-3-Clause
+Copyright (c) 2020 frederic.glorieux@fictif.org
+Copyright (c) 2013 Frederic.Glorieux@fictif.org et LABEX OBVIL
+Copyright (c) 2012 Frederic.Glorieux@fictif.org 
+Copyright (c) 2010 Frederic.Glorieux@fictif.org et École nationale des chartes
 
 
 Split a single TEI book in different html chapters
@@ -24,7 +26,7 @@ Split a single TEI book in different html chapters
   <!-- Still needed for creation of filenames -->
   <xsl:variable name="split" select="true()"/>
   <!-- Where to find static assets like CSS or JS -->
-  <xsl:param name="theme">../../../../teinte/theme/</xsl:param>
+  <xsl:param name="theme">https://oeuvres.github.io/teinte/theme/</xsl:param>
   <!-- extension for generated files and links -->
   <xsl:param name="_ext">.html</xsl:param>
 

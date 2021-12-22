@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-LGPL  http://www.gnu.org/licenses/lgpl.html
+Part of Teinte https://github.com/oeuvres/teinte
+BSD-3-Clause https://opensource.org/licenses/BSD-3-Clause
 © 2013 Frederic.Glorieux@fictif.org & LABEX OBVIL
 © 2012 Frederic.Glorieux@fictif.org 
 © 2010 Frederic.Glorieux@fictif.org & École nationale des chartes

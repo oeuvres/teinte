@@ -2,7 +2,8 @@
 <!--
 Produce a table of contents from section structure
 
-LGPL  http://www.gnu.org/licenses/lgpl.html
+Part of Teinte https://github.com/oeuvres/teinte
+BSD-3-Clause https://opensource.org/licenses/BSD-3-Clause
 © 2019 Frederic.Glorieux@fictif.org & Opteos & LABEX OBVIL
 © 2013 Frederic.Glorieux@fictif.org & LABEX OBVIL
 © 2012 Frederic.Glorieux@fictif.org 

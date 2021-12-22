@@ -2,6 +2,9 @@
 <!--
   
 Interpret TEI header as html.
+
+Part of Teinte https://github.com/oeuvres/teinte
+BSD-3-Clause https://opensource.org/licenses/BSD-3-Clause
 © 2012, 2015 Frédéric Glorieux
 
 -->

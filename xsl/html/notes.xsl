@@ -2,7 +2,8 @@
 <!--
 TEI to HTML, handling notes and critical apparatus
 
-LGPL  http://www.gnu.org/licenses/lgpl.html
+Part of Teinte https://github.com/oeuvres/teinte
+BSD-3-Clause https://opensource.org/licenses/BSD-3-Clause
 © 2016 Frederic.Glorieux@fictif.org 
 
 

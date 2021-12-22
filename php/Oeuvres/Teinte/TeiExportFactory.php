@@ -25,6 +25,7 @@ class TeiExportFactory
         'article' => null,
         'dc' => null,
         'docx' => null,
+        'elements' => null,
         'html' => null,
         'iramuteq' => null,
         // 'detag' => null,
