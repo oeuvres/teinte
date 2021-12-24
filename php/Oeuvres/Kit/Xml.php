@@ -291,19 +291,13 @@ class Xml
                 '@<a class="noteref".*?</a>@', // suppress footnote call
                 '@<[^>]+>@' // wash tags
             ),
-            array(__CLASS__, 'blank'),
+            // blanking a string, keeping new lines
+            function($matches) {
+                return preg_replace("/[^\n]/", " ", $matches[0]);
+            },
             $html
         );
         return $html;
-    }
-    /**
-     * blanking a string, keeping new lines
-     */
-    private static function blank(string $string):string
-    {
-        if (is_array($string)) $string = $string[0];
-        // if (strpos($string, '<tt class="num')===0) return "_NUM_".str_repeat(" ", strlen($string) - 5);
-        return preg_replace("/[^\n]/", " ", $string);
     }
 
 }

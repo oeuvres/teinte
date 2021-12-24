@@ -20,25 +20,12 @@ use Oeuvres\Kit\File;
  */
 class Sqlite
 {
-    /**
-     * get a pdo link to an sqlite database with good options
-     */
-    public static function pdo(string $sqliteFile, string $create): PDO
-    {
-        $dsn = "sqlite:" . $sqliteFile;
-        // if not exists, create
-        if (!file_exists($sqliteFile)) {
-            return self::sqlcreate($sqliteFile, $create);
-        }
-        else {
-            return self::sqlopen($sqliteFile, $create);
-        }
-    }
+
 
     /**
      * Open a pdo link
      */
-    private static function sqlopen(string $sqliteFile): PDO
+    public static function open(string $sqliteFile): PDO
     {
         $dsn = "sqlite:" . $sqliteFile;
         $pdo = new PDO($dsn);
@@ -50,11 +37,11 @@ class Sqlite
     /**
      * Renew a database with an SQL script to create tables
      */
-    private static function sqlcreate(string $sqliteFile, string $create): PDO
+    public static function create(string $sqliteFile, string $create): PDO
     {
         if (file_exists($sqliteFile)) unlink($sqliteFile);
         File::mkdir(dirname($sqliteFile));
-        $pdo = self::sqlopen($sqliteFile);
+        $pdo = self::open($sqliteFile);
         @chmod($sqliteFile, 0775);
         $pdo->exec($create);
         return $pdo;

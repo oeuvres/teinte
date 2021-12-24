@@ -8,7 +8,7 @@ Copyright (c) 2020 frederic.glorieux@fictif.org
 
 Split a single TEI book in different elements
 -->
-<xsl:transform version="1.0"
+<xsl:transform version="1.1"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns="http://www.w3.org/1999/xhtml"
   xmlns:tei="http://www.tei-c.org/ns/1.0"
@@ -29,9 +29,10 @@ Split a single TEI book in different elements
     <xsl:variable name="href">
       <xsl:value-of select="$dst_dir"/>
       <xsl:call-template name="href"/>
+      <!-- Shall we need a suffix here ? -->
     </xsl:variable>
     <xsl:document 
-      href="{$href}_art.html" 
+      href="{$href}.html" 
       omit-xml-declaration="yes" 
       encoding="UTF-8" 
       indent="yes"

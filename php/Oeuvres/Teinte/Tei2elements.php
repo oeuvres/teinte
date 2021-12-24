@@ -17,7 +17,7 @@ namespace Oeuvres\Teinte;
 class Tei2elements extends Tei2split
 {
     const NAME = 'elements';
-    const EXT = '_els/';
+    const EXT = '/';
     const LABEL = 'Split tei chapters in elements to build a site';
     const XSL = "tei2elements.xsl";
 
