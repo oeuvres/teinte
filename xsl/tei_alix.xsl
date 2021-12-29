@@ -15,9 +15,9 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
   xmlns:alix="http://alix.casa"
   exclude-result-prefixes="tei"
 >
-  <xsl:import href="flow.xsl"/>
-  <xsl:import href="notes.xsl"/>
-  <xsl:import href="toc.xsl"/>
+  <xsl:import href="tei_flow_html.xsl"/>
+  <xsl:import href="tei_notes_html.xsl"/>
+  <xsl:import href="tei_toc_html.xsl"/>
   <xsl:output indent="yes" encoding="UTF-8" method="xml" />
   <!-- chapter split policy -->
   <xsl:key name="split" match="

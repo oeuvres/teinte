@@ -85,7 +85,7 @@ class TeiSource implements LoggerAwareInterface
 
     /**
      * Build a destination file path according to a preferred format
-     * extnsion. Nothing is supposed to be loaded, such path is used
+     * extension. Nothing is supposed to be loaded, such path is used
      * for testing.
      */
     function dstFile(string $srcFile, string $format, ?string $dstDir):string

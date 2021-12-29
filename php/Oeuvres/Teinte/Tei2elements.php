@@ -19,7 +19,7 @@ class Tei2elements extends Tei2split
     const NAME = 'elements';
     const EXT = '/';
     const LABEL = 'Split tei chapters in elements to build a site';
-    const XSL = "tei2elements.xsl";
+    const XSL = "tei_elements.xsl";
 
 }
 

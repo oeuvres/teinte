@@ -21,7 +21,7 @@ class Tei2html extends AbstractTei2simple
     const NAME = 'html';
     const EXT = '.html';
     const LABEL = '<html> full document';
-    const XSL = "tei2html.xsl";
+    const XSL = "tei_html.xsl";
     // TODO parameters for XSLT 
 
     /**

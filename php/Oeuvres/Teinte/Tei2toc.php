@@ -21,7 +21,7 @@ class Tei2toc extends AbstractTei2simple
     const NAME = 'toc';
     const EXT = '_toc.html';
     const LABEL = '<nav> table of contents';
-    const XSL = "tei2toc.xsl";
+    const XSL = "tei_html_toc.xsl";
 }
 
 // EOF

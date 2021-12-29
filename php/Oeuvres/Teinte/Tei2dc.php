@@ -19,7 +19,7 @@ class Tei2dc extends AbstractTei2simple
     const EXT = '_dc.xml';
     const NAME = 'dc';
     const LABEL = 'Dublin Core (metadata)';
-    const XSL = "misc/tei2dc.xsl";
+    const XSL = "misc/tei_dc.xsl";
 }
 
 // EOF

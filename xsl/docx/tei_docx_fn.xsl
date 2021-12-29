@@ -5,7 +5,7 @@
 
 
 exclude-result-prefixes="tei">
-  <xsl:import href="tei2docx.xsl"/>
+  <xsl:import href="tei_docx.xsl"/>
   <xsl:template match="/">
     <w:footnotes>
       <w:footnote w:type="separator" w:id="-1">

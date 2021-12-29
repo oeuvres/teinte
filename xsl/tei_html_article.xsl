@@ -15,8 +15,8 @@ BSD-3-Clause https://opensource.org/licenses/BSD-3-Clause
 XSLT 1.0, compatible browser, PHP, Python, Java…
 -->
 <xsl:transform version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" xmlns:tei="http://www.tei-c.org/ns/1.0" exclude-result-prefixes="tei">
-  <xsl:import href="html/flow.xsl"/>
-  <xsl:import href="html/notes.xsl"/>
+  <xsl:import href="html/tei_flow_html.xsl"/>
+  <xsl:import href="html/tei_notes_html.xsl"/>
   <!-- Maybe used as a body class -->
   <xsl:param name="folder"/>
   <!--  -->

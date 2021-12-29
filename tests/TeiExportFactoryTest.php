@@ -4,19 +4,22 @@ declare(strict_types=1);
 
 include_once(dirname(__DIR__) . '/php/autoload.php');
 
+use Psr\Log\LogLevel;
+use Oeuvres\Kit\LoggerCli;
 use Oeuvres\Teinte\TeiExportFactory;
+use Oeuvres\Teinte\TeiSource;
 
+$logger = new LoggerCli(LogLevel::DEBUG);
+$logger->info("Test all available TEI export formats");
+$srcFile = __DIR__.'/blanqui1866_prise-armes.xml';
+$source = new TeiSource();
+$source->load($srcFile);
+$dstDir = __DIR__.'/out/';
 
-$formats = array(
-    "NOT A FORMAT",
-    "dc",
-    "iramuteq",
-    "markdown",
-    "toc",
-);
-
-foreach ($formats as $format){
-    echo $format . "?\t" . var_export(TeiExportFactory::has($format), true)."\n";
+foreach (TeiExportFactory::list() as $format){
+    $logger->info($format);
+    $dstFile = $source->dstFile($srcFile, $format, $dstDir);
+    $source->toUri($format, $dstFile);
 }
 
 // EOF

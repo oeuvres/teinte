@@ -2,7 +2,7 @@
 <xsl:transform xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.1"
   
    xmlns="http://schemas.openxmlformats.org/package/2006/relationships"
-  
+   
    xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math"
    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
    xmlns:o="urn:schemas-microsoft-com:office:office"
@@ -22,24 +22,15 @@
    xmlns:tei="http://www.tei-c.org/ns/1.0"
    exclude-result-prefixes="tei"
   >
-  <xsl:import href="tei2docx.xsl"/>
+  <xsl:import href="tei_docx.xsl"/>
   <xsl:template match="/">
-    <w:comments>
-      <xsl:for-each select="//comment()">
-        <w:comment w:id="3" w:initials="TEI" w:author="{$filename}">
-          <xsl:attribute name="w:id">
-            <xsl:call-template name="id"/>
-          </xsl:attribute>
-          <w:p>
-            <w:pPr>
-              <w:pStyle w:val="Commentaire"/>
-            </w:pPr>
-            <w:r>
-              <w:t xml:space="preserve"><xsl:value-of select="."/></w:t>
-            </w:r>
-          </w:p>
-        </w:comment>
-      </xsl:for-each>
-      </w:comments>
+    <Relationships>
+      <xsl:apply-templates select="//tei:note[not(parent::tei:body | parent::tei:div | parent::tei:div1 | parent::tei:div2 | parent::tei:div3 | parent::tei:div4 | parent::tei:div5 | parent::tei:div6 | parent::tei:div7 | parent::tei:div8 | parent::tei:div9  | ancestor::tei:note | parent::tei:sp)]"/>
+    </Relationships>
+  </xsl:template>
+  <xsl:template match="tei:note">
+    <xsl:for-each select=".//tei:ref | .//tei:graphic">
+      <xsl:call-template name="rel"/>
+    </xsl:for-each>
   </xsl:template>
 </xsl:transform>

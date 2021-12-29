@@ -4,7 +4,7 @@ declare(strict_types=1);
 include_once(dirname(__DIR__) . '/php/autoload.php');
 
 use Oeuvres\Kit\Xml;
-use Oeuvres\Kit\Logger;
+use Oeuvres\Kit\LoggerCli;
 use Psr\Log\LogLevel;
 
 /**
@@ -12,7 +12,7 @@ use Psr\Log\LogLevel;
  * Answer: negligible compared to load of textual document
  */
 
-$logger = new Logger();
+$logger = new LoggerCli();
 Xml::setLogger($logger);
 $xml = file_get_contents(__DIR__.'/blanqui1866_prise-armes.xml');
 echo "Check if everything is OK before massive load\n";

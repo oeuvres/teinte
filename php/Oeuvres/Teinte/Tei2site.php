@@ -24,7 +24,7 @@ class Tei2site extends Tei2split
     const NAME = 'site';
     const EXT = '/';
     const LABEL = 'Split tei chapters in a browsable html site';
-    const XSL = "tei2site.xsl";
+    const XSL = "tei_html_site.xsl";
 
 }
 

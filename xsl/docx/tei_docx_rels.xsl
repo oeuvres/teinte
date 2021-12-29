@@ -23,7 +23,7 @@
    xmlns:tei="http://www.tei-c.org/ns/1.0"
    exclude-result-prefixes="tei"
   >
-  <xsl:import href="tei2docx.xsl"/>
+  <xsl:import href="tei_docx.xsl"/>
   <xsl:output encoding="UTF-8" indent="yes" method="xml"/>
   <xsl:template match="/">
     <Relationships>

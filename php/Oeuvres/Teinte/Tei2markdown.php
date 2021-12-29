@@ -19,7 +19,7 @@ class Tei2markdown extends AbstractTei2simple
     const EXT = '.md';
     const NAME = 'markdown';
     const LABEL = 'Markdown (formatted text)';
-    const XSL = "txt/tei2markdown.xsl";
+    const XSL = "txt/tei_markdown.xsl";
 }
 
 // EOF

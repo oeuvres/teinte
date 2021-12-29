@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Oeuvres\Teinte;
 
+use Iterator;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -18,7 +19,7 @@ use Psr\Log\LoggerInterface;
  * {@see \Oeuvres\Teinte\AbstractTei2}
  * This class is the Factory providing strategies.
  */
-class TeiExportFactory 
+class TeiExportFactory
 {
     /** Static list of available formats, populated on demand */
     private static $transfo = array(
@@ -35,9 +36,16 @@ class TeiExportFactory
         'split' => null,
         'toc' => null,
     );
-
     /**
      * List available formats 
+     */
+    public static function list(): array
+    {
+        return array_keys(self::$transfo);
+    }
+
+    /**
+     * Show some help 
      */
     public static function help(): string
     {
