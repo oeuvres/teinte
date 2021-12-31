@@ -20,7 +20,7 @@ XSLT 1.0, compatible browser, PHP, Python, Java…
   xmlns:tei="http://www.tei-c.org/ns/1.0"
   exclude-result-prefixes="tei"
 >
-  <xsl:import href="common.xsl"/>
+  <xsl:import href="tei_common.xsl"/>
   <xsl:output indent="yes" encoding="UTF-8" method="xml" />
   <xsl:variable name="split" select="true()"/>
   <xsl:key name="split" match="

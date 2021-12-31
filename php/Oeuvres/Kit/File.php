@@ -39,13 +39,13 @@ class File
         }
         if (is_link($file)) {
             throw new InvalidArgumentException(
-                "\n".$source."\n    \"\033[91m$file\033[0m\" is a link, maybe dangerous to write in\n"
+                "\n".$source."\n    \"$file\" is a link, maybe dangerous to write in\n"
             );
         }
         if (is_writable($file)) return true;
         if (is_readable($file)) {
             throw new InvalidArgumentException(
-                "\n".$source."\n    \"\033[91m$file\033[0m\" file exists but not writable\n"
+                "\n".$source."\n    \"$file\" file exists but not writable\n"
             );
         }
         self::readable($file, $source);
@@ -64,16 +64,16 @@ class File
         if ($source) $source = "\n" . $source;
         if (is_file($file)) {
             throw new InvalidArgumentException(
-                $source."\n    \"\033[91m$file\033[0m\" file exist but not readable \n"
+                $source."\n    \"$file\" file exist but not readable \n"
             );
         }
         if (file_exists($file)) {
             throw new InvalidArgumentException(
-                $source."\n    \"\033[91m$file\033[0m\" path exits but is not a file\n"
+                $source."\n    \"$file\" path exits but is not a file\n"
             );
         }
         throw new InvalidArgumentException(
-            $source."\n    \"\033[91m$file\033[0m\" file not found\n"
+            $source."\n    \"$file\" file not found\n"
         );
     }
     /**

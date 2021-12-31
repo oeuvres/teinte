@@ -20,13 +20,12 @@ use Oeuvres\Kit\File;
  */
 class Sqlite
 {
-
-
     /**
-     * Open a pdo link
+     * Open a pdo link, alert if not there
      */
     public static function open(string $sqliteFile): PDO
     {
+        File::readable($sqliteFile, "Sqlite base impossible to open");
         $dsn = "sqlite:" . $sqliteFile;
         $pdo = new PDO($dsn);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

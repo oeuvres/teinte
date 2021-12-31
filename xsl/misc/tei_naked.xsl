@@ -17,7 +17,7 @@ Texte nu, par exemple pièce de théâtre sans didascalies, ou critique sans cit
   exclude-result-prefixes="tei"
 >
   <!-- TEI common, metadatas -->
-  <xsl:import href="common.xsl"/>
+  <xsl:import href="../tei_common.xsl"/>
   <!-- Name of this xsl  -->
   <xsl:variable name="this">tei2naked.xsl</xsl:variable>
   <xsl:output omit-xml-declaration="yes" encoding="UTF-8" method="text" indent="yes"/>

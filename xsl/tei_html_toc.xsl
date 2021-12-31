@@ -15,7 +15,7 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
 XSLT 1.0 is compatible browser, PHP, Python, Java…
 -->
 <xsl:transform version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" xmlns:tei="http://www.tei-c.org/ns/1.0" exclude-result-prefixes="tei">
-  <xsl:import href="common.xsl"/>
+  <xsl:import href="tei_common.xsl"/>
   <xsl:import href="html/tei_toc_html.xsl"/>
   <xsl:output encoding="UTF-8" indent="yes" method="xml" omit-xml-declaration="yes"/>
   <!-- Racine -->

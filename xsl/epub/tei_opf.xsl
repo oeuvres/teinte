@@ -11,7 +11,7 @@ TODO Adobe page-map (map page number to paper edition)
 http://wiki.mobileread.com/wiki/Adobe_Digital_Editions#Page-map
 -->
 <xsl:transform version="1.1" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.idpf.org/2007/opf" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:opf="http://www.idpf.org/2007/opf" xmlns:tei="http://www.tei-c.org/ns/1.0" exclude-result-prefixes="tei opf">
-  <xsl:import href="../common.xsl"/>
+  <xsl:import href="../tei_common.xsl"/>
   <!-- ensure override on common -->
   <xsl:include href="epub.xsl"/>
   <xsl:output encoding="UTF-8" method="xml" indent="yes"/>

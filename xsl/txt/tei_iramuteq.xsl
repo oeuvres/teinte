@@ -17,7 +17,7 @@ Doit pouvoir fonctionner en import.
   exclude-result-prefixes="tei"
   >
   <!-- Importer des dates -->
-  <xsl:import href="../common.xsl"/>
+  <xsl:import href="../tei_common.xsl"/>
   <xsl:key name="split" match="/" use="'root'"/>
   <!-- Key on structural items, do not use the keyword "split", or it will override the split key for 2site  -->
   <xsl:key name="div" match="*[descendant-or-self::*[starts-with(local-name(), 'div')][@type][contains(@type, 'article') or contains(@type, 'letter') or contains(@type, 'act') or contains(@type, 'chapter') or contains(@type, 'poem') or contains(@subtype, 'split')]] | tei:group/tei:text | tei:TEI/tei:text/tei:front/* | tei:TEI/tei:text/tei:back/* | tei:TEI/tei:text/tei:body/* " use="generate-id(.)"/>

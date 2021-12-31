@@ -16,7 +16,7 @@ XSLT 1.0 is compatible browser, PHP, Python, Java…
 -->
 <xsl:transform version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" xmlns:eg="http://www.tei-c.org/ns/Examples" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:epub="http://www.idpf.org/2007/ops" exclude-result-prefixes="eg tei epub">
   <!-- Import shared templates -->
-  <xsl:import href="../common.xsl"/>
+  <xsl:import href="../tei_common.xsl"/>
   <xsl:output encoding="UTF-8" indent="yes" method="xml" omit-xml-declaration="yes"/>
   <!-- What kind of root element to output ? html, div, article -->
   <xsl:param name="root" select="$html"/>

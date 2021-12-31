@@ -26,7 +26,7 @@ class Tei2html extends AbstractTei2simple
 
     /**
      * // where to  * find web assets like css and jslog for html file
-     * if (!$theme) $theme = 'http://oeuvres.github.io/teinte/'; 
+     * if (!$theme) $theme = 'http://oeuvres.github.io/teinte/theme/'; 
      * find a good way to guess that
      */
 }

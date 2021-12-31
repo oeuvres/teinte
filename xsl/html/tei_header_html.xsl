@@ -18,7 +18,7 @@ BSD-3-Clause https://opensource.org/licenses/BSD-3-Clause
   xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
   exclude-result-prefixes="tei html epub rdf rdfs"
 >
-  <xsl:import href="../common.xsl"/>
+  <xsl:import href="../tei_common.xsl"/>
   <xsl:output encoding="UTF-8" indent="yes" method="xml" omit-xml-declaration="yes"/>
   <!-- 
 <h3>teiHeader</h3>

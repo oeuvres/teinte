@@ -19,7 +19,7 @@
   xmlns:tei="http://www.tei-c.org/ns/1.0" 
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   >
-  <xsl:import href="../common.xsl"/>
+  <xsl:import href="../tei_common.xsl"/>
   <!-- ensure override on common -->
   <xsl:include href="epub.xsl"/>
   <xsl:output encoding="UTF-8" format-public="-//NISO//DTD ncx 2005-1//EN" format-system="http://www.daisy.org/z3986/2005/ncx-2005-1.dtd" indent="yes"/>
