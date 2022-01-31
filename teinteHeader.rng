@@ -58,14 +58,10 @@
         <choice>
           <group>
             <ref name="profileDesc"/>
-            <optional>
-              <ref name="encodingDesc"/>
-            </optional>
+            <ref name="encodingDesc"/>
           </group>
           <group>
-            <optional>
-              <ref name="encodingDesc"/>
-            </optional>
+            <ref name="encodingDesc"/>
             <ref name="profileDesc"/>
           </group>
         </choice>
@@ -206,8 +202,7 @@
           <li>&lt;<a href="http://purl.org/dc/terms/creator" target="dc">dc:creator</a>&gt;<br/></li>
           <li><a href="http://documentation.abes.fr/sudoc/formats/unmb/zones/200.htm#$f" target="unim">Unimarc, zone 200, $f</a> : première mention de responsabilité</li>
           <li>&lt;<a href="http://purl.org/dc/terms/contributor" target="dc">dc:contributor</a>&gt;</li>
-          <li>
-            <a href="http://documentation.abes.fr/sudoc/formats/unmb/zones/200.htm#$g" target="unim">Unimarc, zone 200, $g</a> : mention de responsabilité suivante</li>
+          <li> <a href="http://documentation.abes.fr/sudoc/formats/unmb/zones/200.htm#$g" target="unim">Unimarc, zone 200, $g</a> : mention de responsabilité suivante</li>
         </ul>
         <a:example>
           <author key="Baudelaire, Charles (1821-1867)" ref="http://www.idref.fr/026709635">Baudelaire</author>
@@ -991,63 +986,65 @@
       </element>
     </define>
     <define name="encodingDesc">
-      <element name="encodingDesc">
-        <a:documentation>Documentation technique de l'encodage (relation d'un texte électronique avec sa ou ses sources)</a:documentation>
-        <choice>
-          <oneOrMore>
-            <ref name="teiHeader.p"/>
-          </oneOrMore>
-          <group>
-            <optional>
-              <element name="projectDesc">
-                <a:documentation>Description scientifique du projet.</a:documentation>
-                <ul xmlns="http://www.w3.org/1999/xhtml">
-                  <li>&lt;<a href="http://purl.org/dc/terms/description" target="dc">dc:description</a>&gt;</li>
-                </ul>
-                <oneOrMore>
-                  <ref name="teiHeader.p"/>
-                </oneOrMore>
-              </element>
-            </optional>
-            <optional>
-              <element name="samplingDecl">
-                <a:documentation>Etendue numérisée de la source (pour préciser par ex. les pages de la source non reprises dans le fichier, et pourquoi)</a:documentation>
-                <oneOrMore>
-                  <ref name="teiHeader.p"/>
-                </oneOrMore>
-              </element>
-            </optional>
-            <optional>
-              <element name="editorialDecl">
-                <a:documentation>Corrections apportées au document source.</a:documentation>
-                <oneOrMore>
-                  <ref name="teiHeader.p"/>
-                </oneOrMore>
-              </element>
-            </optional>
-            <!-- TODO Documenter cet usage de tagsDecl ; cf apologie métier historien -->
-            <optional>
-              <element name="tagsDecl">
-                <oneOrMore>
-                  <element name="rendition">
-                    <optional>
-                      <ref name="id-att"/>
-                    </optional>
-                    <optional>
-                      <attribute name="scheme">
-                        <value>css</value>
-                      </attribute>
-                    </optional>
-                    <attribute name="selector"/>
-                    <text/>
-                    <!-- la règle css -->
-                  </element>
-                </oneOrMore>
-              </element>
-            </optional>
-          </group>
-        </choice>
-      </element>
+      <optional>
+        <element name="encodingDesc">
+          <a:documentation>Documentation technique de l'encodage (relation d'un texte électronique avec sa ou ses sources)</a:documentation>
+          <choice>
+            <oneOrMore>
+              <ref name="teiHeader.p"/>
+            </oneOrMore>
+            <group>
+              <optional>
+                <element name="projectDesc">
+                  <a:documentation>Description scientifique du projet.</a:documentation>
+                  <ul xmlns="http://www.w3.org/1999/xhtml">
+                    <li>&lt;<a href="http://purl.org/dc/terms/description" target="dc">dc:description</a>&gt;</li>
+                  </ul>
+                  <oneOrMore>
+                    <ref name="teiHeader.p"/>
+                  </oneOrMore>
+                </element>
+              </optional>
+              <optional>
+                <element name="samplingDecl">
+                  <a:documentation>Etendue numérisée de la source (pour préciser par ex. les pages de la source non reprises dans le fichier, et pourquoi)</a:documentation>
+                  <oneOrMore>
+                    <ref name="teiHeader.p"/>
+                  </oneOrMore>
+                </element>
+              </optional>
+              <optional>
+                <element name="editorialDecl">
+                  <a:documentation>Corrections apportées au document source.</a:documentation>
+                  <oneOrMore>
+                    <ref name="teiHeader.p"/>
+                  </oneOrMore>
+                </element>
+              </optional>
+              <!-- TODO Documenter cet usage de tagsDecl ; cf apologie métier historien -->
+              <optional>
+                <element name="tagsDecl">
+                  <oneOrMore>
+                    <element name="rendition">
+                      <optional>
+                        <ref name="id-att"/>
+                      </optional>
+                      <optional>
+                        <attribute name="scheme">
+                          <value>css</value>
+                        </attribute>
+                      </optional>
+                      <attribute name="selector"/>
+                      <text/>
+                      <!-- la règle css -->
+                    </element>
+                  </oneOrMore>
+                </element>
+              </optional>
+            </group>
+          </choice>
+        </element>
+      </optional>
     </define>
   </div>
   <div xml:id="bibliographic">
@@ -1291,43 +1288,27 @@
         <dt>
           <a href="http://purl.org/dc/terms/contributor" target="dc">dc:contributor</a>
         </dt>
-        <dd>
-          <q>An entity responsible for making contributions to the resource.</q>
-          <br/>Auteur secondaire (préface, postface, etc.). Même règles d’écriture que dc:creator <br/>/TEI/teiHeader/fileDesc/titleStmt/author[@ana='contributor']/@key <br/>/TEI/teiHeader/fileDesc/titleStmt/editor/@key </dd>
+        <dd> <q>An entity responsible for making contributions to the resource.</q> <br/>Auteur secondaire (préface, postface, etc.). Même règles d’écriture que dc:creator <br/>/TEI/teiHeader/fileDesc/titleStmt/author[@ana='contributor']/@key <br/>/TEI/teiHeader/fileDesc/titleStmt/editor/@key </dd>
         <dt>
           <a href="http://purl.org/dc/terms/creator" target="dc">dc:creator</a>
         </dt>
-        <dd>
-          <q>An entity primarily responsible for making the resource.</q>
-          <br/>Auteur du texte : Nom, Prénom (date-date) NF Z 44-061 – obligatoire, répétable <br/>/TEI/teiHeader/fileDesc/titleStmt/author/@key </dd>
+        <dd> <q>An entity primarily responsible for making the resource.</q> <br/>Auteur du texte : Nom, Prénom (date-date) NF Z 44-061 – obligatoire, répétable <br/>/TEI/teiHeader/fileDesc/titleStmt/author/@key </dd>
         <dt><a href="http://purl.org/dc/terms/date" target="dc">dc:date</a> (xsi:type="dcterms:W3CDTF")</dt>
-        <dd>
-          <q>A point or period of time associated with an event in the lifecycle of the resource.</q>
-          <br/>Date de création du document et non de sa déclinaison éditoriale (première édition imprimée, date du fichier TEI, etc.). <br/>/TEI/teiHeader/profileDesc/creation/date/@when <br/>/TEI/teiHeader/profileDesc/creation/date/@from <br/>/TEI/teiHeader/profileDesc/creation/date/@to </dd>
+        <dd> <q>A point or period of time associated with an event in the lifecycle of the resource.</q> <br/>Date de création du document et non de sa déclinaison éditoriale (première édition imprimée, date du fichier TEI, etc.). <br/>/TEI/teiHeader/profileDesc/creation/date/@when <br/>/TEI/teiHeader/profileDesc/creation/date/@from <br/>/TEI/teiHeader/profileDesc/creation/date/@to </dd>
         <dt>
           <a href="http://purl.org/dc/terms/description" target="dc">dc:description</a>
         </dt>
-        <dd>
-          <q>An account of the resource.</q>
-          <br/>Description du texte à destination du public <br/>/TEI/teiHeader/fileDesc/noteStmt/note[@type='abstract'] </dd>
+        <dd> <q>An account of the resource.</q> <br/>Description du texte à destination du public <br/>/TEI/teiHeader/fileDesc/noteStmt/note[@type='abstract'] </dd>
         <dt>
           <a href="http://purl.org/dc/terms/identifier" target="dc">dc:identifier (xsi:type="dcterms:URI")</a>
         </dt>
-        <dd>
-          <q>An unambiguous reference to the resource within a given context.</q>
-          <br/>URI de référence du fichier (du document en texte intégral) – unique, obligatoire. <br/>/TEI/teiHeader/fileDesc/publicationStmt/idno <!-- NB : doit correspondre à l’URI de référence du fichier TEI et non l’URI du fichier qui a servi de source à ce fichier TEI (cf ambiguïté dans le cas des classiques sciences sociales, cf Bergson, le rire) -->
-        </dd>
+        <dd> <q>An unambiguous reference to the resource within a given context.</q> <br/>URI de référence du fichier (du document en texte intégral) – unique, obligatoire. <br/>/TEI/teiHeader/fileDesc/publicationStmt/idno <!-- NB : doit correspondre à l’URI de référence du fichier TEI et non l’URI du fichier qui a servi de source à ce fichier TEI (cf ambiguïté dans le cas des classiques sciences sociales, cf Bergson, le rire) --> </dd>
         <dt><a href="http://purl.org/dc/terms/isPartOf" target="dc">dcterms:isPartOf</a> (xsi:type="dcterms:URI")</dt>
-        <dd>
-          <q>A related resource in which the described resource is physically or logically included.</q>
-          <br/>URI de référence vers la collection – unique, obligatoire si connu <!-- URI de référence de la collection électronique et non de la collection imprimée (ex. Annales HSS) -->
-          <br/>/TEI/teiHeader/fileDesc/seriesStmt/idno </dd>
+        <dd> <q>A related resource in which the described resource is physically or logically included.</q> <br/>URI de référence vers la collection – unique, obligatoire si connu <!-- URI de référence de la collection électronique et non de la collection imprimée (ex. Annales HSS) --> <br/>/TEI/teiHeader/fileDesc/seriesStmt/idno </dd>
         <dt>
           <a href="http://purl.org/dc/terms/publisher" target="dc">dc:publisher</a>
         </dt>
-        <dd>
-          <q>An entity responsible for making the resource available.</q>
-          <br/>Éditeur du texte électronique (et non de la source numérisée). <br/>/TEI/teiHeader/fileDesc/publicationStmt/publisher </dd>
+        <dd> <q>An entity responsible for making the resource available.</q> <br/>Éditeur du texte électronique (et non de la source numérisée). <br/>/TEI/teiHeader/fileDesc/publicationStmt/publisher </dd>
         <!--
           <dt><a href="http://purl.org/dc/terms/relation" target="dc">dc:relation</a></dt>
           <dd>
@@ -1335,26 +1316,18 @@
           </dd>
         -->
         <dt><a href="http://purl.org/dc/terms/language" target="dc">dc:language</a> (xsi:type="dcterms:ISO639-2")</dt>
-        <dd>
-          <q>A language of the resource.</q>
-          <br/>Langue principale du document, code de 3 lettres (ISO 639-b2) – unique, obligatoire <br/>/TEI/@xml:lang <br/>/TEI/teiHeader/profileDesc/langUsage/language/@ident </dd>
+        <dd> <q>A language of the resource.</q> <br/>Langue principale du document, code de 3 lettres (ISO 639-b2) – unique, obligatoire <br/>/TEI/@xml:lang <br/>/TEI/teiHeader/profileDesc/langUsage/language/@ident </dd>
         <!-- NB : on devrait remplacer dc:rights par dc:license, non ? -->
         <dt><a href="http://purl.org/dc/terms/rights" target="dc">dc:rights</a> (xsi:type="dcterms:URI")</dt>
-        <dd>
-          <q>Information about rights held in and over the resource.</q>
-          <br/>URI de référence vers une licence – obligatoire, unique <br/>/TEI/teiHeader/fileDesc/publicationStmt/availability/licence/@target </dd>
+        <dd> <q>Information about rights held in and over the resource.</q> <br/>URI de référence vers une licence – obligatoire, unique <br/>/TEI/teiHeader/fileDesc/publicationStmt/availability/licence/@target </dd>
         <dt>
           <a href="http://purl.org/dc/terms/source" target="dc">dc:source</a>
         </dt>
-        <dd>
-          <q>A related resource from which the described resource is derived.</q>
-          <br/>Citation bibliographique complète pour le document (description de la (des) source(s) numérisée(s)) <br/>/TEI/teiHeader/fileDesc/sourceDesc/bibl[1] </dd>
+        <dd> <q>A related resource from which the described resource is derived.</q> <br/>Citation bibliographique complète pour le document (description de la (des) source(s) numérisée(s)) <br/>/TEI/teiHeader/fileDesc/sourceDesc/bibl[1] </dd>
         <dt>
           <a href="http://purl.org/dc/terms/title" target="dc">dc:title</a>
         </dt>
-        <dd>
-          <q>A name given to the resource.</q>
-          <br/>concat(/TEI/teiHeader/fileDesc/titleStmt/title[not(@type)], '. ' , /TEI/teiHeader/fileDesc/titleStmt/title[@type='sub']) </dd>
+        <dd> <q>A name given to the resource.</q> <br/>concat(/TEI/teiHeader/fileDesc/titleStmt/title[not(@type)], '. ' , /TEI/teiHeader/fileDesc/titleStmt/title[@type='sub']) </dd>
         <!--
           <dt><a href="http://purl.org/dc/terms/type" target="dc">dc:type</a></dt>
           <dd>
