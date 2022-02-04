@@ -1,8 +1,8 @@
 <?php
 
 /**
- *  * Part of Teinte https://github.com/oeuvres/teinte
- * BSD-3-Clause https://opensource.org/licenses/BSD-3-Clause
+ * Part of Teinte https://github.com/oeuvres/teinte
+ * MIT License https://opensource.org/licenses/mit-license.php
  * Copyright (c) 2020 frederic.Glorieux@fictif.org
  * Copyright (c) 2013 Frederic.Glorieux@fictif.org & LABEX OBVIL
  * Copyright (c) 2012 Frederic.Glorieux@fictif.org
@@ -15,15 +15,19 @@ declare(strict_types=1);
 namespace Oeuvres\Kit;
 
 use Exception;
+use Psr\Log\{LoggerInterface, NullLogger};
 
 /**
  * Tools to deal with PHP Http oddities
  * code convention https://www.php-fig.org/psr/psr-12/
  */
+Web::init();
 class Web
 {
     /** web parameters */
     static $pars;
+    /** A logger */
+    private static $logger;
     /** pathinfo, relative to base application */
     static $pathinfo;
     /** relative path to base application, calculated with pathinfo */
@@ -50,6 +54,15 @@ class Web
     );
     /** lang found */
     static $lang;
+
+    /**
+     * Intialize static variables
+     */
+    public static function init()
+    {
+        self::$logger = new NullLogger();
+    }
+
     /**
      * Give pathinfo with priority order of different values.
      * The possible variables are not equally robust
@@ -105,6 +118,101 @@ class Web
         if (!self::$basehref) self::$basehref = "./"; // with /toto, go up with ./
         return self::$basehref;
     }
+
+    /**
+     * Parse a query string or get it from http request (get or post)
+     * Returns an array.
+     * ?a=a1&b=b0&a=a2
+     * array(
+     *   'a' => array('a1', 'a2'),
+     *   'b' => array('b0'),
+     * )
+     */
+    public static function parse(?string $query = null): array
+    {
+        $pars = array(); // returned array
+        if (!$query) $query = self::query();
+        $a = explode('&', $query);
+        foreach ($a as $p) {
+            if (!$p) continue;
+            if (!strpos($p, '=')) continue;
+            list($k, $v) = preg_split('/=/', $p);
+            $k = urldecode($k);
+            $v = urldecode($v);
+            /* bad with greek
+            // seems ISO, translate accents
+            if (preg_match('/[\xC0-\xFD]/', $k . $v)) {
+                $k = utf8_encode($k);
+                $v = utf8_encode($v);
+            }
+            */
+            // sanitize value for xss
+            $v= strip_tags(trim($v));
+            $pars[$k][] = $v;
+        }
+        return $pars;
+    }
+
+    /**
+     * Get a parameter as single value 
+     */
+    public static function par(
+        $name,
+        ?string $default = null, 
+        ?string $pattern = null, 
+        ?string $cookie = null
+    ) {
+        // 10 days cookie expiration
+        $expire = 3600*24*10; 
+        // store params array extracted from query
+        if (!self::$pars) {
+            self::$pars = self::parse();
+        }
+        // no key requested, shout ?
+        if (!$name) {
+            self::$logger->warning(
+                "No name given for an http param\n" 
+                . implode("\n", I18n::trace())
+            );
+            return null;
+        }
+        $par = null;
+        // a param is requested, values found
+        if (isset(self::$pars[$name]) && count(self::$pars[$name]) > 0) {
+            // if more than one and first is empty, bad practice
+            $par = self::$pars[$name][0];
+        }
+        // A cookie is requested
+        if ($cookie) {
+            // empty string is used as reset cookie
+            if ($par === '') {
+                setcookie($cookie);
+            }
+            // no value found, find one in cookie
+            else if ($par == null && isset($_COOKIE[$cookie])) {
+                $pars = unserialize($_COOKIE[$cookie]);
+            }
+            // a value, cookie persistance
+            else {
+                setcookie($name, serialize($par), time() + $expire);
+            }
+        }
+        // validate
+        if ($pattern && $par) {
+            if (!preg_match($pattern, $par)) {
+                $par = null;
+            }
+        }
+        if ($par !== null) {
+            return $par;
+        }
+        if ($default) {
+            return $default;
+        }
+        return null;
+    } 
+
+
     /**
      * Handle repeated parameters values, especially in multiple select.
      * $_REQUEST propose a strange PHP centric interpretation of http protocol, with the bracket keys
@@ -125,23 +233,7 @@ class Web
     ) {
         // store params array extracted from query
         if (!self::$pars) {
-            if (!$query) $query = self::query();
-            // populate an array
-            self::$pars = array();
-            $a = explode('&', $query);
-            foreach ($a as $p) {
-                if (!$p) continue;
-                if (!strpos($p, '=')) continue;
-                list($k, $v) = preg_split('/=/', $p);
-                $k = urldecode($k);
-                $v = urldecode($v);
-                // seems ISO, translate accents
-                if (preg_match('/[\xC0-\xFD]/', $k + $v)) {
-                    $k = utf8_encode($k);
-                    $v = utf8_encode($v);
-                }
-                self::$pars[$k][] = $v;
-            }
+            self::$pars = self::parse();
         }
         // no key requested, return all params, do not store cookies
         if (!$name) return self::$pars;
@@ -181,7 +273,7 @@ class Web
     }
 
     /**
-     * Search for a lang in an accpted list
+     * Search for a lang in an accepted list
      */
     public static function lang($langs = null)
     {
@@ -232,21 +324,33 @@ class Web
      * $exclude=array() : exclude some parameters
      */
     public static function query(
-        $keep = false, $exclude = array(), $query = null)
-    {
+        $keep = false, $exclude = array(), $query = null
+    ): string {
         // query given as param
-        if ($query) $query = preg_replace('/&amp;/', '&', $query);
+        if ($query) {
+            $query = preg_replace('/&amp;/', '&', $query);
+        }
         // POST
         else if ($_SERVER['REQUEST_METHOD'] == "POST") {
-            if (isset($HTTP_RAW_POST_DATA)) $query = $HTTP_RAW_POST_DATA;
-            else $query = file_get_contents("php://input");
+            if (isset($HTTP_RAW_POST_DATA)) {
+                $query = $HTTP_RAW_POST_DATA;
+            }
+            else {
+                $query = file_get_contents("php://input");
+            }
         }
         // GET
-        else $query = $_SERVER['QUERY_STRING'];
+        else {
+            $query = $_SERVER['QUERY_STRING'];
+        }
         // exclude some params
-        if (count($exclude)) $query = preg_replace('/&(' . implode('|', $exclude) . ')=[^&]*/', '', '&' . $query);
+        if (count($exclude)) {
+            $query = preg_replace('/&(' . implode('|', $exclude) . ')=[^&]*/', '', '&' . $query);
+        }
         // delete empty params
-        if (!$keep) $query = preg_replace(array('/[^&=]+=&/', '/&$/'), array('', ''), $query . '&');
+        if (!$keep) {
+            $query = preg_replace(array('/[^&=]+=&/', '/&$/'), array('', ''), $query . '&');
+        }
         return $query;
     }
     /**
@@ -369,6 +473,15 @@ class Web
         $file["extension"] = pathinfo($file['name'], PATHINFO_EXTENSION);
         return $file;
     }
+
+    /**
+     * Set logger
+     */
+    public static function setLogger(LoggerInterface $logger)
+    {
+        self::$logger = $logger;
+    }
+
 }
  /* What that for ? old ?
 if (get_magic_quotes_gpc()) {

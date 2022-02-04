@@ -52,12 +52,68 @@ class File
         return true;
     }
 
+    /**
+     * Is a file path absolute ?
+     */
+    public static function isabs(string $path): bool
+    {
+        // true if file exists
+        if ( realpath( $path ) == $path ) {
+            return true;
+        }
+        // ./* relpath
+        if ( strlen( $path ) == 0 || '.' === $path[0] ) {
+            return false;
+        }
+        // Windows drive pattern
+        if ( preg_match( '#^[a-zA-Z]:\\\\#', $path ) ) {
+            return true;
+        }
+        // A path starting with / or \ is absolute
+        return ( '/' === $path[0] || '\\' === $path[0] );
+    }
+
+    /**
+     * Get relative path between 2 absolute file path
+     */
+    public static function relpath(string $from, string $to)
+    {
+        // some compatibility fixes for Windows paths
+        $from = is_dir($from) ? rtrim($from, '\/') . '/' : $from;
+        $to   = is_dir($to)   ? rtrim($to, '\/') . '/'   : $to;
+        $from = str_replace('\\', '/', $from);
+        $to   = str_replace('\\', '/', $to);
+
+        $from     = explode('/', $from);
+        $to       = explode('/', $to);
+        $relpath  = $to;
+
+        foreach($from as $depth => $dir) {
+            // find first non-matching dir
+            if($dir === $to[$depth]) {
+                // ignore this directory
+                array_shift($relpath);
+            } else {
+                // get number of remaining dirs to $from
+                $remaining = count($from) - $depth;
+                if($remaining > 1) {
+                    // add traversals up to first matching dir
+                    $padLength = (count($relpath) + $remaining - 1) * -1;
+                    $relpath = array_pad($relpath, $padLength, '..');
+                    break;
+                } else {
+                    $relpath[0] = './' . $relpath[0];
+                }
+            }
+        }
+        return implode('/', $relpath);
+    }
 
     /**
      * Check existence of a file to read,
      * and send informative Exception if it’s not OK.
      */
-    public static function readable(string $file, ?string $source = null):bool
+    public static function readable(string $file, ?string $source = null): bool
     {
         if (is_readable($file)) return true;
         // shall we log here or break by exception ?
@@ -218,6 +274,16 @@ class File
             $zip->addEmptyDir($entryPath);
             self::zipDir($zip, $srcPath, $entryPath);
         }
+    }
+
+    /**
+     * Is file path absolute ?
+     */
+    static function isPathAbs($path)
+    {
+        if (!$path) return false;
+        if ($path[0] === DIRECTORY_SEPARATOR || preg_match('~\A[A-Z]:(?![^/\\\\])~i', $path) > 0) return true;
+        return false;
     }
 
     /**

@@ -1,7 +1,7 @@
 <?php
 /**
  * Part of Teinte https://github.com/oeuvres/teinte
- * BSD-3-Clause https://opensource.org/licenses/BSD-3-Clause
+ * MIT License https://opensource.org/licenses/mit-license.php
  * Copyright (c) 2020 frederic.glorieux@fictif.org
  * Copyright (c) 2013 frederic.glorieux@fictif.org & LABEX OBVIL
  * Copyright (c) 2012 frederic.glorieux@fictif.org
@@ -51,7 +51,7 @@ class Xml
     }
 
     /**
-     * 
+     * Set logger
      */
     public static function setLogger(LoggerInterface $logger)
     {

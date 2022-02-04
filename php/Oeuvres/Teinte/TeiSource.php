@@ -137,6 +137,7 @@ class TeiSource implements LoggerAwareInterface
             "@\n([,.)\]}])@u" => "$1", // bad indent may have broke some pun
             "@(<$block(>| [^>]*>))\s+@" => "$1", // spaces at start of para
             "@\s+(</$block>)@" => '$1', // space before end of para
+            '@(<pb[^>]*>)\s+@' => '$1', // page breaks may add unwanted space
             /* Something have to be done with <pb/>
             '@(<(ab|head|l|p|stage)( [^>]*)?>)\s*(<pb( [^>]*)?/>)\s+@' => '$1$4',
             */
