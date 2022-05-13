@@ -64,7 +64,7 @@ class Radio
             if ($value == $check) $checked = ' checked="checked"';
             $html .= '
         <label>
-            <input type="radio" name="' . $this->name 
+            <input onchange="this.form.submit()" type="radio" name="' . $this->name 
             . '" value="' . $value . '"' 
             . $checked . '/>
             ' . $label . '

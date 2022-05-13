@@ -1,1 +1,11 @@
 * text eol=lf
+*.tsv text
+*.csv text
+
+# Specific Windows
+*.bat text eol=crlf
+
+*.db binary
+*.pdf binary
+*.png binary
+*.jpg binary

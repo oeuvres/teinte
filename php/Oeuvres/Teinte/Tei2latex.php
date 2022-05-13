@@ -21,7 +21,7 @@ use Oeuvres\Kit\File;
  */
 class Tei2latex  extends AbstractTei2
 {
-    /** A docx file used as a template */
+    
     private string $template = "";
     const NAME = 'LaTeX';
     const EXT = '.tex';
@@ -33,14 +33,13 @@ class Tei2latex  extends AbstractTei2
     static protected $latex_xsl;
     static protected $latex_meta_xsl;
     // escape all text nodes
-    static public $latex_esc = array(
+    static protected $latex_esc = array(
         '@\\\@u' => '\textbackslash', //before adding \ for escapings
         '@(&amp;)@u' => '\\\$1',
         '@([%\$#_{}])@u' => '\\\$1',
         '@~@u' => '\textasciitilde',
         '@\^@u' => '\textasciicircum',
-        '@(<pb[^>]*>)\s+@' => '$1', // page breaks may add unwanted space
-        '@(\p{Han}[\p{Han} ]+)@u' => '\zh{$1}',
+        '@(\p{Han}[\p{Han} ]*)@u' => '\zh{$1}',
         '@\s+@' => ' ', // not unicode \s, keep unbreakable space
     );
 
@@ -120,7 +119,7 @@ class Tei2latex  extends AbstractTei2
         $dom->substituteEntities = true;
         $xml = file_get_contents($teifile);
         $xml = preg_replace(array_keys(self::$latex_esc), array_values(self::$latex_esc), $xml);
-        $dom->loadXML($xml,  LIBXML_NOENT | LIBXML_NONET | LIBXML_NOWARNING); // no warn for <?xml-model
+        $dom->loadXML($xml,  LIBXML_NOENT | LIBXML_NONET | LIBXML_NOWARNING); // no warn for <?xml-model
         return $dom;
     }
 
@@ -134,7 +133,7 @@ class Tei2latex  extends AbstractTei2
     public function teigraf($grafdir = null, $grafhref = null)
     {
         if ($grafdir) $grafdir = rtrim($grafdir, '/\\') . '/';
-        // copy linked images in an images folder, and modify relative link
+        // copy linked images in an images folder, and modify relative link
         // $dom=$dom->cloneNode(true); // if we want to keep original dom
         foreach ($this->dom->getElementsByTagNameNS('http://www.tei-c.org/ns/1.0', 'graphic') as $el) {
             $this->teigrafatt($el->getAttributeNode("url"), $grafdir, $grafhref);
@@ -172,7 +171,7 @@ class Tei2latex  extends AbstractTei2
     */
         // if not file exists, escape and alert (?)
         else if (!file_exists($url)) {
-            Tools::log("Image not found: " . $url);
+            $this->logger->warning(__METHOD__." image not found: " . $url);
             return;
         }
         $srcParts = pathinfo($url);
@@ -221,7 +220,7 @@ class Tei2latex  extends AbstractTei2
         $workdir = self::workdir($this->srcfile);
 
         $grafdir = $workdir . $texname . '/';
-        Tools::dirclean($grafdir); // empty graf dir
+        File::cleandir($grafdir); // empty graf dir
 
         // resolve includes and graphics of tex template
         $tex = Latex::includes($skelfile, $workdir, $grafdir);
@@ -251,22 +250,7 @@ class Tei2latex  extends AbstractTei2
         return $texfile;
     }
 
-    public static function cli()
-    {
-        array_shift($_SERVER['argv']); // shift first arg, the script filepath
-        if (!count($_SERVER['argv'])) exit("
-usage    : php -f latex.php teidir/*.xml\n");
-
-        $dstdir = "";
-        $lastc = substr($_SERVER['argv'][0], -1);
-        if ('/' == $lastc || '\\' == $lastc) {
-            $dstdir = array_shift($_SERVER['argv']);
-            $dstdir = rtrim($dstdir, '/\\') . '/';
-            if (!file_exists($dstdir)) {
-                mkdir($dstdir, 0775, true);
-                @chmod($dir, 0775);  // let @, if www-data is not owner but allowed to write
-            }
-        }
+    /*
 
         $latex = new Latex();
         while ($glob = array_shift($_SERVER['argv'])) {
@@ -281,5 +265,23 @@ usage    : php -f latex.php teidir/*.xml\n");
                 exec("latexmk -xelatex -quiet -f " . $texname . '.tex');
             }
         }
+    */
+
+    /**
+     * @ override
+     */
+    function toDoc(DOMDocument $dom, ?array $pars=null):?\DOMDocument
+    {
+        $this->logger->error(__METHOD__." dom export not relevant");
+        return null;
     }
+    /**
+     * @ override
+     */
+    function toXml(DOMDocument $dom, ?array $pars=null):?string
+    {
+        $this->logger->error(__METHOD__." xml export not relevant");
+        return null;
+    }
+
 }

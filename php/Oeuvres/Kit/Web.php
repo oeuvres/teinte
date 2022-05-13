@@ -182,6 +182,17 @@ class Web
             // if more than one and first is empty, bad practice
             $par = self::$pars[$name][0];
         }
+        // param maybe set programmatically, for example by Route
+        else if (isset($_GET[$name]) && trim($_GET[$name]) ) {
+            $par = $_GET[$name];
+        }
+        else if (isset($_POST[$name]) && trim($_POST[$name]) ) {
+            $par = $_POST[$name];
+        }
+        // bad practice, maybe confused by cookie, but be nice
+        else if (isset($_REQUEST[$name]) && trim($_REQUEST[$name]) ) {
+            $par = $_REQUEST[$name];
+        }
         // A cookie is requested
         if ($cookie) {
             // empty string is used as reset cookie

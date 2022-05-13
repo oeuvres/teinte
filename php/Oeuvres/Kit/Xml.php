@@ -137,7 +137,7 @@ class Xml
     public static function transformToDoc(
         string $xslfile, 
         DOMDocument $dom, 
-        array $pars = null
+        ?array $pars = null
     ) {
         return self::transform(
             $xslfile,
@@ -153,7 +153,7 @@ class Xml
     public static function transformToXml(
         string $xslfile, 
         DOMDocument $dom, 
-        array $pars = null
+        ?array $pars = null
     ) {
         return self::transform(
             $xslfile,

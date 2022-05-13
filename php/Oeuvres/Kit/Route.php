@@ -152,6 +152,7 @@ class Route {
                 $pars[$key] = self::replace($value, $route_match);
             }
             $_REQUEST = array_merge($_REQUEST, $pars);
+            $_GET = array_merge($_GET, $pars);
         }
 
         $ext = pathinfo($file, PATHINFO_EXTENSION);

@@ -15,15 +15,17 @@ https://github.com/TEIC/Stylesheets/tree/dev/latex
 A light version for XSLT1, with local improvements.
 2021, frederic.glorieux@fictif.org
   -->
-  <xsl:import href="../xsl/common.xsl"/>
+  <xsl:import href="../tei_common.xsl"/>
+  <!--
   <xsl:import href="tei_common.xsl"/>
+  -->
   <xsl:import href="common_core.xsl"/>
-  <xsl:import href="latex_flow.xsl"/>
-  <xsl:import href="latex_misc.xsl"/>
-  <xsl:import href="latex_drama.xsl"/>
-  <xsl:import href="latex_figures.xsl"/>
-  <xsl:import href="latex_linking.xsl"/>
-  <xsl:import href="latex_textstructure.xsl"/>
+  <xsl:import href="tei_flow_latex.xsl"/>
+  <xsl:import href="tei_misc_latex.xsl"/>
+  <xsl:import href="tei_drama_latex.xsl"/>
+  <xsl:import href="tei_figure_latex.xsl"/>
+  <xsl:import href="tei_linking_latex.xsl"/>
+  <xsl:import href="tei_textstructure_latex.xsl"/>
   <xsl:output method="text" encoding="utf8" indent="no"/>
   <xsl:variable name="top" select="/"/>
   <xsl:param name="outputTarget">latex</xsl:param>

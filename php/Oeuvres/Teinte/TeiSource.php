@@ -27,6 +27,8 @@ class TeiSource implements LoggerAwareInterface
 {
     /** Somewhere to log in  */
     private LoggerInterface $logger;
+    /** Store XML as a string, maybe used for LaTeX */
+    private $xml;
     /** TEI/XML DOM Document to process */
     private $dom;
     /** Xpath processor for the doc */
@@ -117,10 +119,11 @@ class TeiSource implements LoggerAwareInterface
     public function loadXml(string $xml):DOMDocument
     {
         // should we keep here original XML to replay chain ?
-        $xml = self::normTei($xml);
-        $this->dom = Xml::loadXml($xml);
+        $this->xml = self::normTei($xml);
+        $this->dom = Xml::loadXml($this->xml);
         // spaces are normalized upper, keep them
         $this->dom->preserveWhiteSpace = true;
+
         return $this->dom;
     }
 
