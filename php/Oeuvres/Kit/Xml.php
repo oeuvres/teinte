@@ -106,7 +106,7 @@ class Xml
     /**
      * Returns a DOM object
      */
-    public static function loadXml(string $xml): DOMDocument
+    public static function loadXml(string $xml): ?DOMDocument
     {
         $dom = self::domSkel();
         // suspend error reporting, libxml messages are better
@@ -169,7 +169,7 @@ class Xml
         string $xslfile, 
         DOMDocument $dom,
         string $uri,
-        array $pars = null
+        ?array $pars = null
     ) {
         return self::transform(
             $xslfile,
@@ -186,8 +186,8 @@ class Xml
     private static function transform(
         string $xslFile, 
         DOMDocument $dom,
-        ?string $dst,
-        array $pars = null
+        ?string $dst = null,
+        ?array $pars = null
     ) {
 
         if (strpos($xslFile, "http") === 0) {
