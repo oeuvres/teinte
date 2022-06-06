@@ -64,6 +64,16 @@ class Web
     }
 
     /**
+     * Get absolute URL
+     */
+    public static function url()
+    {
+        $url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http");
+        $url .= "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+        return $url;
+    }
+
+    /**
      * Give pathinfo with priority order of different values.
      * The possible variables are not equally robust
      *
@@ -217,7 +227,7 @@ class Web
         if ($par !== null) {
             return $par;
         }
-        if ($default) {
+        if ($default !== null) {
             return $default;
         }
         return null;
@@ -324,6 +334,24 @@ class Web
         }
         self::$lang = $lang;
         return self::$lang;
+    }
+
+    /**
+     * build an optimized query string from requested params
+     */
+    public static function qstring (
+       array $names 
+    ): string {
+        if (!self::$pars) self::$pars = self::parse();
+        $query = array();
+        foreach ($names as $name) {
+            if (!isset(self::$pars[$name])) continue;
+            foreach (self::$pars[$name] as $value) {
+                $query[] =  rawurlencode($name) . '=' . rawurlencode($value);
+            }
+        }
+        if (count($query) < 1) return '';
+        return '?' . implode('&amp;', $query);
     }
     /**
      * build a clean query string from get or post, especially

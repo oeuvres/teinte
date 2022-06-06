@@ -13,19 +13,21 @@ declare(strict_types=1);
 
 namespace Oeuvres\Kit;
 
-use Oeuvres\Kit\{I18n};
+use Oeuvres\Kit\{File,I18n};
+use Exception, InvalidArgumentException;
+
 
 Route::init();
 
 class Route {
     /** root directory of the app = directory of index.php */
     private static $app_dir;
-    /** home href for routing */
-    private static $home;
     /** Href to app resources */
     private static $app_href;
+    /** Home href for routing */
+    private static $home_href;
     /** Default php template */
-    private static $template;
+    private static $templates = array();
     /** An html file to include as main */
     static $main_inc;
     /** A file to include */
@@ -39,7 +41,7 @@ class Route {
 
     public static function init()
     {
-        self::$app_dir = dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR ;
+        self::$app_dir = dirname(__DIR__, 3). DIRECTORY_SEPARATOR ;
 
         $url_request = filter_var($_SERVER['REQUEST_URI'], FILTER_SANITIZE_URL);
         $url_request = strtok($url_request, '?'); // old
@@ -51,9 +53,9 @@ class Route {
         }
         self::$url_request = $url_request;
         self::$url_parts = explode('/', ltrim($url_request, '/'));
-        self::$home = str_repeat('../', count(self::$url_parts) - 1);
-        // get relative path from index.php caller to the root of app to calculate href for res
-        self::$app_href = self::$home . File::relpath(
+        self::$home_href = str_repeat('../', count(self::$url_parts) - 1);
+        // get relative path from index.php caller to the root of app to calculate href for resources in this folder
+        self::$app_href = self::$home_href . File::relpath(
             dirname($_SERVER['SCRIPT_FILENAME']), 
             self::$app_dir
         );
@@ -140,8 +142,12 @@ class Route {
     /**
      * Try a route
      */
-    public static function route($route, $file, $pars=null)
-    {
+    public static function route(
+        string $route, 
+        string $file, 
+        ?array $pars=null, 
+        ?string $tmpl_key=''
+    ):bool {
         // the catchall
         if ($route == "/404") {
             http_response_code(404);
@@ -158,7 +164,7 @@ class Route {
         }
         // file not found, let chain continue
         if (!file_exists($file)) {
-            return;
+            return false;
         }
         // modyfy parameters according to route
         if ($pars != null) {
@@ -170,29 +176,81 @@ class Route {
         }
 
         $ext = pathinfo($file, PATHINFO_EXTENSION);
+        // should be routed
+        self::$routed = true;
+
+        $tmpl_php = null;
+        // default, no template registred, no temple requested, OK
+        if ($tmpl_key === '' && count(self::$templates) < 1) {
+        }
+        // default, no template requested, send first if one exists
+        else if ($tmpl_key === '') {
+            $tmpl_php = self::$templates[array_key_first(self::$templates)];
+        }
+        // explitly no template requested
+        else if ($tmpl_key === null) {
+        }
+        else {
+            if (count(self::$templates) < 1) {
+                throw new Exception(
+                    "Developement error.
+No templates registred, template '$tmpl_key' not found.
+Use Route::template('tmpl_my.php', '$tmpl_key');"
+                );
+                exit();
+            }
+            if (!isset(self::$templates[$tmpl_key])) {
+                throw new Exception(
+                    "Developement error.
+Template '$tmpl_key' not found.
+Use Route::template('tmpl_my.php', '$tmpl_key');"
+                );
+                exit();
+            }
+            $tmpl_php = self::$templates[$tmpl_key];
+        }
+        // if no template requested include flow
+        if ($tmpl_php == null) {
+            include_once($file);
+            exit();            
+        }
         // html to include in template
         if ($ext == 'html' || $ext == 'htm') {
             self::$main_inc = $file;
         }
         // supposed to be php 
         else {
+            // capture content if it is php direct
             ob_start();
             include_once($file);
             // capture un
             self::$main_contents = ob_get_contents();
             ob_end_clean();
         }
-        self::$routed = true;
-        include_once(Route::$template);
-        exit();
+        // now everything should be OK to render page
+        // template should call at least Route::main() to display something 
+        include_once($tmpl_php);
+        exit();            
     }
 
     /**
-     * Set template
+     * Append a template
      */
-    Static public function template(string $template): void
+    static public function template(
+        string $tmpl_php,
+        ?string $key=null
+    ):void
     {
-        self::$template = $template;
+        if (!File::readable($tmpl_php)) {
+            // will send exceptions if template is not readable
+            return;
+        } 
+        else if ($key !== null && $key !== '') {
+            self::$templates[$key] = $tmpl_php;
+        } 
+        else {
+            self::$templates[] = $tmpl_php;
+        }
     }
     /**
      * Return app_href, optional, if the index.php is outside app_dir
@@ -204,9 +262,9 @@ class Route {
     /**
      * Set app_href prefix, optional, if the index.php is outside app_dir
      */
-    static public function home(): string
+    static public function home_href(): string
     {
-        return self::$home;
+        return self::$home_href;
     }
 
     /**
