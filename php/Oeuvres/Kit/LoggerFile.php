@@ -19,23 +19,20 @@ use Psr\Log\LogLevel;
  *
  * @see https://www.php-fig.org/psr/psr-3/
  */
-class LoggerCli extends LoggerBase
+class LoggerFile extends LoggerBase
 {
+    private $handle;
     protected function write($level, $message)
     {
-        $verbosity = parent::verbosity($level);
-        if ($verbosity > 4) {
-            $out = STDOUT;
-        } else {
-            $out = STDERR;
-        }
-        fwrite( $out, $message . "\n");
+        fwrite( $this->handle, $message . "\n");
     }
 
     public function __construct(
+        string $file,
         ?string $level = LogLevel::ERROR, 
         ?string $prefix = "[{level}] {time} "
     ) {
+        $this->handle = fopen($file, 'a+'); // append by default
         $this->level($level);
         $this->prefix($prefix);
     }

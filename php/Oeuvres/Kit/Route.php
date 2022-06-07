@@ -14,16 +14,18 @@ declare(strict_types=1);
 namespace Oeuvres\Kit;
 
 use Oeuvres\Kit\{File,I18n};
-use Exception, InvalidArgumentException;
+use Exception;
 
 
 Route::init();
 
 class Route {
-    /** root directory of the app = directory of index.php */
+    /** root directory of the app when outside site */
     private static $app_dir;
     /** Href to app resources */
     private static $app_href;
+    /** Home dir where is the index.php answering */
+    private static $home_dir;
     /** Home href for routing */
     private static $home_href;
     /** Default php template */
@@ -36,6 +38,8 @@ class Route {
     static $url_request;
     /** Split of url parts */
     static $url_parts;
+    /** The resource to deliver */
+    static $resource;
     /** Has a routage been done ? */
     static $routed;
 
@@ -53,6 +57,8 @@ class Route {
         }
         self::$url_request = $url_request;
         self::$url_parts = explode('/', ltrim($url_request, '/'));
+
+        self::$home_dir = getcwd();
         self::$home_href = str_repeat('../', count(self::$url_parts) - 1);
         // get relative path from index.php caller to the root of app to calculate href for resources in this folder
         self::$app_href = self::$home_href . File::relpath(
@@ -100,11 +106,11 @@ class Route {
         if ($default) {
             return $default;
         }
-        return I18n::_('app');
+        return I18n::_('title');
     }
 
-        /**
-     * Display a <title> for the page 
+    /**
+     * Display metadata for a page
      */
     public static function meta($default=null): string
     {
@@ -115,7 +121,25 @@ class Route {
         if ($default) {
             return $default;
         }
-        return "<title>" . I18n::_('app') . "</title>";
+        return "<title>" . I18n::_('title') . "</title>";
+    }
+
+    /**
+     * Draw an html tab for a navigation with test if selected 
+     */
+    public static function tab($href, $text)
+    {
+        $page = self::$url_parts[0];
+        $selected = '';
+        if ($page == $href) {
+            $selected = " selected";
+        }
+        if(!$href) {
+            $href = '.';
+        }
+        return '<a class="tab'. $selected . '"'
+        . ' href="'. self::home_href(). $href . '"' 
+        . '>' . $text . '</a>';
     }
 
     /**
@@ -144,7 +168,7 @@ class Route {
      */
     public static function route(
         string $route, 
-        string $file, 
+        string $resource, 
         ?array $pars=null, 
         ?string $tmpl_key=''
     ):bool {
@@ -158,12 +182,13 @@ class Route {
         }
         // rewrite file destination according to $route url
         preg_match('@'.$route.'@', self::$url_request, $route_match);
-        $file = self::replace($file, $route_match);
-        if (!File::isabs($file)) {
-            $file = self::$app_dir . $file;
+        $resource = self::replace($resource, $route_match);
+        if (!File::isabs($resource)) {
+            // resolve links from welcome page
+            $resource = self::$home_dir . $resource;
         }
         // file not found, let chain continue
-        if (!file_exists($file)) {
+        if (!file_exists($resource)) {
             return false;
         }
         // modyfy parameters according to route
@@ -175,9 +200,10 @@ class Route {
             $_GET = array_merge($_GET, $pars);
         }
 
-        $ext = pathinfo($file, PATHINFO_EXTENSION);
+        $ext = pathinfo($resource, PATHINFO_EXTENSION);
         // should be routed
         self::$routed = true;
+        self::$resource = $resource;
 
         $tmpl_php = null;
         // default, no template registred, no temple requested, OK
@@ -211,18 +237,18 @@ Use Route::template('tmpl_my.php', '$tmpl_key');"
         }
         // if no template requested include flow
         if ($tmpl_php == null) {
-            include_once($file);
+            include_once($resource);
             exit();            
         }
         // html to include in template
         if ($ext == 'html' || $ext == 'htm') {
-            self::$main_inc = $file;
+            self::$main_inc = $resource;
         }
         // supposed to be php 
         else {
             // capture content if it is php direct
             ob_start();
-            include_once($file);
+            include_once($resource);
             // capture un
             self::$main_contents = ob_get_contents();
             ob_end_clean();
