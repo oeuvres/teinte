@@ -17,14 +17,14 @@ namespace Oeuvres\Kit;
 use Oeuvres\Kit\{Web};
 
 /**
- * Helper class to print radio button with correct value for parameters
+ * Helper class to print a select with correct value for parameters
  */
-class Radio
+class Select
 {
-    /** Name of the radio button set, required */
+    /** Name of the select, required */
     private $name;
     /** The values */
-    private $buts = array();
+    private $options = array();
     /** Default values */
     private $default;
 
@@ -34,13 +34,13 @@ class Radio
         $this->name = $name;
     }
     /** Add a value */
-    function add(string $value, ?string $label=null, ?bool $default=false): Radio
+    function add(string $value, ?string $label=null, ?bool $default=false): Select
     {
         // if value contains bad chars for html attribute or regex, let it go ?
         if ($label === null) {
             $label = $value;
         }
-        $this->buts[$value] = $label;
+        $this->options[$value] = $label;
         return $this;
     }
     /**
@@ -49,32 +49,25 @@ class Radio
     function __toString(): string
     {
         // Warn developper here ?
-        if (!count($this->buts)) {
+        if (!count($this->options)) {
             return '';
         }
         // ensure param values
-        $values = array_keys($this->buts);
+        $values = array_keys($this->options);
         $pattern = '@' . implode('|', $values) . '@u';
         if (!$this->default) {
             $this->default = $values[0];
         }
         $check = Web::par($this->name, $this->default, $pattern);
-        $n = 0;
-        $html = '';
-        foreach($this->buts as $value => $label) {
-            $id = $this->name . $n;
-            $n++;
+        $html = '<select name="' . $this->name . '" onchange="this.form.submit()">';
+        foreach($this->options as $value => $label) {
             $checked = '';
-            if ($value == $check) $checked = ' checked="checked"';
+            if ($value == $check) $checked = ' selected="selected"';
             $html .= '
-    <span class="radio">
-        <input onchange="this.form.submit()" type="radio" id="' . $id . '" name="' . $this->name 
-            . '" value="' . $value . '"' 
-            . $checked . '/>
-        <label class="radio" for="' . $id . '">' . $label . '</label>
-    </span>
-';
+    <option value="' . $value . '"' . $checked . '>' . $label . '</option>';
         }
+        $html .= '
+</select>';
         return $html;
     }
 }

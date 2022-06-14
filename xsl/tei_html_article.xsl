@@ -17,43 +17,47 @@ XSLT 1.0, compatible browser, PHP, Python, Java…
 <xsl:transform version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" xmlns:tei="http://www.tei-c.org/ns/1.0" exclude-result-prefixes="tei">
   <xsl:import href="html/tei_flow_html.xsl"/>
   <xsl:import href="html/tei_notes_html.xsl"/>
+  <xsl:import href="html/tei_toc_html.xsl"/>
   <!-- Maybe used as a body class -->
   <xsl:param name="folder"/>
   <!--  -->
   <xsl:output encoding="UTF-8" indent="yes" method="xml" omit-xml-declaration="yes"/>
   <!-- Racine -->
-  <xsl:template match="/*">
-    <xsl:variable name="bodyclass">
-      <xsl:value-of select="$corpusid"/>
-      <xsl:text> </xsl:text>
-      <xsl:value-of select="$folder"/>
-    </xsl:variable>
-    <article>
-      <xsl:call-template name="att-lang"/>
-      <xsl:if test="normalize-space($bodyclass)">
-        <xsl:attribute name="class">
-          <xsl:value-of select="normalize-space($bodyclass)"/>
-        </xsl:attribute>
-      </xsl:if>
-      <xsl:apply-templates/>
-    </article>
+  <xsl:template match="/">
+    <xsl:apply-templates select="/*/tei:text"/>
   </xsl:template>
 
   <xsl:template match="tei:text">
     <xsl:param name="level" select="count(ancestor::tei:group)"/>
+    
+    <xsl:variable name="class">
+      <xsl:value-of select="$corpusid"/>
+      <xsl:text> </xsl:text>
+      <xsl:value-of select="$folder"/>
+      <xsl:text> teinte</xsl:text>
+    </xsl:variable>
+    
+    
     <article>
       <xsl:attribute name="id">
         <xsl:call-template name="id"/>
       </xsl:attribute>
-      <xsl:call-template name="atts"/>
-      <xsl:apply-templates select="*">
-        <xsl:with-param name="level" select="$level +1"/>
-      </xsl:apply-templates>
-      <!-- groupes de textes, procéder les notes par textes -->
-      <xsl:if test="not(tei:group)">
-        <!-- No notes in teiHeader ? -->
-        <xsl:call-template name="footnotes"/>
-      </xsl:if>
+      <xsl:call-template name="atts">
+        <xsl:with-param name="class" select="$class"/>
+      </xsl:call-template>
+      <aside class="toc">
+        <nav>
+          <xsl:call-template name="toc"/>
+        </nav>
+      </aside>
+      <div class="main">
+        <xsl:apply-templates select="*"/>
+        <!-- groupes de textes, procéder les notes par textes -->
+        <xsl:if test="not(tei:group)">
+          <!-- No notes in teiHeader ? -->
+          <xsl:call-template name="footnotes"/>
+        </xsl:if>
+      </div>
     </article>
   </xsl:template>
 </xsl:transform>

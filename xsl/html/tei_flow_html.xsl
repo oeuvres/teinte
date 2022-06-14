@@ -281,7 +281,7 @@ Sections
   <!-- <h[1-6]> titres avec niveaux hiérarchiques génériques selon le nombre d'ancêtres, il est possible de paramétrer le niveau, pour commencer à 1 en haut de document généré -->
   <xsl:template match="tei:head">
     <xsl:param name="from"/>
-    <xsl:param name="level" select="count(ancestor::tei:div)"/>
+    <xsl:param name="level" select="count(ancestor::*[tei:head])"/>
     <xsl:variable name="id">
       <xsl:for-each select="parent::*">
         <xsl:call-template name="id"/>

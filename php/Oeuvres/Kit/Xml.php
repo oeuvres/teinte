@@ -12,8 +12,7 @@ declare(strict_types=1);
 namespace Oeuvres\Kit;
 
 use Exception, DOMDocument, XSLTProcessor;
-use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
+use Psr\Log\{LoggerInterface, NullLogger};
 
 /**
  * A set of well configured method for XML manipulation
@@ -36,6 +35,7 @@ class Xml
         | LIBXML_NOCDATA
         // | LIBXML_NOWARNING  // ? hide warn for <?xml-model
     ;
+    /** Logger */
     private static $logger;
 
     /**

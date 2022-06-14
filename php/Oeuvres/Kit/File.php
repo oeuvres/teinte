@@ -289,7 +289,7 @@ class File
     /**
      * Build a map from tsv file where first col is the key.
      */
-    static function tsvhash($tsvfile, $sep="\t")
+    static function tsv_map($tsvfile, $sep="\t")
     {
         $ret = array();
         $handle = fopen($tsvfile, "r");
@@ -298,10 +298,12 @@ class File
             if (!$data || !count($data)) {
                 continue;
             }
+            /* Log ?
             if (isset($ret[$data[0]])) {
                 echo $tsvfile,'#',$l,' not unique key:', $data[0], "\n";
             }
-            $ret[$data[0]] = $data;
+            */
+            $ret[$data[0]] = stripslashes($data[1]);
         }
         return $ret;
     }
