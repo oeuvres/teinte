@@ -23,15 +23,18 @@ class Select
 {
     /** Name of the select, required */
     private $name;
+    /** Id of the element, optional */
+    private $id;
     /** The values */
     private $options = array();
     /** Default values */
     private $default;
 
     /** Construct a radio set */
-    function __construct($name)
+    function __construct($name, $id=null)
     {
         $this->name = $name;
+        if ($id !== null) $this->id = $id;
     }
     /** Add a value */
     function add(string $value, ?string $label=null, ?bool $default=false): Select
@@ -59,7 +62,9 @@ class Select
             $this->default = $values[0];
         }
         $check = Web::par($this->name, $this->default, $pattern);
-        $html = '<select name="' . $this->name . '" onchange="this.form.submit()">';
+        $html = '<select name="' . $this->name .'"';
+        if ($this->id != null) $html .= ' id="' . $this->id . '"';
+        $html .= '>';
         foreach($this->options as $value => $label) {
             $checked = '';
             if ($value == $check) $checked = ' selected="selected"';
