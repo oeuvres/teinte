@@ -28,7 +28,7 @@ BSD-3-Clause https://opensource.org/licenses/BSD-3-Clause
         <xsl:variable name="notes">
           <xsl:apply-templates mode="fn"/>
         </xsl:variable>
-        <xsl:if test="$notes">
+        <xsl:if test="count($notes) &gt; 1">
           <section class="footnotes">
             <xsl:for-each select="exslt:node-set($notes)/*">
               <xsl:sort select="substring-before(concat(@class, ' '), ' ')"/>

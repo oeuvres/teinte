@@ -45,11 +45,13 @@ XSLT 1.0, compatible browser, PHP, Python, Java…
       <xsl:call-template name="atts">
         <xsl:with-param name="class" select="$class"/>
       </xsl:call-template>
-      <aside class="toc">
-        <nav>
-          <xsl:call-template name="toc"/>
-        </nav>
-      </aside>
+      <xsl:if test="tei:div">
+        <aside class="toc">
+          <nav>
+            <xsl:call-template name="toc"/>
+          </nav>
+        </aside>
+      </xsl:if>
       <div class="main">
         <xsl:apply-templates select="*"/>
         <!-- groupes de textes, procéder les notes par textes -->
