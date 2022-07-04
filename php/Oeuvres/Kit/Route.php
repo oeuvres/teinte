@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Part of Teinte https://github.com/oeuvres/teinte
  * MIT License https://opensource.org/licenses/mit-license.php
@@ -14,15 +13,17 @@ declare(strict_types=1);
 
 namespace Oeuvres\Kit;
 
-use Oeuvres\Kit\{File, I18n};
+use Oeuvres\Kit\{File,I18n};
 use Exception;
 
 
 Route::init();
-class Route
-{
+
+class Route {
     /** root directory of the app when outside site */
     private static $app_dir;
+    /** Href to app resources */
+    private static $app_href;
     /** Home dir where is the index.php answering */
     private static $home_dir;
     /** Home href for routing */
@@ -33,42 +34,45 @@ class Route
     private static $main_inc;
     /** A file to include */
     private static $main_contents;
-    /** Path relative to home */
-    private static $request_path;
+    /** Path relative to the root app */
+    private static $url_request;
     /** Split of url parts */
-    private static $request_chunks;
-    /** Store a lang */
-    private static $lang = '';
+    static $url_parts;
     /** The resource to deliver */
     private static $resource;
     /** Has a routage been done ? */
-    private static $routed;
+    static $routed;
 
     public static function init()
     {
-        self::$app_dir = dirname(__DIR__, 3) . DIRECTORY_SEPARATOR;
+        self::$app_dir = dirname(__DIR__, 3). DIRECTORY_SEPARATOR ;
 
-        $request_url = filter_var($_SERVER['REQUEST_URI'], FILTER_SANITIZE_URL);
-        $request_url = strtok($request_url, '?'); // old
+        $url_request = filter_var($_SERVER['REQUEST_URI'], FILTER_SANITIZE_URL);
+        $url_request = strtok($url_request, '?'); // old
         // maybe not robust, this should interpret path relative to the webapp
         // domain.com/subdir/verbatim/path/perso -> /path/perso
         $url_prefix = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
-        if ($url_prefix && strpos($request_url, $url_prefix) !== FALSE) {
-            $request_url = substr($request_url, strlen($url_prefix));
+        if ($url_prefix && strpos($url_request, $url_prefix) !== FALSE) {
+            $url_request = substr($url_request, strlen($url_prefix));
         }
-        self::$request_path = $request_url;
-        self::$request_chunks = explode('/', ltrim($request_url, '/'));
+        self::$url_request = $url_request;
+        self::$url_parts = explode('/', ltrim($url_request, '/'));
 
         self::$home_dir = getcwd();
-        self::$home_href = str_repeat('../', count(self::$request_chunks) - 1);
+        self::$home_href = str_repeat('../', count(self::$url_parts) - 1);
+        // get relative path from index.php caller to the root of app to calculate href for resources in this folder
+        self::$app_href = self::$home_href . File::relpath(
+            dirname($_SERVER['SCRIPT_FILENAME']), 
+            self::$app_dir
+        );
     }
-    public static function get($route, $php, $pars = null)
+    public static function get($route, $php, $pars=null)
     {
         if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             self::route($route, $php, $pars);
         }
     }
-    public static function post($route, $php, $pars = null)
+    public static function post($route, $php, $pars=null)
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             self::route($route, $php, $pars);
@@ -93,7 +97,7 @@ class Route
     /**
      * Display a <title> for the page 
      */
-    public static function title($default = null): string
+    public static function title($default=null): string
     {
         if (function_exists('title')) {
             $title = call_user_func('title');
@@ -108,7 +112,7 @@ class Route
     /**
      * Display metadata for a page
      */
-    public static function meta($default = null): string
+    public static function meta($default=null): string
     {
         if (function_exists('meta')) {
             $meta = call_user_func('meta');
@@ -125,16 +129,17 @@ class Route
      */
     public static function tab($href, $text)
     {
+        $page = self::$url_parts[0];
         $selected = '';
-        if (ltrim(self::$request_path, '/') == $href) {
+        if ($page == $href) {
             $selected = " selected";
         }
-        if (!$href) {
+        if(!$href) {
             $href = '.';
         }
-        return '<a class="tab' . $selected . '"'
-            . ' href="' . self::home_href() . $href . '"'
-            . '>' . $text . '</a>';
+        return '<a class="tab'. $selected . '"'
+        . ' href="'. self::home_href(). $href . '"' 
+        . '>' . $text . '</a>';
     }
 
     /**
@@ -142,16 +147,16 @@ class Route
      */
     public static function match($route)
     {
-        $route_chunks = explode('/', ltrim($route, '/'));
+        $route_parts = explode('/', ltrim($route, '/'));
         // too long url
-        if (count($route_chunks) != count(self::$request_chunks)) {
+        if (count($route_parts) != count(self::$url_parts)) {
             return false;
         }
         // test if path is matching
-        for ($i = 0; $i < count($route_chunks); $i++) {
+        for ($i = 0; $i < count($route_parts); $i++) {
             // escape ^and $ ?
-            $search = '/^' . $route_chunks[$i] . '$/';
-            if (!preg_match($search, self::$request_chunks[$i])) {
+            $search = '/^'.$route_parts[$i].'$/';
+            if(!preg_match($search, self::$url_parts[$i])) {
                 return false;
             }
         }
@@ -162,11 +167,11 @@ class Route
      * Try a route
      */
     public static function route(
-        string $route,
-        string $resource,
-        ?array $pars = null,
-        ?string $tmpl_key = ''
-    ): bool {
+        string $route, 
+        string $resource, 
+        ?array $pars=null, 
+        ?string $tmpl_key=''
+    ):bool {
         // the catchall
         if ($route == "/404") {
             http_response_code(404);
@@ -176,7 +181,7 @@ class Route
             return false;
         }
         // rewrite file destination according to $route url
-        preg_match('@' . $route . '@', self::$request_path, $route_match);
+        preg_match('@'.$route.'@', self::$url_request, $route_match);
         $resource = self::replace($resource, $route_match);
         if (!File::isabs($resource)) {
             // resolve links from welcome page
@@ -184,11 +189,12 @@ class Route
         }
         // file not found, let chain continue
         if (!file_exists($resource)) {
+            self::$resource = $resource;
             return false;
         }
         // modyfy parameters according to route
         if ($pars != null) {
-            foreach ($pars as $key => $value) {
+            foreach($pars as $key => $value) {
                 $pars[$key] = urldecode(self::replace($value, $route_match));
             }
             $_REQUEST = array_merge($_REQUEST, $pars);
@@ -210,7 +216,8 @@ class Route
         }
         // explitly no template requested
         else if ($tmpl_key === null) {
-        } else {
+        }
+        else {
             if (count(self::$templates) < 1) {
                 throw new Exception(
                     "Developement error.
@@ -232,7 +239,7 @@ Use Route::template('tmpl_my.php', '$tmpl_key');"
         // if no template requested include flow
         if ($tmpl_php == null) {
             include_once($resource);
-            exit();
+            exit();            
         }
         // html to include in template
         if ($ext == 'html' || $ext == 'htm') {
@@ -250,7 +257,7 @@ Use Route::template('tmpl_my.php', '$tmpl_key');"
         // now everything should be OK to render page
         // template should call at least Route::main() to display something 
         include_once($tmpl_php);
-        exit();
+        exit();            
     }
 
     /**
@@ -258,89 +265,47 @@ Use Route::template('tmpl_my.php', '$tmpl_key');"
      */
     static public function template(
         string $tmpl_php,
-        ?string $key = null
-    ): void {
+        ?string $key=null
+    ):void
+    {
         if (!File::readable($tmpl_php)) {
             // will send exceptions if template is not readable
             return;
-        } else if ($key !== null && $key !== '') {
+        } 
+        else if ($key !== null && $key !== '') {
             self::$templates[$key] = $tmpl_php;
-        } else {
+        } 
+        else {
             self::$templates[] = $tmpl_php;
         }
     }
-
     /**
-     * Return app_dir, optional, useful if the index.php is outside app_dir
+     * Return the path requested
      */
-    static public function app_dir(): string
+    static public function url_request(): string
     {
-        return self::$app_dir;
+        return self::$url_request;
     }
-
     /**
-     * Request has been routed
+     * Return the last calculated path for reosource (maybe ueful for debug)
      */
-    static public function found(): bool
+    static public function resource(): ?string
     {
-        return self::$routed;
+        return self::$resource;
     }
-
     /**
-     * Href for a resource, resolved from the php caller, usually, a template, 
-     * and relative to request
+     * Return app_href, optional, if the index.php is outside app_dir
      */
-    static public function res_href($path): string
+    static public function app_href(): string
     {
-        // seems an absolute path
-        if (preg_match('@^/|^[A-Z]:[/\\\\]@', $path)) {
-            $res_file = $path;
-        } else {
-            // get the path of the caller
-            $bt = debug_backtrace();
-            $php_file = $bt[0]['file'];
-            $res_file = dirname($php_file) . '/' . $path;
-        }
-        // get relative path from php_file caller to the root of app to calculate href for resources in this folder
-        $res_href = self::$home_href . File::relpath(
-            dirname($_SERVER['SCRIPT_FILENAME']),
-            $res_file
-        );
-        return $res_href;
+        return self::$app_href;
     }
-
     /**
-     * Set or return a language
-     */
-    static public function lang(?string $lang = ''): string
-    {
-        // first setter win
-        if (!self::$lang && $lang) self::$lang = $lang;
-        return self::$lang;
-    }
-
-    /**
-     * Returns a relative href link to the root of the site (the first index.php handler)
+     * Set app_href prefix, optional, if the index.php is outside app_dir
      */
     static public function home_href(): string
     {
         return self::$home_href;
-    }
-    /**
-     * home_dir, default is the index.php caller.
-     */
-    static public function home_dir($home_dir = null): string
-    {
-        if ($home_dir !== null) self::$home_dir = $home_dir;
-        return self::$home_dir;
-    }
-
-    /**
-     * Return the original request path
-     */
-    static public function request_path(): string
-    {
-        return self::$request_path;
     }
 
     /**
@@ -359,7 +324,7 @@ Use Route::template('tmpl_my.php', '$tmpl_key');"
                     return $var_match[0];
                 }
                 // ensure no slash, to dangerous
-                $filename = $values[$n];
+                $filename = $values[$n]; 
                 $filename = preg_replace('@\.\.|/|\\\\@', '', $filename);
                 return $filename;
             },
@@ -367,4 +332,5 @@ Use Route::template('tmpl_my.php', '$tmpl_key');"
         );
         return $ret;
     }
+
 }

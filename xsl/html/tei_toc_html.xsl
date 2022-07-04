@@ -20,7 +20,6 @@ BSD-3-Clause https://opensource.org/licenses/BSD-3-Clause
   exclude-result-prefixes="tei" 
   >
   <xsl:import href="../tei_common.xsl"/>
-  <xsl:strip-space elements="tei:TEI tei:TEI.2 tei:body tei:castList  tei:div tei:div1 tei:div2  tei:docDate tei:docImprint tei:docTitle tei:fileDesc tei:front tei:group tei:index tei:listWit tei:publicationStmp tei:publicationStmt tei:sourceDesc tei:SourceDesc tei:sources tei:text tei:teiHeader tei:text tei:titleStmt"/>
   
   <!-- Generate a relative tree, for example in a section -->
   <xsl:template name="tocrel">

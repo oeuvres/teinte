@@ -17,7 +17,7 @@ XSLT 1.0 is compatible browser, PHP, Python, Java…
 <xsl:transform version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" xmlns:eg="http://www.tei-c.org/ns/Examples" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:epub="http://www.idpf.org/2007/ops" exclude-result-prefixes="eg tei epub">
   <!-- Import shared templates -->
   <xsl:import href="../tei_common.xsl"/>
-  <xsl:output encoding="UTF-8" indent="yes" method="xml" omit-xml-declaration="yes"/>
+
   <!-- What kind of root element to output ? html, div, article -->
   <xsl:param name="root" select="$html"/>
   <xsl:key name="split" match="/" use="'root'"/>
@@ -545,6 +545,9 @@ Sections
           <xsl:call-template name="atts">
             <xsl:with-param name="class">
               <xsl:if test="$none">none</xsl:if>
+              <xsl:text> </xsl:text>
+              <!-- bad TEI practice, from odt/tei with  -->
+              <xsl:value-of select="tei:item[1]/@rend"/>
             </xsl:with-param>
           </xsl:call-template>
           <xsl:apply-templates>
@@ -681,9 +684,20 @@ Sections
         </xsl:if>
       </xsl:if>
       -->
-      <xsl:apply-templates>
-        <xsl:with-param name="from" select="$from"/>
-      </xsl:apply-templates>
+      <xsl:choose>
+        <xsl:when test="not(*) and contains(@rend, 'card')">
+          <span class="item">
+            <xsl:apply-templates>
+              <xsl:with-param name="from" select="$from"/>
+            </xsl:apply-templates>
+          </span>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:apply-templates>
+            <xsl:with-param name="from" select="$from"/>
+          </xsl:apply-templates>
+        </xsl:otherwise>
+      </xsl:choose>
     </li>
   </xsl:template>
   <!-- term list -->
@@ -1458,11 +1472,7 @@ Tables
       <xsl:when test="normalize-space($html) = ''"/>
       <xsl:otherwise>
         <a>
-          <xsl:call-template name="atts">
-            <xsl:with-param name="class">
-              <xsl:if test="starts-with(@target, 'http')">external</xsl:if>
-            </xsl:with-param>
-          </xsl:call-template>
+          <xsl:call-template name="atts"/>
           <xsl:copy-of select="$html"/>
         </a>
       </xsl:otherwise>

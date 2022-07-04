@@ -172,8 +172,6 @@ class Web
         ?string $pattern = null, 
         ?string $cookie = null
     ) {
-        // 10 days cookie expiration
-        $expire = 3600*24*10; 
         // store params array extracted from query
         if (!self::$pars) {
             self::$pars = self::parse();
@@ -186,46 +184,60 @@ class Web
             );
             return null;
         }
-        $par = null;
+        $value = null;
         // a param is requested, values found
         if (isset(self::$pars[$name]) && count(self::$pars[$name]) > 0) {
             // if more than one and first is empty, bad practice
-            $par = self::$pars[$name][0];
+            $value = self::$pars[$name][0];
         }
         // param maybe set programmatically, for example by Route
         else if (isset($_GET[$name]) && trim($_GET[$name]) ) {
-            $par = $_GET[$name];
+            $value = $_GET[$name];
         }
         else if (isset($_POST[$name]) && trim($_POST[$name]) ) {
-            $par = $_POST[$name];
+            $value = $_POST[$name];
         }
         // bad practice, maybe confused by cookie, but be nice
         else if (isset($_REQUEST[$name]) && trim($_REQUEST[$name]) ) {
-            $par = $_REQUEST[$name];
+            $value = $_REQUEST[$name];
+        }
+        // validate before set a cookie
+        if ($pattern && $value && !preg_match($pattern, $value)) {
+            $value = null;
         }
         // A cookie is requested
         if ($cookie) {
+            $options = [
+                'expires' => time() + (30 * 24 * 3600), //  30 days
+                'path' => '/',
+                // 'domain' => 'domain.com',
+                // 'secure' => true, // https needed ?
+                'httponly' => true,
+                'samesite' => 'Strict',
+            ];
+
             // empty string is used as reset cookie
-            if ($par === '') {
-                setcookie($cookie);
+            if ($value === '') {
+                $options['expires'] = time() - 3600;
+                setcookie($cookie, "", $options);
             }
             // no value found, find one in cookie
-            else if ($par == null && isset($_COOKIE[$cookie])) {
-                $pars = unserialize($_COOKIE[$cookie]);
+            else if ($value == null && isset($_COOKIE[$cookie])) {
+                $value = $_COOKIE[$cookie];
+                // check the value stored, maybe bad
+                if ($pattern && !preg_match($pattern, $value)) {
+                    $value = null;
+                    $options['expires'] = time() - 3600;
+                    setcookie($cookie, "", $options);
+                }
             }
             // a value, cookie persistance
             else {
-                setcookie($name, serialize($par), time() + $expire);
+                setcookie($name, $value, $options);
             }
         }
-        // validate
-        if ($pattern && $par) {
-            if (!preg_match($pattern, $par)) {
-                $par = null;
-            }
-        }
-        if ($par !== null) {
-            return $par;
+        if ($value !== null) {
+            return $value;
         }
         if ($default !== null) {
             return $default;

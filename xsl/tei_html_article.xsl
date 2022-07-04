@@ -20,7 +20,7 @@ XSLT 1.0, compatible browser, PHP, Python, Java…
   <xsl:import href="html/tei_toc_html.xsl"/>
   <!-- Maybe used as a body class -->
   <xsl:param name="folder"/>
-  <!--  -->
+  <!-- method html, safer for empty <div/> -->
   <xsl:output encoding="UTF-8" indent="yes" method="xml" omit-xml-declaration="yes"/>
   <!-- Racine -->
   <xsl:template match="/">
@@ -45,13 +45,14 @@ XSLT 1.0, compatible browser, PHP, Python, Java…
       <xsl:call-template name="atts">
         <xsl:with-param name="class" select="$class"/>
       </xsl:call-template>
-      <xsl:if test="tei:div">
-        <aside class="toc">
+      <aside class="toc">
+        <xsl:if test="count(.//tei:head) &gt; 2">
           <nav>
             <xsl:call-template name="toc"/>
           </nav>
-        </aside>
-      </xsl:if>
+        </xsl:if>
+        <xsl:text> </xsl:text>
+      </aside>
       <div class="main">
         <xsl:apply-templates select="*"/>
         <!-- groupes de textes, procéder les notes par textes -->
