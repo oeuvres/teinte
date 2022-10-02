@@ -1001,8 +1001,7 @@
     <define name="l">
       <element name="l">
         <a:documentation>Un vers, peut être contenu dans une strophe &lt;lg></a:documentation>
-        <div xmlns="http://www.w3.org/1999/xhtml">
-          <br/>Pour les vers rompus du théâtre (– Hé ? – Quoi ! – Ah…), renseigner l’attribut @part qui permettra à une application de rétablir les alignements, indiquer explicitement la succession pour informer un automate : Initial (1) – Medial (0 ou n) – Final (1) <br/>Les indentations spécifiques sont à inscrire sous forme d’espaces insécables (caractère unicode équivalent à l’entité XML <![CDATA[&#160;]]>). Pour les vers numérotés, le numéro est inscrit dans l’attribut <a:att>n</a:att>.</div>
+        <div xmlns="http://www.w3.org/1999/xhtml"> <br/>Pour les vers rompus du théâtre (– Hé ? – Quoi ! – Ah…), renseigner l’attribut @part qui permettra à une application de rétablir les alignements, indiquer explicitement la succession pour informer un automate : Initial (1) – Medial (0 ou n) – Final (1) <br/>Les indentations spécifiques sont à inscrire sous forme d’espaces insécables (caractère unicode équivalent à l’entité XML <![CDATA[&#160;]]>). Pour les vers numérotés, le numéro est inscrit dans l’attribut <a:att>n</a:att>.</div>
         <ref name="xml-atts"/>
         <optional>
           <ref name="att.n"/>
@@ -1776,8 +1775,20 @@
     <define name="sp">
       <element name="sp">
         <a:documentation>Théâtre : tirade, tour de parole</a:documentation>
-        <ref name="xml-atts"/>
-        <ref name="who"/>
+        <optional>
+          <attribute name="rend">
+            <choice>
+              <ref name="rend.align"/>
+              <value>float</value>
+            </choice>
+          </attribute>
+        </optional>
+        <optional>
+          <ref name="xml-atts"/>
+        </optional>
+        <optional>
+          <ref name="who"/>
+        </optional>
         <ref name="speaker"/>
         <oneOrMore>
           <choice>
@@ -1833,8 +1844,7 @@
           <ul>
             <li>La distribution ou liste de personnages en tête de pièce <a:el>castList</a:el> est une didascalie à destination de la troupe pour annoncer les rôles, emplois, et relations. La dramaturgie automatique a besoin de cette information, de manière plus précise et plus structurée.</li>
             <li>La distribution de scène, ex : « Phède, Hippolyte », relève de la didascalie. Le titre d’acte, de tableau ou de scène, aussi : « Scène 1 ». Il en résulte que l’on pourrait mettre titre de section et liste de personnages dans un même élément, un “titre” <a:el>head</a:el> : « Scène 1. Phèdre, Hippolyte. ». Ce n’est pas contradictoire avec la définition ci-dessus, mais <a:el>head</a:el> en TEI a le sens plus général de titres de section. Or, la liste des personnages peut être diversement longue et mêlée d’autres indications scéniques, ne relevant plus à proprement du titre. En conséquence, nous plaçons la distribution de scène dans un élément <a:el>stage</a:el>, juste après le <a:el>head</a:el>. Cette structure n’engage pas la présentation typographique (ex : tout peut paraître une ligne). La dramaturgie automatique aura besoin d’informations supplémentaires, cf. <a:el>listPerson</a:el>.</li>
-            <li>Les noms de personnages en tête de réplique <a:el>speaker</a:el> sont des didascalies, raison qui justifie TEI de ne pas y autoriser <a:el>stage</a:el> (comme on ne peut pas mettre un paragraphe dans un paragraphe). Il en résulte que les mots qui ne sont pas des noms de personnage ont le même statut de didascalie, les distinctions ne sont que typographiques. <a:example><speaker>Pipi <emph>et</emph> quatorze, <emph>riant</emph></speaker></a:example>
-            </li>
+            <li>Les noms de personnages en tête de réplique <a:el>speaker</a:el> sont des didascalies, raison qui justifie TEI de ne pas y autoriser <a:el>stage</a:el> (comme on ne peut pas mettre un paragraphe dans un paragraphe). Il en résulte que les mots qui ne sont pas des noms de personnage ont le même statut de didascalie, les distinctions ne sont que typographiques. <a:example><speaker>Pipi <emph>et</emph> quatorze, <emph>riant</emph></speaker></a:example> </li>
           </ul>
           <p>Selon cette définition, l'élément <a:el>stage</a:el> peut apparaître à de nombreux endroits :</p>
           <ul>
@@ -1910,8 +1920,10 @@
             <text/>
             <ref name="emph"/>
             <ref name="hi"/>
+            <ref name="lb"/>
             <ref name="listPerson"/>
             <ref name="note"/>
+            <ref name="num"/>
             <ref name="pb"/>
             <ref name="ref"/>
             <ref name="surname"/>
@@ -1927,55 +1939,63 @@
           <p><a:el>castList</a:el> permet d'encoder la distribution d'un texte dramatique. La structuration sémantique, notamment l'élément <a:el>role</a:el>, permet de porter des informations, par exemple un identifiant qui sera rappelé avec un élément <a:el>person</a:el> dans une configuration scénique <a:el>listPerson</a:el>.</p>
           <a:example>
             <castList>
-              <castItem><role xml:id="madame-pernelle" rend="female veteran">Madame Pernelle</role>, <roleDesc>Mère d’Orgon</roleDesc>.</castItem>
-              <castItem><role xml:id="orgon" rend="male superior">Orgon</role>, <roleDesc>Mari d’Elmire</roleDesc>.</castItem>
-              <castItem><role xml:id="elmire" rend="female superior">Elmire</role>, <roleDesc>Femme d’Orgon</roleDesc>.</castItem>
-              <castItem><role xml:id="damis" rend="male junior">Damis</role>, <roleDesc>Fils d’Orgon</roleDesc>.</castItem>
-              <castItem><role xml:id="mariane" rend="female junior">Mariane</role>, <roleDesc>Fille d’Orgon, et Amante de Valère</roleDesc>.</castItem>
-              <castItem><role xml:id="valere" rend="male junior">Valère</role>, <roleDesc>Amant de Mariane</roleDesc>.</castItem>
-              <castItem><role xml:id="cleante" rend="male">Cléante</role>, <roleDesc>Beau-frère d’Orgon</roleDesc>.</castItem>
-              <castItem><role xml:id="tartuffe" rend="male">Tartuffe</role>, <roleDesc>Faux Dévot</roleDesc>.</castItem>
-              <castItem><role xml:id="dorine" rend="female inferior">Dorine</role>, <roleDesc>Suivante de Mariane</roleDesc>.</castItem>
+              <castItem><role rend="female veteran" xml:id="madame-pernelle">Madame Pernelle</role>, <roleDesc>Mère d’Orgon</roleDesc>.</castItem>
+              <castItem><role rend="male superior" xml:id="orgon">Orgon</role>, <roleDesc>Mari d’Elmire</roleDesc>.</castItem>
+              <castItem><role rend="female superior" xml:id="elmire">Elmire</role>, <roleDesc>Femme d’Orgon</roleDesc>.</castItem>
+              <castItem><role rend="male junior" xml:id="damis">Damis</role>, <roleDesc>Fils d’Orgon</roleDesc>.</castItem>
+              <castItem><role rend="female junior" xml:id="mariane">Mariane</role>, <roleDesc>Fille d’Orgon, et Amante de Valère</roleDesc>.</castItem>
+              <castItem><role rend="male junior" xml:id="valere">Valère</role>, <roleDesc>Amant de Mariane</roleDesc>.</castItem>
+              <castItem><role rend="male" xml:id="cleante">Cléante</role>, <roleDesc>Beau-frère d’Orgon</roleDesc>.</castItem>
+              <castItem><role rend="male" xml:id="tartuffe">Tartuffe</role>, <roleDesc>Faux Dévot</roleDesc>.</castItem>
+              <castItem><role rend="female inferior" xml:id="dorine">Dorine</role>, <roleDesc>Suivante de Mariane</roleDesc>.</castItem>
               <castItem><role xml:id="loyal">Monsieur Loyal</role>, <roleDesc>Sergent</roleDesc>.</castItem>
               <castItem><role xml:id="exempt">Un exempt</role>.</castItem>
-              <castItem><role xml:id="flipote" rend="female inferior">Flipote</role>, Servante de Mme Pernelle.</castItem>
+              <castItem><role rend="female inferior" xml:id="flipote">Flipote</role>, Servante de Mme Pernelle.</castItem>
             </castList>
           </a:example>
         </div>
         <optional>
           <ref name="head"/>
         </optional>
-        <oneOrMore>
-          <element name="castItem">
-            <ref name="xml-atts"/>
-            <zeroOrMore>
-              <choice>
-                <text/>
-                <element name="role">
-                  <optional>
-                    <ref name="xml.id"/>
-                  </optional>
-                  <optional>
-                    <ref name="rend-role"/>
-                  </optional>
-                  <optional>
-                    <ref name="att.n"/>
-                  </optional>
-                  <ref name="textual"/>
-                </element>
-                <element name="actor">
-                  <optional>
-                    <ref name="xml.id"/>
-                  </optional>
-                  <ref name="textual"/>
-                </element>
-                <element name="roleDesc">
-                  <ref name="flow"/>
-                </element>
-              </choice>
-            </zeroOrMore>
-          </element>
-        </oneOrMore>
+        <choice>
+          <oneOrMore>
+            <ref name="castItem"/>
+          </oneOrMore>
+          <oneOrMore>
+            <ref name="castList"/>
+          </oneOrMore>
+        </choice>
+      </element>
+    </define>
+    <define name="castItem">
+      <element name="castItem">
+        <ref name="xml-atts"/>
+        <zeroOrMore>
+          <choice>
+            <text/>
+            <element name="role">
+              <optional>
+                <ref name="xml.id"/>
+              </optional>
+              <optional>
+                <ref name="rend-role"/>
+              </optional>
+              <optional>
+                <ref name="att.n"/>
+              </optional>
+              <ref name="textual"/>
+            </element>
+            <element name="actor">
+              <optional>
+                <ref name="xml.id"/>
+              </optional>
+              <ref name="textual"/>
+            </element>
+            <element name="roleDesc">
+              <ref name="flow"/>
+            </element>
+          </choice>
+        </zeroOrMore>
       </element>
     </define>
     <define name="listPerson">
@@ -1990,14 +2010,9 @@
           <a:example>
             <div type="scene" xml:id="IV05">
               <head>Scène V</head>
-              <stage>Tartuffe, Elmire, Orgon <listPerson type="configuration">
-                  <person corresp="#tartuffe"/>
-                  <person corresp="#elmire"/>
-                  <!-- Orgon est caché sous la table -->
-                  <person corresp="#orgon" role="hidden"/>
-                </listPerson>
-              </stage>
-              <sp xml:id="IV05-1" who="tartuffe">
+              <stage>Tartuffe, Elmire, Orgon <listPerson type="configuration"> <person corresp="#tartuffe"/> <person corresp="#elmire"/>
+                <!-- Orgon est caché sous la table --> <person corresp="#orgon" role="hidden"/> </listPerson> </stage>
+              <sp who="tartuffe" xml:id="IV05-1">
                 <speaker>Tartuffe</speaker>
                 <l n="1387" xml:id="l1387">On m’a dit qu’en ce lieu vous me vouliez parler.</l>
               </sp>
@@ -2458,9 +2473,7 @@
           <ul>
             <li><b>Mise en forme typographique</b> : si l’objectif est la mise en petites capitales des noms de famille, utiliser <a:el>surname</a:el>, afin que <a:el>persName</a:el> encadre la totalité d’un nom de personne, nom, prénom, et autres composantes compris.</li>
             <li><b>Traitements linguistiques</b> : le but sera d’inclure tous les noms propres. Il doit être possible de remplacer <a:el>persName</a:el> par "il" ou "elle" sans rompre la signification de la phrase. Pour un tel objectif, il convient de baliser aussi les noms abrégés ("K.", "Joseph K.").</li>
-            <li><b>Indexation</b> : il est nécessaire d'ajouter l’attribut utile (index-atts()) à l’identification de la personne, notamment pour les pronoms, et permettre les regroupements.<br/>
-              <a:example><persName key="dieu">Il</persName></a:example> L’attribut <a:att>type</a:att> permet, grâce à la valeur "author", d’indexer les <em>auteurs mentionnés</em> au fil du texte. De manière complémentaire, l’élement <a:el>author</a:el>, autorisé uniquement dans <a:el>bibl</a:el>, permet d’indexer les <em>auteurs référencés</em>, c’est-à-dire ceux dont les citations sont explicitement référencées par un auteur ou un éditeur scientifique. Pour établir l’index des auteurs cités dans un texte, il convient donc de regrouper les clés (<a:att>key</a:att>, <a:att>corresp</a:att> ou <a:att>ref</a:att>, cf index-atts()) renseignées pour les éléments <a:el>persName @type="author"]</a:el> et <a:el>author</a:el>.<br/> Auteur mentionné : <a:example>Je veux parler du drame d’amour qui mit aux prises, voici soixante ans passé, deux des beaux génies de notre âge : <persName ref="http://www.idref.fr/027043339" type="author">Alfred de Musset</persName> et <persName ref="http://www.idref.fr/027121577" type="author">George Sand</persName>.</a:example> Auteur référencé : <a:example><note>Le merveilleux <bibl><title>Cyrano</title> de <author ref="http://www.idref.fr/027109860">M. Edmond Rostand</author></bibl> est venu confirmer cette hypothèse. (NdA)</note></a:example>
-            </li>
+            <li><b>Indexation</b> : il est nécessaire d'ajouter l’attribut utile (index-atts()) à l’identification de la personne, notamment pour les pronoms, et permettre les regroupements.<br/> <a:example><persName key="dieu">Il</persName></a:example> L’attribut <a:att>type</a:att> permet, grâce à la valeur "author", d’indexer les <em>auteurs mentionnés</em> au fil du texte. De manière complémentaire, l’élement <a:el>author</a:el>, autorisé uniquement dans <a:el>bibl</a:el>, permet d’indexer les <em>auteurs référencés</em>, c’est-à-dire ceux dont les citations sont explicitement référencées par un auteur ou un éditeur scientifique. Pour établir l’index des auteurs cités dans un texte, il convient donc de regrouper les clés (<a:att>key</a:att>, <a:att>corresp</a:att> ou <a:att>ref</a:att>, cf index-atts()) renseignées pour les éléments <a:el>persName @type="author"]</a:el> et <a:el>author</a:el>.<br/> Auteur mentionné : <a:example>Je veux parler du drame d’amour qui mit aux prises, voici soixante ans passé, deux des beaux génies de notre âge : <persName ref="http://www.idref.fr/027043339" type="author">Alfred de Musset</persName> et <persName ref="http://www.idref.fr/027121577" type="author">George Sand</persName>.</a:example> Auteur référencé : <a:example><note>Le merveilleux <bibl><title>Cyrano</title> de <author ref="http://www.idref.fr/027109860">M. Edmond Rostand</author></bibl> est venu confirmer cette hypothèse. (NdA)</note></a:example> </li>
           </ul>
         </div>
         <ref name="xml-atts"/>
@@ -2903,10 +2916,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
     <define name="lb">
       <element name="lb">
         <a:documentation>Saut de ligne “line break” &lt;html5:br/&gt;</a:documentation>
-        <div xmlns="http://www.w3.org/1999/xhtml"> (<i>line break</i>) <p><a:el>lb</a:el> peut être utilisé pour forcer un saut de ligne, par exemple dans un titre.</p>
-          <p>Dans le cas d’un texte avec lignes numérotées qui ne sont pas des vers inclus dans un élément <a:el>l</a:el>, les numéros sont utiles au référencement des citations des notes d’apparat critique. Il est donc nécessaire de conserver tous les sauts de lignes dans le flux du texte, et d’inscrire le numéro — quand il est imprimé — dans l’attribut <a:att>n</a:att>. <b>Attention</b> : certaines éditions alternent l’emplacement du numéro de ligne selon les pages paires ou impaires (marges intérieures ou extérieures). Conformément à la spécification TEI, le numéro inscrit doit toujours se rapporter à ce qui suit. Les césures sont traitées comme pour le reste du texte. Une édition électronique de référence doit proposer une exploitation de ces sauts de ligne pour garantir une citabilité de qualité égale à la version imprimée. Si plusieurs numérotations concurrentes des lignes sont conservées, elles sont distinguées par l’attribut <a:att>ed</a:att>.</p>
-          <a:example href="teibook.xml#lb"/>
-        </div>
+        <div xmlns="http://www.w3.org/1999/xhtml"> (<i>line break</i>) <p><a:el>lb</a:el> peut être utilisé pour forcer un saut de ligne, par exemple dans un titre.</p> <p>Dans le cas d’un texte avec lignes numérotées qui ne sont pas des vers inclus dans un élément <a:el>l</a:el>, les numéros sont utiles au référencement des citations des notes d’apparat critique. Il est donc nécessaire de conserver tous les sauts de lignes dans le flux du texte, et d’inscrire le numéro — quand il est imprimé — dans l’attribut <a:att>n</a:att>. <b>Attention</b> : certaines éditions alternent l’emplacement du numéro de ligne selon les pages paires ou impaires (marges intérieures ou extérieures). Conformément à la spécification TEI, le numéro inscrit doit toujours se rapporter à ce qui suit. Les césures sont traitées comme pour le reste du texte. Une édition électronique de référence doit proposer une exploitation de ces sauts de ligne pour garantir une citabilité de qualité égale à la version imprimée. Si plusieurs numérotations concurrentes des lignes sont conservées, elles sont distinguées par l’attribut <a:att>ed</a:att>.</p> <a:example href="teibook.xml#lb"/> </div>
         <optional>
           <ref name="att.n"/>
         </optional>

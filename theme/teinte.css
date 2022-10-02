@@ -653,6 +653,8 @@ sub {
     line-height: 0;
     position: relative;
     vertical-align: baseline;
+    font-variant: normal;
+    text-transform: none;
 }
 
 sup {
@@ -831,7 +833,6 @@ h2.castList {
 
 .argument {
     margin: 2rem 0 3rem 0;
-    line-height: 1.4;
     font-size: 105%;
     text-indent: 0;
     font-style: italic;
@@ -845,7 +846,6 @@ h2.castList {
 
 p.argument {
     font-style: normal;
-    line-height: 1.4;
     text-indent: 2rem;
 }
 
@@ -1415,7 +1415,6 @@ a.noteref sup {
 
 a.noteref,
 a.noteback {
-    font-family: sans-serif;
     text-decoration: none;
     border-bottom: none;
     font-style: normal;
@@ -1492,44 +1491,45 @@ p.salute {
     widows: 2;
 }
 
-div.speaker,
-p.speaker {
-    color: #666;
-    font-weight: bold;
-    font-size: 90%;
+.sp.float {
+    margin-bottom: 1.2em;
+}
+
+.speaker {
     margin-top: 1rem;
     margin-bottom: 0.25rem;
-    text-transform: uppercase;
+    font-variant: small-caps;
     text-indent: 3rem;
-    line-height: 1.2;
+    font-weight: 250;
+}
+
+.sp.float .speaker {
+    float: left;
+    margin: 0;
+    text-indent: 0;
+    line-height: inherit;
+}
+
+.sp.float .speaker::after {
+    content: ' — ';
+    font-weight: 500;
 }
 
 .speaker i,
 .speaker em {
-    font-weight: normal;
-    font-size: 111%;
+    font-weight: inherit;
     font-variant: normal;
     text-transform: none;
-    color: #000;
 }
 
 .stage {
     font-style: italic;
     font-variant: normal;
-}
-
-section>div.stage {
-    font-style: normal;
-}
-
-section>div.stage i,
-section>div.stage em {
-    font-style: italic;
+    font-weight: 300;
 }
 
 div.stage {
     text-align: justify;
-    /* line-height: 1.2; */
 }
 
 .stage.indent {
@@ -1724,7 +1724,6 @@ i .title,
 li.witness {
     list-style: square;
     font-size: 90%;
-    font-family: sans-serif;
 }
 
 .witness label,
@@ -1733,7 +1732,6 @@ i.wit,
 a.msDesc {
     font-style: italic;
     color: inherit;
-    font-family: serif;
 }
 
 
@@ -2300,7 +2298,6 @@ tfoot {
 table.data,
 table.table,
 table.search {
-    font-family: sans-serif;
     border: 1px solid;
     border-color: #CCCCCC;
     margin-top: 1rem;
@@ -2517,7 +2514,6 @@ dd.code {
 
 .pre .text {
     background: #EEF;
-    font-family: serif;
     color: #000;
 }
 
@@ -2616,7 +2612,6 @@ dl.xml dt {
     }
     .speaker,
     .stage {
-        font-family: sans-serif;
         text-align: center;
     }
     .stage {
@@ -2643,9 +2638,7 @@ dl.xml dt {
         text-indent: 2rem;
         text-indent: 2rem;
     }
-    h2 {
-        line-height: 1.2;
-    }
+    h2 {}
     /* works but will be added to default margin of browser
   @page {margin-top: 3cm; margin-bottom: 2cm ;}
   */
@@ -2653,11 +2646,9 @@ dl.xml dt {
         padding-top: 0;
         padding-bottom: 0;
         border: solid 1pt #CCCCCC;
-        line-height: 1.1;
     }
     figcaption {
         padding-top: 0;
         padding-bottom: 0;
-        line-height: 1.1;
     }
 }

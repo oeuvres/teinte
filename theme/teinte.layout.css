@@ -3,6 +3,30 @@
 :root {
     /*# Les variables ne fonctionnent pas après minification dans concrete5 */
     --rubric: #902c20;
+    --serif: "Source Serif 4", serif;
+}
+
+@font-face {
+    font-display: swap;
+    font-family: "Source Serif 4";
+    font-style: normal;
+    src: url("SourceSerif4Variable-Roman.otf.woff2") format('woff2');
+    /* cf. spec font https://fonts.google.com/variablefonts */
+    font-weight: 200 900;
+}
+
+@font-face {
+    font-display: swap;
+    font-family: "Source Serif 4";
+    font-style: italic;
+    src: url("SourceSerif4Variable-Italic.otf.woff2") format('woff2');
+    /* cf. spec font https://fonts.google.com/variablefonts */
+    font-weight: 200 900;
+}
+
+body {
+    font-family: var(--serif);
+    line-height: 1.5;
 }
 
 small.no {
@@ -21,16 +45,25 @@ body {
     min-height: 100%;
 }
 
-small.no,
-.milestone,
-.pb,
-.note,
-#sidebar,
-#toolbar,
 #header,
-body {
+.milestone,
+small.no,
+.note,
+a.noteref,
+a.noteback,
+.pb,
+#sidebar,
+table.data,
+table.table,
+table.search,
+#toolbar,
+li.witness {
     font-family: sans-serif;
     font-weight: 300;
+}
+
+.pre .text {
+    /* font text */
 }
 
 small.no {
