@@ -17,7 +17,18 @@ XSLT 1.0 is compatible browser, PHP, Python, Java…
   <xsl:include href="html/tei_header_html.xsl"/>
   <xsl:include href="html/tei_toc_html.xsl"/>
   <!-- Where to find static assets like CSS or JS -->
-  <xsl:param name="theme">https://oeuvres.github.io/teinte/theme/</xsl:param>
+  <xsl:param name="xslbase">
+    <xsl:call-template name="xslbase"/>
+  </xsl:param>
+  <xsl:param name="theme">
+    <xsl:choose>
+      <xsl:when test="$xslbase != ''">
+        <xsl:value-of select="$xslbase"/>
+        <xsl:text>theme/</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>https://oeuvres.github.io/teinte/theme/</xsl:otherwise>
+    </xsl:choose>
+  </xsl:param>
   <!-- used as a body class -->
   <xsl:param name="folder"/>
   <!--  -->
@@ -46,11 +57,6 @@ XSLT 1.0 is compatible browser, PHP, Python, Java…
         <link rel="stylesheet" type="text/css" href="{$theme}teinte.css"/>
         <link rel="stylesheet" type="text/css" href="{$theme}teinte.layout.css"/>
         <link rel="stylesheet" type="text/css" href="{$theme}teinte.tree.css"/>
-        <style>
-.name {background: rgba(192, 192, 192, 0.5)}
-.persName {background: rgba(255, 255, 0, 0.5)}
-.placeName {background: rgba(0, 0, 128, 0.3)}
-        </style>
       </head>
       <body>
         <xsl:if test="normalize-space($bodyclass)">
