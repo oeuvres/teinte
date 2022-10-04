@@ -67,9 +67,6 @@ article::after,
     display: table;
 }
 
-
-/* no fonts here, too complex to override */
-
 blockquote.quote,
 dd,
 p.p,
@@ -84,7 +81,7 @@ div.note,
 aside.note,
 div.stage {
     text-align: justify;
-    text-justify: inter-character;
+    text-justify: inter-word;
     hyphens: auto;
 }
 
@@ -251,6 +248,7 @@ figcaption {
 figcaption.head {
     background: #dddddd;
     text-align: center;
+    hyphens: none;
 }
 
 figcaption a:hover {
@@ -314,6 +312,7 @@ figure h1 {
     font-weight: bold;
     margin: 1rem 0 0.5rem 0;
     text-align: center;
+    hyphens: none;
 }
 
 figure h2 {
@@ -357,10 +356,11 @@ a.bookmark:hover {
 
 h1 {
     font-size: 130%;
-    font-weight: 900;
+    font-weight: 600;
     padding-top: 1rem;
     margin-top: 0;
     text-align: center;
+    hyphens: none;
     line-height: 1.15;
 }
 
@@ -398,6 +398,8 @@ h2 {
     padding-top: 1rem;
     line-height: 1.5;
     text-align: center;
+    hyphens: none;
+    font-weight: 600;
 }
 
 h3 {
@@ -831,6 +833,10 @@ h2.castList {
     font-variant: small-caps;
 }
 
+.roleDesc {
+    font-style: italic;
+}
+
 .argument {
     margin: 2rem 0 3rem 0;
     font-size: 105%;
@@ -1011,16 +1017,19 @@ section {
 
 div.docAuthor {
     text-align: center;
+    hyphens: none;
     font-variant: small-caps;
     font-size: 150%;
 }
 
 div.docDate {
     text-align: center;
+    hyphens: none;
 }
 
 div.docImprint {
     text-align: center;
+    hyphens: none;
 }
 
 .docTitle {
@@ -1069,6 +1078,7 @@ li.item {
 .fileDesc,
 .fileDesc>p {
     text-align: center;
+    hyphens: none;
     text-indent: 0;
 }
 
@@ -1078,6 +1088,7 @@ li.item {
 
 .fileDesc>.titleStmt {
     text-align: center;
+    hyphens: none;
     margin: 0 0 5rem 0;
 }
 
@@ -1093,6 +1104,7 @@ li.item {
 
 .titleStmt>p {
     text-align: center;
+    hyphens: none;
     text-indent: 0;
 }
 
@@ -1297,6 +1309,7 @@ div.label {
     margin: 1.4rem 0 0.7rem 0;
     line-height: 1.05;
     text-align: center;
+    hyphens: none;
     text-indent: 0;
     padding-left: 0;
     font-weight: bold;
@@ -1327,11 +1340,6 @@ figure .label {
 div.lg {
     margin-top: 1rem;
     margin-bottom: 1rem;
-}
-
-.sp .lg {
-    margin-top: 0;
-    margin-bottom: 0;
 }
 
 .marginnote {
@@ -1492,7 +1500,7 @@ p.salute {
 }
 
 .sp.float {
-    margin-bottom: 1.2em;
+    margin: 0.5rem 0;
 }
 
 .speaker {
@@ -1503,16 +1511,35 @@ p.salute {
     font-weight: 250;
 }
 
-.sp.float .speaker {
+.sp.float div.speaker {
+    /* pb with justify in short columns */
     float: left;
     margin: 0;
     text-indent: 0;
     line-height: inherit;
 }
 
-.sp.float .speaker::after {
+.sp.float div.speaker::after {
     content: ' — ';
-    font-weight: 500;
+    font-weight: 300;
+}
+
+*/ .sp .lg {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.sp .lg+.lg {
+    margin-top: 0.7rem;
+}
+
+.sp.center {
+    hyphens: none;
+    margin: 0.5rem 0;
+}
+
+.sp.center .speaker {
+    margin: 0;
 }
 
 .speaker i,
@@ -1528,8 +1555,20 @@ p.salute {
     font-weight: 300;
 }
 
+.stage .i,
+.stage i,
+.stage em {
+    font-style: normal;
+}
+
 div.stage {
     text-align: justify;
+    font-size: 0.9rem;
+}
+
+.sp.center>.stage {
+    hyphens: none;
+    text-align: center;
 }
 
 .stage.indent {
@@ -1539,30 +1578,28 @@ div.stage {
 div.stage.sc {
     font-style: normal;
     text-align: center;
+    hyphens: none;
     font-size: 105%;
     margin-bottom: 0.5rem;
 }
 
 .sp div.stage {
-    margin-top: 0.4rem;
+    margin-top: 0.5rem;
     margin-bottom: 0.5rem;
 }
 
-.sp div.stage.right {
+div.stage.right {
     margin-top: 0;
     margin-bottom: 0;
     text-indent: 0;
-    text-align: right;
+    margin-left: 30%;
+    text-align: justify;
+    text-align-last: right;
+    hyphens: none;
 }
 
 blockquote>div.stage.sc {
     text-align: left;
-}
-
-div.stage .i,
-div.stage i,
-div.stage em {
-    font-style: normal;
 }
 
 h1.i,
@@ -1584,6 +1621,7 @@ h6.sub {
     font-weight: normal;
     font-style: italic;
     text-align: center;
+    hyphens: none;
     margin-left: auto;
     margin-right: auto;
     text-transform: uppercase;
@@ -1601,6 +1639,7 @@ h3.verse.scene {
     font-style: italic;
     font-weight: normal;
     text-align: center;
+    hyphens: none;
     font-size: 200%;
     margin-bottom: 2rem;
 }
@@ -1634,7 +1673,8 @@ i .title,
 }
 
 .titlePage {
-    text-align: center
+    text-align: center;
+    hyphens: none;
 }
 
 .titlePage h1.sub {
@@ -1649,6 +1689,7 @@ i .title,
     margin-left: auto;
     margin-right: auto;
     text-align: center;
+    hyphens: none;
 }
 
 .titlePage .docAuthor {
@@ -1677,6 +1718,7 @@ i .title,
 .titlePage blockquote,
 .titlePage .l {
     text-align: center;
+    hyphens: none;
     text-indent: 0;
     margin-left: 0;
     margin-right: 0;
@@ -1699,6 +1741,7 @@ i .title,
 
 .titleStmt>p {
     text-align: center;
+    hyphens: none;
     text-indent: 0;
 }
 
@@ -1718,6 +1761,7 @@ i .title,
 .trailer {
     font-style: italic;
     text-align: center;
+    hyphens: none;
     text-indent: 0;
 }
 
@@ -1798,6 +1842,7 @@ div.center,
 p.center,
 blockquote.center>* {
     text-align: center;
+    hyphens: none;
     text-indent: 0;
     margin-left: auto;
     margin-right: auto;
@@ -1821,6 +1866,7 @@ blockquote.center>* {
 
 span.center {
     display: block;
+    hyphens: none;
 }
 
 .clear {
@@ -2026,6 +2072,7 @@ div.ornament {
     line-height: 0.95;
     margin: 1rem 5rem;
     text-align: center;
+    hyphens: none;
 }
 
 .dinkus,
@@ -2305,6 +2352,7 @@ table.search {
     border-collapse: collapse;
 }
 
+table.text,
 table.table {
     width: 100%;
 }
@@ -2319,6 +2367,7 @@ caption {
     color: inherit;
     font-weight: bold;
     text-align: center;
+    hyphens: none;
     padding: 4px 2px 2px 2px;
 }
 
@@ -2345,6 +2394,7 @@ th.left {
 td.center,
 th.center {
     text-align: center;
+    hyphens: none;
 }
 
 td.right,
@@ -2580,10 +2630,19 @@ dl.xml dt {
 }
 
 @media print {
-    body,
-    #article {
-        margin: 0;
-        padding: 0;
+    @page {
+        margin: 20mm 10mm 20mm 10mm;
+        @bottom-right {
+            content: counter(page) "/" counter(pages);
+        }
+    }
+    html {
+        background-color: transparent;
+        margin: 0px;
+    }
+    body {
+        margin: 0px;
+        padding: 0px;
     }
     section.act,
     section.chapter,
@@ -2597,7 +2656,6 @@ dl.xml dt {
         -webkit-column-rule: 1pt #CCC solid;
         -moz-column-rule: 1pt #CCC solid;
         column-rule: 1pt #CCC solid;
-        font-size: 14pt;
     }
     section.act,
     section.chapter,
@@ -2606,16 +2664,16 @@ dl.xml dt {
     section.preface {
         page-break-before: always;
     }
-    body,
     .dialogue li {
         line-height: 1.3;
     }
     .speaker,
     .stage {
         text-align: center;
+        hyphens: none;
     }
     .stage {
-        font-size: 11pt;
+        font-size: 0.95rem;
     }
     blockquote.quote {
         margin-left: 1rem;
@@ -2638,10 +2696,6 @@ dl.xml dt {
         text-indent: 2rem;
         text-indent: 2rem;
     }
-    h2 {}
-    /* works but will be added to default margin of browser
-  @page {margin-top: 3cm; margin-bottom: 2cm ;}
-  */
     figure {
         padding-top: 0;
         padding-bottom: 0;
@@ -2650,5 +2704,20 @@ dl.xml dt {
     figcaption {
         padding-top: 0;
         padding-bottom: 0;
+    }
+    .sp.float {
+        margin-bottom: 0;
+    }
+    .pb {
+        position: static !important;
+        background: transparent !important;
+        float: none !important;
+        margin: 0 !important;
+    }
+    section .pb,
+    article .pb {
+        float: left !important;
+        line-height: inherit !important;
+        margin-right: 0.5rem !important;
     }
 }

@@ -1,8 +1,9 @@
-/** Colors */
-
 :root {
     /*# Les variables ne fonctionnent pas après minification dans concrete5 */
     --rubric: #902c20;
+    --border: #F5F5ff;
+    --bg: #ffffff;
+    --text_low: #808099;
     --serif: "Source Serif 4", serif;
 }
 
@@ -24,18 +25,58 @@
     font-weight: 200 900;
 }
 
+@media screen {
+    html {
+        line-height: 1.5;
+        font-size: 19px;
+    }
+    .text {
+        font-weight: 400;
+    }
+    #viewport {
+        width: 100%;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        margin-right: auto;
+        margin-left: auto;
+    }
+    body {
+        background-color: #eee;
+        color: #000;
+    }
+    main {
+        background-color: #fff;
+        padding: 3rem 4rem 3rem 4rem;
+        max-width: 40rem;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    #center {}
+    #contenu {}
+    /* box-shadow: 10px 0px 50px #E2DED0; box shadow is not 100% for long doc */
+    #sidebar {
+        padding: 1em 1em 2em 1em;
+        padding: 1rem 1rem 2rem 1rem;
+    }
+    #sidebar,
+    .pannel {
+        background-color: #E2DED0;
+        background: -webkit-linear-gradient(left #eee, #fff);
+        background: -moz-linear-gradient(left, #eee, #fff);
+        background: -ms-linear-gradient(left, #eee, #fff);
+        background: -o-linear-gradient(right, #fff, #eee);
+        background: linear-gradient(to right, #eee, #fdfdfd);
+    }
+}
+
 body {
     font-family: var(--serif);
-    line-height: 1.5;
 }
 
-small.no {
-    color: #800;
-}
+small.no {}
 
-small.ed {
-    color: #888;
-}
+small.ed {}
 
 html {
     height: 100%;
@@ -62,6 +103,10 @@ li.witness {
     font-weight: 300;
 }
 
+#sidebar {
+    font-size: 10pt;
+}
+
 .pre .text {
     /* font text */
 }
@@ -77,12 +122,6 @@ small.round {
     padding: 0 2px;
 }
 
-.text {
-    font-weight: 400;
-    font-size: 19px;
-    line-height: 1.6;
-}
-
 .pb {
     position: absolute;
     right: 0.5rem;
@@ -90,12 +129,10 @@ small.round {
 }
 
 h1,
-h2 {
-    color: var(--rubric);
-}
+h2 {}
 
 h1 {
-    border-top: 1px solid var(--rubric);
+    border-bottom: 1px solid var(--border);
 }
 
 h2 {
@@ -201,47 +238,8 @@ main::after,
     height: 100%;
 }
 
-#viewport {
-    width: 100%;
-    position: relative;
-    display: flex;
-    justify-content: space-between;
-    margin-right: auto;
-    margin-left: auto;
-}
-
 
 /** specific wide screen, not for print or phone */
-
-@media screen {
-    body {
-        background-color: #eee;
-        color: #161616;
-    }
-    main {
-        background-color: #fff;
-        padding: 3rem 4rem 3rem 4rem;
-        max-width: 40rem;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    #center {}
-    #contenu {}
-    /* box-shadow: 10px 0px 50px #E2DED0; box shadow is not 100% for long doc */
-    #sidebar {
-        padding: 1em 1em 2em 1em;
-        padding: 1rem 1rem 2rem 1rem;
-    }
-    #sidebar,
-    .pannel {
-        background-color: #E2DED0;
-        background: -webkit-linear-gradient(left #eee, #fff);
-        background: -moz-linear-gradient(left, #eee, #fff);
-        background: -ms-linear-gradient(left, #eee, #fff);
-        background: -o-linear-gradient(right, #fff, #eee);
-        background: linear-gradient(to right, #eee, #fdfdfd);
-    }
-}
 
 
 /** wide screens */
@@ -283,7 +281,7 @@ main::after,
 #sidebar,
 #toolbar,
 #header {
-    /* color: #808099; */
+    color: var(--text_low);
 }
 
 #breadcrumb {
@@ -386,4 +384,24 @@ body.search #center {
     letter-spacing: 0.7ex;
     float: left;
     clear: none;
+}
+
+@media print {
+    @page {
+        size: auto;
+        /* auto is the initial value */
+        margin: 5mm 10mm;
+        /* this affects the margin in the printer settings */
+    }
+    html {
+        background-color: #fff;
+        margin: 0px;
+        /* this affects the margin on the HTML before sending to printer */
+    }
+    body {}
+    html {
+        font-weight: normal;
+        font-size: 11pt;
+        line-height: 1.2;
+    }
 }
