@@ -1,7 +1,7 @@
 /*! Teinte.css, generic TEI styling, https://github.com/oeuvres/teinte   */
 
 
-/**
+/*
  * Part of Teinte https://github.com/oeuvres/teinte
  * Copyright (c) 2020 frederic.glorieux@fictif.org
  * Copyright (c) 2013 frederic.glorieux@fictif.org & LABEX OBVIL
@@ -189,7 +189,7 @@ blockquote.quote {
     line-height: 1.2;
     color: rgba(0, 0, 0, 0.5);
     border-left: 0.5rem solid rgba(128, 128, 128, 0.1);
-    font-size: 1.2rem;
+    font-size: 120%;
 }
 
 blockquote.quote .p {}
@@ -1128,7 +1128,7 @@ li.item {
 }
 
 .floatingText {
-    font-size: 0.8rem;
+    font-size: 80%;
     line-height: 1.2;
     padding: 0% 1% 1% 5%;
     background-color: #F8F7F4;
@@ -1400,7 +1400,7 @@ p.note {
 }
 
 .note-page {
-    font-size: 0.8rem;
+    font-size: 80%;
 }
 
 .note-margin-left {
@@ -1563,7 +1563,7 @@ p.salute {
 
 div.stage {
     text-align: justify;
-    font-size: 0.9rem;
+    font-size: 90%;
 }
 
 .sp.center>.stage {
@@ -2632,9 +2632,7 @@ dl.xml dt {
 @media print {
     @page {
         margin: 20mm 10mm 20mm 10mm;
-        @bottom-right {
-            content: counter(page) "/" counter(pages);
-        }
+        /* @bottom-right break c5 */
     }
     html {
         background-color: transparent;
