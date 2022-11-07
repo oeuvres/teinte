@@ -232,7 +232,7 @@ class Web
                 }
             }
             // a value, cookie persistance
-            else {
+            else  if ($value != null) {
                 setcookie($name, $value, $options);
             }
         }

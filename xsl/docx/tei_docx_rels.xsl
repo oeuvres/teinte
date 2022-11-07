@@ -46,6 +46,9 @@
           </xsl:otherwise>
         </xsl:choose>
       </xsl:for-each>
+      <xsl:for-each select=".//tei:pb">
+        <xsl:call-template name="rel"/>
+      </xsl:for-each>
     </Relationships>
   </xsl:template>
 

@@ -69,17 +69,17 @@ abstract class AbstractTei2 implements LoggerAwareInterface
      * according to the preferred extension format,
      * and a destination directory if provided.
      */
-    public static function dstFile(
-        string $srcFile, 
-        ?string $dstDir = null
+    public static function dst_file(
+        string $src_file, 
+        ?string $dst_dir = null
     ):string {
-        if(!$dstDir) {
-            $dstDir = dirname($srcFile) . DIRECTORY_SEPARATOR;
+        if(!$dst_dir) {
+            $dstDir = dirname($src_file) . DIRECTORY_SEPARATOR;
         }
         else {
-            $dstDir = File::normdir($dstDir);
+            $dstDir = File::normdir($dst_dir);
         }
-        $dstName =  pathinfo($srcFile, PATHINFO_FILENAME);
+        $dstName =  pathinfo($src_file, PATHINFO_FILENAME);
         $dstFile = $dstDir . $dstName . static::EXT;
         return $dstFile;
     }

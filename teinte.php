@@ -27,8 +27,8 @@ php teinte.php -f -d output/dir/  format "teidir/*.xml"
 Tranform your tei files in different formats
 
 -f         : 0-1 force deletion of destination file (no test of freshness)
--d destdir : 0-1 destination directory for generated files
-format     : 1 or more among
+-d dst_dir : 0-1 destination directory for generated files
+format     : 1-n among
 
 ' . TeiExportFactory::help() . '
 globs      : 1-n parameters, files or globs
@@ -62,18 +62,18 @@ globs      : 1-n parameters, files or globs
         }
         $formats = array_keys($formats);
         $force = isset($options['f']);
-        $dstDir = "";
+        $dst_dir = "";
         if (isset($options['d'])) {
-            $dstDir = $options['d'];
-            File::mkdir($dstDir);
+            $dst_dir = $options['d'];
+            File::mkdir($dst_dir);
         }
-        $dstDir = File::normdir($dstDir);
+        $dst_dir = File::normdir($dst_dir);
         // loop on globs
         for (; $i < $count; $i++) {
             self::export (
                 $argv[$i],
                 $formats,
-                $dstDir,
+                $dst_dir,
                 $force
             );
         }
@@ -81,26 +81,26 @@ globs      : 1-n parameters, files or globs
     public static function export(
         string $glob, 
         array $formats,
-        ?string $dstDir = "",
+        ?string $dst_dir = "",
         ?bool $force = false
     ) {
         $logger = new LoggerCli(LogLevel::INFO);
         $source = new TeiSource($logger);
-        foreach (glob($glob) as $srcFile) {
+        foreach (glob($glob) as $src_file) {
             $nodone = true;
             foreach($formats as $format) {
-                $dstFile = $source->dstFile($srcFile, $format, $dstDir);
+                $dst_file = $source->dst_file($src_file, $format, $dst_dir);
                 if ($force); // overwrite
-                else if (!file_exists($dstFile)); // do not exist
-                else if (filemtime($srcFile) <= filemtime($dstFile)) {
+                else if (!file_exists($dst_file)); // do not exist
+                else if (filemtime($src_file) <= filemtime($dst_file)) {
                     continue;
                 }
                 if ($nodone) {
-                    echo "$srcFile\n";
-                    $source->load($srcFile);
+                    echo "$src_file\n";
+                    $source->load($src_file);
                     $nodone = false;
                 }
-                $source->toUri($format, $dstFile);
+                $source->toUri($format, $dst_file);
            }
         }
     }

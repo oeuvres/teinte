@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Oeuvres\Kit;
 
-use Exception, DOMDocument, XSLTProcessor;
+use Exception, DOMDocument, DOMXPath, XSLTProcessor;
 use Psr\Log\{LoggerInterface, NullLogger};
 
 /**
@@ -300,4 +300,15 @@ class Xml
         return $html;
     }
 
+    /**
+     * Get an xpath processor from a dom with registred namespaces for root
+     */
+    static public function xpath(DOMDocument $dom): DOMXPath
+    {
+        $xpath = new DOMXPath($dom);
+        foreach( $xpath->query('namespace::*', $dom->documentElement) as $node ) {
+            $xpath->registerNamespace($node->prefix, $node->namespaceURI);
+        }
+        return $xpath;
+    }
 }

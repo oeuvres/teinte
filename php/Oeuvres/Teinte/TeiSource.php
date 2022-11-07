@@ -90,10 +90,10 @@ class TeiSource implements LoggerAwareInterface
      * extension. Nothing is supposed to be loaded, such path is used
      * for testing.
      */
-    function dstFile(string $srcFile, string $format, ?string $dstDir):string
+    function dst_file(string $src_file, string $format, ?string $dst_dir):string
     {
         $transfo = TeiExportFactory::get($format, $this->logger);
-        return $transfo->dstFile($srcFile, $dstDir);
+        return $transfo->dst_file($src_file, $dst_dir);
     }
 
     public function isEmpty()

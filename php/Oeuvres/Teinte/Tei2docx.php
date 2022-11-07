@@ -69,24 +69,46 @@ class Tei2docx extends AbstractTei2
     /**
      * @ override
      */
-    function toUri($dom, $dstFile, ?array $pars=null)
+    function toUri($dom, $dst_file, ?array $pars=null)
     {
         if (!extension_loaded("zip")) {
             throw new Exception("PHP zip extension required.\nCheck your php.ini. On Debian like systems: sudo apt install php-zip\n");
         }
-
-        $this->logger->info("Tei2\033[92m" . static::NAME ." \033[0m $dstFile");
-        File::writable($dstFile);
+        $this->logger->info("Tei2\033[92m" . static::NAME ." \033[0m $dst_file");
+        File::writable($dst_file);
         $name = pathinfo($dom->documentURI, PATHINFO_FILENAME);
-        copy($this->template(), $dstFile);
+        copy($this->template(), $dst_file);
         $zip = new ZipArchive();
-        $zip->open($dstFile);
+        $zip->open($dst_file);
+
+        // get a default lang from the source TEI, set it in the style.xml
+        $xpath = Xml::xpath($dom);
+        $entries = $xpath->query("/*/@xml:lang");
+        $lang = null;
+        foreach ($entries as $node) {
+            $lang = $node->value;
+        }
+        // template is supposed to have a default language
+        if ($lang) {
+            $langs = include(__DIR__.'/langs.php');
+            if (isset($langs[$lang])) $lang = $langs[$lang];
+            $name = 'word/styles.xml';
+            $xml = $zip->getFromName($name);
+            $xml = preg_replace(
+                '@<w:lang[^>]*/>@', 
+                '<w:lang w:val="'. $lang . '"/>', 
+                $xml
+            );
+            $zip->deleteName($name);
+            $zip->addFromString( $name, $xml);
+        }
+
 
         $re_clean = array(
             '@(<w:rPr/>|<w:pPr/>)@' => '',
         );
 
-        // a tmp file where to put files from template
+        // extract template to 
         $templPath = tempnam(sys_get_temp_dir(), "teinte_docx_");
         $templPath = "file:///" 
             . str_replace(DIRECTORY_SEPARATOR, "/", $templPath);
@@ -150,7 +172,7 @@ class Tei2docx extends AbstractTei2
         // 
         if (!$zip->close()) {
             $this->logger->error(
-                "Tei2" . static::NAME ." ERROR writing \033[91m$dstFile\033[0m\nMaybe an app has an handle on this file. Is this docx open in MS.Word or LibreO.Writer?"
+                "Tei2" . static::NAME ." ERROR writing \033[91m$dst_file\033[0m\nMaybe an app has an handle on this file. Is this docx open in MS.Word or LibreO.Writer?"
             );
         }
     }
@@ -178,13 +200,13 @@ class Tei2docx extends AbstractTei2
         header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
         header('Pragma: public');
 
-        $dstfile = tempnam(dirname($tmp['tmp_name']), "Reteint");
-        // self::export($srcfile, $dstfile);
-        header('Content-Length: ' . filesize($dstfile));
+        $dst_file = tempnam(dirname($tmp['tmp_name']), "Reteint");
+        // self::export($srcfile, $dst_file);
+        header('Content-Length: ' . filesize($dst_file));
         ob_clean();
         flush();
-        readfile($dstfile);
-        unlink($dstfile);
+        readfile($dst_file);
+        unlink($dst_file);
         exit();
     }
 

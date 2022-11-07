@@ -8,8 +8,8 @@
   <xsl:strip-space elements="tei:TEI tei:TEI.2 tei:body tei:castList tei:div tei:div1 tei:div2  tei:docDate tei:docImprint tei:docTitle tei:fileDesc tei:front tei:group tei:index tei:listWit tei:publicationStmp tei:publicationStmt tei:sourceDesc tei:SourceDesc tei:sources tei:text tei:teiHeader tei:text tei:titleStmt"/>
   <xsl:preserve-space elements="tei:l tei:s tei:p"/>
   <xsl:param name="filename">tei</xsl:param>
-  <!-- 1: export <pb/>. Default: 0 -->
-  <xsl:param name="pb"/>
+  <!-- 1: export <pb/>. Default: 1 -->
+  <xsl:param name="pb" select="1"/>
   <xsl:variable name="lf" select="'&#10;'"/>
   <xsl:template match="/">
     <w:document xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:w10="urn:schemas-microsoft-com:office:word" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape" xmlns:wpg="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:wp14="http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing" xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml" mc:Ignorable="w14 wp14">
@@ -358,7 +358,7 @@
     <w:p/>
     <w:p/>
   </xsl:template>
-  <xsl:template match="tei:argument | tei:cit | tei:entryFree  | tei:postscript | tei:docTitle">
+  <xsl:template match="tei:argument | tei:cit | tei:entryFree[tei:p|tei:sense] | tei:postscript | tei:docTitle">
     <xsl:for-each select="*">
       <xsl:variable name="id">
         <xsl:if test="position() = 1 and @xml:id">
@@ -754,57 +754,98 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
     </xsl:choose>
   </xsl:template>
   <!-- saut de page -->
-  <xsl:template match="tei:pb">
-    <xsl:choose>
-      <xsl:when test="$pb = ''"/>
-      <xsl:when test="parent::tei:body | parent::tei:cit | parent::tei:div | parent::tei:div1 | parent::tei:div2 | parent::tei:div3 | parent::tei:div4 | parent::tei:div5 | parent::tei:div6 | parent::tei:div7 | parent::tei:div8 | parent::tei:div9 | parent::tei:list | parent::tei:listBibl | parent::tei:quote[tei:l|tei:lg|tei:p] | parent::tei:sp">
-        <w:p>
-          <xsl:call-template name="anchor"/>
+  <!-- 
+    <xsl:variable name="target" select="(@target|@url|@ref)[1]"/>
+    <w:hyperlink>
+      <xsl:choose>
+        <xsl:when test="starts-with($target, '#')">
+          <xsl:attribute name="w:anchor">
+            <xsl:value-of select="substring($target, 2)"/>
+          </xsl:attribute>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:attribute name="r:id">
+            <xsl:call-template name="id"/>
+          </xsl:attribute>
+        </xsl:otherwise>
+      </xsl:choose>
+      <xsl:choose>
+        <xsl:when test=".=''">
           <w:r>
             <w:rPr>
-              <w:rStyle w:val="{local-name()}"/>
+              <w:rStyle w:val="LienInternet"/>
             </w:rPr>
             <w:t>
-              <xsl:text>[</xsl:text>
-              <xsl:choose>
-                <xsl:when test="@n and @n != ''">
-                  <xsl:text>p. </xsl:text>
-                  <xsl:value-of select="@n"/>
-                </xsl:when>
-                <xsl:when test="@xml:id">
-                  <xsl:value-of select="@xml:id"/>
-                </xsl:when>
-              </xsl:choose>
-              <xsl:text>]</xsl:text>
+              <xsl:value-of select="$target"/>
             </w:t>
-            <xsl:if test=". != ''">
-              <xsl:call-template name="char"/>
-            </xsl:if>
           </w:r>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:call-template name="char">
+            <xsl:with-param name="style">LienInternet</xsl:with-param>
+          </xsl:call-template>
+        </xsl:otherwise>
+      </xsl:choose>
+    </w:hyperlink>
+    -->
+  <xsl:template match="tei:pb">
+    <xsl:variable name="text">
+      <xsl:call-template name="anchor"/>
+      <w:r>
+        <w:rPr>
+          <w:rStyle w:val="{local-name()}"/>
+        </w:rPr>
+        <w:t>
+          <xsl:text>[</xsl:text>
+          <xsl:choose>
+            <xsl:when test="@n and @n != ''">
+              <xsl:text>p. </xsl:text>
+              <xsl:value-of select="@n"/>
+            </xsl:when>
+            <xsl:when test="@xml:id">
+              <xsl:value-of select="@xml:id"/>
+            </xsl:when>
+            <xsl:otherwise>p. ???</xsl:otherwise>
+          </xsl:choose>
+          <xsl:text>]</xsl:text>
+        </w:t>
+      </w:r>
+    </xsl:variable>
+    <xsl:variable name="link">
+      <xsl:choose>
+        <xsl:when test="(@corresp|@facs) != ''">
+          <w:hyperlink>
+            <xsl:attribute name="r:id">
+              <xsl:call-template name="id"/>
+            </xsl:attribute>
+            <xsl:copy-of select="$text"/>
+          </w:hyperlink>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:copy-of select="$text"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:choose>
+      <!-- <pb> not desired -->
+      <xsl:when test="$pb = ''"/>
+      <!-- <pb> as para -->
+      <xsl:when test="parent::tei:body | parent::tei:cit | parent::tei:div | parent::tei:div1 | parent::tei:div2 | parent::tei:div3 | parent::tei:div4 | parent::tei:div5 | parent::tei:div6 | parent::tei:div7 | parent::tei:div8 | parent::tei:div9 | parent::tei:list | parent::tei:listBibl | parent::tei:quote[tei:l|tei:lg|tei:p] | parent::tei:sp">
+        <xsl:value-of select="$lf"/>
+        <w:p>
+          <xsl:copy-of select="$link"/>
         </w:p>
       </xsl:when>
+      <!-- <pb> inline, help with line breaks around -->
       <xsl:otherwise>
-        <xsl:call-template name="anchor"/>
+        <xsl:value-of select="$lf"/>
         <w:r>
-          <w:rPr>
-            <w:rStyle w:val="{local-name()}"/>
-          </w:rPr>
-          <w:t>
-            <xsl:text>[</xsl:text>
-            <xsl:choose>
-              <xsl:when test="@n and @n != ''">
-                <xsl:text>p. </xsl:text>
-                <xsl:value-of select="@n"/>
-              </xsl:when>
-              <xsl:when test="@xml:id">
-                <xsl:value-of select="@xml:id"/>
-              </xsl:when>
-            </xsl:choose>
-            <xsl:text>]</xsl:text>
-          </w:t>
-          <xsl:if test=". != ''">
-            <xsl:apply-templates/>
-          </xsl:if>
+          <w:br/>
+        </w:r>
+          <xsl:copy-of select="$link"/>
+        <xsl:value-of select="$lf"/>
+        <w:r>
+          <w:br/>
         </w:r>
       </xsl:otherwise>
     </xsl:choose>
@@ -926,7 +967,7 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
             <xsl:if test="contains($format, ' u ') or contains($format, ' under') ">
               <w:u w:val="single"/>
             </xsl:if>
-            <xsl:if test="self::tei:num or contains($format, ' sc ') or contains($format, ' small-caps ') or contains($format, ' smallcaps ')  or contains($format, ' pc ') ">
+            <xsl:if test="contains($format, ' sc ') or contains($format, ' small-caps ') or contains($format, ' smallcaps ')  or contains($format, ' pc ') ">
               <w:smallCaps/>
             </xsl:if>
             <!--
@@ -934,6 +975,16 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
               <w:highlight w:val="yellow"/>
             </xsl:if>
             -->
+            <!-- inline style -->
+            <xsl:choose>
+              <xsl:when test="self::tei:hi"/>
+              <xsl:when test="local-name() != ''">
+                <w:rStyle w:val="{local-name()}"/>
+              </xsl:when>
+            </xsl:choose>
+            <xsl:if test="@xml:lang">
+              <w:lang w:val="{@xml:lang}"/>
+            </xsl:if>
           </xsl:variable>
           <!-- impossible to test variable with no string -->
           <w:r>
@@ -1033,10 +1084,28 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
   </xsl:template>
   <!-- Used for links in *rels.xsl -->
   <xsl:template name="rel">
-    <xsl:variable name="target" select="(@target|@ref)[1]"/>
+    <xsl:variable name="target">
+      <!-- select="(@target|@ref|@corresp|@facs)[1]" -->
+      <xsl:choose>
+        <xsl:when test="@target != ''">
+          <xsl:value-of select="normalize-space(@target)"/>
+        </xsl:when>
+        <xsl:when test="@ref != ''">
+          <xsl:value-of select="normalize-space(@ref)"/>
+        </xsl:when>
+        <xsl:when test="@corresp != ''">
+          <xsl:value-of select="normalize-space(@corresp)"/>
+        </xsl:when>
+        <xsl:when test="@facs != ''">
+          <xsl:value-of select="normalize-space(@facs)"/>
+        </xsl:when>
+      </xsl:choose>
+    </xsl:variable>
     <xsl:choose>
       <!-- Les ancres sont ailleurs -->
       <xsl:when test="starts-with($target, '#')"/>
+      <!-- No target -->
+      <xsl:when test="$target = ''"/>
       <xsl:otherwise>
         <Relationship Target="{$target}" TargetMode="External" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
           <xsl:attribute name="Id">
