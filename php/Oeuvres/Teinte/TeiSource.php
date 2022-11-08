@@ -104,13 +104,15 @@ class TeiSource implements LoggerAwareInterface
     /**
      * Load XML/TEI as a file (preferred way).
      */
-    public function load(string $teiFile): DOMDocument
+    public function load(string $tei_file): DOMDocument
     {
-        $this->file = $teiFile;
-        $this->filename = pathinfo($teiFile, PATHINFO_FILENAME);
-        $this->filemtime = filemtime($teiFile);
-        $this->filesize = filesize($teiFile); // ?? if URL ?
-        return $this->loadXml(file_get_contents($teiFile));
+        $this->file = $tei_file;
+        $this->filename = pathinfo($tei_file, PATHINFO_FILENAME);
+        $this->filemtime = filemtime($tei_file);
+        $this->filesize = filesize($tei_file); // ?? if URL ?
+        $this->xpath = null;
+        $dom = $this->loadXml(file_get_contents($tei_file));
+        return $dom;
     }
 
     /**
@@ -200,7 +202,7 @@ class TeiSource implements LoggerAwareInterface
      */
     public function meta()
     {
-        $meta = self::metaDom(null, $this->xpath);
+        $meta = self::metaDom($this->dom, $this->xpath());
         $meta['code'] = pathinfo($this->file, PATHINFO_FILENAME);
         $meta['filename'] = $this->filename();
         $meta['filemtime'] = $this->filemtime();
