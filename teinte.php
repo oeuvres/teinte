@@ -87,20 +87,30 @@ globs      : 1-n parameters, files or globs
         $logger = new LoggerCli(LogLevel::INFO);
         $source = new TeiSource($logger);
         foreach (glob($glob) as $src_file) {
-            $nodone = true;
+            $nodone = true; // for lazy load
             foreach($formats as $format) {
+                // calculate $dst_file according to format
                 $dst_file = $source->dst_file($src_file, $format, $dst_dir);
+                // change inplace ? search/replace, reports…
+                $inplace = (realpath($src_file) === realpath($dst_file));
                 if ($force); // overwrite
+                else if ($inplace); // always do something, for reports
                 else if (!file_exists($dst_file)); // do not exist
                 else if (filemtime($src_file) <= filemtime($dst_file)) {
                     continue;
                 }
-                if ($nodone) {
-                    echo "$src_file\n";
+                if ($nodone) { // nothing done yet, load source
+                    $logger->info($src_file);
                     $source->load($src_file);
                     $nodone = false;
                 }
-                $source->toUri($format, $dst_file);
+                // for reports, no output if no force
+                if (!$force && $inplace) {
+                    $source->toDoc($format);
+                }
+                else {
+                    $source->toUri($format, $dst_file);
+                }
            }
         }
     }

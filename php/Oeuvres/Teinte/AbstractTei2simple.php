@@ -26,7 +26,7 @@ abstract class AbstractTei2simple extends AbstractTei2
     public function __construct(?LoggerInterface $logger = null)
     {
         parent::__construct(...func_get_args());
-        assert(static::XSL != null, static::class . "::XSL must be defined fron an XSL file to apply for this export format");
+        assert(static::XSL != null, static::class . "::XSL must be defined from an XSL file to apply for this export format");
         assert(
             File::readable(
                 self::$xslDir.static::XSL, 

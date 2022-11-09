@@ -165,7 +165,7 @@ class TeiSource implements LoggerAwareInterface
     public function xpath()
     {
         if ($this->xpath) return $this->xpath;
-        $this->xpath = new DOMXpath($this->dom);
+        $this->xpath = Xml::xpath($this->dom);
         $this->xpath->registerNamespace('tei', "http://www.tei-c.org/ns/1.0");
         return $this->xpath;
     }

@@ -66,6 +66,10 @@ class File
         if (strlen($path) == 0 || '.' === $path[0]) {
             return false;
         }
+        // url protocol
+        if (preg_match('#^file:#', $path)) {
+            return true;
+        }
         // Windows drive pattern
         if (preg_match('#^[a-zA-Z]:\\\\#', $path)) {
             return true;

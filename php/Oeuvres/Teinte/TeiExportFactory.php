@@ -35,6 +35,7 @@ class TeiExportFactory
         'site' => null,
         'split' => null,
         'toc' => null,
+        'urlcheck' => null,
     );
     /**
      * List available formats 
