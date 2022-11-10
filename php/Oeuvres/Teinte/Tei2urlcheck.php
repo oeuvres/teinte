@@ -116,16 +116,30 @@ class Tei2urlcheck extends AbstractTei2
                 continue;
             }
         }
-        return null;
+        return $dom;
     }
     /**
      * Format log message
      */
-    private static function message($src_node, $att, $value)
+    private static function message($el, $att)
     {
+        if (!$el) return "";
         $m = "";
-        $m .= "l. {$src_node->getLineNo()} <{$src_node->nodeName}";
-        if ($att && $value) $m .= " $att=\"$value\"";
+        $m .= "l. {$el->getLineNo()} <{$el->nodeName}";
+        // value ?
+        if ($el->hasAttribute($att)) {
+            $value = $el->getAttribute($att);
+            $m .= " $att=\"$value\"";
+            $cert = $el->getAttribute("cert");
+            if ($cert) {
+                $cert = preg_split("/ +/", $cert, PREG_SPLIT_NO_EMPTY );
+            }
+            else {
+                $cert = [];
+            }
+            $cert['0'] = true;
+            $el->setAttribute('cert', implode(' ', array_keys($cert)));
+        }
         $m .= ">";
         return $m;
     }

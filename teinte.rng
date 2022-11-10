@@ -696,6 +696,7 @@
             <text/>
             <ref name="date"/>
             <ref name="emph"/>
+            <ref name="foreign"/>
             <ref name="hi"/>
             <ref name="lb"/>
             <ref name="listPerson"/>
@@ -1219,7 +1220,10 @@
           <group>
             <ref name="div.front"/>
             <zeroOrMore>
-              <ref name="block"/>
+              <choice>
+                <ref name="block"/>
+                <ref name="point"/>
+              </choice>
             </zeroOrMore>
             <ref name="div.back"/>
           </group>
@@ -3222,38 +3226,40 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <a:documentation>Type de liste, indiqué par un caractère, ou une valeur CSS standard</a:documentation>
         <div xmlns="http://www.w3.org/1999/xhtml"><a href="http://www.w3.org/TR/CSS21/generate.html#propdef-list-style-type">[CSS]</a>. Le nombre de valeurs est susceptible de s’étendre. En cas d’encodage de texte existant, si la numérotation est difficile à générer automatiquement, il peut être plus commode de la reporter en valeur d’attribut de l’item <a:att>n</a:att>.</div>
         <choice>
-          <value>disc</value>
-          <a:documentation>disque</a:documentation>
-          <value>circle</value>
-          <a:documentation>cercle</a:documentation>
-          <value>square</value>
-          <a:documentation>carré</a:documentation>
+          <value>-</value>
+          <value>–</value>
+          <value>—</value>
           <value>1</value>
           <a:documentation>décimal : 1 2</a:documentation>
+          <value>a</value>
+          <a:documentation>alphabet latin minuscule : a, b, c…</a:documentation>
+          <value>A</value>
+          <a:documentation>alphabet latin majuscule : A, B, C…</a:documentation>
+          <value>circle</value>
+          <a:documentation>cercle</a:documentation>
+          <value>disc</value>
+          <a:documentation>disque</a:documentation>
           <value>decimal</value>
           <a:documentation>décimal : 1. 2.</a:documentation>
           <value>decimal-leading-zero</value>
           <a:documentation>décimal formlaté : 01, 02…</a:documentation>
-          <value>upper-roman</value>
-          <a:documentation>I II III</a:documentation>
           <value>I</value>
           <a:documentation>I. II. III.</a:documentation>
-          <value>a</value>
-          <a:documentation>alphabet latin minuscule : a, b, c…</a:documentation>
-          <value>lower-latin</value>
-          <a:documentation>alphabet latin minuscule : a, b, c…</a:documentation>
+          <value>none</value>
+          <a:documentation>pas de marqueur</a:documentation>
           <value>lower-alpha</value>
           <a:documentation>alphabétique minuscule : a, b, c…</a:documentation>
-          <value>A</value>
-          <a:documentation>alphabet latin majuscule : A, B, C…</a:documentation>
-          <value>upper-latin</value>
-          <a:documentation>alphabet latin majuscule : A, B, C…</a:documentation>
+          <value>lower-latin</value>
+          <a:documentation>alphabet latin minuscule : a, b, c…</a:documentation>
+          <value>row</value>
+          <value>square</value>
+          <a:documentation>carré</a:documentation>
           <value>upper-alpha</value>
           <a:documentation>alphabétique majuscule : A, B, C…</a:documentation>
-          <value>row</value>
-          <value>-</value>
-          <value>–</value>
-          <value>—</value>
+          <value>upper-latin</value>
+          <a:documentation>alphabet latin majuscule : A, B, C…</a:documentation>
+          <value>upper-roman</value>
+          <a:documentation>I II III</a:documentation>
         </choice>
       </attribute>
     </define>
@@ -3371,6 +3377,8 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <a:documentation>espacé css{letter-spacing:2px}</a:documentation>
         <value>n</value>
         <a:documentation>normal (annule toutes les mmises en formes héritées de niveau caractère)</a:documentation>
+        <value>normal</value>
+        <a:documentation>normal (annule toutes les mmises en formes héritées de niveau caractère)</a:documentation>
         <value>s</value>
         <a:documentation>Barré “strike” &lt;html5:s></a:documentation>
         <value>sc</value>
@@ -3381,6 +3389,8 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <a:documentation>petites capitales</a:documentation>
         <value>small-caps</value>
         <a:documentation>petites capitales css{font-variant:small-caps}</a:documentation>
+        <value>strike</value>
+        <a:documentation>Barré “strike” &lt;html5:s></a:documentation>
         <value>sup</value>
         <a:documentation>Exposant &lt;html5:sup></a:documentation>
         <value>sub</value>

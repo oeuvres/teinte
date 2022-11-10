@@ -2109,6 +2109,7 @@ Elements block or inline level
           <xsl:choose>
             <xsl:when test="self::tei:label and parent::tei:figure">div</xsl:when>
             <xsl:when test="self::tei:label">p</xsl:when>
+            <xsl:when test="self::tei:q">blockquote</xsl:when>
             <xsl:when test="self::tei:quote">blockquote</xsl:when>
             <xsl:otherwise>div</xsl:otherwise>
           </xsl:choose>
@@ -2116,6 +2117,7 @@ Elements block or inline level
         <xsl:element name="{$el}" namespace="http://www.w3.org/1999/xhtml">
           <xsl:call-template name="atts">
             <xsl:with-param name="class">
+              <xsl:value-of select="local-name()"/>
               <xsl:if test="@corresp"> corresp</xsl:if>
             </xsl:with-param>
           </xsl:call-template>

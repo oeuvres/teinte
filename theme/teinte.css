@@ -67,7 +67,7 @@ article::after,
     display: table;
 }
 
-blockquote.quote,
+blockquote,
 dd,
 p.p,
 div.p,
@@ -183,6 +183,7 @@ aside header {
     padding-right: 1rem;
 }
 
+blockquote.q,
 blockquote.quote {
     margin: 0 0 0 0.5rem;
     padding: 0.4rem 0rem 0.6rem 1rem;
@@ -190,6 +191,14 @@ blockquote.quote {
     color: rgba(0, 0, 0, 0.5);
     border-left: 0.5rem solid rgba(128, 128, 128, 0.1);
     font-size: 120%;
+}
+
+blockquote.q {
+    font-style: italic;
+}
+blockquote.q i,
+blockquote.q em {
+    font-style: normal;
 }
 
 blockquote.quote .p {}
@@ -2673,6 +2682,7 @@ dl.xml dt {
     .stage {
         font-size: 0.95rem;
     }
+    blockquote.q,
     blockquote.quote {
         margin-left: 1rem;
         margin-right: 0;
