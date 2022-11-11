@@ -16,14 +16,13 @@ namespace Oeuvres\Kit;
 use Oeuvres\Kit\{File,I18n};
 use Exception;
 
-
 Route::init();
 
 class Route {
     /** root directory of the app when outside site */
-    private static $app_dir;
+    private static $lib_dir;
     /** Href to app resources */
-    private static $app_href;
+    private static $lib_href;
     /** Home dir where is the index.php answering */
     private static $home_dir;
     /** Home href for routing */
@@ -43,10 +42,14 @@ class Route {
     /** Has a routage been done ? */
     static $routed;
 
+    /**
+     * Initialisation of static vatriables, done one time on initial loading 
+     * cf. Route::init()
+     */
     public static function init()
     {
-        self::$app_dir = dirname(__DIR__, 3). DIRECTORY_SEPARATOR ;
-
+        // suppose path like lib/php/Oeuvres/Kit/Route.php
+        self::$lib_dir = dirname(__DIR__, 3). DIRECTORY_SEPARATOR ;
         $url_request = filter_var($_SERVER['REQUEST_URI'], FILTER_SANITIZE_URL);
         $url_request = strtok($url_request, '?'); // old
         // maybe not robust, this should interpret path relative to the webapp
@@ -57,110 +60,91 @@ class Route {
         }
         self::$url_request = $url_request;
         self::$url_parts = explode('/', ltrim($url_request, '/'));
-
+        // quite robust on most server, wor directory is the answering index.php
         self::$home_dir = getcwd();
         self::$home_href = str_repeat('../', count(self::$url_parts) - 1);
         // get relative path from index.php caller to the root of app to calculate href for resources in this folder
-        self::$app_href = self::$home_href . File::relpath(
+        self::$lib_href = self::$home_href . File::relpath(
             dirname($_SERVER['SCRIPT_FILENAME']), 
-            self::$app_dir
+            self::$lib_dir
         );
     }
-    public static function get($route, $php, $pars=null)
+
+    /**
+     * Relative path to the root of the website for href links in templates
+     * (where is the initial index.php caller)
+     * Set by init()
+     */
+    static public function home_href(): string
+    {
+        return self::$home_href;
+    }
+
+    /**
+     * Absolute file path of the website.
+     * Set by init()
+     */
+    static public function home_dir(): string
+    {
+        return self::$home_dir;
+    }
+
+    /**
+     * Relative path to the root of the library containing this Route.php,
+     * usually home_href() = lib_href(),
+     * but it could be interesting to share this library and
+     * resources (ex: css, js…) among different sites.
+     * For href links in templates.
+     * Set by init()
+     */
+    static public function lib_href(): string
+    {
+        return self::$lib_href;
+    }
+
+    /**
+     * Absolute file path of the library
+     * Set by init()
+     */
+    static public function lib_dir(): string
+    {
+        return self::$lib_dir;
+    }
+
+    /**
+     * Return the path requested
+     */
+    static public function url_request(): string
+    {
+        return self::$url_request;
+    }
+
+    /**
+     * Return the last calculated path for resource (maybe ueful for debug)
+     */
+    static public function resource(): ?string
+    {
+        return self::$resource;
+    }
+
+    /**
+     * Try a route with GET method 
+     */
+    public static function get($route, $resource, $pars=null)
     {
         if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-            self::route($route, $php, $pars);
+            self::route($route, $resource, $pars);
         }
     }
-    public static function post($route, $php, $pars=null)
+
+    /**
+     * Try a route with POST method 
+     */
+    public static function post($route, $resource, $pars=null)
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            self::route($route, $php, $pars);
+            self::route($route, $resource, $pars);
         }
-    }
-
-    /**
-     * Populate a page with content
-     */
-    public static function main(): void
-    {
-        echo Route::$main_contents;
-        if (function_exists('main')) {
-            call_user_func('main');
-        }
-        // a content to include here 
-        else if (Route::$main_inc) {
-            include_once(Route::$main_inc);
-        }
-    }
-
-    /**
-     * Display a <title> for the page 
-     */
-    public static function title($default=null): string
-    {
-        if (function_exists('title')) {
-            $title = call_user_func('title');
-            if ($title) return $title;
-        }
-        if ($default) {
-            return $default;
-        }
-        return I18n::_('title');
-    }
-
-    /**
-     * Display metadata for a page
-     */
-    public static function meta($default=null): string
-    {
-        if (function_exists('meta')) {
-            $meta = call_user_func('meta');
-            if ($meta) return $meta;
-        }
-        if ($default) {
-            return $default;
-        }
-        return "<title>" . I18n::_('title') . "</title>";
-    }
-
-    /**
-     * Draw an html tab for a navigation with test if selected 
-     */
-    public static function tab($href, $text)
-    {
-        $page = self::$url_parts[0];
-        $selected = '';
-        if ($page == $href) {
-            $selected = " selected";
-        }
-        if(!$href) {
-            $href = '.';
-        }
-        return '<a class="tab'. $selected . '"'
-        . ' href="'. self::home_href(). $href . '"' 
-        . '>' . $text . '</a>';
-    }
-
-    /**
-     * Check if a route match url
-     */
-    public static function match($route)
-    {
-        $route_parts = explode('/', ltrim($route, '/'));
-        // too long url
-        if (count($route_parts) != count(self::$url_parts)) {
-            return false;
-        }
-        // test if path is matching
-        for ($i = 0; $i < count($route_parts); $i++) {
-            // escape ^and $ ?
-            $search = '/^'.$route_parts[$i].'$/';
-            if(!preg_match($search, self::$url_parts[$i])) {
-                return false;
-            }
-        }
-        return true;
     }
 
     /**
@@ -250,14 +234,98 @@ Use Route::template('tmpl_my.php', '$tmpl_key');"
             // capture content if it is php direct
             ob_start();
             include_once($resource);
-            // capture un
             self::$main_contents = ob_get_contents();
             ob_end_clean();
         }
         // now everything should be OK to render page
+        // include the template
         // template should call at least Route::main() to display something 
         include_once($tmpl_php);
         exit();            
+    }
+
+    /**
+     * Check if a route match url
+     */
+    public static function match($route):bool
+    {
+        $route_parts = explode('/', ltrim($route, '/'));
+        // too long url
+        if (count($route_parts) != count(self::$url_parts)) {
+            return false;
+        }
+        // test if path is matching
+        for ($i = 0; $i < count($route_parts); $i++) {
+            // escape ^and $ ?
+            $search = '/^'.$route_parts[$i].'$/';
+            if(!preg_match($search, self::$url_parts[$i])) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Populate a page with content
+     */
+    public static function main(): void
+    {
+        echo Route::$main_contents;
+        if (function_exists('main')) {
+            call_user_func('main');
+        }
+        // a content to include here 
+        else if (Route::$main_inc) {
+            include_once(Route::$main_inc);
+        }
+    }
+
+    /**
+     * Display a <title> for the page 
+     */
+    public static function title($default=null): string
+    {
+        if (function_exists('title')) {
+            $title = call_user_func('title');
+            if ($title) return $title;
+        }
+        if ($default) {
+            return $default;
+        }
+        return I18n::_('title');
+    }
+
+    /**
+     * Display metadata for a page
+     */
+    public static function meta($default=null): string
+    {
+        if (function_exists('meta')) {
+            $meta = call_user_func('meta');
+            if ($meta) return $meta;
+        }
+        if ($default) {
+            return $default;
+        }
+        return "<title>" . I18n::_('title') . "</title>";
+    }
+
+    /**
+     * Draw an html tab for a navigation with test if selected 
+     */
+    public static function tab($href, $text)
+    {
+        $page = self::$url_parts[0];
+        $selected = '';
+        if ($page == $href) {
+            $selected = " selected";
+        }
+        if(!$href) {
+            $href = '.';
+        }
+        return '<a class="tab'. $selected . '"'
+        . ' href="'. self::home_href(). $href . '"' 
+        . '>' . $text . '</a>';
     }
 
     /**
@@ -278,34 +346,6 @@ Use Route::template('tmpl_my.php', '$tmpl_key');"
         else {
             self::$templates[] = $tmpl_php;
         }
-    }
-    /**
-     * Return the path requested
-     */
-    static public function url_request(): string
-    {
-        return self::$url_request;
-    }
-    /**
-     * Return the last calculated path for reosource (maybe ueful for debug)
-     */
-    static public function resource(): ?string
-    {
-        return self::$resource;
-    }
-    /**
-     * Return app_href, optional, if the index.php is outside app_dir
-     */
-    static public function app_href(): string
-    {
-        return self::$app_href;
-    }
-    /**
-     * Set app_href prefix, optional, if the index.php is outside app_dir
-     */
-    static public function home_href(): string
-    {
-        return self::$home_href;
     }
 
     /**
