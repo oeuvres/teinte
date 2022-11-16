@@ -940,7 +940,7 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
             </w:t>
           </w:r>
         </xsl:when>
-        <xsl:when test="self::tei:note | self::tei:lb">
+        <xsl:when test="self::tei:note | self::tei:lb | self::tei:pb">
           <xsl:apply-templates select="."/>
         </xsl:when>
         <!-- for each element, recall -->

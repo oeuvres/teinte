@@ -25,6 +25,21 @@ class I18n
     /** Messages */
     private static $messages = array();
 
+    /**
+     * Intialize static variables
+     */
+    public static function init()
+    {
+        self::$logger = new NullLogger();
+    }
+
+    /**
+     * Set logger
+     */
+    public static function setLogger(LoggerInterface $logger)
+    {
+        self::$logger = $logger;
+    }
 
     /**
      * Load an array of messages
@@ -89,19 +104,5 @@ class I18n
         return $ret;
     }
 
-    /**
-     * Set logger
-     */
-    public static function setLogger(LoggerInterface $logger)
-    {
-        self::$logger = $logger;
-    }
 
-    /**
-     * Intialize static variables
-     */
-    public static function init()
-    {
-        self::$logger = new NullLogger();
-    }
 }

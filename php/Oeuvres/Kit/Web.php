@@ -64,6 +64,14 @@ class Web
     }
 
     /**
+     * Set logger
+     */
+    public static function setLogger(LoggerInterface $logger)
+    {
+        self::$logger = $logger;
+    }
+
+    /**
      * Get absolute URL
      */
     public static function url()
@@ -111,6 +119,7 @@ class Web
         self::$pathinfo = $pathinfo;
         return self::$pathinfo;
     }
+
     /**
      * Relative path to context
      */
@@ -164,7 +173,7 @@ class Web
     }
 
     /**
-     * Get a parameter as single value 
+     * Get a parameter as a single value 
      */
     public static function par(
         $name,
@@ -523,14 +532,6 @@ class Web
         $file["filename"] = pathinfo($file['name'], PATHINFO_FILENAME);
         $file["extension"] = pathinfo($file['name'], PATHINFO_EXTENSION);
         return $file;
-    }
-
-    /**
-     * Set logger
-     */
-    public static function setLogger(LoggerInterface $logger)
-    {
-        self::$logger = $logger;
     }
 
 }
