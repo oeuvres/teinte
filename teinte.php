@@ -22,25 +22,33 @@ Teinte::cli();
 class Teinte {
     public static function help():string 
     {
-        return '
-php teinte.php -f -d output/dir/  format "teidir/*.xml"
+        $help = '
 Tranform your tei files in different formats
+    php teinte.php (options)* (format)+ "teidir/*.xml"
 
--f         : 0-1 force deletion of destination file (no test of freshness)
--d dst_dir : 0-1 destination directory for generated files
-format     : 1-n among
+PARAMETERS
+format      : + among
+' . TeiExportFactory::help() .
+'globs       : + files or globs
 
-' . TeiExportFactory::help() . '
-globs      : 1-n parameters, files or globs
-
-';
+OPTIONS
+-f          : ? force deletion of destination file (no test of freshness)
+-d dst_dir  : ? destination directory for generated files
+-t tmpl_dir : ?  a specific template directory, known ones here';
+$templates = "templates/";
+$glob = glob(__DIR__ . "/templates/*", GLOB_ONLYDIR | GLOB_MARK);
+foreach ($glob as $dir) {
+    $help .= "\n    " . File::relpath(getcwd(), $dir);
+}
+        return $help;
     }
     public static function cli() {
         global $argv;
         $shortopts = "";
-        $shortopts .= "h";
+        $shortopts .= "h"; // help message
         $shortopts .= "f"; // force transformation
         $shortopts .= "d:"; // output directory
+        $shortopts .= "t:"; // template directory
         $options = getopt($shortopts);
         $count = count($argv); 
         // no args, probably not correct
@@ -68,12 +76,15 @@ globs      : 1-n parameters, files or globs
             File::mkdir($dst_dir);
         }
         $dst_dir = File::normdir($dst_dir);
+        $tmpl_dir = null;
+        if (isset($options['t'])) $tmpl_dir = $options['t'];
         // loop on globs
         for (; $i < $count; $i++) {
             self::export (
                 $argv[$i],
                 $formats,
                 $dst_dir,
+                $tmpl_dir,
                 $force
             );
         }
@@ -82,15 +93,17 @@ globs      : 1-n parameters, files or globs
         string $glob, 
         array $formats,
         ?string $dst_dir = "",
+        ?string $tmpl_dir = null,
         ?bool $force = false
     ) {
         $logger = new LoggerCli(LogLevel::INFO);
         $source = new TeiSource($logger);
+        $source->template($tmpl_dir); // set template dir
         foreach (glob($glob) as $src_file) {
             $nodone = true; // for lazy load
             foreach($formats as $format) {
                 // calculate $dst_file according to format
-                $dst_file = $source->dst_file($src_file, $format, $dst_dir);
+                $dst_file = $source->destination($src_file, $format, $dst_dir);
                 // change inplace ? search/replace, reports…
                 $inplace = (realpath($src_file) === realpath($dst_file));
                 if ($force); // overwrite

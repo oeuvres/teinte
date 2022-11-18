@@ -897,17 +897,32 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
   <!-- Char level -->
   <xsl:template match="tei:emph | tei:hi | tei:name | tei:num | tei:persName | tei:resp | tei:surname | tei:title" name="char">
     <!-- inherits a char style -->
-    <xsl:param name="style">
-      <xsl:choose>
-        <xsl:when test="tei:hi"/>
-        <xsl:otherwise>
-          <xsl:value-of select="local-name()"/>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:param>
+    <xsl:param name="style"/>
     <!-- rend inherits -->
     <xsl:param name="rend"/>
     <xsl:for-each select="node()|text()">
+      <xsl:variable name="rStyle">
+        <xsl:choose>
+          <xsl:when test="self::tei:hi">
+            <xsl:value-of select="$style"/>
+          </xsl:when>
+          <xsl:when test="@type and @type != '' and not(contains(@type,  ' '))">
+            <xsl:value-of select="
+              translate(
+                normalize-space(@type),
+                '_.,ÆŒÇÀÁÂÃÄÅÈÉÊËÌÍÎÏÒÓÔÕÖÙÚÛÜÝæœçàáâãäåèéêëìíîïòóôõöùúûüý',
+                ''
+              )
+              "/>
+          </xsl:when>
+          <xsl:when test="self::*">
+            <xsl:value-of select="local-name()"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$style"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>
       <xsl:variable name="format">
         <xsl:text> </xsl:text>
         <xsl:value-of select="normalize-space(@rend)"/>
@@ -943,10 +958,12 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
         <xsl:when test="self::tei:note | self::tei:lb | self::tei:pb">
           <xsl:apply-templates select="."/>
         </xsl:when>
-        <!-- for each element, recall -->
+        <!-- if element contains elements, recall with somestyle inheritence -->
         <xsl:when test="*">
           <xsl:call-template name="char">
             <xsl:with-param name="rend" select="$format"/>
+            <xsl:with-param name="style" select="$rStyle">
+            </xsl:with-param>
           </xsl:call-template>
         </xsl:when>
         <!-- text node or simple  -->
@@ -976,12 +993,9 @@ ancestor::tei:p or ancestor::tei:l or parent::tei:cell
             </xsl:if>
             -->
             <!-- inline style -->
-            <xsl:choose>
-              <xsl:when test="self::tei:hi"/>
-              <xsl:when test="local-name() != ''">
-                <w:rStyle w:val="{local-name()}"/>
-              </xsl:when>
-            </xsl:choose>
+            <xsl:if test="$rStyle != ''">
+                <w:rStyle w:val="{$rStyle}"/>
+            </xsl:if>
             <xsl:if test="@xml:lang">
               <w:lang w:val="{@xml:lang}"/>
             </xsl:if>

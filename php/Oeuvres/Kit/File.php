@@ -22,6 +22,7 @@ class File
 {
     static function normdir($dir)
     {
+        if (!$dir) return $dir;
         $dir = rtrim(trim($dir), "\\/");
         if (!$dir) {
             return "";

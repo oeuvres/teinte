@@ -41,6 +41,8 @@ class TeiSource implements LoggerAwareInterface
     private $filemtime;
     /** file size */
     private $filesize;
+    /** template directory */
+    private $template;
     /**
      * Start with an empty object
      */
@@ -62,6 +64,7 @@ class TeiSource implements LoggerAwareInterface
     public function toUri(string $format, String $uri)
     {
         $transfo = TeiExportFactory::get($format, $this->logger);
+        $transfo->template($this->template);
         $transfo->toUri($this->dom, $uri);
     }
 
@@ -72,6 +75,7 @@ class TeiSource implements LoggerAwareInterface
     public function toXml(string $format): string
     {
         $transfo = TeiExportFactory::get($format, $this->logger);
+        $transfo->template($this->template);
         return $transfo->toXml($this->dom);
     }
 
@@ -82,6 +86,7 @@ class TeiSource implements LoggerAwareInterface
     public function toDoc(string $format): DOMDocument
     {
         $transfo = TeiExportFactory::get($format, $this->logger);
+        $transfo->template($this->template);
         return $transfo->toDoc($this->dom);
     }
 
@@ -90,11 +95,24 @@ class TeiSource implements LoggerAwareInterface
      * extension. Nothing is supposed to be loaded, such path is used
      * for testing.
      */
-    function dst_file(string $src_file, string $format, ?string $dst_dir):string
+    function destination(string $src_file, string $format, ?string $dst_dir):string
     {
         $transfo = TeiExportFactory::get($format, $this->logger);
-        return $transfo->dst_file($src_file, $dst_dir);
+        return $transfo->destination($src_file, $dst_dir);
     }
+
+    /**
+     * Set a template directory here
+     */
+    public function template(?string $dir = null) {
+        if ($dir && !is_dir($dir)) {
+            throw new \InvalidArgumentException(
+                "Template: \"\033[91m$dir\033[0m\" is not a valid directory."
+            );
+        }
+        $this->template = $dir;
+    }
+
 
     public function isEmpty()
     {

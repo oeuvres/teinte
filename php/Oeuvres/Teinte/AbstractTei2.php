@@ -42,7 +42,7 @@ abstract class AbstractTei2 implements LoggerAwareInterface
         if (self::$init) return;
         self::$init = true;
         // TO THINK, good way to configure xsl pack
-        self::$xslDir = dirname(dirname(dirname(__DIR__))) . "/xsl/";
+        self::$xslDir = dirname(__DIR__, 3) . "/xsl/";
     }
 
     /**
@@ -69,7 +69,7 @@ abstract class AbstractTei2 implements LoggerAwareInterface
      * according to the preferred extension format,
      * and a destination directory if provided.
      */
-    public static function dst_file(
+    public static function destination(
         string $src_file, 
         ?string $dst_dir = null
     ):string {
@@ -82,6 +82,17 @@ abstract class AbstractTei2 implements LoggerAwareInterface
         $dstName =  pathinfo($src_file, PATHINFO_FILENAME);
         $dstFile = $dstDir . $dstName . static::EXT;
         return $dstFile;
+    }
+
+    /**
+     * Allow to set a a template directory, usually not useful
+     */
+    public function template(?string $dir = null) {
+        if (!is_dir($dir)) {
+            throw new \InvalidArgumentException(
+                "Template: \"\033[91m$dir\033[0m\" is not a valid directory."
+            );
+        }
     }
 
     /**

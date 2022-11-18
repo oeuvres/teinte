@@ -35,17 +35,24 @@ class Tei2docx extends AbstractTei2
      * Set a docx file as a template,
      * usually the same for a collection of tei docs.
      */
-    function template(?string $template = null):string
+    function template(?string $dir = null):string
     {
-        if (!$template && $this->template) {
-            return $this->template;
+        $dir = File::normdir($dir);
+        if ($dir && is_dir($dir)) {
+            $this->template =  $dir . basename($dir) . ".docx";
+            // first doc of dir ?
+            if (!is_file($this->template)) {
+                $glob = glob($dir . "*.docx");
+                if (!$glob || count($glob) < 1) {
+                    $this->template = null;
+                } else {
+                    $this->template = $glob[0];
+                }
+            }
         }
-        if (!$template) {
-            $template = self::$xslDir . '/docx/template.docx';
+        if (!$this->template) {
+            return self::$xslDir . '/docx/template.docx';
         }
-        File::readable($template); // check if file exists
-        // test if it’s a zip now ?
-        $this->template = $template;
         return $this->template;
     }
 
