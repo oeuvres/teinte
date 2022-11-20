@@ -12,11 +12,12 @@ declare(strict_types=1);
 include_once(__DIR__ . '/php/autoload.php');
 
 use Psr\Log\{LogLevel};
-use Oeuvres\Kit\{File, LoggerCli};
-use Oeuvres\Teinte\{TeiSource, TeiExportFactory};
+use Oeuvres\Kit\{Filesys, LoggerCli};
+use Oeuvres\Teinte\Format\{Tei};
+use Oeuvres\Teinte\Tei2\{Tei2};
 
 /**
- * A simple command line for Teinte output formats
+ * A simple command line for Tei output formats
  */
 Teinte::cli();
 class Teinte {
@@ -28,7 +29,7 @@ Tranform your tei files in different formats
 
 PARAMETERS
 format      : + among
-' . TeiExportFactory::help() .
+' . Tei2::help() .
 'globs       : + files or globs
 
 OPTIONS
@@ -38,7 +39,7 @@ OPTIONS
 $templates = "templates/";
 $glob = glob(__DIR__ . "/templates/*", GLOB_ONLYDIR | GLOB_MARK);
 foreach ($glob as $dir) {
-    $help .= "\n    " . File::relpath(getcwd(), $dir);
+    $help .= "\n    " . Filesys::relpath(getcwd(), $dir);
 }
         return $help;
     }
@@ -55,14 +56,14 @@ foreach ($glob as $dir) {
         if ($count < 2) exit(self::help());
         // loop on args to find first format
         for ($i = 1; $i < $count; $i++) {
-            if (TeiExportFactory::has($argv[$i])) break;
+            if (Tei2::has($argv[$i])) break;
         }
         if ($i == $count) {
             exit("\nNo available format found for transform\n" . self::help());
         }
         $formats = array();
         for (; $i < $count; $i++) {
-            if (!TeiExportFactory::has($argv[$i])) break;
+            if (!Tei2::has($argv[$i])) break;
             $formats[$argv[$i]] = null;
         }
         if ($i == $count) {
@@ -73,9 +74,9 @@ foreach ($glob as $dir) {
         $dst_dir = "";
         if (isset($options['d'])) {
             $dst_dir = $options['d'];
-            File::mkdir($dst_dir);
+            Filesys::mkdir($dst_dir);
         }
-        $dst_dir = File::normdir($dst_dir);
+        $dst_dir = Filesys::normdir($dst_dir);
         $tmpl_dir = null;
         if (isset($options['t'])) $tmpl_dir = $options['t'];
         // loop on globs
@@ -97,7 +98,7 @@ foreach ($glob as $dir) {
         ?bool $force = false
     ) {
         $logger = new LoggerCli(LogLevel::INFO);
-        $source = new TeiSource($logger);
+        $source = new Tei($logger);
         $source->template($tmpl_dir); // set template dir
         foreach (glob($glob) as $src_file) {
             $nodone = true; // for lazy load
@@ -114,7 +115,13 @@ foreach ($glob as $dir) {
                 }
                 if ($nodone) { // nothing done yet, load source
                     $logger->info($src_file);
-                    $source->load($src_file);
+                    try {
+                        $source->load($src_file);
+                    } 
+                    catch (Exception $e) {
+                        // nothing could be done with this file
+                        break;
+                    }
                     $nodone = false;
                 }
                 // for reports, no output if no force

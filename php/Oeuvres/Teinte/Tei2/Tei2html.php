@@ -10,13 +10,13 @@
 
 declare(strict_types=1);
 
-namespace Oeuvres\Teinte;
+namespace Oeuvres\Teinte\Tei2;
 
 /**
  * Export a TEI document as an html fragment <article>
  */
 
-class Tei2html extends AbstractTei2simple
+class Tei2html extends Tei2simple
 {
     const NAME = 'html';
     const EXT = '.html';

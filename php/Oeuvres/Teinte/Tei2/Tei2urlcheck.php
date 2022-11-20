@@ -9,25 +9,21 @@
 
 declare(strict_types=1);
 
-namespace Oeuvres\Teinte;
+namespace Oeuvres\Teinte\Tei2;
 
 use DOMDocument;
-use Psr\Log\{LoggerAwareInterface, LoggerInterface, NullLogger};
-use Oeuvres\Kit\File;
-use Oeuvres\Kit\Xml;
+use Oeuvres\Kit\{Filesys};
 
 /**
  * Load a TEI document and perform an url check on //ref/@target
  */
-class Tei2urlcheck extends AbstractTei2
+class Tei2urlcheck extends Tei2
 {
-    /** Do init at startup */
-    static private $init; 
-    /** Somewhere to log in  */
-    protected LoggerInterface $logger;
     const NAME = 'urlcheck';
     const EXT = '.xml';
     const LABEL = 'Check url in //ref/@target';
+    /** A file is OK by default, except when a problem is found */
+    private $ok = true;
 
     /**
      * Write transformation as an Uri, which is mainly, a file
@@ -50,6 +46,7 @@ class Tei2urlcheck extends AbstractTei2
      */
     public function toDoc(DOMDocument $dom, ?array $pars=null):?DOMDocument 
     {
+
         $context = stream_context_create(
             array(
                 'http' => array(
@@ -74,15 +71,15 @@ class Tei2urlcheck extends AbstractTei2
                 $id = substr($target, 1);
                 $el = $dom->getElementById($id);
                 if ($el) continue;
-                $this->logger->info(
+                $this->logger->error(
                     "\033[91mxml:id=\"$id\"\033[0m target element not found "
                     . self::message($link, $att, $target)
                 );
                 continue;
             }
             // absolute file link, bad
-            else if (File::isabs($target)) {
-                $this->logger->info(
+            else if (Filesys::isabs($target)) {
+                $this->logger->error(
                     "\033[91mabsolute file path\033[0m "
                     . self::message($link, $att, $target)
                 );
@@ -92,7 +89,7 @@ class Tei2urlcheck extends AbstractTei2
             else if (substr(trim($target), 0, 4) == 'http') {
                 $headers = @get_headers($target);
                 if (!$headers) {
-                    $this->logger->info(
+                    $this->logger->error(
                         "\033[91murl lost\033[0m "
                         . self::message($link, $att, $target)
                     );
@@ -100,8 +97,14 @@ class Tei2urlcheck extends AbstractTei2
                 }
                 preg_match("@\d\d\d@", $headers[0], $matches);
                 $code = $matches[0];
-                if ($code == '200' || $code == '302') continue;
-                $this->logger->info(
+                if ($code == '200' || $code == '302') {
+                    $this->logger->debug(
+                        "\033[91m" . substr($headers[0], 9) . "\033[0m "
+                        . self::message($link, $att, $target)
+                    );
+                    continue;
+                }
+                $this->logger->error(
                     "\033[91m" . substr($headers[0], 9) . "\033[0m "
                     . self::message($link, $att, $target)
                 );
@@ -109,7 +112,7 @@ class Tei2urlcheck extends AbstractTei2
             }
             // relative link
             else { 
-                $this->logger->info(
+                $this->logger->error(
                     "\033[91mfile not found\033[0m "
                     . self::message($link, $att, $target)
                 );
@@ -144,6 +147,5 @@ class Tei2urlcheck extends AbstractTei2
         return $m;
     }
 }
-Tei2urlcheck::init();
 
 // EOF

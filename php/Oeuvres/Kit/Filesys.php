@@ -18,7 +18,7 @@ use Exception, InvalidArgumentException, ZipArchive;
  * code convention https://www.php-fig.org/psr/psr-12/
  */
 
-class File
+class Filesys
 {
     static function normdir($dir)
     {
@@ -167,7 +167,7 @@ class File
      */
     static public function cleandir(string $dir): ?string
     {
-        File::writable($dir);
+        self::writable($dir);
         // attempt to create the folder we want empty
         if (!file_exists($dir)) {
             self::mkdir($dir);

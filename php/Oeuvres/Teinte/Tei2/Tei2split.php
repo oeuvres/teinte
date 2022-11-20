@@ -10,16 +10,16 @@
 
 declare(strict_types=1);
 
-namespace Oeuvres\Teinte;
+namespace Oeuvres\Teinte\Tei2;
 
 use DOMDocument;
-use Oeuvres\Kit\{File,Xml};
+use Oeuvres\Kit\{Filesys,Xsl};
 
 /**
  * Export a TEI document as an html fragment <article>
  */
 
-class Tei2split extends AbstractTei2
+class Tei2split extends Tei2
 {
     const NAME = 'split';
     const EXT = '_xml/';
@@ -32,13 +32,13 @@ class Tei2split extends AbstractTei2
     public function toUri(DOMDocument $dom, string $dstFile, ?array $pars=array())
     {
         if (!$pars) $pars = array();
-        $dst_dir = File::cleandir($dstFile) . "/";
+        $dst_dir = Filesys::cleandir($dstFile) . "/";
         if (DIRECTORY_SEPARATOR == "\\") {
             $dst_dir = "file:///" . str_replace('\\', '/', $dst_dir);
         }
         $pars = array_merge($pars, array("dst_dir" => $dst_dir));
         $this->logger->info("Tei2\033[92m" . static::NAME . "->toUri()\033[0m " . $dst_dir);
-        return Xml::transformToXml(
+        return Xsl::transformToXml(
             self::$xslDir.static::XSL,
             $dom,
             $pars,
@@ -61,7 +61,6 @@ class Tei2split extends AbstractTei2
         $this->logger->error(__METHOD__." string export not relevant");
         return null;
     }
-
 
 }
 

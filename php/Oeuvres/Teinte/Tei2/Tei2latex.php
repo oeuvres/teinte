@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Oeuvres\Teinte;
+namespace Oeuvres\Teinte\Tei2;
 
 use DOMDocument;
 use Oeuvres\Kit\File;
@@ -19,7 +19,7 @@ use Oeuvres\Kit\File;
 /**
  * Transform an XML/TEI file in LaTeX
  */
-class Tei2latex  extends AbstractTei2
+class Tei2latex  extends Tei2
 {
     
     private string $template = "";

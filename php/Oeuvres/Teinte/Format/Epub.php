@@ -9,17 +9,15 @@
 
 declare(strict_types=1);
 
-namespace Oeuvres\Teinte;
+namespace Oeuvres\Teinte\Format;
+
+include(dirname(__DIR__, 2) . "/autoload.php");
 
 /**
- * Export a Teidoc as a Dublic Core record (for OAI)
+ * A Teidoc exporter.
  */
-class Tei2dc extends AbstractTei2simple
+class Epub extends Zip
 {
-    const EXT = '_dc.xml';
-    const NAME = 'dc';
-    const LABEL = 'Dublin Core (metadata)';
-    const XSL = "misc/tei_dc.xsl";
+
 }
 
-// EOF

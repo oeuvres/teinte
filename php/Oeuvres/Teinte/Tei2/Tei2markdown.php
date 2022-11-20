@@ -9,17 +9,17 @@
 
 declare(strict_types=1);
 
-namespace Oeuvres\Teinte;
+namespace Oeuvres\Teinte\Tei2;
 
 /**
  * Export an XML/TEI document as valid markdown
  */
-class Tei2markdown extends AbstractTei2simple
+class Tei2markdown extends Tei2simple
 {
     const EXT = '.md';
     const NAME = 'markdown';
     const LABEL = 'Markdown (formatted text)';
-    const XSL = "txt/tei_markdown.xsl";
+    const XSL = "tei_txt/tei_markdown.xsl";
 }
 
 // EOF

@@ -19,7 +19,7 @@ use Psr\Log\LogLevel;
  *
  * @see https://www.php-fig.org/psr/psr-3/
  */
-class LoggerCli extends LoggerBase
+class LoggerCli extends Log
 {
     protected function write($level, $message)
     {

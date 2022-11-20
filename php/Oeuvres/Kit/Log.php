@@ -12,9 +12,7 @@ declare(strict_types=1);
 namespace Oeuvres\Kit;
 
 use \DateTime;
-use Psr\Log\AbstractLogger;
-use Psr\Log\InvalidArgumentException;
-use Psr\Log\LogLevel;
+use Psr\Log\{AbstractLogger, InvalidArgumentException, LogLevel, LoggerInterface};
 
 /**
  * A base for a PSR-3 compliant logger as light as possible
@@ -22,12 +20,10 @@ use Psr\Log\LogLevel;
  *
  * @see https://www.php-fig.org/psr/psr-3/
  */
-abstract class LoggerBase extends AbstractLogger
+abstract class Log extends AbstractLogger
 {
-    /** Default prefix for message */
-    private $prefix = "[{level}] {time} "; 
     /** Logging level by name */
-    private static $level_verbosity = array(
+    private const LEVEL_VERBOSITY = [
         LogLevel::EMERGENCY => 1,
         LogLevel::ALERT => 2,
         LogLevel::CRITICAL => 3,
@@ -36,16 +32,23 @@ abstract class LoggerBase extends AbstractLogger
         LogLevel::NOTICE => 6,
         LogLevel::INFO => 7,
         LogLevel::DEBUG => 8,
-    );
+    ];
+    /** A default unique logger according to SAPI mode */
+    private static ?LoggerInterface $logger = null;
+    /** Default prefix for message */
+    private $prefix = "[{level}] {time} "; 
+    /** Default suffix for message (ex: clossing tag forr html) */
+    private $suffix = ""; 
     /** Default level of message to output */
     private $verbosity = 4;
+
 
     /**
      * Where to write log message ?
      */
     abstract protected function write($level, string $message);
 
-
+    
     public static function init()
     {
         // ensure timezone ()
@@ -58,26 +61,41 @@ abstract class LoggerBase extends AbstractLogger
     }
 
     /**
+     * Return a default logger instance according to SAPI mode
+     */
+    public static function logger():LoggerInterface
+    {
+        if (self::$logger !== null) return self::$logger;
+        if (php_sapi_name() == 'cli') {
+            self::$logger = new LoggerCli();
+        }
+        else {
+            self::$logger = new LoggerWeb();
+        }
+        return self::$logger;
+    }
+
+    /**
      * Get a verbosity int from a string level 
      */
     protected static function verbosity(string $level):int
     {
-        if (!isset(self::$level_verbosity[$level])) {
+        if (!isset(self::LEVEL_VERBOSITY[$level])) {
             throw new InvalidArgumentException(
                 sprintf('Unknown log level "%s"', $level)
             );
-            return self::$level_verbosity[LogLevel::ERROR];
+            return self::LEVEL_VERBOSITY[LogLevel::ERROR];
         }
-        return self::$level_verbosity[$level];
+        return self::LEVEL_VERBOSITY[$level];
     }
 
     /**
-     * Set/get level
+     * Get/Set level
      */
     public function level(?string $level = null)
     {
         if (!$level) {
-            $key = array_search ($this->verbosity, self::$level_verbosity);
+            $key = array_search ($this->verbosity, self::LEVEL_VERBOSITY);
             return $key;
         }
         $verbosity = self::verbosity($level);
@@ -85,11 +103,25 @@ abstract class LoggerBase extends AbstractLogger
     }
 
     /**
-     * Set prefix for log message
+     * Get/Set prefix for log message
      */
-    public function prefix(string $prefix)
+    public function prefix(?string $prefix = null)
     {
+        if ($prefix === null) {
+            return $this->prefix;
+        }
         $this->prefix = $prefix;
+    }
+
+    /**
+     * Set suffix for log message
+     */
+    public function suffix(?string $suffix = null)
+    {
+        if ($suffix === null) {
+            return $this->suffix;
+        }
+        $this->suffix = $suffix;
     }
 
     /**
@@ -106,7 +138,7 @@ abstract class LoggerBase extends AbstractLogger
         $context['level'] = $level;
         $context['datetime'] = $date->format('Y-m-d H:i:s');
         $context['time'] = $date->format('H:i:s');
-        $mess = $this->interpolate($this->prefix.$message, $context);
+        $mess = $this->interpolate($this->prefix . $message . $this->suffix, $context);
         
         $this->write($level, $mess);
         return true;
@@ -141,4 +173,4 @@ abstract class LoggerBase extends AbstractLogger
 
 
 }
-LoggerBase::init();
+Log::init();

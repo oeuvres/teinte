@@ -9,16 +9,16 @@
 
 declare(strict_types=1);
 
-namespace Oeuvres\Teinte;
+namespace Oeuvres\Teinte\Tei2;
 
 use DOMDocument;
 use Psr\Log\LoggerInterface;
-use Oeuvres\Kit\{Xml, File};
+use Oeuvres\Kit\{Filesys, Xsl};
 
 /**
  * A sinmple Teidoc exporter, with only one xslt
  */
-abstract class AbstractTei2simple extends AbstractTei2
+abstract class Tei2simple extends Tei2
 {
     /** Path to the xslt file, relative to the xsl pack root */
     const XSL = null;
@@ -28,7 +28,7 @@ abstract class AbstractTei2simple extends AbstractTei2
         parent::__construct(...func_get_args());
         assert(static::XSL != null, static::class . "::XSL must be defined from an XSL file to apply for this export format");
         assert(
-            File::readable(
+            Filesys::readable(
                 self::$xslDir.static::XSL, 
                 static::class . "::XSL file is required"
             ), 
@@ -39,7 +39,7 @@ abstract class AbstractTei2simple extends AbstractTei2
     public function toUri(DOMDocument $dom, string $dstFile, ?array $pars=null)
     {
         $this->logger->info("Tei2\033[92m" . static::NAME . "->toUri()\033[0m " . $dstFile);
-        return Xml::transformToUri(
+        return Xsl::transformToUri(
             self::$xslDir.static::XSL,
             $dom,
             $dstFile,
@@ -48,7 +48,7 @@ abstract class AbstractTei2simple extends AbstractTei2
     }
     public function toXml(DOMDocument $dom, ?array $pars=null):string
     {
-        return Xml::transformToXml(
+        return Xsl::transformToXml(
             self::$xslDir.static::XSL,
             $dom,
             $pars,
@@ -58,7 +58,7 @@ abstract class AbstractTei2simple extends AbstractTei2
 
     public function toDoc(DOMDocument $dom, ?array $pars=null):DOMDocument
     {
-        return Xml::transformToDoc(
+        return Xsl::transformToDoc(
             self::$xslDir.static::XSL,
             $dom,
             $pars,

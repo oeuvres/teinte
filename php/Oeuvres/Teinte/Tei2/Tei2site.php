@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Part of Teinte https://github.com/oeuvres/teinte
  * Copyright (c) 2020 frederic.glorieux@fictif.org
@@ -9,19 +10,18 @@
 
 declare(strict_types=1);
 
-namespace Oeuvres\Teinte;
+namespace Oeuvres\Teinte\Tei2;
 
 /**
- * Export an XML/TEI document as text formatted for IRaMuteQ,
- * a text analysis platform.
- * http://www.iramuteq.org/
+ * Export a TEI document as an html fragment <article>
  */
-class Tei2iramuteq extends AbstractTei2simple
+
+class Tei2site extends Tei2split
 {
-    const EXT = '_ira.txt';
-    const NAME = 'iramuteq';
-    const LABEL = 'IRaMuteQ (formatted text)';
-    const XSL = "txt/tei_iramuteq.xsl";
+    const NAME = 'site';
+    const EXT = '/';
+    const LABEL = 'Split tei chapters in a browsable html site';
+    const XSL = "tei_html_site.xsl";
 }
 
 // EOF

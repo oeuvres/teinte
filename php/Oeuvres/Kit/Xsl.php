@@ -15,13 +15,12 @@ use Exception, DOMDocument, DOMXPath, XSLTProcessor;
 use Psr\Log\{LoggerInterface, NullLogger};
 
 /**
- * A set of well configured method for XML manipulation
+ * A set of well configured method for XML manipulation with Libxml
  * with record of some odd tricks,
  * and xsl parsing cache for repeated transformations.
  * code convention https://www.php-fig.org/psr/psr-12/
  */
-Xml::init();
-class Xml
+class Xsl
 {
     /** XSLTProcessors */
     private static $transcache = array();
@@ -36,7 +35,7 @@ class Xml
         // | LIBXML_NOWARNING  // ? hide warn for <?xml-model
     ;
     /** Logger */
-    private static $logger;
+    private static LoggerInterface $logger;
 
     /**
      * Intialize static variables
@@ -61,15 +60,15 @@ class Xml
     /**
      * Get a DOM document with best options from a file path
      */
-    public static function load(string $srcFile): ?DOMDocument
+    public static function load(string $src_file): ?DOMDocument
     {
         $dom = self::domSkel();
         // $dom->recover=true; // no recover, display errors
         // suspend error reporting, libxml messages are better
-        $ret = @$dom->load($srcFile, self::LIBXML_OPTIONS);
+        $ret = @$dom->load($src_file, self::LIBXML_OPTIONS);
         self::logLibxml(libxml_get_errors());
         if (!$ret) return null;
-        $dom->documentURI = realpath($srcFile);
+        $dom->documentURI = realpath($src_file);
         return $dom;
     }
 
@@ -254,7 +253,7 @@ class Xml
         }
         // write to uri
         else {
-            File::mkdir(dirname($dst));
+            Filesys::mkdir(dirname($dst));
             $trans->transformToUri($dom, $dst);
             $ret = $dst;
         }
@@ -312,3 +311,4 @@ class Xml
         return $xpath;
     }
 }
+Xsl::init();

@@ -7,7 +7,7 @@
  * BSD-3-Clause https://opensource.org/licenses/BSD-3-Clause
  */
 
-// declare(strict_types=1);
+declare(strict_types=1);
 
 namespace Oeuvres\Kit;
 
@@ -19,26 +19,22 @@ use Psr\Log\LogLevel;
  *
  * @see https://www.php-fig.org/psr/psr-3/
  */
-class LoggerFile extends Log
+class LoggerWeb extends Log
 {
-    private $handle;
     protected function write($level, $message)
     {
-        fwrite( $this->handle, $message . "\n");
+        $message = preg_replace('/\n/', "\n<br/>", $message);
+        echo "<p class=\"log $level\">[$level] $message</p>\n";
     }
 
     public function __construct(
-        $file,
-        ?string $level = LogLevel::ERROR, 
-        ?string $prefix = "[{level}] {time} "
+        ?string $level = LogLevel::ERROR,
+        ?string $prefix = "",
+        ?string $suffix = ""
     ) {
-        if (is_resource($file)) {
-            $this->handle = $file;
-        } else {
-            $this->handle = fopen($file, 'a+'); // append by default
-        }
         $this->level($level);
         $this->prefix($prefix);
+        $this->suffix($suffix);
     }
 
 }

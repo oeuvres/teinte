@@ -12,10 +12,10 @@ BSD-3-Clause https://opensource.org/licenses/BSD-3-Clause
 XSLT 1.0 is compatible browser, PHP, Python, Java…
 -->
 <xsl:transform version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" xmlns:tei="http://www.tei-c.org/ns/1.0" exclude-result-prefixes="tei">
-  <xsl:include href="html/tei_flow_html.xsl"/>
-  <xsl:include href="html/tei_notes_html.xsl"/>
-  <xsl:include href="html/tei_header_html.xsl"/>
-  <xsl:include href="html/tei_toc_html.xsl"/>
+  <xsl:include href="tei_html/tei_flow_html.xsl"/>
+  <xsl:include href="tei_html/tei_notes_html.xsl"/>
+  <xsl:include href="tei_html/tei_header_html.xsl"/>
+  <xsl:include href="tei_html/tei_toc_html.xsl"/>
   <!-- Where to find static assets like CSS or JS -->
   <xsl:param name="xslbase">
     <xsl:call-template name="xslbase"/>

@@ -9,61 +9,27 @@
 
 declare(strict_types=1);
 
-namespace Oeuvres\Teinte;
+namespace Oeuvres\Teinte\Format;
 
 use Exception, DOMDocument, DOMXpath;
-use Psr\Log\{LoggerInterface, LoggerAwareInterface, NullLogger};
-use Oeuvres\Kit\Xml;
-use Oeuvres\Teinte\{TeiExportFactory};
+use Oeuvres\Kit\{Xsl};
+use Oeuvres\Teinte\Tei2\{Tei2};
 
 /**
  * Tei exports are designed as a Strategy pattern
- * {@see \Oeuvres\Teinte\AbstractTei2}
+ * {@see \Oeuvres\Teinte\Tei2}
  * This class is the Context to use the different strategies.
  * All initialisations are as lazy as possible
  * to scan fast big directories.
  */
-class TeiSource implements LoggerAwareInterface
+class Tei extends Xml
 {
-    /** Somewhere to log in  */
-    private LoggerInterface $logger;
-    /** Store XML as a string, maybe used for LaTeX */
-    private $xml;
-    /** TEI/XML DOM Document to process */
-    private $dom;
-    /** Xpath processor for the doc */
-    private $xpath;
-    /** filepath */
-    private $file;
-    /** filename without extension */
-    private $filename;
-    /** file freshness */
-    private $filemtime;
-    /** file size */
-    private $filesize;
-    /** template directory */
-    private $template;
-    /**
-     * Start with an empty object
-     */
-    public function __construct(LoggerInterface $logger = null)
-    {
-        if ($logger == null) $logger = new NullLogger();
-        $this->setLogger($logger);
-    }
-
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-        Xml::setLogger($this->logger);
-    }
-
     /**
      * Transform current dom and write to file.
      */
     public function toUri(string $format, String $uri)
     {
-        $transfo = TeiExportFactory::get($format, $this->logger);
+        $transfo = Tei2::get($format, $this->logger);
         $transfo->template($this->template);
         $transfo->toUri($this->dom, $uri);
     }
@@ -74,7 +40,7 @@ class TeiSource implements LoggerAwareInterface
      */
     public function toXml(string $format): string
     {
-        $transfo = TeiExportFactory::get($format, $this->logger);
+        $transfo = Tei2::get($format, $this->logger);
         $transfo->template($this->template);
         return $transfo->toXml($this->dom);
     }
@@ -85,7 +51,7 @@ class TeiSource implements LoggerAwareInterface
      */
     public function toDoc(string $format): DOMDocument
     {
-        $transfo = TeiExportFactory::get($format, $this->logger);
+        $transfo = Tei2::get($format, $this->logger);
         $transfo->template($this->template);
         return $transfo->toDoc($this->dom);
     }
@@ -97,7 +63,7 @@ class TeiSource implements LoggerAwareInterface
      */
     function destination(string $src_file, string $format, ?string $dst_dir):string
     {
-        $transfo = TeiExportFactory::get($format, $this->logger);
+        $transfo = Tei2::get($format, $this->logger);
         return $transfo->destination($src_file, $dst_dir);
     }
 
@@ -114,38 +80,6 @@ class TeiSource implements LoggerAwareInterface
     }
 
 
-    public function isEmpty()
-    {
-        return !$this->dom;
-    }
-
-    /**
-     * Load XML/TEI as a file (preferred way).
-     */
-    public function load(string $tei_file): DOMDocument
-    {
-        $this->file = $tei_file;
-        $this->filename = pathinfo($tei_file, PATHINFO_FILENAME);
-        $this->filemtime = filemtime($tei_file);
-        $this->filesize = filesize($tei_file); // ?? if URL ?
-        $this->xpath = null;
-        $dom = $this->loadXml(file_get_contents($tei_file));
-        return $dom;
-    }
-
-    /**
-     * Load XML/TEI as string, normalize and load it as DOM
-     */
-    public function loadXml(string $xml):DOMDocument
-    {
-        // should we keep here original XML to replay chain ?
-        $this->xml = self::normTei($xml);
-        $this->dom = Xml::loadXml($this->xml);
-        // spaces are normalized upper, keep them
-        $this->dom->preserveWhiteSpace = true;
-
-        return $this->dom;
-    }
 
     /**
      * Load a TEI string, and normalize things, especially 
@@ -177,44 +111,6 @@ class TeiSource implements LoggerAwareInterface
     }
 
 
-    /**
-     * Set and return an XPath processor
-     */
-    public function xpath()
-    {
-        if ($this->xpath) return $this->xpath;
-        $this->xpath = Xml::xpath($this->dom);
-        $this->xpath->registerNamespace('tei', "http://www.tei-c.org/ns/1.0");
-        return $this->xpath;
-    }
-    /**
-     * For a readonly property
-     */
-    public function file()
-    {
-        return $this->file;
-    }
-    /**
-     * Get the filename (with no extention)
-     */
-    public function filename()
-    {
-        return $this->filename;
-    }
-    /**
-     * Read a readonly property
-     */
-    public function filemtime()
-    {
-        return $this->filemtime;
-    }
-    /**
-     * For a readonly property
-     */
-    public function filesize()
-    {
-        return $this->filesize;
-    }
     /**
      * Book metadata
      */

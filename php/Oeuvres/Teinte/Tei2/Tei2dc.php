@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Part of Teinte https://github.com/oeuvres/teinte
  * Copyright (c) 2020 frederic.glorieux@fictif.org
@@ -10,22 +9,17 @@
 
 declare(strict_types=1);
 
-namespace Oeuvres\Teinte;
-
-use DOMDocument;
-use Oeuvres\Kit\{File,Xml};
+namespace Oeuvres\Teinte\Tei2;
 
 /**
- * Export a TEI document as an html fragment <article>
+ * Export a Teidoc as a Dublic Core record (for OAI)
  */
-
-class Tei2site extends Tei2split
+class Tei2dc extends Tei2simple
 {
-    const NAME = 'site';
-    const EXT = '/';
-    const LABEL = 'Split tei chapters in a browsable html site';
-    const XSL = "tei_html_site.xsl";
-
+    const EXT = '_dc.xml';
+    const NAME = 'dc';
+    const LABEL = 'Dublin Core (metadata)';
+    const XSL = "tei_misc/tei_dc.xsl";
 }
 
 // EOF

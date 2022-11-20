@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Part of Teinte https://github.com/oeuvres/teinte
  * Copyright (c) 2020 frederic.glorieux@fictif.org
@@ -10,26 +9,29 @@
 
 declare(strict_types=1);
 
-namespace Oeuvres\Teinte;
+namespace Oeuvres\Teinte\Tei2;
 
 use Exception, DOMDocument, ZipArchive;
-use Oeuvres\Kit\File;
-use Oeuvres\Kit\Xml;
-use Psr\Log\LoggerInterface;
+use Oeuvres\Kit\{Check, Filesys, Xsl};
+Check::extension('zip');
 
 /**
- * Output a MS.Word conmformat docx from TEI.
+ * Output a MS.Word docx document from TEI.
  * code convention https://www.php-fig.org/psr/psr-12/
  */
-
-class Tei2docx extends AbstractTei2
+class Tei2docx extends Tei2
 {
     /** A docx file used as a template */
-    private string $template = "";
+    private string $template;
     const NAME = 'docx';
     const EXT = '.docx';
     const LABEL = 'Microsoft.Word 2007 format';
-
+    /** Some mapping between 3 char iso languange code to 2 char */
+    const ISO639_3char = [
+        'eng' => 'en',
+        'fra' => 'fr',
+        'lat' => 'la',    
+    ];
 
     /**
      * Set a docx file as a template,
@@ -37,21 +39,25 @@ class Tei2docx extends AbstractTei2
      */
     function template(?string $dir = null):string
     {
-        $dir = File::normdir($dir);
+        $dir = Filesys::normdir($dir);
+        $template = null;
         if ($dir && is_dir($dir)) {
-            $this->template =  $dir . basename($dir) . ".docx";
+            $template =  $dir . basename($dir) . ".docx";
             // first doc of dir ?
-            if (!is_file($this->template)) {
+            if (!is_file($template)) {
                 $glob = glob($dir . "*.docx");
                 if (!$glob || count($glob) < 1) {
-                    $this->template = null;
+                    $template = null;
                 } else {
-                    $this->template = $glob[0];
+                    $template = $glob[0];
                 }
             }
         }
-        if (!$this->template) {
-            return self::$xslDir . '/docx/template.docx';
+        if (!$template) {
+            $this->template = self::$xslDir . '/tei_docx/template.docx';
+        }
+        else {
+            $this->template = $template;
         }
         return $this->template;
     }
@@ -82,14 +88,14 @@ class Tei2docx extends AbstractTei2
             throw new Exception("PHP zip extension required.\nCheck your php.ini. On Debian like systems: sudo apt install php-zip\n");
         }
         $this->logger->info("Tei2\033[92m" . static::NAME ." \033[0m $dst_file");
-        File::writable($dst_file);
+        Filesys::writable($dst_file);
         $name = pathinfo($dom->documentURI, PATHINFO_FILENAME);
         copy($this->template(), $dst_file);
         $zip = new ZipArchive();
         $zip->open($dst_file);
 
         // get a default lang from the source TEI, set it in the style.xml
-        $xpath = Xml::xpath($dom);
+        $xpath = Xsl::xpath($dom);
         $entries = $xpath->query("/*/@xml:lang");
         $lang = null;
         foreach ($entries as $node) {
@@ -97,8 +103,7 @@ class Tei2docx extends AbstractTei2
         }
         // template is supposed to have a default language
         if ($lang) {
-            $langs = include(__DIR__.'/langs.php');
-            if (isset($langs[$lang])) $lang = $langs[$lang];
+            if (isset(self::ISO639_3char[$lang])) $lang = self::ISO639_3char[$lang];
             $name = 'word/styles.xml';
             $xml = $zip->getFromName($name);
             $xml = preg_replace(
@@ -121,8 +126,8 @@ class Tei2docx extends AbstractTei2
             . str_replace(DIRECTORY_SEPARATOR, "/", $templPath);
         // $this->logger->debug(__METHOD__.' $templPath='.$templPath);
 
-        $xml = Xml::transformToXml(
-            self::$xslDir . '/docx/tei_docx_comments.xsl', 
+        $xml = Xsl::transformToXml(
+            self::$xslDir . '/tei_docx/tei_docx_comments.xsl', 
             $dom,
         );
         $zip->addFromString('word/comments.xml', $xml);
@@ -130,8 +135,8 @@ class Tei2docx extends AbstractTei2
         // generation of word/document.xml needs some links
         // from template, espacially for head and foot page.
         file_put_contents($templPath, $zip->getFromName('word/document.xml'));
-        $xml = Xml::transformToXml(
-            self::$xslDir . '/docx/tei_docx.xsl',
+        $xml = Xsl::transformToXml(
+            self::$xslDir . '/tei_docx/tei_docx.xsl',
             $dom,
             array(
                 'templPath' => $templPath,
@@ -149,8 +154,8 @@ class Tei2docx extends AbstractTei2
             $templPath, 
             $zip->getFromName('word/_rels/document.xml.rels')
         );
-        $xml = Xml::transformToXml(
-            self::$xslDir . '/docx/tei_docx_rels.xsl',
+        $xml = Xsl::transformToXml(
+            self::$xslDir . '/tei_docx/tei_docx_rels.xsl',
             $dom,
             array(
                 'templPath' => $templPath,
@@ -159,8 +164,8 @@ class Tei2docx extends AbstractTei2
         $zip->addFromString('word/_rels/document.xml.rels', $xml);
 
 
-        $xml = Xml::transformToXml(
-            self::$xslDir . '/docx/tei_docx_fn.xsl',
+        $xml = Xsl::transformToXml(
+            self::$xslDir . '/tei_docx/tei_docx_fn.xsl',
             $dom,
         );
         $xml = preg_replace(
@@ -171,8 +176,8 @@ class Tei2docx extends AbstractTei2
         $zip->addFromString('word/footnotes.xml', $xml);
 
 
-        $xml = Xml::transformToXml(
-            self::$xslDir . '/docx/tei_docx_fnrels.xsl',
+        $xml = Xsl::transformToXml(
+            self::$xslDir . '/tei_docx/tei_docx_fnrels.xsl',
             $dom,
         );
         $zip->addFromString('word/_rels/footnotes.xml.rels', $xml);
@@ -218,5 +223,4 @@ class Tei2docx extends AbstractTei2
     }
 
 }
-
 // EOF

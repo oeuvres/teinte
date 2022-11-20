@@ -19,9 +19,9 @@ Split a single TEI book in different html chapters
   exclude-result-prefixes="tei"
 >
   <xsl:import href="tei_split.xsl"/>  
-  <xsl:import href="html/tei_flow_html.xsl"/>
-  <xsl:import href="html/tei_notes_html.xsl"/>
-  <xsl:import href="html/tei_toc_html.xsl"/>
+  <xsl:import href="tei_html/tei_flow_html.xsl"/>
+  <xsl:import href="tei_html/tei_notes_html.xsl"/>
+  <xsl:import href="tei_html/tei_toc_html.xsl"/>
   <xsl:output indent="yes" encoding="UTF-8" method="xml" />
   <!-- Still needed for creation of filenames -->
   <xsl:variable name="split" select="true()"/>
