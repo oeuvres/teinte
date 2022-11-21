@@ -3,17 +3,16 @@ declare(strict_types=1);
 
 include_once(dirname(__DIR__) . '/php/autoload.php');
 
-use Oeuvres\Kit\Xml;
-use Oeuvres\Kit\LoggerCli;
 use Psr\Log\LogLevel;
+use Oeuvres\Kit\{LoggerCli, Xsl};
 
 /**
- * Test if DOMDocuemt() creation is expensive
+ * Test if DOMDocument() creation is expensive
  * Answer: negligible compared to load of textual document
  */
 
-$logger = new LoggerCli();
-Xml::setLogger($logger);
+$logger = new LoggerCli(LogLevel::DEBUG);
+Xsl::setLogger($logger);
 $xml = file_get_contents(__DIR__.'/blanqui1866_prise-armes.xml');
 echo "Check if everything is OK before massive load\n";
 $dom = new DOMDocument();

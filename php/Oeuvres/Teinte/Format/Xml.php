@@ -23,7 +23,7 @@ use Oeuvres\Teinte\Tei2\{TeiExportFactory};
  * All initialisations are as lazy as possible
  * to scan fast big directories.
  */
-class Xml extends Resource
+class Xml extends File
 {
     /** Store XML as a string, maybe reused */
     protected $xml;

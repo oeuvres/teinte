@@ -11,15 +11,14 @@ declare(strict_types=1);
 
 namespace Oeuvres\Teinte\Format;
 
+use Oeuvres\Kit\Filesys;
 use Psr\Log\{LoggerInterface, LoggerAwareInterface, NullLogger};
 
 /**
- * A Resource, usually a file, tools to read and write
+ * A file, tools to read and write
  */
-class Resource implements LoggerAwareInterface
+class File implements LoggerAwareInterface
 {
-    /** init done ? */
-    
     /** Somewhere to log in  */
     protected LoggerInterface $logger;
     /** filepath */
@@ -31,13 +30,6 @@ class Resource implements LoggerAwareInterface
     /** file size */
     protected $filesize;
 
-    /**
-     * Inialize static variables, one is enough
-     */
-    static function init()
-    {
-
-    }
     /**
      * Start with an empty object
      */
@@ -60,6 +52,12 @@ class Resource implements LoggerAwareInterface
      */
     public function load(string $file)
     {
+        if (true !== ($ret = Filesys::readable($file))) {
+            $this->logger->warning($ret);
+            // shall we send exception here ?
+            return false;
+        }
+        // if file does not exists do something ?
         $this->file = $file;
         $this->filename = pathinfo($file, PATHINFO_FILENAME);
         $this->filemtime = filemtime($file);

@@ -10,6 +10,7 @@
 declare(strict_types=1);
 
 namespace Oeuvres\Kit;
+Check::extension('xsl');
 
 use Exception, DOMDocument, DOMXPath, XSLTProcessor;
 use Psr\Log\{LoggerInterface, NullLogger};
@@ -42,9 +43,6 @@ class Xsl
      */
     public static function init()
     {
-        if (!extension_loaded("xsl")) {
-            throw new Exception("PHP xsl extension required.\nCheck your php.ini. On Debian like systems: sudo apt install php-xml\n");
-        }
         self::$logger = new NullLogger();
         libxml_use_internal_errors(true); // keep XML error for this process
     }

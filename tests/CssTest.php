@@ -5,7 +5,7 @@ declare(strict_types=1);
 include_once(dirname(__DIR__) . '/php/autoload.php');
 
 use Psr\Log\LogLevel;
-use Oeuvres\Kit\{File, LoggerCli};
+use Oeuvres\Kit\{Filesys, LoggerCli};
 use Oeuvres\Teinte\Format\{Css};
 
 

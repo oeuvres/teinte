@@ -11,15 +11,33 @@ declare(strict_types=1);
 
 namespace Oeuvres\Teinte\Format;
 
-include(dirname(__DIR__, 2) . "/autoload.php");
+use Exception, ZipArchive;
+use Oeuvres\Kit\{Check};
+// required extension
+Check::extension('zip');
 
-use ZipArchive;
+
+
 
 /**
  * A Teidoc exporter.
  */
-class Zip extends Resource
+class Zip extends File
 {
+    /** zip object opened */
+    protected ?ZipArchive $zip = null;
+
+    /**
+     * Open zip archive with tests
+     */
+    public function open(): void
+    {
+        $this->zip = new ZipArchive();
+        if (!($this->zip->open($this->file) === TRUE)) {
+            throw new Exception ($this->file . ' seems not a valid zip archive');
+        }
+    }
+
 
     /**
      * Check if a zip file contains an entry by regex pattern

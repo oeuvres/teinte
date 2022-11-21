@@ -11,16 +11,10 @@ declare(strict_types=1);
 
 namespace Oeuvres\Teinte\Format;
 
-include(dirname(__DIR__, 2) . "/autoload.php");
-
-use ZipArchive;
-use Psr\Log\{LoggerInterface, LoggerAwareInterface, NullLogger};
-use Oeuvres\Kit\{File, Xml};
-
 /**
  * Get semantic css info to clean epub html files.
  */
-class Css extends Resource
+class Css extends File
 {
     private static $cache;
 
@@ -44,6 +38,7 @@ class Css extends Resource
             ],
             "font-style:italic" => "italic",
         ];
+        
 
         preg_match_all( '/(?ims)([a-z0-9\s\.\:#_\-@,]+)\{([^\}]*)\}/', $css_string, $arr);
         $result = array();

@@ -12,7 +12,8 @@ declare(strict_types=1);
 
 namespace Oeuvres\Kit;
 
-use Exception, InvalidArgumentException, ZipArchive;
+use ZipArchive;
+use Psr\Log\{LoggerInterface, NullLogger};
 
 /**
  * code convention https://www.php-fig.org/psr/psr-12/
@@ -20,6 +21,10 @@ use Exception, InvalidArgumentException, ZipArchive;
 
 class Filesys
 {
+
+    /**
+     * Normalize a directory filepath with a last /
+     */
     static function normdir($dir)
     {
         if (!$dir) return $dir;
@@ -33,25 +38,28 @@ class Filesys
     /**
      * Check if a file is writable, if it does not exists
      * go to the parent folder to test if it is possible to create.
+     *
+     * @return mixed true if Yes, "message" if not
      */
-    public static function writable(string $file, ?string $source = null): bool
+    public static function writable(string $path, ?string $source = null)
     {
-        while (!file_exists($file)) { // if not file exists, go up to parents
-            $file = dirname($file);
+        if (is_writable($path)) return true;
+        // if not file exists, go up to parents
+        $parent = $path;
+        while (!file_exists($parent)) {
+            $parent = dirname($parent);
         }
-        if (is_link($file)) {
-            throw new InvalidArgumentException(
-                "\n" . $source . "\n    \"$file\" is a link, maybe dangerous to write in\n"
-            );
+        if ($source) $source = $source . "\n";
+        else $source = "";
+        $source .= __CLASS__ . "::" . __FUNCTION__ . "  ";
+        if (is_link($parent)) {
+            return $source . "\"$path\" is dangerous to write, \"$parent\" is a link";
         }
-        if (is_writable($file)) return true;
-        if (is_readable($file)) {
-            throw new InvalidArgumentException(
-                "\n" . $source . "\n    \"$file\" file exists but not writable\n"
-            );
+        if (is_writable($parent)) return true;
+        if (is_readable($parent)) {
+            return $source . "\"$path\" impossible to write, \"$parent\" exists but is not writable";
         }
-        self::readable($file, $source);
-        return true;
+        return self::readable($parent, $source);
     }
 
     /**
@@ -118,45 +126,46 @@ class Filesys
         // we can have things like galenus/../verbatim/verbatim.css
         // is it safe ? let’s try
         $re = '@\w[^/]*/\.\./@';
-        while(preg_match($re, $href)) {
+        while (preg_match($re, $href)) {
             $href = preg_replace($re, '', $href);
         }
         return $href;
     }
 
     /**
-     * Check existence of a file to read,
-     * and send informative Exception if it’s not OK.
+     * Check existence of a file to read.
+     *
+     * @return mixed true if Yes, "message" on error
      */
-    public static function readable(string $file, ?string $source = null): bool
+    public static function readable(string $file, ?string $source = null)
     {
         if (is_readable($file)) return true;
-        // shall we log here or break by exception ?
-        if ($source) $source = "\n" . $source;
+        if ($source) $source = $source . "\n";
+        else $source = "";
+        $source .= __CLASS__ . "::" . __FUNCTION__ . "  ";
         if (is_file($file)) {
-            throw new InvalidArgumentException(
-                $source . "\n    \"$file\" file exist but not readable \n"
-            );
+            return $source . "\"$file\" file exists but not readable";
         }
         if (file_exists($file)) {
-            throw new InvalidArgumentException(
-                $source . "\n    \"$file\" path exits but is not a file\n"
-            );
+            return $source . "\"$file\" path exists but is not a file";
         }
-        throw new InvalidArgumentException(
-            $source . "\n    \"$file\" file not found\n"
-        );
+        return $source . "\"$file\" file not found";
     }
     /**
      * A safe mkdir dealing with rights
+     * 
+     * @return mixed true if done, "message" on error
      */
-    static function mkdir(string $dir): bool
+    static function mkdir(string $dir)
     {
+        $pref = __CLASS__ . "::" . __FUNCTION__ . "  ";
+
+        // nothing done, ok.
         if (is_dir($dir)) {
             return false;
         }
         if (!mkdir($dir, 0775, true)) {
-            throw new Exception("Directory not created: " . $dir);
+            return "\"$dir\" Directory not created";
         }
         @chmod($dir, 0775);  // let @, if www-data is not owner but allowed to write
         return true;
@@ -164,37 +173,45 @@ class Filesys
 
     /**
      * Ensure an empty dir with no contents, create it if not exist
+     *
+     * @return mixed true if done, "message" on error
      */
-    static public function cleandir(string $dir): ?string
+    static public function cleandir(string $dir)
     {
-        self::writable($dir);
+        $ret = self::writable($dir);
+        if ($ret !== true) return $ret;
         // attempt to create the folder we want empty
         if (!file_exists($dir)) {
-            self::mkdir($dir);
-            return realpath($dir);
+            return self::mkdir($dir);
         }
-        self::rmdir($dir, true);
+        $ret = self::rmdir($dir, true);
+        if ($ret !== true) return $ret;
+
         touch($dir); // change timestamp
-        return realpath($dir);
+        return true;
     }
 
     /**
      * Recursive deletion of a directory
      * If $keep = true, base directory is kept with its acl
+     * Return true if OK,
+     * or an informative message if not.
      */
-    static private function rmdir(string $dir, bool $keep = false)
+    static public function rmdir(string $dir, bool $keep = false)
     {
+        $pref = __CLASS__ . "::" . __FUNCTION__ . "  ";
         // nothing to delete, go away
         if (!file_exists($dir)) {
-            return false;
+            return $pref . "\"$dir\" not found, remove impossible";
         }
         if (is_file($dir)) {
-            throw new Exception("\"$dir\" is a file, not a directory to remove");
+            return $pref . "\"$dir\" is a file, not a directory to remove";
         }
 
         if (!($handle = opendir($dir))) {
-            throw new Exception("\"$dir\" impossible to open for remove");
+            return $pref . "\"$dir\" impossible to open for remove";
         }
+        $log = [];
         while (false !== ($entry = readdir($handle))) {
             if ($entry == "." || $entry == "..") {
                 continue;
@@ -202,18 +219,21 @@ class Filesys
             $path = $dir . DIRECTORY_SEPARATOR . $entry;
             if (is_link($path) || is_file($path)) {
                 if (!unlink($path)) {
-                    throw new Exception("\"$path\" impossible to delete");
+                    $log[] = $pref . "\"$path\" impossible to delete";
                 }
             } else if (is_dir($path)) {
-                self::rmdir($path);
+                if (true !== ($ret = self::rmdir($path))) $log[] = $ret;
             } else {
-                throw new Exception("\"$path\" what’s that? Not file nor dir");
+                $log[] = $pref . "\"$path\" what’s that? Not file nor dir";
             }
         }
         closedir($handle);
         if (!$keep) {
-            rmdir($dir);
+            if (true !== rmdir($dir)) $log[] = $pref . "\"$dir\" empty but impossible to remove";
         }
+        if (count($log) > 0) return implode("\n", $log);
+        // everything has been OK
+        return true;
     }
 
 
@@ -221,25 +241,36 @@ class Filesys
      * Recursive copy of folder
      */
     public static function rcopy(
-        string $srcDir,
-        string $dstDir
+        string $src_dir,
+        string $dst_dir
     ) {
-        $srcDir = rtrim($srcDir, "/\\") . DIRECTORY_SEPARATOR;
-        $dstDir = rtrim($dstDir, "/\\") . DIRECTORY_SEPARATOR;
-        self::mkdir($dstDir);
-        $dir = opendir($srcDir);
-        while (false !== ($srcName = readdir($dir))) {
-            if ($srcName[0] == '.') {
+        $pref = __CLASS__ . "::" . __FUNCTION__ . "  ";
+        $src_dir = rtrim($src_dir, "/\\") . DIRECTORY_SEPARATOR;
+        $dst_dir = rtrim($dst_dir, "/\\") . DIRECTORY_SEPARATOR;
+        if (true !== ($ret = self::mkdir($dst_dir))) return $ret;
+        $dir = opendir($src_dir);
+        $log = [];
+        while (false !== ($src_name = readdir($dir))) {
+            // no copy of hidden files (what about .htaccess ?)
+            if ($src_name[0] == '.') {
                 continue;
             }
-            $srcFile = $srcDir . $srcName;
-            if (is_dir($srcFile)) {
-                self::rcopy($srcFile, $dstDir . $srcName);
+            $src_path = $src_dir . $src_name;
+            $dst_path = $dst_dir . $src_name;
+            if (is_dir($src_path)) {
+                $ret = self::rcopy($src_path, $dst_path);
+                if (true !== $ret) $log[] = $ret;
             } else {
-                copy($srcFile, $dstDir . $srcName);
+                $ret = copy($src_path, $dst_path);
+                if (true !== $ret) {
+                    $log[] = $pref . "copy failed \"$src_path\" X \"$dst_path\"";
+                }
             }
         }
         closedir($dir);
+        if (count($log) > 0) return implode("\n", $log);
+        // everything has been OK
+        return true;
     }
 
     /**
