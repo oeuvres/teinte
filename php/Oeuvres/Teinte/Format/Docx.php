@@ -78,7 +78,7 @@ class Docx extends Zip
             if ($content === false) {
                 $m = "$name not found in docx " . $this->file;
                 if ($name === 'word/document.xml') $this->logger->error($m);
-                else $this->logger->warning($m);
+                else $this->logger->info($m);
                 continue;
             }
             // strip xml prolog

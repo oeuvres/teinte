@@ -131,6 +131,11 @@ abstract class Log extends AbstractLogger
      */
     public function log($level, $message, array $context = []): bool
     {
+        // if message is empty, do nothing
+        if($message === true) return false;
+        if($message === null) return false;
+        if(is_string($message) && trim($message) === '') return false;
+
         $verbosity = self::verbosity($level);
         if ($verbosity > $this->verbosity) return false;
 

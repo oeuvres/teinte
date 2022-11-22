@@ -97,6 +97,8 @@
     </xsl:variable>
     <xsl:variable name="sup">
       <xsl:choose>
+        <!-- probably footnote reference -->
+        <xsl:when test="$t = ''"/>
         <xsl:when test="w:rPr/w:vertAlign/@w:val = 'superscript'">
           <sup>
             <xsl:copy-of select="$t"/>
@@ -112,19 +114,31 @@
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
-    <xsl:variable name="i">
+    <xsl:variable name="sc">
       <xsl:choose>
-        <xsl:when test="w:rPr/w:i">
-          <i>
+        <xsl:when test="w:rPr/w:smallCaps">
+          <sc>
             <xsl:copy-of select="$sup"/>
             <xsl:apply-templates select="w:footnoteReference"/>
             <xsl:apply-templates select="w:endnoteReference"/>
-          </i>
+          </sc>
         </xsl:when>
         <xsl:otherwise>
           <xsl:copy-of select="$sup"/>
           <xsl:apply-templates select="w:footnoteReference"/>
           <xsl:apply-templates select="w:endnoteReference"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="i">
+      <xsl:choose>
+        <xsl:when test="w:rPr/w:i">
+          <i>
+            <xsl:copy-of select="$sc"/>
+          </i>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:copy-of select="$sc"/>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>

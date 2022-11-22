@@ -8,7 +8,15 @@
 # linked inlines
 s@</(i|ref|title)><\1>@@g
 s@</(i|ref|title)><\1>@@g
-# initial space
+# inline without chars
+s@<(bg_[^> ]+|color_[^> ]+|mark_[^> ]+|font_[^> ]+|author|b|code|em|emph|foreign|hi|i|num|phr|s|sc|seg|strong|surname|tech|title|u)( [^>]+)?>([ : \‑\.\(\),\]\[’“”«»]*)</\1>@\3@g
+# <i>attitude. </i>
+# exit some punctuation from inline tags !! &amp;
+s@\s*( ;)</(b|emph|foreign|em|hi|i|phr|strong|seg|tech|title|u)>@</\2>\1@g
+s@([  \-\,:!\?\.]+)</(author|b|em|emph|foreign|hi|i|phr|strong|seg|tech|title|u)>@</\2>\1@g
+# centuries <sc>xii</sc><sup>e</sup>
+
+# initial space in blocks
 s@(<(note|p)( [^>]+)?>) +@$1@g
 # note, editor
 s@(<note[^>]*)>\[?nde\]? *@$1 resp="editor">@gi
