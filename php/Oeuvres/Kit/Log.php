@@ -151,6 +151,8 @@ abstract class Log extends AbstractLogger
      */
     private function interpolate(string $message, array $context): string
     {
+        // limit message size (in case of bad param)
+        $message = substr($message, 0, 512);
         if (\strpos($message, '{') === false) {
             return $message;
         }

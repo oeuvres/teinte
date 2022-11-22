@@ -21,7 +21,7 @@ use Oeuvres\Kit\{Filesys};
 abstract class Tei2 implements LoggerAwareInterface
 {    
     /** Do init at startup */
-    static private $init; 
+    static private $init;
     /** Where is the xsl pack, set in one place, do not repeat */
     static protected $xslDir;
     /** Should be the same as in the class name Tei2{NAME} */

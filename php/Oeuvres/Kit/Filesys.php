@@ -46,6 +46,7 @@ class Filesys
         if (is_writable($path)) return true;
         // if not file exists, go up to parents
         $parent = $path;
+        $pref = __CLASS__ . "::" . __FUNCTION__ . "  ";
         while (!file_exists($parent)) {
             $parent = dirname($parent);
         }
@@ -144,12 +145,12 @@ class Filesys
         else $source = "";
         $source .= __CLASS__ . "::" . __FUNCTION__ . "  ";
         if (is_file($file)) {
-            return $source . "\"$file\" file exists but not readable";
+            return $source . "File exists but not readable:\n\"$file\"";
         }
         if (file_exists($file)) {
-            return $source . "\"$file\" path exists but is not a file";
+            return $source . "Path exists but is not a file:\n\"$file\"";
         }
-        return $source . "\"$file\" file not found";
+        return $source . "Path not found:\n\"$file\"";
     }
     /**
      * A safe mkdir dealing with rights
@@ -165,9 +166,10 @@ class Filesys
             return false;
         }
         if (!mkdir($dir, 0775, true)) {
-            return "\"$dir\" Directory not created";
+            return $pref . "Directory not created:\n\"$dir\"";
         }
-        @chmod($dir, 0775);  // let @, if www-data is not owner but allowed to write
+        // let @, if www-data is not owner but allowed to write
+        @chmod($dir, 0775);  
         return true;
     }
 
@@ -202,14 +204,14 @@ class Filesys
         $pref = __CLASS__ . "::" . __FUNCTION__ . "  ";
         // nothing to delete, go away
         if (!file_exists($dir)) {
-            return $pref . "\"$dir\" not found, remove impossible";
+            return $pref . "Path not found, remove impossible:\n\"$dir\"";
         }
         if (is_file($dir)) {
-            return $pref . "\"$dir\" is a file, not a directory to remove";
+            return $pref . "Path is a file, not a directory to remove:\n\"$dir\"";
         }
 
         if (!($handle = opendir($dir))) {
-            return $pref . "\"$dir\" impossible to open for remove";
+            return $pref . "Dir impossible to open for remove:\n\"$dir\"";
         }
         $log = [];
         while (false !== ($entry = readdir($handle))) {
@@ -219,17 +221,17 @@ class Filesys
             $path = $dir . DIRECTORY_SEPARATOR . $entry;
             if (is_link($path) || is_file($path)) {
                 if (!unlink($path)) {
-                    $log[] = $pref . "\"$path\" impossible to delete";
+                    $log[] = $pref . "Dir impossible to delete:\n\"$dir\"";
                 }
             } else if (is_dir($path)) {
                 if (true !== ($ret = self::rmdir($path))) $log[] = $ret;
             } else {
-                $log[] = $pref . "\"$path\" what’s that? Not file nor dir";
+                $log[] = $pref . "Path not file nor dir:\n\"$dir\"";
             }
         }
         closedir($handle);
         if (!$keep) {
-            if (true !== rmdir($dir)) $log[] = $pref . "\"$dir\" empty but impossible to remove";
+            if (true !== rmdir($dir)) $log[] = $pref . "Dir empty but impossible to remove:\n\"$dir\"";
         }
         if (count($log) > 0) return implode("\n", $log);
         // everything has been OK

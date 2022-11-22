@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Part of Teinte https://github.com/oeuvres/teinte
  * MIT License https://opensource.org/licenses/mit-license.php
@@ -10,9 +11,10 @@
 declare(strict_types=1);
 
 namespace Oeuvres\Kit;
+
 Check::extension('xsl');
 
-use Exception, DOMDocument, DOMXPath, XSLTProcessor;
+use DOMDocument, DOMXPath, XSLTProcessor;
 use Psr\Log\{LoggerInterface, NullLogger};
 
 /**
@@ -28,11 +30,11 @@ class Xsl
     /** get a temp dir */
     private static $tmpdir;
     /** libxml options for DOMDocument */
-    const LIBXML_OPTIONS = 
-          LIBXML_NOENT 
-        | LIBXML_NONET 
-        | LIBXML_NSCLEAN 
-        | LIBXML_NOCDATA
+    const LIBXML_OPTIONS =
+        LIBXML_NOENT
+            | LIBXML_NONET
+            | LIBXML_NSCLEAN
+            | LIBXML_NOCDATA
         // | LIBXML_NOWARNING  // ? hide warn for <?xml-model
     ;
     /** Logger */
@@ -60,6 +62,10 @@ class Xsl
      */
     public static function load(string $src_file): ?DOMDocument
     {
+        if (true !== ($ret = Filesys::readable($src_file))) {
+            self::$logger->error($ret);
+            return null;
+        }
         $dom = self::domSkel();
         // $dom->recover=true; // no recover, display errors
         // suspend error reporting, libxml messages are better
@@ -89,11 +95,9 @@ class Xsl
             } */
             if ($error->level == LIBXML_ERR_WARNING) {
                 self::$logger->warning($message);
-            }
-            else if ($error->level == LIBXML_ERR_ERROR) {
+            } else if ($error->level == LIBXML_ERR_ERROR) {
                 self::$logger->error($message);
-            }
-            else if ($error->level ==  LIBXML_ERR_FATAL) {
+            } else if ($error->level ==  LIBXML_ERR_FATAL) {
                 self::$logger->critical($message);
             }
         }
@@ -132,8 +136,8 @@ class Xsl
      * xsl:tranform, result as a dom document
      */
     public static function transformToDoc(
-        string $xslfile, 
-        DOMDocument $dom, 
+        string $xslfile,
+        DOMDocument $dom,
         ?array $pars = null
     ) {
         return self::transform(
@@ -148,8 +152,8 @@ class Xsl
      * xsl:tranform, result as an XML string
      */
     public static function transformToXml(
-        string $xslfile, 
-        DOMDocument $dom, 
+        string $xslfile,
+        DOMDocument $dom,
         ?array $pars = null
     ) {
         return self::transform(
@@ -163,7 +167,7 @@ class Xsl
      * xsl:tranform, result to a file
      */
     public static function transformToUri(
-        string $xslfile, 
+        string $xslfile,
         DOMDocument $dom,
         string $uri,
         ?array $pars = null
@@ -175,27 +179,27 @@ class Xsl
             $pars
         );
     }
-    
+
     /**
      * An xslt transformer with cache
      * TOTHINK : deal with errors
      */
     private static function transform(
-        string $xslFile, 
+        string $xsl_file,
         DOMDocument $dom,
         ?string $dst = null,
         ?array $pars = null
     ) {
-
-        if (strpos($xslFile, "http") === 0) {
-            $key = $xslFile;
-        }
-        else {
-            $key = realpath($xslFile);
+        $pref = __CLASS__ . "::" . __FUNCTION__ . " ";
+        if (strpos($xsl_file, "http") === 0) {
+            $key = $xsl_file;
+        } else {
+            $key = realpath($xsl_file);
         }
         if (!$key) {
-            throw new Exception("XSL file not found\n\"$key\"");
-        } 
+            self::$logger->error("$pref XSLT file not found:\n\"$xsl_file\"");
+            return null;
+        }
         // cache compiled xsl
         if (!isset(self::$transcache[$key])) {
             $trans = new XSLTProcessor();
@@ -203,51 +207,49 @@ class Xsl
             // allow generation of <xsl:document>
             if (defined('XSL_SECPREFS_NONE')) {
                 $prefs = constant('XSL_SECPREFS_NONE');
-            } 
-            else if (defined('XSL_SECPREF_NONE')) {
+            } else if (defined('XSL_SECPREF_NONE')) {
                 $prefs = constant('XSL_SECPREF_NONE');
-            }
-            else {
+            } else {
                 $prefs = 0;
             }
 
-            if(method_exists($trans, 'setSecurityPrefs')) {
+            if (method_exists($trans, 'setSecurityPrefs')) {
                 $oldval = $trans->setSecurityPrefs($prefs);
             } /* historic
             else if (method_exists($trans, 'setSecurityPreferences')) {
                 $oldval = $trans->setSecurityPreferences($prefs);
-            } */
-            else {
+            } */ else {
                 ini_set("xsl.security_prefs",  $prefs);
             }
             // for xsl through http://, allow net download of resources 
             $xsldom = new DOMDocument();
-            $xsldom->load($xslFile);
-            self::logLibxml(libxml_get_errors());
+            if (false === $xsldom->load($xsl_file)) {
+                self::logLibxml(libxml_get_errors());
+                self::$logger->error("$pref load impossible:\n\"$xsl_file\"");
+                return false;
+            }
             if (!$trans->importStyleSheet($xsldom)) {
                 self::logLibxml(libxml_get_errors());
-                throw new Exception("XSLT, impossible to compile " . $xslFile."\n");
+                self::$logger->error("$pref compile impossible:\n\"$xsl_file\"");
+                return false;
             }
             self::$transcache[$key] = $trans;
         }
         $trans = self::$transcache[$key];
         // add params
-        if(isset($pars) && count($pars)) {
+        if (isset($pars) && count($pars)) {
             foreach ($pars as $key => $value) {
                 if (!$value) $value = "";
                 $trans->setParameter("", $key, $value);
             }
         }
-
-        // TODO here, set a good logger for xsl
-
         // return a DOM document for efficient piping
         if ($dst === null) {
             $ret = $trans->transformToDoc($dom);
         }
         // return XML as a string
         else if ($dst === '') {
-            $ret =$trans->transformToXml($dom);
+            $ret = $trans->transformToXml($dom);
         }
         // write to uri
         else {
@@ -260,7 +262,7 @@ class Xsl
         if (count($errors)) self::logLibxml($errors);
 
         // reset parameters ! or they will kept on next transform if transformer is reused
-        if(isset($pars) && count($pars)) {
+        if (isset($pars) && count($pars)) {
             foreach ($pars as $key => $value) {
                 $trans->removeParameter("", $key);
             }
@@ -274,7 +276,7 @@ class Xsl
      * Support of some html5 tag to strip not indexable content.
      * 2x faster than a char loop
      */
-    static public function detag(string $html):string
+    static public function detag(string $html): string
     {
         // preg_replace_callback is safer and 2x faster than the /e modifier
         $html = preg_replace_callback(
@@ -289,7 +291,7 @@ class Xsl
                 '@<[^>]+>@' // wash tags
             ),
             // blanking a string, keeping new lines
-            function($matches) {
+            function ($matches) {
                 return preg_replace("/[^\n]/", " ", $matches[0]);
             },
             $html
@@ -303,7 +305,7 @@ class Xsl
     static public function xpath(DOMDocument $dom): DOMXPath
     {
         $xpath = new DOMXPath($dom);
-        foreach( $xpath->query('namespace::*', $dom->documentElement) as $node ) {
+        foreach ($xpath->query('namespace::*', $dom->documentElement) as $node) {
             $xpath->registerNamespace($node->prefix, $node->namespaceURI);
         }
         return $xpath;

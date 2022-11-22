@@ -24,6 +24,9 @@ class Check
     private static $ext_log = [];
 
     const EXTENSIONS = [
+        'xsl' => [
+            'apt' => 'php-xml',
+        ],
         'zip' => [
             'apt' => 'php-zip',
         ],

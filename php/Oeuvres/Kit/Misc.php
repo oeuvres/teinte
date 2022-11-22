@@ -36,5 +36,30 @@ class Misc
         return $mois[(int)$num];
     }
 
+    /**
+     * Build a search/replace regexp table from a sed script
+     */
+    public static function sed_preg($script)
+    {
+        $search = array();
+        $replace = array();
+        $lines = explode("\n", $script);
+        $lines = array_filter($lines, 'trim');
+        foreach ($lines as $l) {
+            $l = trim($l);
+            if ($l[0] != 's') continue;
+            $delim = $l[1];
+            list($a, $re, $rep, $flags) = explode($delim, $l);
+            $mod = 'u';
+            if (strpos($flags, 'i') !== FALSE) $mod .= "i"; // ignore case ?
+            $search[] = $delim . $re . $delim . $mod;
+            $replace[] = preg_replace(
+                array('/\\\\([0-9]+)/', '/\\\\n/', '/\\\\t/'), 
+                array('\\$$1', "\n" ,"\t"), 
+                $rep
+            );
+        }
+        return array($search, $replace);
+    }
 
 }

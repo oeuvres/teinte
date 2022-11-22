@@ -13,4 +13,4 @@ $logger = new LoggerCli(LogLevel::DEBUG);
 $source = new Docx($logger);
 $docx_file = __DIR__ . '/data/test.docx';
 $source->load($docx_file);
-echo $source->package();
+echo $source->docxlite();

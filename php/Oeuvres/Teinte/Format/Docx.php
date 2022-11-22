@@ -12,7 +12,8 @@ declare(strict_types=1);
 namespace Oeuvres\Teinte\Format;
 
 use Exception, ZipArchive;
-use Psr\Log\LogLevel;
+use Oeuvres\Kit\{Misc, Xsl};
+
 
 /**
  * A wrapper around docx document for export to semantic formats.
@@ -21,6 +22,28 @@ use Psr\Log\LogLevel;
  */
 class Docx extends Zip
 {
+    /** Where is the xsl pack, set in one place, do not repeat */
+    static protected ?string $xsl_dir;
+    /** A search replace program */
+    static protected ?array $preg;
+
+    static function init()
+    {
+        self::$xsl_dir = dirname(__DIR__, 4) . '/xsl/';
+        $sed = file_get_contents(self::$xsl_dir . 'docx/docx.sed');
+        self::$preg = Misc::sed_preg($sed);
+    }
+
+    function docxlite()
+    {
+        Xsl::setLogger($this->logger);
+        $xml = $this->package();
+        $dom = Xsl::loadXml($xml);
+        $xml = Xsl::transformToXml(self::$xsl_dir . 'docx/pkg_ml.xsl', $dom);
+        // clean xml oddities
+        $xml = preg_replace(self::$preg[0], self::$preg[1], $xml);
+        return $xml;
+    }
 
     /**
      * Get an XML concatenation of content
@@ -80,3 +103,4 @@ class Docx extends Zip
 
 }
 
+Docx::init();
