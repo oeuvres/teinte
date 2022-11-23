@@ -11,19 +11,24 @@ declare(strict_types=1);
 
 namespace Oeuvres\Kit;
 
-use Psr\Log\{LoggerInterface};
-
 /**
  * Different checks before installation
  */
 class Check
 {
-    /** Logger */
-    private static LoggerInterface $logger;
     /** Do not repeat extension alert */
     private static $ext_log = [];
 
     const EXTENSIONS = [
+        'intl' => [
+            'apt' => 'php-intl',
+        ],
+        'mbstring' => [
+            'apt' => 'php-mbstring',
+        ],
+        'mysql' => [
+            'apt' => 'php-mysql',
+        ],
         'xsl' => [
             'apt' => 'php-xml',
         ],
@@ -31,12 +36,6 @@ class Check
             'apt' => 'php-zip',
         ],
     ];
-
-    public static function init()
-    {
-        // set a logger by default to ensure that the messages will be seen
-        self::$logger = Log::logger();
-    }
 
     /**
      * Throw an exception if 
@@ -54,8 +53,7 @@ class Check
             if (isset(self::EXTENSIONS[$ext])) {
                 $m .= "\n    On Ubuntu or Debian like systems: sudo apt install " . self::EXTENSIONS[$ext]['apt'];
             }
-            self::$logger->alert($m);
+            Log::alert($m);
         }
     }
 }
-Check::init();

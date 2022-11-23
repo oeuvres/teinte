@@ -8,10 +8,10 @@
 
   xmlns:teinte="https://oeuvres.github.io/teinte"
 
-  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns="http://www.tei-c.org/ns/1.0"
   exclude-result-prefixes="pkg r rels teinte w"
   >
-  <xsl:output encoding="UTF-8" indent="yes" omit-xml-declaration="yes"/>
+  <xsl:output encoding="UTF-8" indent="no" omit-xml-declaration="yes"/>
   <xsl:variable name="sheet" select="document('styles.xml', document(''))"/>
   <xsl:variable name="UC">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
   <xsl:variable name="lc">abcdefghijklmnopqrstuvwxyz</xsl:variable>
@@ -43,18 +43,34 @@
   <xsl:template match="w:body">
     <xsl:apply-templates/>
   </xsl:template>
+  <!-- Stripped elements -->
+  <xsl:template match="w:lastRenderedPageBreak"/>
   <!-- block -->
   <xsl:template match="w:p">
     <xsl:variable name="val" select="normalize-space(translate(w:pPr/w:pStyle/@w:val, $UC, $lc))"/>
     <xsl:variable name="style" select="$sheet/*/teinte:style[@level='p'][@name=$val]"/>
-    <!-- para in footnote force line break -->
-    <xsl:if test="ancestor::w:footnote|ancestor::w:endnote">
-      <xsl:text>&#10;</xsl:text>
-    </xsl:if>
-    <!-- get some local rendering ? -->
+    <xsl:choose>
+      <!-- para in footnote force line break -->
+      <xsl:when test="ancestor::w:footnote|ancestor::w:endnote">
+        <xsl:text>&#10;</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>&#10;&#10;</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+    <!-- get some local rendering -->
+    <xsl:variable name="_rend">
+      <xsl:if test="number(w:pPr/w:ind/@w:hanging) &gt; 150"> hanging </xsl:if>
+    </xsl:variable>
+    <xsl:variable name="rend" select="normalize-space($_rend)"/>
     <xsl:choose>
       <xsl:when test="$sheet/*/teinte:style[@level='0'][@name=$val] or $val = ''">
         <p>
+          <xsl:if test="$rend != ''">
+            <xsl:attribute name="rend">
+              <xsl:value-of select="$rend"/>
+            </xsl:attribute>
+          </xsl:if>
           <xsl:apply-templates select="w:hyperlink | w:r"/>
         </p>
       </xsl:when>
@@ -82,6 +98,11 @@
       </xsl:when>
       <xsl:otherwise>
         <p>
+          <xsl:if test="$rend != ''">
+            <xsl:attribute name="rend">
+              <xsl:value-of select="$rend"/>
+            </xsl:attribute>
+          </xsl:if>
           <xsl:apply-templates select="w:hyperlink | w:r"/>
         </p>
       </xsl:otherwise>
@@ -90,14 +111,29 @@
       <xsl:text>&#10;</xsl:text>
     </xsl:if>
   </xsl:template>
+  <xsl:template match="w:br">
+    <xsl:text>&#10;</xsl:text>
+    <lb/>
+  </xsl:template>
+  <xsl:template match="w:br[@w:type='page']">
+    <xsl:text>&#10;</xsl:text>
+    <pb/>
+    <xsl:text>&#10;</xsl:text>
+  </xsl:template>
+  <xsl:template match="w:t">
+    <xsl:value-of select="."/>
+  </xsl:template>
   <!-- chars -->
   <xsl:template match="w:r">
     <xsl:variable name="t">
-      <xsl:value-of select="w:t"/>
+      <xsl:for-each select="*[not(self::w:rPr)]">
+        <xsl:apply-templates select="."/>
+      </xsl:for-each>
     </xsl:variable>
+    <!-- What about line break in superscript ? -->
     <xsl:variable name="sup">
       <xsl:choose>
-        <!-- probably footnote reference -->
+        <!-- probably footnote reference or  -->
         <xsl:when test="$t = ''"/>
         <xsl:when test="w:rPr/w:vertAlign/@w:val = 'superscript'">
           <sup>
@@ -169,6 +205,12 @@
     </xsl:choose>
   </xsl:template>
   <xsl:template match="w:sectPr"/>
+  <!-- spaces -->
+  <xsl:template match="w:tab">
+    <space type="tab">
+      <xsl:text>    </xsl:text>
+    </space>
+  </xsl:template>
   <!-- Notes -->
   <xsl:template match="w:footnoteReference">
     <xsl:for-each select="key('footnotes',@w:id)">

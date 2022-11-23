@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Oeuvres\Teinte\Tei2;
 
 use Exception, DOMDocument, ZipArchive;
-use Oeuvres\Kit\{Check, Filesys, Xsl};
+use Oeuvres\Kit\{Check, Log, Filesys, Xsl};
 Check::extension('zip');
 
 /**
@@ -32,6 +32,13 @@ class Tei2docx extends Tei2
         'fra' => 'fr',
         'lat' => 'la',    
     ];
+
+    public function __construct()
+    {
+        // set default template
+        $this->template = self::$xsl_dir . '/tei_docx/template.docx';
+    }
+
 
     /**
      * Set a docx file as a template,
@@ -53,11 +60,15 @@ class Tei2docx extends Tei2
                 }
             }
         }
-        if (!$template) {
-            $this->template = self::$xslDir . '/tei_docx/template.docx';
+        if ($template) {
+            $this->logger->info(__CLASS__ . "::" . __FUNCTION__ . " $template");
+            $this->template = $template;
+        }
+        // ask for template, maybe set before
+        else if(!$dir && $this->template) {
         }
         else {
-            $this->template = $template;
+            $this->template = self::$xsl_dir . '/tei_docx/template.docx';
         }
         return $this->template;
     }
@@ -67,7 +78,7 @@ class Tei2docx extends Tei2
      */
     function toDoc(DOMDocument $dom, ?array $pars=null):?\DOMDocument
     {
-        $this->logger->error(__METHOD__." dom export not relevant");
+        Log::error(__METHOD__." dom export not relevant");
         return null;
     }
     /**
@@ -75,7 +86,7 @@ class Tei2docx extends Tei2
      */
     function toXml(DOMDocument $dom, ?array $pars=null):?string
     {
-        $this->logger->error(__METHOD__." xml export not relevant");
+        Log::error(__METHOD__." xml export not relevant");
         return null;
     }
 
@@ -84,13 +95,11 @@ class Tei2docx extends Tei2
      */
     function toUri($dom, $dst_file, ?array $pars=null)
     {
-        if (!extension_loaded("zip")) {
-            throw new Exception("PHP zip extension required.\nCheck your php.ini. On Debian like systems: sudo apt install php-zip\n");
-        }
-        $this->logger->info("Tei2\033[92m" . static::NAME ." \033[0m $dst_file");
+        Log::info("Tei2\033[92m" . static::NAME ." \033[0m $dst_file");
         Filesys::writable($dst_file);
         $name = pathinfo($dom->documentURI, PATHINFO_FILENAME);
-        copy($this->template(), $dst_file);
+        $template = $this->template; // should have been set
+        copy($template, $dst_file);
         $zip = new ZipArchive();
         $zip->open($dst_file);
 
@@ -127,7 +136,7 @@ class Tei2docx extends Tei2
         // $this->logger->debug(__METHOD__.' $templPath='.$templPath);
 
         $xml = Xsl::transformToXml(
-            self::$xslDir . '/tei_docx/tei_docx_comments.xsl', 
+            self::$xsl_dir . '/tei_docx/tei_docx_comments.xsl', 
             $dom,
         );
         $zip->addFromString('word/comments.xml', $xml);
@@ -136,7 +145,7 @@ class Tei2docx extends Tei2
         // from template, espacially for head and foot page.
         file_put_contents($templPath, $zip->getFromName('word/document.xml'));
         $xml = Xsl::transformToXml(
-            self::$xslDir . '/tei_docx/tei_docx.xsl',
+            self::$xsl_dir . '/tei_docx/tei_docx.xsl',
             $dom,
             array(
                 'templPath' => $templPath,
@@ -155,7 +164,7 @@ class Tei2docx extends Tei2
             $zip->getFromName('word/_rels/document.xml.rels')
         );
         $xml = Xsl::transformToXml(
-            self::$xslDir . '/tei_docx/tei_docx_rels.xsl',
+            self::$xsl_dir . '/tei_docx/tei_docx_rels.xsl',
             $dom,
             array(
                 'templPath' => $templPath,
@@ -165,7 +174,7 @@ class Tei2docx extends Tei2
 
 
         $xml = Xsl::transformToXml(
-            self::$xslDir . '/tei_docx/tei_docx_fn.xsl',
+            self::$xsl_dir . '/tei_docx/tei_docx_fn.xsl',
             $dom,
         );
         $xml = preg_replace(
@@ -177,7 +186,7 @@ class Tei2docx extends Tei2
 
 
         $xml = Xsl::transformToXml(
-            self::$xslDir . '/tei_docx/tei_docx_fnrels.xsl',
+            self::$xsl_dir . '/tei_docx/tei_docx_fnrels.xsl',
             $dom,
         );
         $zip->addFromString('word/_rels/footnotes.xml.rels', $xml);

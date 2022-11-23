@@ -12,43 +12,160 @@ declare(strict_types=1);
 namespace Oeuvres\Kit;
 
 use \DateTime;
-use Psr\Log\{AbstractLogger, InvalidArgumentException, LogLevel, LoggerInterface};
+use Psr\Log\{AbstractLogger, InvalidArgumentException, LogLevel, LoggerInterface, NullLogger};
 
 /**
- * A base for a PSR-3 compliant logger as light as possible
- * Used for Cli or File
+ * A static class to access loggers accross application.
  *
  * @see https://www.php-fig.org/psr/psr-3/
  */
-abstract class Log extends AbstractLogger
+class Log 
 {
-    /** Logging level by name */
-    private const LEVEL_VERBOSITY = [
-        LogLevel::EMERGENCY => 1,
-        LogLevel::ALERT => 2,
-        LogLevel::CRITICAL => 3,
-        LogLevel::ERROR => 4,
-        LogLevel::WARNING => 5,
-        LogLevel::NOTICE => 6,
-        LogLevel::INFO => 7,
-        LogLevel::DEBUG => 8,
-    ];
-    /** A default unique logger according to SAPI mode */
-    private static ?LoggerInterface $logger = null;
-    /** Default prefix for message */
-    private $prefix = "[{level}] {time} "; 
-    /** Default suffix for message (ex: clossing tag forr html) */
-    private $suffix = ""; 
-    /** Default level of message to output */
-    private $verbosity = 4;
-
+    const MAIN = "main";
+    /** different channels to log in */
+    static private array $loggers = [];
 
     /**
-     * Where to write log message ?
+     * System is unusable.
+     *
+     * @param string  $message
+     * @param mixed[] $context
+     *
+     * @return void
      */
-    abstract protected function write($level, string $message);
+    static public function emergency(string $message, array $context = []): void
+    {
+        self::log(LogLevel::EMERGENCY, $message, $context);
+    }
 
-    
+    /**
+     * Action must be taken immediately.
+     *
+     * Example: Entire website down, database unavailable, etc. This should
+     * trigger the SMS alerts and wake you up.
+     *
+     * @param string  $message
+     * @param mixed[] $context
+     *
+     * @return void
+     */
+    static public function alert(string $message, array $context = []): void
+    {
+        self::log(LogLevel::ALERT, $message, $context);
+    }
+
+    /**
+     * Critical conditions.
+     *
+     * Example: Application component unavailable, unexpected exception.
+     *
+     * @param string  $message
+     * @param mixed[] $context
+     *
+     * @return void
+     */
+    static public function critical(string $message, array $context = []): void
+    {
+        self::log(LogLevel::CRITICAL, $message, $context);
+    }
+
+    /**
+     * Runtime errors that do not require immediate action but should typically
+     * be logged and monitored.
+     *
+     * @param string  $message
+     * @param mixed[] $context
+     *
+     * @return void
+     */
+    static public function error(string $message, array $context = []): void
+    {
+        self::log(LogLevel::ERROR, $message, $context);
+    }
+
+    /**
+     * Exceptional occurrences that are not errors.
+     *
+     * Example: Use of deprecated APIs, poor use of an API, undesirable things
+     * that are not necessarily wrong.
+     *
+     * @param string  $message
+     * @param mixed[] $context
+     *
+     * @return void
+     */
+    static public function warning(string $message, array $context = []): void
+    {
+        self::log(LogLevel::WARNING, $message, $context);
+    }
+
+    /**
+     * Normal but significant events.
+     *
+     * @param string  $message
+     * @param mixed[] $context
+     *
+     * @return void
+     */
+    static public function notice(string $message, array $context = []): void
+    {
+        self::log(LogLevel::NOTICE, $message, $context);
+    }
+
+    /**
+     * Interesting events.
+     *
+     * Example: User logs in, SQL logs.
+     *
+     * @param string  $message
+     * @param mixed[] $context
+     *
+     * @return void
+     */
+    static public function info(string $message, array $context = []): void
+    {
+        self::log(LogLevel::INFO, $message, $context);
+    }
+
+    /**
+     * Detailed debug information.
+     *
+     * @param string  $message
+     * @param mixed[] $context
+     *
+     * @return void
+     */
+    static public function debug(string $message, array $context = []): void
+    {
+        self::log(LogLevel::DEBUG, $message, $context);
+    }
+
+    /**
+     * Generic logging to default logger
+     * 
+     * @param string  $level
+     * @param string  $message
+     * @param mixed[] $context
+     *
+     * @return void
+     */
+    static public function log(string $level, string $message, array $context = []): void
+    {
+        self::$loggers[self::MAIN]->log($level, $message, $context);
+    }
+
+    /**
+     * Return a Psr/3 logger
+     */
+    static public function channel(string $channel):LoggerInterface
+    {
+        if (!isset(self::$loggers[$channel])) return false;
+        return self::$loggers[$channel];
+    }
+
+    /**
+     * Initialize static fields
+     */
     public static function init()
     {
         // ensure timezone ()
@@ -58,124 +175,14 @@ abstract class Log extends AbstractLogger
         else {
             date_default_timezone_set("Europe/Paris");
         }
+        // ensure static logging
+        self::$loggers[self::MAIN] = new NullLogger();
     }
 
-    /**
-     * Return a default logger instance according to SAPI mode
-     */
-    public static function logger():LoggerInterface
+
+    public static function setLogger(LoggerInterface $logger, ?string $channel = self::MAIN):void
     {
-        if (self::$logger !== null) return self::$logger;
-        if (php_sapi_name() == 'cli') {
-            self::$logger = new LoggerCli();
-        }
-        else {
-            self::$logger = new LoggerWeb();
-        }
-        return self::$logger;
-    }
-
-    /**
-     * Get a verbosity int from a string level 
-     */
-    protected static function verbosity(string $level):int
-    {
-        if (!isset(self::LEVEL_VERBOSITY[$level])) {
-            throw new InvalidArgumentException(
-                sprintf('Unknown log level "%s"', $level)
-            );
-            return self::LEVEL_VERBOSITY[LogLevel::ERROR];
-        }
-        return self::LEVEL_VERBOSITY[$level];
-    }
-
-    /**
-     * Get/Set level
-     */
-    public function level(?string $level = null)
-    {
-        if (!$level) {
-            $key = array_search ($this->verbosity, self::LEVEL_VERBOSITY);
-            return $key;
-        }
-        $verbosity = self::verbosity($level);
-        $this->verbosity = $verbosity;
-    }
-
-    /**
-     * Get/Set prefix for log message
-     */
-    public function prefix(?string $prefix = null)
-    {
-        if ($prefix === null) {
-            return $this->prefix;
-        }
-        $this->prefix = $prefix;
-    }
-
-    /**
-     * Set suffix for log message
-     */
-    public function suffix(?string $suffix = null)
-    {
-        if ($suffix === null) {
-            return $this->suffix;
-        }
-        $this->suffix = $suffix;
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @return void
-     */
-    public function log($level, $message, array $context = []): bool
-    {
-        // if message is empty, do nothing
-        if($message === true) return false;
-        if($message === null) return false;
-        if(is_string($message) && trim($message) === '') return false;
-
-        $verbosity = self::verbosity($level);
-        if ($verbosity > $this->verbosity) return false;
-
-        $date = new DateTime();
-        $context['level'] = $level;
-        $context['datetime'] = $date->format('Y-m-d H:i:s');
-        $context['time'] = $date->format('H:i:s');
-        $mess = $this->interpolate($this->prefix . $message . $this->suffix, $context);
-        
-        $this->write($level, $mess);
-        return true;
-    }
-
-    /**
-     * Interpolates context values into the message placeholders.
-     *
-     * @author PHP Framework Interoperability Group
-     */
-    private function interpolate(string $message, array $context): string
-    {
-        // limit message size (in case of bad param)
-        $message = substr($message, 0, 512);
-        if (\strpos($message, '{') === false) {
-            return $message;
-        }
-
-        $replacements = [];
-        foreach ($context as $key => $val) {
-            if (null === $val || is_scalar($val) || (\is_object($val) && \method_exists($val, '__toString'))) {
-                $replacements["{{$key}}"] = $val;
-            } elseif ($val instanceof \DateTimeInterface) {
-                $replacements["{{$key}}"] = $val->format(\DateTime::RFC3339);
-            } elseif (\is_object($val)) {
-                $replacements["{{$key}}"] = '[object '.\get_class($val).']';
-            } else {
-                $replacements["{{$key}}"] = '['.\gettype($val).']';
-            }
-        }
-
-        return strtr($message, $replacements);
+        self::$loggers[$channel] = $logger;
     }
 
 

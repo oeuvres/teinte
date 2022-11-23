@@ -11,16 +11,13 @@ declare(strict_types=1);
 
 namespace Oeuvres\Teinte\Format;
 
-use Oeuvres\Kit\Filesys;
-use Psr\Log\{LoggerInterface, LoggerAwareInterface, NullLogger};
+use Oeuvres\Kit\{Filesys, Log};
 
 /**
  * A file, tools to read and write
  */
-class File implements LoggerAwareInterface
+class File
 {
-    /** Somewhere to log in  */
-    protected LoggerInterface $logger;
     /** filepath */
     protected $file;
     /** filename without extension */
@@ -31,29 +28,12 @@ class File implements LoggerAwareInterface
     protected $filesize;
 
     /**
-     * Start with an empty object
-     */
-    public function __construct(LoggerInterface $logger = null)
-    {
-        if ($logger == null) $logger = new NullLogger();
-        $this->setLogger($logger);
-    }
-
-    /**
-     * See LoggerAwareInterface
-     */
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-    }
-
-    /**
      * Load a file, return nothing, used by child classes.
      */
     public function load(string $file)
     {
         if (true !== ($ret = Filesys::readable($file))) {
-            $this->logger->warning($ret);
+            Log::warning($ret);
             // shall we send exception here ?
             return false;
         }

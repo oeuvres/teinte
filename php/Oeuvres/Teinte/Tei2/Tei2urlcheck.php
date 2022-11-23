@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Oeuvres\Teinte\Tei2;
 
 use DOMDocument;
-use Oeuvres\Kit\{Filesys};
+use Oeuvres\Kit\{Filesys, Log};
 
 /**
  * Load a TEI document and perform an url check on //ref/@target
@@ -59,7 +59,7 @@ class Tei2urlcheck extends Tei2
         $att = "target";
         foreach ($nl as $link) {
             if (!$link->hasAttribute($att)) {
-                $this->logger->warning(
+                Log::warning(
                     "\033[91m@target\033[0m attribute missing "
                     . self::message($link, $att, null)
                 );
@@ -71,7 +71,7 @@ class Tei2urlcheck extends Tei2
                 $id = substr($target, 1);
                 $el = $dom->getElementById($id);
                 if ($el) continue;
-                $this->logger->error(
+                Log::error(
                     "\033[91mxml:id=\"$id\"\033[0m target element not found "
                     . self::message($link, $att, $target)
                 );
@@ -79,7 +79,7 @@ class Tei2urlcheck extends Tei2
             }
             // absolute file link, bad
             else if (Filesys::isabs($target)) {
-                $this->logger->error(
+                Log::error(
                     "\033[91mabsolute file path\033[0m "
                     . self::message($link, $att, $target)
                 );
@@ -89,7 +89,7 @@ class Tei2urlcheck extends Tei2
             else if (substr(trim($target), 0, 4) == 'http') {
                 $headers = @get_headers($target);
                 if (!$headers) {
-                    $this->logger->error(
+                    Log::error(
                         "\033[91murl lost\033[0m "
                         . self::message($link, $att, $target)
                     );
@@ -98,13 +98,13 @@ class Tei2urlcheck extends Tei2
                 preg_match("@\d\d\d@", $headers[0], $matches);
                 $code = $matches[0];
                 if ($code == '200' || $code == '302') {
-                    $this->logger->debug(
+                    Log::debug(
                         "\033[91m" . substr($headers[0], 9) . "\033[0m "
                         . self::message($link, $att, $target)
                     );
                     continue;
                 }
-                $this->logger->error(
+                Log::error(
                     "\033[91m" . substr($headers[0], 9) . "\033[0m "
                     . self::message($link, $att, $target)
                 );
@@ -112,7 +112,7 @@ class Tei2urlcheck extends Tei2
             }
             // relative link
             else { 
-                $this->logger->error(
+                Log::error(
                     "\033[91mfile not found\033[0m "
                     . self::message($link, $att, $target)
                 );

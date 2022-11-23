@@ -15,7 +15,6 @@ namespace Oeuvres\Kit;
 Check::extension('xsl');
 
 use DOMDocument, DOMXPath, XSLTProcessor;
-use Psr\Log\{LoggerInterface, NullLogger};
 
 /**
  * A set of well configured method for XML manipulation with Libxml
@@ -35,26 +34,15 @@ class Xsl
             | LIBXML_NONET
             | LIBXML_NSCLEAN
             | LIBXML_NOCDATA
-        // | LIBXML_NOWARNING  // ? hide warn for <?xml-model
+         // | LIBXML_NOWARNING  // ? hide warn for <?xml-model
     ;
-    /** Logger */
-    private static LoggerInterface $logger;
 
     /**
      * Intialize static variables
      */
     public static function init()
     {
-        self::$logger = new NullLogger();
         libxml_use_internal_errors(true); // keep XML error for this process
-    }
-
-    /**
-     * Set logger
-     */
-    public static function setLogger(LoggerInterface $logger)
-    {
-        self::$logger = $logger;
     }
 
     /**
@@ -63,7 +51,7 @@ class Xsl
     public static function load(string $src_file): ?DOMDocument
     {
         if (true !== ($ret = Filesys::readable($src_file))) {
-            self::$logger->error($ret);
+            Log::error($ret);
             return null;
         }
         $dom = self::domSkel();
@@ -91,14 +79,14 @@ class Xsl
             $message .= trim($error->message);
             /* xslt error could be other than message
             if ($error->code == 1) { // <xsl:message>
-                self::$logger->info("<xsl:message> " . trim($error->message));
+                Log::info("<xsl:message> " . trim($error->message));
             } */
             if ($error->level == LIBXML_ERR_WARNING) {
-                self::$logger->warning($message);
+                Log::warning($message);
             } else if ($error->level == LIBXML_ERR_ERROR) {
-                self::$logger->error($message);
+                Log::error($message);
             } else if ($error->level ==  LIBXML_ERR_FATAL) {
-                self::$logger->critical($message);
+                Log::critical($message);
             }
         }
         libxml_clear_errors();
@@ -107,14 +95,12 @@ class Xsl
     /**
      * Returns a DOM object
      */
-    public static function loadXml(string $xml): ?DOMDocument
+    public static function loadXml(string $xml, ?DOMDocument $dom = null): ?DOMDocument
     {
-        $dom = self::domSkel();
+        if ($dom == null) $dom = self::domSkel();
         // suspend error reporting, libxml messages are better
         $ret = $dom->loadXml($xml, self::LIBXML_OPTIONS);
         self::logLibxml(libxml_get_errors());
-        // self::$logger->debug('$dom->load()=' . var_export($ret, true));
-        // exception ?
         if (!$ret) return null;
         return $dom;
     }
@@ -197,7 +183,7 @@ class Xsl
             $key = realpath($xsl_file);
         }
         if (!$key) {
-            self::$logger->error("$pref XSLT file not found:\n\"$xsl_file\"");
+            Log::error("$pref XSLT file not found:\n\"$xsl_file\"");
             return null;
         }
         // cache compiled xsl
@@ -225,12 +211,12 @@ class Xsl
             $xsldom = new DOMDocument();
             if (false === $xsldom->load($xsl_file)) {
                 self::logLibxml(libxml_get_errors());
-                self::$logger->error("$pref load impossible:\n\"$xsl_file\"");
+                Log::error("$pref load impossible:\n\"$xsl_file\"");
                 return false;
             }
             if (!$trans->importStyleSheet($xsldom)) {
                 self::logLibxml(libxml_get_errors());
-                self::$logger->error("$pref compile impossible:\n\"$xsl_file\"");
+                Log::error("$pref compile impossible:\n\"$xsl_file\"");
                 return false;
             }
             self::$transcache[$key] = $trans;

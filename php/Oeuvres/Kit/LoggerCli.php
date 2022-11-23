@@ -19,7 +19,7 @@ use Psr\Log\LogLevel;
  *
  * @see https://www.php-fig.org/psr/psr-3/
  */
-class LoggerCli extends Log
+class LoggerCli extends Logger
 {
     protected function write($level, $message)
     {
@@ -33,11 +33,10 @@ class LoggerCli extends Log
     }
 
     public function __construct(
-        ?string $level = LogLevel::ERROR, 
+        ?string $level = LogLevel::INFO, 
         ?string $prefix = "[{level}] {time} "
     ) {
-        $this->level($level);
-        $this->prefix($prefix);
+        parent::__construct($level, $prefix);
     }
 
 }

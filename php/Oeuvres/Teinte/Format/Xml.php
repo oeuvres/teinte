@@ -32,22 +32,12 @@ class Xml extends File
     /** Xpath processor for the doc */
     protected $xpath;
 
-
-    /**
-     * See LoggerAwareInterface
-     */
-    public function setLogger(LoggerInterface $logger)
-    {
-        parent::setLogger($logger);
-        Xsl::setLogger($this->logger);
-    }
-
     /**
      * Is there a dom loaded ?
      */
     public function isEmpty()
     {
-        return !$this->dom;
+        return ($this->dom === null);
     }
 
     /**

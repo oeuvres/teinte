@@ -12,7 +12,7 @@ declare(strict_types=1);
 include_once(__DIR__ . '/php/autoload.php');
 
 use Psr\Log\{LogLevel};
-use Oeuvres\Kit\{Filesys, LoggerCli};
+use Oeuvres\Kit\{Filesys, Log, LoggerCli};
 use Oeuvres\Teinte\Format\{Tei};
 use Oeuvres\Teinte\Tei2\{Tei2};
 
@@ -41,7 +41,7 @@ $glob = glob(__DIR__ . "/templates/*", GLOB_ONLYDIR | GLOB_MARK);
 foreach ($glob as $dir) {
     $help .= "\n    " . Filesys::relpath(getcwd(), $dir);
 }
-        return $help;
+        return $help . "\n";
     }
     public static function cli() {
         global $argv;
@@ -97,8 +97,9 @@ foreach ($glob as $dir) {
         ?string $tmpl_dir = null,
         ?bool $force = false
     ) {
-        $logger = new LoggerCli(LogLevel::INFO);
-        $source = new Tei($logger);
+        Log::setLogger(new LoggerCli(LogLevel::INFO));
+
+        $source = new Tei();
         $source->template($tmpl_dir); // set template dir
         foreach (glob($glob) as $src_file) {
             $nodone = true; // for lazy load
@@ -114,7 +115,7 @@ foreach ($glob as $dir) {
                     continue;
                 }
                 if ($nodone) { // nothing done yet, load source
-                    $logger->info($src_file);
+                    Log::info($src_file);
                     try {
                         $source->load($src_file);
                     } 

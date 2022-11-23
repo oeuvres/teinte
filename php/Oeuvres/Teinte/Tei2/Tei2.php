@@ -12,18 +12,17 @@ declare(strict_types=1);
 namespace Oeuvres\Teinte\Tei2;
 
 use DOMDocument;
-use Psr\Log\{LoggerAwareInterface, LoggerInterface, NullLogger};
 use Oeuvres\Kit\{Filesys};
 
 /**
  * A Tei document exporter.
  */
-abstract class Tei2 implements LoggerAwareInterface
+abstract class Tei2
 {    
     /** Do init at startup */
     static private $init;
     /** Where is the xsl pack, set in one place, do not repeat */
-    static protected $xslDir;
+    static protected $xsl_dir;
     /** Should be the same as in the class name Tei2{NAME} */
     const NAME = null;
     /** Prefered extension for exported files */
@@ -34,8 +33,6 @@ abstract class Tei2 implements LoggerAwareInterface
     const DESC = null;
     /** A mime type for serving */
     const MIME = null;
-    /** Somewhere to log in  */
-    protected LoggerInterface $logger;
     /** Static list of available formats, populated on demand */
     private static $transfo = [
         'article' => null,
@@ -54,16 +51,25 @@ abstract class Tei2 implements LoggerAwareInterface
     ];
 
     /**
-     * Initialize satic variable
+     * Initialize static variable
      */
     public static function init()
     {
         if (self::$init) return;
         self::$init = true;
         // TO THINK, good way to configure xsl pack
-        self::$xslDir = dirname(__DIR__, 4) . "/xsl/";
+        self::$xsl_dir = dirname(__DIR__, 4) . "/xsl/";
     }
 
+    /**
+     * Quite empty constructor, ensure some constants
+     */
+    public function __construct()
+    {
+        // check the required constant for newly instantiate format
+        assert(static::NAME != null, static::class . "::NAME must be defined");
+        assert( static::EXT != null, static::class . "::EXT must be defined as prefered file extension for this format");
+    }
 
     /**
      * List available formats 
@@ -97,10 +103,8 @@ abstract class Tei2 implements LoggerAwareInterface
     /**
      * Get a named transformer, lazily
      */
-    public static function get(
-        string $format, 
-        ?LoggerInterface $logger = null
-    ):?self {
+    public static function get(string $format):?self 
+    {
         if (!array_key_exists($format, self::$transfo)) {
             throw new \InvalidArgumentException(
                 "\"\033[91m$format\033[0m\" is not yet supported. Choices supported: \n". implode(array_keys(self::$transfo, ", "))
@@ -108,30 +112,11 @@ abstract class Tei2 implements LoggerAwareInterface
         }
         if (!self::$transfo[$format]) {
             $class = "Oeuvres\\Teinte\\Tei2\\Tei2" . $format;
-            self::$transfo[$format] = new $class($logger);
+            self::$transfo[$format] = new $class();
         }
         return self::$transfo[$format];
     }
     
-    /**
-     * Set logger
-     */
-    public function __construct(?LoggerInterface $logger = null)
-    {
-        // check the required constant for newly instantiate format
-        assert(static::NAME != null, static::class . "::NAME must be defined");
-        assert( static::EXT != null, static::class . "::EXT must be defined as prefered file extension for this format");
-        if ($logger == null) $logger = new NullLogger();
-        $this->setLogger($logger);
-    }
-
-
-    public function setLogger(LoggerInterface $logger):Tei2
-    {
-        $this->logger = $logger;
-        return $this;
-    }
-
     /**
      * Build a prefered file path from source path,
      * according to the preferred extension format,

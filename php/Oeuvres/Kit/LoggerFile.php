@@ -19,7 +19,7 @@ use Psr\Log\LogLevel;
  *
  * @see https://www.php-fig.org/psr/psr-3/
  */
-class LoggerFile extends Log
+class LoggerFile extends Logger
 {
     private $handle;
     protected function write($level, $message)
@@ -32,13 +32,12 @@ class LoggerFile extends Log
         ?string $level = LogLevel::ERROR, 
         ?string $prefix = "[{level}] {time} "
     ) {
+        parent::__construct($level, $prefix);
         if (is_resource($file)) {
             $this->handle = $file;
         } else {
             $this->handle = fopen($file, 'a+'); // append by default
         }
-        $this->level($level);
-        $this->prefix($prefix);
     }
 
 }

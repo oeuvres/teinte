@@ -17,36 +17,17 @@ namespace Oeuvres\Kit;
 use Psr\Log\{LoggerInterface, NullLogger};
 
 mb_internal_encoding("UTF-8");
-I18n::init();
 class I18n
 {
-    /** A logger */
-    private static $logger;
     /** Messages */
     private static $messages = array();
-
-    /**
-     * Intialize static variables
-     */
-    public static function init()
-    {
-        self::$logger = new NullLogger();
-    }
-
-    /**
-     * Set logger
-     */
-    public static function setLogger(LoggerInterface $logger)
-    {
-        self::$logger = $logger;
-    }
 
     /**
      * Load an array of messages
      */
     public static function load($tsv_file)
     {
-        $map = File::tsv_map($tsv_file);
+        $map = Misc::tsv_map($tsv_file);
         self::put($map);
     }
 
@@ -65,7 +46,7 @@ class I18n
     {
         $args = func_get_args();
         if (count($args) < 1) {
-            self::$logger->warning("No message requested");
+            Log::warning("No message requested");
             return ' ';
         }
         $key = $args[0];
@@ -77,7 +58,7 @@ class I18n
             if (isset(self::$messages[$keyuc1])) {
                 $args[0] = mb_strtolower(self::$messages[$keyuc1]);
             } else {
-                self::$logger->warning("No message found for the key=\"$key\"");
+                Log::warning("No message found for the key=\"$key\"");
             }
         }
         // call sprintf 

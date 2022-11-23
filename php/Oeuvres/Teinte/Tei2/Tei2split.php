@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Oeuvres\Teinte\Tei2;
 
 use DOMDocument;
-use Oeuvres\Kit\{Filesys,Xsl};
+use Oeuvres\Kit\{Filesys, Log, Xsl};
 
 /**
  * Export a TEI document as an html fragment <article>
@@ -37,9 +37,9 @@ class Tei2split extends Tei2
             $dst_dir = "file:///" . str_replace('\\', '/', $dst_dir);
         }
         $pars = array_merge($pars, array("dst_dir" => $dst_dir));
-        $this->logger->info("Tei2\033[92m" . static::NAME . "->toUri()\033[0m " . $dst_dir);
+        Log::info("Tei2\033[92m" . static::NAME . "->toUri()\033[0m " . $dst_dir);
         return Xsl::transformToXml(
-            self::$xslDir.static::XSL,
+            self::$xsl_dir.static::XSL,
             $dom,
             $pars,
         );
@@ -50,7 +50,7 @@ class Tei2split extends Tei2
      */
     public function toDoc(DOMDocument $dom, ?array $pars=null):?\DOMDocument
     {
-        $this->logger->error(__METHOD__." dom export not relevant");
+        Log::error(__METHOD__." dom export not relevant");
         return null;
     }
     /**

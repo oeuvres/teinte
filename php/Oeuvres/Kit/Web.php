@@ -15,19 +15,15 @@ declare(strict_types=1);
 namespace Oeuvres\Kit;
 
 use Exception;
-use Psr\Log\{LoggerInterface, NullLogger};
 
 /**
  * Tools to deal with PHP Http oddities
  * code convention https://www.php-fig.org/psr/psr-12/
  */
-Web::init();
 class Web
 {
     /** web parameters */
     static $pars;
-    /** A logger */
-    private static $logger;
     /** pathinfo, relative to base application */
     static $pathinfo;
     /** relative path to base application, calculated with pathinfo */
@@ -54,22 +50,6 @@ class Web
     );
     /** lang found */
     static $lang;
-
-    /**
-     * Intialize static variables
-     */
-    public static function init()
-    {
-        self::$logger = new NullLogger();
-    }
-
-    /**
-     * Set logger
-     */
-    public static function setLogger(LoggerInterface $logger)
-    {
-        self::$logger = $logger;
-    }
 
     /**
      * Get absolute URL
@@ -187,7 +167,7 @@ class Web
         }
         // no key requested, shout ?
         if (!$name) {
-            self::$logger->warning(
+            Log::warning(
                 "No name given for an http param\n" 
                 . implode("\n", I18n::trace())
             );

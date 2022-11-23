@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace Oeuvres\Teinte\Format;
 
-use Exception, ZipArchive;
-use Oeuvres\Kit\{Misc, Xsl};
+use DOMDocument, Exception, ZipArchive;
+use Oeuvres\Kit\{Log, Misc, Xsl};
 
 
 /**
@@ -36,9 +36,9 @@ class Docx extends Zip
 
     function docxlite()
     {
-        Xsl::setLogger($this->logger);
         $xml = $this->package();
         $dom = Xsl::loadXml($xml);
+        // xsl, DO NOT indent 
         $xml = Xsl::transformToXml(self::$xsl_dir . 'docx/pkg_ml.xsl', $dom);
         // clean xml oddities
         $xml = preg_replace(self::$preg[0], self::$preg[1], $xml);
@@ -77,8 +77,8 @@ class Docx extends Zip
             $content = $this->zip->getFromName($name);
             if ($content === false) {
                 $m = "$name not found in docx " . $this->file;
-                if ($name === 'word/document.xml') $this->logger->error($m);
-                else $this->logger->info($m);
+                if ($name === 'word/document.xml') Log::error($m);
+                else Log::debug($m);
                 continue;
             }
             // strip xml prolog
