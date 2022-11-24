@@ -105,11 +105,11 @@ class Docx extends Zip
      * Build a lite TEI with some custom tags like <i> or <sc>, esier to clean
      * with regex
      */
-    function pkg_tei():void
+    function docx_tei():void
     {
         $dom = Xsl::loadXml($this->xml);
         // xsl, DO NOT indent 
-        $this->xml = Xsl::transformToXml(self::$xsl_dir . 'docx/pkg_ml.xsl', $dom);
+        $this->xml = Xsl::transformToXml(self::$xsl_dir . 'docx/docx_tei.xsl', $dom);
     }
 
     /**

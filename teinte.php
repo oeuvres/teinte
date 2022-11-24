@@ -24,7 +24,7 @@ class Teinte {
     public static function help():string 
     {
         $help = '
-Tranform your tei files in different formats
+Tranform tei files in different formats
     php teinte.php (options)* (format)+ "teidir/*.xml"
 
 PARAMETERS

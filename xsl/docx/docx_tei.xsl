@@ -36,12 +36,12 @@
   </xsl:template>
   <!-- root element -->
   <xsl:template match="w:document">
-    <article>
       <xsl:apply-templates/>
-    </article>
   </xsl:template>
   <xsl:template match="w:body">
-    <xsl:apply-templates/>
+    <body>
+      <xsl:apply-templates/>
+    </body>
   </xsl:template>
   <!-- Stripped elements -->
   <xsl:template match="w:lastRenderedPageBreak"/>
@@ -169,9 +169,9 @@
     <xsl:variable name="i">
       <xsl:choose>
         <xsl:when test="w:rPr/w:i">
-          <i>
+          <hi>
             <xsl:copy-of select="$sc"/>
-          </i>
+          </hi>
         </xsl:when>
         <xsl:otherwise>
           <xsl:copy-of select="$sc"/>

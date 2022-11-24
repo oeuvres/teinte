@@ -21,7 +21,7 @@ $dst_dir = __DIR__ . "/out/";
 Filesys::mkdir(dirname($dst_dir));
 $source->docx_pkg();
 file_put_contents($dst_dir. $src_name .'_1.xml', $source->xml());
-$source->pkg_tei();
+$source->docx_tei();
 file_put_contents($dst_dir. $src_name .'_2.xml', $source->xml());
 $source->tei_pcre();
 file_put_contents($dst_dir. $src_name .'_3.xml', $source->xml());
