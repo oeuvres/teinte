@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Oeuvres\Teinte\Format;
 
 use Exception, DOMDocument, DOMXpath;
-use Oeuvres\Kit\{Xsl};
+use Oeuvres\Kit\{Log};
 use Oeuvres\Teinte\Tei2\{Tei2};
 
 /**
@@ -29,7 +29,7 @@ class Tei extends Xml
      */
     public function toUri(string $format, String $uri)
     {
-        $transfo = Tei2::get($format, $this->logger);
+        $transfo = Tei2::get($format);
         $transfo->template($this->template);
         $transfo->toUri($this->dom, $uri);
     }
@@ -40,7 +40,7 @@ class Tei extends Xml
      */
     public function toXml(string $format): string
     {
-        $transfo = Tei2::get($format, $this->logger);
+        $transfo = Tei2::get($format);
         $transfo->template($this->template);
         return $transfo->toXml($this->dom);
     }
@@ -51,7 +51,7 @@ class Tei extends Xml
      */
     public function toDoc(string $format): DOMDocument
     {
-        $transfo = Tei2::get($format, $this->logger);
+        $transfo = Tei2::get($format);
         $transfo->template($this->template);
         return $transfo->toDoc($this->dom);
     }
@@ -63,7 +63,7 @@ class Tei extends Xml
      */
     function destination(string $src_file, string $format, ?string $dst_dir):string
     {
-        $transfo = Tei2::get($format, $this->logger);
+        $transfo = Tei2::get($format);
         return $transfo->destination($src_file, $dst_dir);
     }
 
@@ -270,7 +270,7 @@ class Tei extends Xml
         */
         // if not file exists, escape and alert (?)
         else if (!file_exists($src)) {
-            $this->logger->warning("Image not found: " . $src);
+            Log::warning("Image not found: " . $src);
             return;
         }
         $srcparts = pathinfo($src);

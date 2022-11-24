@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Oeuvres\Teinte\Format;
 
 use DOMDocument, Exception, ZipArchive;
-use Oeuvres\Kit\{Log, Misc, Xsl};
+use Oeuvres\Kit\{Filesys, Log, Misc, Xsl};
 
 
 /**
@@ -26,33 +26,34 @@ class Docx extends Zip
     static protected ?string $xsl_dir;
     /** A search replace program */
     static protected ?array $preg;
+    /** A user searc replace program */
+    static protected ?array $user_preg;
+    /** An XML string to process */
+    protected ?string $xml;
 
+    /**
+     * Inialize static variables
+     */
     static function init()
     {
         self::$xsl_dir = dirname(__DIR__, 4) . '/xsl/';
-        $sed = file_get_contents(self::$xsl_dir . 'docx/docx.sed');
-        self::$preg = Misc::sed_preg($sed);
+        $pcre_tsv = self::$xsl_dir . 'docx/docx_pcre.tsv';
+        self::$preg = Misc::pcre_tsv($pcre_tsv);
     }
 
-    function docxlite()
+    function xml(): string
     {
-        $xml = $this->package();
-        $dom = Xsl::loadXml($xml);
-        // xsl, DO NOT indent 
-        $xml = Xsl::transformToXml(self::$xsl_dir . 'docx/pkg_ml.xsl', $dom);
-        // clean xml oddities
-        $xml = preg_replace(self::$preg[0], self::$preg[1], $xml);
-        return $xml;
+        return $this->xml;
     }
 
     /**
-     * Get an XML concatenation of content
+     * Get an XML concatenation of docx content
      */
-    function package(): string
+    function docx_pkg(): void
     {
         if (null === $this->zip) $this->open();
         // concat XML files sxtracted, without XML prolog
-        $xml = '<?xml version="1.0" encoding="UTF-8"?>
+        $this->xml = '<?xml version="1.0" encoding="UTF-8"?>
 <pkg:package xmlns:pkg="http://schemas.microsoft.com/office/2006/xmlPackage">
 ';
         // list of entries 
@@ -91,15 +92,67 @@ class Docx extends Zip
             )) {
                 $offset = $matches[0][1] + strlen($matches[0][0]);
             }
-            $xml .= "
+            $this->xml .= "
   <pkg:part pkg:contentType=\"$type\" pkg:name=\"/$name\">
     <pkg:xmlData>\n" . substr($content, $offset) . "\n    </pkg:xmlData>
   </pkg:part>
 ";
         }
-        $xml .= "\n</pkg:package>\n";
-        return $xml;
+        $this->xml .= "\n</pkg:package>\n";
     }
+
+    /**
+     * Build a lite TEI with some custom tags like <i> or <sc>, esier to clean
+     * with regex
+     */
+    function pkg_tei():void
+    {
+        $dom = Xsl::loadXml($this->xml);
+        // xsl, DO NOT indent 
+        $this->xml = Xsl::transformToXml(self::$xsl_dir . 'docx/pkg_ml.xsl', $dom);
+    }
+
+    /**
+     * Clean XML with pcre regex
+     */
+    function tei_pcre(): void
+    {
+        // clean xml oddities
+        $this->xml = preg_replace(self::$preg[0], self::$preg[1], $this->xml);
+        // custom patterns
+        if (isset(self::$user_preg)) {
+            $this->xml = preg_replace(self::$user_preg[0], self::$user_preg[1], $this->xml);
+        }
+    }
+
+
+    /**
+     * Set a template directory
+     * usually the same for a collection of docs.
+     */
+    function template(?string $dir = null)
+    {
+        $dir = Filesys::normdir($dir);
+        if (!$dir) return;
+        // try to load custom regex
+        $pcre_tsv = $dir . basename($dir) . "_pcre.tsv";
+        // be nice take first file in folder
+        if (!is_file($pcre_tsv)) {
+            $glob = glob($dir . "*_pcre.tsv");
+            if (!$glob || count($glob) < 1) {
+                $pcre_tsv = null;
+            }
+            else {
+                $pcre_tsv = $glob[0];
+            }
+        }
+        if ($pcre_tsv) {
+            Log::info("Docx => TEI, user pattern loading: $pcre_tsv");
+            self::$user_preg = Misc::pcre_tsv($pcre_tsv);
+        }
+    }
+
+
 
 }
 

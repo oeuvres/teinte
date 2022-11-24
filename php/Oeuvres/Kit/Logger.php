@@ -34,15 +34,17 @@ abstract class Logger extends AbstractLogger
     ];
     
     /** Default prefix for message */
-    private $prefix = "[{level}] {time} "; 
+    private string $prefix = "[{level}] "; 
     /** Default suffix for message (ex: clossing tag forr html) */
-    private $suffix = ""; 
+    private string $suffix = ""; 
     /** Default level of message to output */
-    private $verbosity = 4;
+    private int $verbosity = 4;
+    /** For a duration */
+    private $start_time = 0;
 
     public function __construct(
         ?string $level = LogLevel::ERROR, 
-        ?string $prefix = "[{level}] {time} "
+        ?string $prefix = "[{level}] "
     ) {
         $this->level($level);
         $this->prefix($prefix);

@@ -185,6 +185,29 @@ class Log
         self::$loggers[$channel] = $logger;
     }
 
-
+    /**
+     * A function ready to handle PHP error stream
+     */
+    public static function error_handler($errno, $errstr, $errfile, $errline)
+    {
+        // error was suppressed with the @-operator
+        if (0 === error_reporting()) {
+            return false;
+        }
+        switch ($errno) {
+            case E_USER_ERROR:
+            case E_ERROR:
+                return Log::error($errstr);
+                break;
+            case E_USER_WARNING:
+            case E_WARNING:
+                return Log::warning($errstr);
+                break;
+            case E_USER_NOTICE:
+            case E_NOTICE:
+                return Log::notice($errstr);
+                break;
+        };
+    }
 }
 Log::init();

@@ -9,18 +9,14 @@
 
 declare(strict_types=1);
 
-use Oeuvres\Kit\File;
-use Oeuvres\Kit\Xml;
-use Psr\Log\NullLogger;
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerInterface;
+use Oeuvres\Kit\{Filesys, Xsl};
 
 /**
  * Transform TEI in epub
  * code convention https://www.php-fig.org/psr/psr-12/
  */
 
-class Epub implements LoggerAwareInterface
+class Epub
 {
     /** Static parameters, used for example to communicate between XSL tests and calls */
     public $p = array(
@@ -41,8 +37,6 @@ class Epub implements LoggerAwareInterface
         "small" => array(150, 200),
         "medium" => array(500, 700),
     );
-    /** A PSR-3 logger, maybe a stream or a callable, used by self::log() */
-    private LoggerInterface $logger;
 
 
 
@@ -51,16 +45,8 @@ class Epub implements LoggerAwareInterface
      */
     public function __construct(
         $srcFile, 
-        ?LoggerInterface $logger = null, 
         array $pars = []
     ) {
-        if ($logger) {
-            $this->logger = $logger;
-        }
-        else {
-            $this->logger = new NullLogger();
-        }
-        Xml::setLogger($this->logger);
         if (!is_array($pars)) $pars = [];
         $this->p = array_merge($this->p, $pars);
         // constructor do not allow multiple signature
@@ -76,16 +62,11 @@ class Epub implements LoggerAwareInterface
         }
         // if ( $this->p['srcDir'] && is_writable( $this->p['srcDir'] ) ) $this->p['workDir'] = $this->p['srcDir'];
         $this->p['workDir'] = sys_get_temp_dir() . '/Livrable/';
-        File::mkdir($this->p['workDir']);
+        Filesys::mkdir($this->p['workDir']);
 
         self::$time = microtime(true);
-        self::$logger = $logger;
     }
 
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-    }
 
     /**
      * Load sourceFile

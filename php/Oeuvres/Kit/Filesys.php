@@ -38,29 +38,27 @@ class Filesys
     /**
      * Check if a file is writable, if it does not exists
      * go to the parent folder to test if it is possible to create.
+     * 
+     * @param string  $path
      *
      * @return mixed true if Yes, "message" if not
      */
-    public static function writable(string $path, ?string $source = null)
+    public static function writable(string $path)
     {
         if (is_writable($path)) return true;
         // if not file exists, go up to parents
         $parent = $path;
-        $pref = __CLASS__ . "::" . __FUNCTION__ . "  ";
         while (!file_exists($parent)) {
             $parent = dirname($parent);
         }
-        if ($source) $source = $source . "\n";
-        else $source = "";
-        $source .= __CLASS__ . "::" . __FUNCTION__ . "  ";
         if (is_link($parent)) {
-            return $source . "\"$path\" is dangerous to write, \"$parent\" is a link";
+            return "\"$path\" is dangerous to write, \"$parent\" is a link";
         }
         if (is_writable($parent)) return true;
         if (is_readable($parent)) {
-            return $source . "\"$path\" impossible to write, \"$parent\" exists but is not writable";
+            return "\"$path\" impossible to write, \"$parent\" exists but is not writable";
         }
-        return self::readable($parent, $source);
+        return self::readable($parent);
     }
 
     /**
@@ -138,19 +136,16 @@ class Filesys
      *
      * @return mixed true if Yes, "message" on error
      */
-    public static function readable(string $file, ?string $source = null)
+    public static function readable(string $file)
     {
         if (is_readable($file)) return true;
-        if ($source) $source = $source . "\n";
-        else $source = "";
-        $source .= __CLASS__ . "::" . __FUNCTION__ . "  ";
         if (is_file($file)) {
-            return $source . "File exists but not readable:\n\"$file\"";
+            return "File exists but not readable:\n\"$file\"";
         }
         if (file_exists($file)) {
-            return $source . "Path exists but is not a file:\n\"$file\"";
+            return "Path exists but is not a file:\n\"$file\"";
         }
-        return $source . "Path not found:\n\"$file\"";
+        return "Path not found:\n\"$file\"";
     }
     /**
      * A safe mkdir dealing with rights
