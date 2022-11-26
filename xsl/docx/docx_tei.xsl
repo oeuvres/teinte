@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:transform version="1.0" 
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  
+  xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
+  xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture"
   xmlns:pkg="http://schemas.microsoft.com/office/2006/xmlPackage"
   xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
   xmlns:rels="http://schemas.openxmlformats.org/package/2006/relationships"
   xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+  xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"
 
   xmlns:teinte="https://oeuvres.github.io/teinte"
 
   xmlns="http://www.tei-c.org/ns/1.0"
-  exclude-result-prefixes="pkg r rels teinte w"
+  exclude-result-prefixes="a pic pkg r rels teinte w wp"
   >
   <xsl:output encoding="UTF-8" indent="no" omit-xml-declaration="yes"/>
   <xsl:variable name="sheet" select="document('styles.xml', document(''))"/>
@@ -61,6 +65,7 @@
     <!-- get some local rendering -->
     <xsl:variable name="_rend">
       <xsl:if test="number(w:pPr/w:ind/@w:hanging) &gt; 150"> hanging </xsl:if>
+      <xsl:if test="number(w:pPr/w:ind/@w:firstLine) &gt; 150"> indent </xsl:if>
     </xsl:variable>
     <xsl:variable name="rend" select="normalize-space($_rend)"/>
     <xsl:choose>
@@ -123,6 +128,24 @@
   <xsl:template match="w:t">
     <xsl:value-of select="."/>
   </xsl:template>
+  <xsl:template match="w:drawing">
+    <xsl:text>&#10;</xsl:text>
+    <figure>
+      <xsl:text>&#10;  </xsl:text>
+      <graphic>
+        <xsl:variable name="target">
+          <xsl:call-template name="target">
+            <xsl:with-param name="id" select=".//a:blip/@r:embed"/>
+          </xsl:call-template>
+        </xsl:variable>
+        <xsl:attribute name="url">
+          <xsl:value-of select="$target"/>
+        </xsl:attribute>
+      </graphic>
+      <xsl:text>&#10;</xsl:text>
+    </figure>
+    <xsl:text>&#10;</xsl:text>
+  </xsl:template>
   <!-- chars -->
   <xsl:template match="w:r">
     <xsl:variable name="t">
@@ -133,8 +156,10 @@
     <!-- What about line break in superscript ? -->
     <xsl:variable name="sup">
       <xsl:choose>
-        <!-- probably footnote reference or  -->
-        <xsl:when test="$t = ''"/>
+        <!-- probably footnote reference or graphic, do not put in <tag> -->
+        <xsl:when test="$t = ''">
+           <xsl:copy-of select="$t"/>
+        </xsl:when>
         <xsl:when test="w:rPr/w:vertAlign/@w:val = 'superscript'">
           <sup>
             <xsl:copy-of select="$t"/>
@@ -152,6 +177,10 @@
     </xsl:variable>
     <xsl:variable name="sc">
       <xsl:choose>
+        <!-- probably footnote reference or graphic, do not put in <tag> -->
+        <xsl:when test="$sup = ''">
+           <xsl:copy-of select="$sup"/>
+        </xsl:when>
         <xsl:when test="w:rPr/w:smallCaps">
           <sc>
             <xsl:copy-of select="$sup"/>
@@ -168,6 +197,10 @@
     </xsl:variable>
     <xsl:variable name="i">
       <xsl:choose>
+        <!-- probably footnote reference or graphic, do not put in <tag> -->
+        <xsl:when test="$sc = ''">
+           <xsl:copy-of select="$sc"/>
+        </xsl:when>
         <xsl:when test="w:rPr/w:i">
           <hi>
             <xsl:copy-of select="$sc"/>
@@ -240,26 +273,32 @@
       </note>
     </xsl:for-each>
   </xsl:template>
+  <xsl:template name="target">
+    <xsl:param name="id"/>
+    <xsl:choose>
+      <xsl:when test="ancestor::w:endnote">
+        <xsl:for-each select="key('endnotes.xml.rels', $id)">
+          <xsl:value-of select="@Target"/>
+        </xsl:for-each>
+      </xsl:when>
+      <xsl:when test="ancestor::w:footnote">
+        <xsl:for-each select="key('footnotes.xml.rels', $id)">
+          <xsl:value-of select="@Target"/>
+        </xsl:for-each>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:for-each select="key('document.xml.rels', $id)">
+          <xsl:value-of select="@Target"/>
+        </xsl:for-each>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
   <xsl:template match="w:hyperlink">
     <ref>
       <xsl:variable name="target">
-        <xsl:choose>
-          <xsl:when test="ancestor::w:endnote">
-            <xsl:for-each select="key('endnotes.xml.rels', @r:id)">
-              <xsl:value-of select="@Target"/>
-            </xsl:for-each>
-          </xsl:when>
-          <xsl:when test="ancestor::w:footnote">
-            <xsl:for-each select="key('footnotes.xml.rels', @r:id)">
-              <xsl:value-of select="@Target"/>
-            </xsl:for-each>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:for-each select="key('document.xml.rels', @r:id)">
-              <xsl:value-of select="@Target"/>
-            </xsl:for-each>
-          </xsl:otherwise>
-        </xsl:choose>
+        <xsl:call-template name="target">
+          <xsl:with-param name="id" select="@r:id"/>
+        </xsl:call-template>
       </xsl:variable>
       <xsl:if test="$target != ''">
         <xsl:attribute name="target">

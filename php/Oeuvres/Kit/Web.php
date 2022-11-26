@@ -461,7 +461,7 @@ class Web
     public static function upload($key = null): ?array
     {
         // no post, return nothing
-        if ($_SERVER['REQUEST_METHOD'] != 'POST') return false;
+        if ($_SERVER['REQUEST_METHOD'] != 'POST') return null;
         $lang = self::lang(array('en' => '', 'fr' => ''));
         $mess = array(
             UPLOAD_ERR_INI_SIZE => array(

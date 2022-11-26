@@ -25,7 +25,7 @@ class Sqlite
      */
     public static function open(string $sqliteFile): PDO
     {
-        File::readable($sqliteFile, "Sqlite base impossible to open");
+        Filesys::readable($sqliteFile, "Sqlite base impossible to open");
         $dsn = "sqlite:" . $sqliteFile;
         $pdo = new PDO($dsn);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -39,7 +39,7 @@ class Sqlite
     public static function create(string $sqliteFile, string $create): PDO
     {
         if (file_exists($sqliteFile)) unlink($sqliteFile);
-        File::mkdir(dirname($sqliteFile));
+        Filesys::mkdir(dirname($sqliteFile));
         $pdo = self::open($sqliteFile);
         @chmod($sqliteFile, 0775);
         $pdo->exec($create);

@@ -1,0 +1,14 @@
+<svg viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg">
+  <style>
+#page {
+    fill: #e9e9e0;
+}
+#corner {
+    fill: #d9d7ca;
+}
+  </style>
+  <path id="page" d="M50 0H25c-5 0-10 5-10 10v70c0 5 5 10 10 10h40c5 0 10-5 10-10V25L50 0c-5 0 5 0 0 0z"/>
+  <path id="corner" d="M50 0v25h25z"/>
+  <path id="cartouche" d="M 65,90 H 25 C 20,90 15,85 15,80 V 70 h 60 v 10 c 0,5 -5,10 -10,10 z" />
+
+</svg>

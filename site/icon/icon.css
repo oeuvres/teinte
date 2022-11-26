@@ -1,0 +1,17 @@
+.segment {
+    stroke:#000;
+    stroke-width:3;
+    fill:#fff;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    stroke-opacity:1;
+}
+#page {
+    fill: #e9e9e0;
+}
+#corner {
+    fill: #d9d7ca;
+}
+#corner {
+    fill: transparent;
+}

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" id="svg5203" version="1.1" viewBox="0 0 90 90">
+  <style id="style3699">
+    #page {
+      fill: #e9e9e0;
+    }
+
+    #corner {
+      fill: #d9d7ca;
+    }
+
+    .segment {
+      stroke: #AAA;
+      stroke-width: 10;
+      fill: none;
+      stroke-linecap: butt;
+      stroke-linejoin: arcs;
+      stroke-opacity: 1;
+    }
+
+    .body {
+      fill: #ffffff;
+      fill-opacity: 0.5;
+      stroke: none;
+    }
+  </style>
+  <path id="page" d="M15 40v35c0 5 5 10 10 10h40c5 0 10-5 10-10V40L45 10z" />
+  <path id="path10635" d="M45 5L25 25v50h40V25z" class="body" />
+  <path id="corner" d="M50 20v20h20z" />
+  <path id="path3703" stroke="#000" stroke-opacity="1" d="M5 50l40-40 40 40" class="segment" />
+</svg>

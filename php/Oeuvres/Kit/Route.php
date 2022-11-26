@@ -64,7 +64,7 @@ class Route {
         self::$home_dir = getcwd();
         self::$home_href = str_repeat('../', count(self::$url_parts) - 1);
         // get relative path from index.php caller to the root of app to calculate href for resources in this folder
-        self::$lib_href = self::$home_href . File::relpath(
+        self::$lib_href = self::$home_href . Filesys::relpath(
             dirname($_SERVER['SCRIPT_FILENAME']), 
             self::$lib_dir
         );
@@ -167,7 +167,7 @@ class Route {
         // rewrite file destination according to $route url
         preg_match('@'.$route.'@', self::$url_request, $route_match);
         $resource = self::replace($resource, $route_match);
-        if (!File::isabs($resource)) {
+        if (!Filesys::isabs($resource)) {
             // resolve links from welcome page
             $resource = self::$home_dir . $resource;
         }
@@ -336,7 +336,7 @@ Use Route::template('tmpl_my.php', '$tmpl_key');"
         ?string $key=null
     ):void
     {
-        if (!File::readable($tmpl_php)) {
+        if (!Filesys::readable($tmpl_php)) {
             // will send exceptions if template is not readable
             return;
         } 
