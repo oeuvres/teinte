@@ -32,42 +32,8 @@ $lang = Web::lang();
 <html>
   <head>
     <meta charset="utf-8"/>
-    <style>
-html, body {
-  padding: 0;
-  margin: 0;
-  min-height: 100vh;
-}
+    <link rel="stylesheet"  href="<?= Route::home_href() ?>site/teinte_site.css"/>
 
-body {
-  font-family: sans-serif;
-}
-#header {
-  text-align: center;
-}
-#header>h1 {
-  margin: 0;
-  font-size: 1.5rem;
-  background-color: #aaa;
-  color:#fff;
-}
-#win {
-}
-#content {
-  max-width: 80ex;
-  margin-left: auto;
-  margin-right: auto;
-}
-#banner {
-  width: 80ex;
-}
-#drop_zone {
-  border: 5px solid blue;
-  width: 200px;
-  height: 100px;
-}
-
-    </style>
     <script type="text/javascript">
 function dropFile(e) {
   e.preventDefault();
@@ -104,14 +70,29 @@ else echo 'Teinte, transform TEI (HTML, txt…)'
     <div id="win">
       <header id="header">
         <h1>Teinte, la conversion des livres (tei, docx, html, epub, txt)</h1>
-        <img id="banner" src="<?=Route::home_href()?>site/teinte.png"/>
       </header>
-      <div id="content">
-        <div
-          id="drop_zone"
-          ondrop="dropFile(event);"
-          ondragover="dropDrag(event);">
-          <p>Déposez un ou plusieurs fichiers ici (tei, docx, html, epub, txt)</p>
+      <div id="row">
+        <div id="upload">
+          <header>
+            <img width="64" src="<?=Route::home_href()?>site/img/icon_upload.svg"/>
+            <h2>Votre fichier</h2>
+          </header>
+          <div
+            id="drop_zone"
+            ondrop="dropFile(event);"
+            ondragover="dropDrag(event);">
+            <p>Déposez un document (tei, docx, html, epub, txt)</p>
+          </div>
+        </div>
+        <div id="html">
+          <img id="banner" src="<?=Route::home_href()?>site/img/teinte.png"/>
+        </div>
+        <div id="download">
+          <header>
+            <h2>Téléchargements</h2>
+            <img  width="64" src="<?=Route::home_href()?>site/img/icon_download.svg"/>
+          </header>
+          (formats)
         </div>
       </div>
      </div>

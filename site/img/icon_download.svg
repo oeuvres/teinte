@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 90">
+   <style>
+      #cover,
+      #pages {
+         stroke: #000;
+         stroke-width: 2;
+         stroke-linecap: square;
+         fill: none;
+      }
+
+      #cover {
+         fill: #cccccc;
+      }
+
+      #arrow {
+         stroke: #000;
+         stroke-width: 4;
+         fill: #fff;
+      }
+   </style>
+   <path id="cover" d="M20 55h50V5H25c-9.769 0-14.858 6.505-15 15v45c0-5 5-10 10-10z" />
+   <path id="pages" d="M80 15v60H20c-5.097 0-10-5-10-10v-5" />
+   <path id="arrow" d="M35 15v40L15 45l30 40 30-40-20 10V15" />
+</svg>
