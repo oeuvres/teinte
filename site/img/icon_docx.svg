@@ -17,10 +17,14 @@
       stroke-linecap: square;
       fill: none;
     }
+
+    #cartouche {
+      stroke: #ffffff;
+      stroke-width: 4
+    }
   </style>
 
-  <path id="cartouche"
-    d="M 20,60 H 70 L 85,85 H 20 C 10,85 9.892,75.404 9.892,75.404 9.892,75.404 10,85 10,70 10,65 15,60 20,60 Z" />
+  <path id="cartouche" d="M 20,60 H 70 L 85,85 H 20 c -5,0 -10,-5 -10,-10 0,0 0,10 0,-5 0,-5 5,-10 10,-10 z" />
   <path id="cover" d="M20 60h50V5H25c-9.769 0-14.858 6.505-15 15v50c0-5 5-10 10-10z" />
   <path id="pages" d="M85 85H20c-5 0-10-5-10-10v-5" />
   <path id="back" d="M85 15v70" />

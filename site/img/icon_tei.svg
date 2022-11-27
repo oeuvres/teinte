@@ -12,22 +12,25 @@
       stroke-linecap: square;
       fill: none;
     }
+
+    #cartouche {
+      stroke: #ffffff;
+      stroke-width: 4
+    }
   </style>
 
-  <path id="cartouche" 
-       d="M 20,60 H 70 L 85,85 H 20 C 10,85 9.892,75.404 9.892,75.404 9.892,75.404 10,85 10,70 10,65 15,60 20,60 Z"
-   />
+  <path id="cartouche" d="M 20,60 H 70 L 85,85 H 20 c -5,0 -10,-5 -10,-10 0,0 0,10 0,-5 0,-5 5,-10 10,-10 z" />
   <path id="cover" d="M20 60h50V5H25c-9.769 0-14.858 6.505-15 15v50c0-5 5-10 10-10z" />
   <path id="pages" d="M85 85H20c-5 0-10-5-10-10v-5" />
   <path id="back" d="M85 15v70" />
 
 
-  <g id="TEI" transform="translate(6 37) scale(.095 .095)">
+  <g id="TEI" transform="translate(6 39) scale(.090 .090)">
     <path d="M199 281h146.5v44.2h-49.1V460h-48.2V325.2H199V281z" />
     <path d="M368 281h129.3v38.2h-80.9v28.5h75.1v36.5h-75.1v35.3h83.3V460H368V281z" />
     <path d="M527 281h52.3v179H527V281z" />
   </g>
-  <g id="brackets" transform="translate(16 8) scale(0.068 0.068)">
+  <g id="brackets" transform="translate(18 10) scale(0.06 0.06)">
     <g id="gt">
       <path fill="#c9b23e" d="M418 62l36 65 190.3 114.4-.7 217.2L679 523V254l-28.1-48.7z" />
       <path fill="#f3d448" d="M418 62l33-19 234 143-34 19z" />
