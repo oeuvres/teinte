@@ -43,11 +43,11 @@ class Xml extends File
     /**
      * Load XML/TEI as a file (preferred way to hav some metas).
      */
-    public function load(string $tei_file): DOMDocument
+    public function load(string $src_file): DOMDocument
     {
-        parent::load($tei_file);
+        parent::load($src_file);
         $this->xpath = null;
-        $dom = $this->loadXml(file_get_contents($tei_file));
+        $dom = $this->loadXml(file_get_contents($src_file));
         return $dom;
     }
 

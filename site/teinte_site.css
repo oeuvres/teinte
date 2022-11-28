@@ -4,6 +4,10 @@ html, body {
     min-height: 100vh;
 }
 
+* {
+    box-sizing: border-box;
+}
+
 body {
     font-family: sans-serif;
     background-color: #eee;
@@ -31,31 +35,56 @@ body {
     padding: 1rem;
 }
 
+
+#upload,
+#download {
+    position: relative;
+    flex-basis: 35ex;
+    flex-shrink: 0;
+}
+
+
+
 #upload {
     text-align: left;
 }
 
-#upload>header {
-    display: flex;
-}
-
-#html {
-    flex-grow: 4;
-}
-
-#banner {
-    display: block;
-    text-align:center;
-    margin-left: auto;
-    margin-right: auto;
-}
 
 #download {
     text-align: right;
 }
 
-#download>header {
-    display: flex;
+#upload > header,
+#download > header {
+    color: #fff;
+    font-size: 1.5rem;
+    text-shadow: #000 0 2px 3px;
+}
+
+#upload img.back,
+#download img.back {
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, 0);
+    opacity: 0.1;
+    display: block;
+    position: absolute;
+    width: 80%;
+    user-select: none;
+    pointer-events: none;
+}
+
+
+#html {
+    flex-grow: 4;
+    flex-shrink: 4;
+}
+
+#banner {
+    display: block;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #content {
@@ -65,16 +94,19 @@ body {
 }
 
 #banner {
-    width: 80ex;
+    width: 100%;
 }
 
-#drop_zone {
+#dropZone {
+    border-radius: 1rem;
     background-color: #fff;
-    padding: 1rem;
+    padding: 0.5rem 1rem;
     text-align: center;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-origin: content-box;
-    width: 200px;
-    height: 100px;
+    width: 100%;
+    border: groove 2px #fff;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
 }

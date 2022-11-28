@@ -32,7 +32,10 @@ abstract class Logger extends AbstractLogger
         LogLevel::INFO => 7,
         LogLevel::DEBUG => 8,
     ];
-    
+    /** Init counters */
+    private const COUNTS_INIT = [0,0,0,0,0,0,0,0,0];
+    /** Couters to record numbers of errors */
+    private array $counts = self::COUNTS_INIT;
     /** Default prefix for message */
     private string $prefix = "[{level}] "; 
     /** Default suffix for message (ex: clossing tag forr html) */
@@ -91,6 +94,8 @@ abstract class Logger extends AbstractLogger
         if(is_string($message) && trim($message) === '') return false;
 
         $verbosity = self::verbosity($level);
+        // log counters
+        $this->inc($verbosity);
         if ($verbosity > $this->verbosity) return false;
 
         $date = new DateTime();
@@ -152,6 +157,25 @@ abstract class Logger extends AbstractLogger
             return $this->suffix;
         }
         $this->suffix = $suffix;
+    }
+
+    /**
+     * Reset error counters
+     */
+    public function reset()
+    {
+        $this->counts = self::COUNTS_INIT;
+    }
+
+    /**
+     * Increment 
+     */
+    protected function inc($verbosity)
+    {
+        if ($verbosity < 1) return;
+        for($i = $verbosity; $i < 9; $i++) {
+            $this->counts[$i]++;
+        }
     }
 
     /**

@@ -28,8 +28,6 @@ class Docx extends Zip
     static protected ?array $preg;
     /** A user searc replace program */
     static protected ?array $user_preg;
-    /** An XML string to process */
-    protected ?string $xml;
 
     /**
      * Inialize static variables
@@ -105,7 +103,7 @@ class Docx extends Zip
      * Build a lite TEI with some custom tags like <i> or <sc>, esier to clean
      * with regex
      */
-    function docx_tei():void
+    function pkg_tei():void
     {
         $dom = Xsl::loadXml($this->xml);
         // xsl, DO NOT indent 

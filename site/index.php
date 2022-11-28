@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 include_once(dirname(__DIR__) . '/php/autoload.php');
@@ -8,12 +9,12 @@ use \Oeuvres\Kit\{Route, Web};
 error_reporting(E_ALL);
 
 $format = "html";
-if ( isset( $_REQUEST['format'] ) ) $format = $_REQUEST['format'];
+if (isset($_REQUEST['format'])) $format = $_REQUEST['format'];
 // A file is submited, work
 $upload = Web::upload();
 if ($upload) {
-    // TODO
-    /*
+  // TODO
+  /*
     $teinte = new Teinte_Doc( $upload['tmp_name'] );
     $teinte->filename( $upload['filename'] );
     $content = $teinte->export($format, null, array('theme'=>'../theme/'));
@@ -23,80 +24,63 @@ if ($upload) {
     }
     echo $content;
     */
-    exit();
+  exit();
 }
 $lang = Web::lang();
 
 
-?><!DOCTYPE html>
+?>
+<!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8"/>
-    <link rel="stylesheet"  href="<?= Route::home_href() ?>site/teinte_site.css"/>
 
-    <script type="text/javascript">
-function dropFile(e) {
-  e.preventDefault();
-  console.log(e.dataTransfer);
-  if (e.dataTransfer.items) {
-    // Use DataTransferItemList interface to access the file(s)
-    [...e.dataTransfer.items].forEach((item, i) => {
-      // If dropped items aren't files, reject them
-      if (item.kind === 'file') {
-        const file = item.getAsFile();
-        console.log(`… file[${i}].name = ${file.name}`);
-      }
-    });
-  } else {
-    // Use DataTransfer interface to access the file(s)
-    [...e.dataTransfer.files].forEach((file, i) => {
-      console.log(`… file[${i}].name = ${file.name}`);
-    });
-  }
-}
+<head>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="<?= Route::home_href() ?>site/teinte_site.css" />
+  <title><?php
+          if ($lang == 'fr') echo 'Teinte, transformer du TEI (HTML, txt…)';
+          else echo 'Teinte, transform TEI (HTML, txt…)'
+          ?></title>
+</head>
 
-function dropDrag(e) {
-  e.preventDefault();
-}
-
-
-    </script>
-    <title><?php
-if ($lang=='fr') echo'Teinte, transformer du TEI (HTML, txt…)';
-else echo 'Teinte, transform TEI (HTML, txt…)'
-    ?></title>
-    </head>
-  <body>
-    <div id="win">
-      <header id="header">
-        <h1>Teinte, la conversion des livres (tei, docx, html, epub, txt)</h1>
-      </header>
-      <div id="row">
-        <div id="upload">
-          <header>
-            <img width="64" src="<?=Route::home_href()?>site/img/icon_upload.svg"/>
-            <h2>Votre fichier</h2>
-          </header>
-          <div
-            id="drop_zone"
-            ondrop="dropFile(event);"
-            ondragover="dropDrag(event);">
-            <p>Déposez un document (tei, docx, html, epub, txt)</p>
+<body>
+  <div id="win">
+    <header id="header">
+      <h1>Teinte, la conversion des livres (tei, docx, html, epub, txt)</h1>
+    </header>
+    <div id="row">
+      <div id="upload">
+        <img width="64" class="back" src="<?= Route::home_href() ?>site/img/icon_upload.svg" />
+        <header>
+          <h2>Votre fichier</h2>
+        </header>
+        <div id="dropZone">
+          <header>(tei, docx, html, epub, txt)</header>
+          <label></label>
+          <div>
+            <button>Chercher un fichier</button>
+            <input type="file" hidden />
           </div>
-        </div>
-        <div id="html">
-          <img id="banner" src="<?=Route::home_href()?>site/img/teinte.png"/>
-        </div>
-        <div id="download">
-          <header>
-            <h2>Téléchargements</h2>
-            <img  width="64" src="<?=Route::home_href()?>site/img/icon_download.svg"/>
-          </header>
-          (formats)
+          <!--
+          <p>Déposer ici un document</p>
+          <span>ou bien</span>
+        -->
         </div>
       </div>
-     </div>
-  </body>
+      <div id="html">
+        <img id="banner" src="<?= Route::home_href() ?>site/img/teinte.png" />
+      </div>
+      <div id="download">
+        <img width="64" class="back" src="<?= Route::home_href() ?>site/img/icon_download.svg" />
+        <header>
+          <h2>Téléchargements</h2>
+        </header>
+        (formats)
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript" src="<?= Route::home_href() ?>site/teinte_site.js"> </script>
+</body>
+
 </html>
 
 
