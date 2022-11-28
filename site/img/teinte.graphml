@@ -21,7 +21,7 @@
           <y:Geometry height="20.0" width="60.0" x="210.0" y="135.0"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle color="#FFFFFF" raised="false" type="line" width="1.0"/>
-          <y:NodeLabel alignment="left" autoSizePolicy="node_width" borderDistance="0.0" fontFamily="DejaVu Sans Light" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="22.0" horizontalTextPosition="right" iconData="1" iconTextGap="5" modelName="custom" textColor="#000000" verticalTextPosition="center" visible="true" width="60.0" x="0.0" xml:space="preserve" y="-1.0">docx<y:LabelModel><y:SmartNodeLabelModel distance="0.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+          <y:NodeLabel alignment="left" autoSizePolicy="node_width" borderDistance="0.0" fontFamily="DejaVu Sans Light" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="right" iconData="1" iconTextGap="5" modelName="custom" textColor="#000000" verticalTextPosition="center" visible="true" width="60.0" x="0.0" xml:space="preserve" y="0.0">docx<y:LabelModel><y:SmartNodeLabelModel distance="0.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
           <y:Shape type="roundrectangle"/>
         </y:ShapeNode>
       </data>
@@ -33,7 +33,7 @@
           <y:Geometry height="20.0" width="60.0" x="410.0" y="110.0"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle color="#FFFFFF" raised="false" type="line" width="1.0"/>
-          <y:NodeLabel alignment="left" autoSizePolicy="node_width" borderDistance="0.0" fontFamily="DejaVu Sans Light" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="22.0" horizontalTextPosition="right" iconData="2" iconTextGap="5" modelName="custom" textColor="#000000" verticalTextPosition="center" visible="true" width="60.0" x="0.0" xml:space="preserve" y="-1.0">epub<y:LabelModel><y:SmartNodeLabelModel distance="0.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+          <y:NodeLabel alignment="left" autoSizePolicy="node_width" borderDistance="0.0" fontFamily="DejaVu Sans Light" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="right" iconData="2" iconTextGap="5" modelName="custom" textColor="#000000" verticalTextPosition="center" visible="true" width="60.0" x="0.0" xml:space="preserve" y="0.0">epub<y:LabelModel><y:SmartNodeLabelModel distance="0.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
           <y:Shape type="roundrectangle"/>
         </y:ShapeNode>
       </data>
@@ -45,7 +45,7 @@
           <y:Geometry height="20.0" width="60.0" x="410.0" y="160.98304"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle color="#FFFFFF" raised="false" type="line" width="1.0"/>
-          <y:NodeLabel alignment="left" autoSizePolicy="node_width" borderDistance="0.0" fontFamily="DejaVu Sans Light" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="22.0" horizontalTextPosition="right" iconData="3" iconTextGap="5" modelName="custom" textColor="#000000" verticalTextPosition="center" visible="true" width="60.0" x="0.0" xml:space="preserve" y="-1.0">html<y:LabelModel><y:SmartNodeLabelModel distance="0.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+          <y:NodeLabel alignment="left" autoSizePolicy="node_width" borderDistance="0.0" fontFamily="DejaVu Sans Light" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="21.0" horizontalTextPosition="right" iconData="3" iconTextGap="5" modelName="custom" textColor="#000000" verticalTextPosition="center" visible="true" width="60.0" x="0.0" xml:space="preserve" y="-0.5">html<y:LabelModel><y:SmartNodeLabelModel distance="0.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
           <y:Shape type="roundrectangle"/>
         </y:ShapeNode>
       </data>
@@ -57,7 +57,7 @@
           <y:Geometry height="20.0" width="60.0" x="310.0" y="170.0"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle color="#FFFFFF" raised="false" type="line" width="1.0"/>
-          <y:NodeLabel alignment="left" autoSizePolicy="node_size" borderDistance="0.0" fontFamily="DejaVu Sans Light" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="22.0" horizontalTextPosition="right" iconData="4" iconTextGap="5" modelName="custom" textColor="#000000" verticalTextPosition="center" visible="true" width="60.0" x="0.0" xml:space="preserve" y="-1.0">txt<y:LabelModel><y:SmartNodeLabelModel distance="0.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+          <y:NodeLabel alignment="left" autoSizePolicy="node_size" borderDistance="0.0" fontFamily="DejaVu Sans Light" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="right" iconData="4" iconTextGap="5" modelName="custom" textColor="#000000" verticalTextPosition="center" visible="true" width="60.0" x="0.0" xml:space="preserve" y="0.0">txt<y:LabelModel><y:SmartNodeLabelModel distance="0.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
           <y:Shape type="roundrectangle"/>
         </y:ShapeNode>
       </data>
@@ -69,7 +69,7 @@
           <y:Geometry height="20.0" width="60.0" x="310.0" y="135.0"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle color="#FFFFFF" raised="false" type="line" width="1.0"/>
-          <y:NodeLabel alignment="left" autoSizePolicy="node_width" borderDistance="0.0" fontFamily="DejaVu Sans Light" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="22.0" horizontalTextPosition="right" iconData="5" iconTextGap="5" modelName="custom" textColor="#000000" verticalTextPosition="center" visible="true" width="60.0" x="0.0" xml:space="preserve" y="-1.0">tei<y:LabelModel><y:SmartNodeLabelModel distance="0.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+          <y:NodeLabel alignment="left" autoSizePolicy="node_width" borderDistance="0.0" fontFamily="DejaVu Sans Light" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="right" iconData="5" iconTextGap="5" modelName="custom" textColor="#000000" verticalTextPosition="center" visible="true" width="60.0" x="0.0" xml:space="preserve" y="0.0">tei<y:LabelModel><y:SmartNodeLabelModel distance="0.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
           <y:Shape type="roundrectangle"/>
         </y:ShapeNode>
       </data>
@@ -112,7 +112,7 @@
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
           <y:LineStyle color="#FFFFFF" type="line" width="3.0"/>
-          <y:Arrows source="short" target="short"/>
+          <y:Arrows source="none" target="short"/>
           <y:BendStyle smoothed="true"/>
         </y:PolyLineEdge>
       </data>
@@ -167,7 +167,7 @@
   <data key="d7">
     <y:Resources>
       <y:Resource id="1">
-        <yed:ScaledIcon xScale="0.049707602339181284" yScale="0.049707602339181284">
+        <yed:ScaledIcon xScale="0.043478260869565216" yScale="0.043478260869565216">
           <yed:SvgIcon xml:space="preserve">&lt;svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 90"&gt;
   &lt;style&gt;
     #cartouche {
@@ -187,10 +187,17 @@
       stroke-linecap: square;
       fill: none;
     }
+
+    #cartouche_bord {
+      fill:none;
+      stroke: #ffffff;
+      stroke-width: 4;
+      stroke-linecap: square;
+    }
   &lt;/style&gt;
 
-  &lt;path id="cartouche"
-    d="M 20,60 H 70 L 85,85 H 20 C 10,85 9.892,75.404 9.892,75.404 9.892,75.404 10,85 10,70 10,65 15,60 20,60 Z" /&gt;
+  &lt;path id="cartouche" d="M 20,60 H 70 L 85,85 H 20 c -5,0 -10,-5 -10,-10 0,0 0,10 0,-5 0,-5 5,-10 10,-10 z" /&gt;
+  &lt;path id="cartouche_bord" d="M 70,60 H 20 c -5,0 -10,5 -10,10 v 5 c 0,5 5,10 10,10 h 65"/&gt;
   &lt;path id="cover" d="M20 60h50V5H25c-9.769 0-14.858 6.505-15 15v50c0-5 5-10 10-10z" /&gt;
   &lt;path id="pages" d="M85 85H20c-5 0-10-5-10-10v-5" /&gt;
   &lt;path id="back" d="M85 15v70" /&gt;
@@ -210,7 +217,7 @@
         </yed:ScaledIcon>
       </y:Resource>
       <y:Resource id="2">
-        <yed:ScaledIcon xScale="0.049707602339181284" yScale="0.049707602339181284">
+        <yed:ScaledIcon xScale="0.043478260869565216" yScale="0.043478260869565216">
           <yed:SvgIcon xml:space="preserve">&lt;svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 90"&gt;
   &lt;style&gt;
     #cartouche {
@@ -224,11 +231,17 @@
       stroke-linecap: square;
       fill: none;
     }
+    #cartouche_bord {
+      fill:none;
+      stroke: #ffffff;
+      stroke-width: 4;
+      stroke-linecap: square;
+    }
   &lt;/style&gt;
 
-  &lt;path id="cartouche" 
-       d="M 20,60 H 70 L 85,85 H 20 C 10,85 9.892,75.404 9.892,75.404 9.892,75.404 10,85 10,70 10,65 15,60 20,60 Z"
-   /&gt;
+  &lt;path id="cartouche" d="M 20,60 H 70 L 85,85 H 20 c -5,0 -10,-5 -10,-10 0,0 0,10 0,-5 0,-5 5,-10 10,-10 z" /&gt;
+    &lt;path id="cartouche_bord" d="M 70,60 H 20 c -5,0 -10,5 -10,10 v 5 c 0,5 5,10 10,10 h 65"/&gt;
+
   &lt;path id="cover" d="M20 60h50V5H25c-9.769 0-14.858 6.505-15 15v50c0-5 5-10 10-10z" /&gt;
   &lt;path id="pages" d="M85 85H20c-5 0-10-5-10-10v-5" /&gt;
   &lt;path id="back" d="M85 15v70" /&gt;
@@ -252,101 +265,54 @@
         </yed:ScaledIcon>
       </y:Resource>
       <y:Resource id="3">
-        <yed:ScaledIcon xScale="0.049707602339181284" yScale="0.049707602339181284">
-          <yed:SvgIcon xml:space="preserve">&lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
-&lt;svg
-   viewBox="0 0 90 90"
-   version="1.1"
-   id="svg12"
-   sodipodi:docname="icon_html.svg"
-   inkscape:version="1.1.2 (b8e25be833, 2022-02-05)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg"&gt;
-  &lt;defs
-     id="defs16" /&gt;
-  &lt;sodipodi:namedview
-     id="namedview14"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     showgrid="true"
-     inkscape:zoom="7.0632111"
-     inkscape:cx="39.429658"
-     inkscape:cy="36.952032"
-     inkscape:window-width="1920"
-     inkscape:window-height="1055"
-     inkscape:window-x="-7"
-     inkscape:window-y="-7"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg12"&gt;
-    &lt;inkscape:grid
-       type="xygrid"
-       id="grid833" /&gt;
-  &lt;/sodipodi:namedview&gt;
-  &lt;style
-     id="style2"&gt;
+        <yed:ScaledIcon xScale="0.04619565217391304" yScale="0.04619565217391304">
+          <yed:SvgIcon xml:space="preserve">&lt;svg xmlns="http://www.w3.org/2000/svg" id="svg12" version="1.1" viewBox="0 0 90 90"&gt;
+   &lt;style id="style2"&gt;
+      #cartouche {
+         fill: #ec6630;
+      }
+
+      #cartouche_bord {
+         fill: none;
+         stroke: #ffffff;
+         stroke-width: 4;
+         stroke-linecap: square;
+      }
+
       #cover,
-      #pages {
+      #pages,
+      #back {
          stroke: #000;
          stroke-width: 2;
          stroke-linecap: square;
          fill: none;
       }
 
-    .segment {
-      stroke-width: 5;
-      fill: none;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      stroke-opacity: 1;
-    }
-
-      #cartouche {
-         fill: #ec6630;
+      .segment {
+         stroke-width: 5;
+         fill: none;
+         stroke-linecap: round;
+         stroke-linejoin: round;
+         stroke-opacity: 1;
       }
    &lt;/style&gt;
-  &lt;path
-     id="cartouche"
-     d="M 20,60 H 70 L 85,85 H 20 C 15,85 9.8916017,75.40415 9.8916017,75.40415 9.8916017,75.40415 10,80 10,70 10,65 15,60 20,60 Z"
-     sodipodi:nodetypes="ccccccc" /&gt;
-  &lt;path
-     id="cover"
-     d="M 20,60 H 70 V 5 H 25 C 15.231072,5 10.141579,11.50528 10,20 v 50 c 0,-5 5,-10 10,-10 z"
-     sodipodi:nodetypes="ccccccc" /&gt;
-  &lt;path
-     d="M 85,15 V 85 H 20 C 15,85 10,80 10,75 v -5"
-     id="pages"
-     sodipodi:nodetypes="ccccc" /&gt;
-  &lt;path
-     transform="translate(25, 68) scale(0.5)"
-     id="html"
-     fill="#fff"
-     d="M19.3 23.6h-5V13.4H5v10.2H0V0h5v9.2h9.3V0h5zm15 0h-5V4.2H23V0h17.8v4.2h-6.4Zm20 0L48.6 5h-.1l.1 2 .1 2.8.1 2.7v11h-4.5V0h6.8l5.6 18h.1l6-18h6.7v23.6H65V9.8l.1-2.7.1-2H65l-6.1 18.5Zm21.2 0V0h5v19.4H90v4.2z"
-     style="stroke-width:1.94085" /&gt;
-  &lt;g
-     id="brackets"&gt;
-    &lt;path
-       stroke="#ec6630"
-       class="segment"
-       d="M 35,25 25,35 35,45"
-       id="path7" /&gt;
-    &lt;path
-       stroke="#ec6630"
-       class="segment"
-       d="M 50,25 60,35 50,45"
-       id="path9" /&gt;
-  &lt;/g&gt;
-&lt;/svg&gt;
-</yed:SvgIcon>
+   &lt;path id="cartouche" stroke="none" stroke-dasharray="none" stroke-miterlimit="4" stroke-opacity="1" stroke-width="4"
+      d="M20 60h50l15 25H20c-5 0-10-5-10-10v-5c0-5 5-10 10-10z" /&gt;
+   &lt;path id="cartouche_bord" d="M70 60H20c-5 0-10 5-10 10v5c0 5 5 10 10 10h65" /&gt;
+   &lt;path id="cover" d="M20 60h50V5H25c-9.769 0-14.858 6.505-15 15v50c0-5 5-10 10-10z" /&gt;
+   &lt;path id="pages" d="M85 85H20c-5 0-10-5-10-10v-5" /&gt;
+   &lt;path id="back" d="M85 15v70" /&gt;
+   &lt;path id="html" fill="#fff" stroke-width=".5"
+      d="M33.5 79.1H31V74h-4.65v5.1h-2.5V67.3h2.5v4.6H31v-4.6h2.5zm7.5 0h-2.5v-9.7h-3.15v-2.1h8.9v2.1h-3.2zm10 0l-2.85-9.3h-.05l.05 1 .05 1.4.05 1.35v5.5H46V67.3h3.4l2.8 9h.05l3-9h3.35v11.8h-2.25v-6.9l.05-1.35.05-1h-.1L53.3 79.1zm10.6 0V67.3h2.5V77h4.75v2.1z" /&gt;
+   &lt;g id="brackets"&gt;
+      &lt;path id="path7" stroke="#ec6630" d="M35 25L25 35l10 10" class="segment" /&gt;
+      &lt;path id="path9" stroke="#ec6630" d="M50 25l10 10-10 10" class="segment" /&gt;
+   &lt;/g&gt;
+&lt;/svg&gt;</yed:SvgIcon>
         </yed:ScaledIcon>
       </y:Resource>
       <y:Resource id="4">
-        <yed:ScaledIcon xScale="0.04945054945054945" yScale="0.04945054945054945">
+        <yed:ScaledIcon xScale="0.043478260869565216" yScale="0.043478260869565216">
           <yed:SvgIcon xml:space="preserve">&lt;svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 90"&gt;
   &lt;style&gt;
     #cartouche {
@@ -361,15 +327,22 @@
       stroke-linecap: square;
       fill: none;
     }
+
+    #cartouche_bord {
+      fill:none;
+      stroke: #ffffff;
+      stroke-width: 4;
+      stroke-linecap: square;
+    }
   &lt;/style&gt;
-  &lt;path id="cartouche" 
-       d="M 20,60 H 70 L 85,85 H 20 C 10,85 9.892,75.404 9.892,75.404 9.892,75.404 10,85 10,70 10,65 15,60 20,60 Z"
-   /&gt;
+  &lt;path id="cartouche" d="M 20,60 H 70 L 85,85 H 20 c -5,0 -10,-5 -10,-10 0,0 0,10 0,-5 0,-5 5,-10 10,-10 z" /&gt;
+    &lt;path id="cartouche_bord" d="M 70,60 H 20 c -5,0 -10,5 -10,10 v 5 c 0,5 5,10 10,10 h 65"/&gt;
+
   &lt;path id="cover" d="M20 60h50V5H25c-9.769 0-14.858 6.505-15 15v50c0-5 5-10 10-10z" /&gt;
   &lt;path id="pages" d="M85 85H20c-5 0-10-5-10-10v-5" /&gt;
   &lt;path id="back" d="M85 15v70" /&gt;
 
-  &lt;path transform="translate(25, 65) scale(0.4 0.4)" id="mdown" fill="#fff"
+  &lt;path transform="translate(26, 66) scale(0.38 0.38)" id="mdown" fill="#fff"
     d="M0 36.5v-37h10l12.5 13.9L35-.5h10v37H35V13.4L22.5 29.5 10 13.4v23Zm70 0L50 18h12.5V-.5h15V18H90z" /&gt;
 
   &lt;path id="txt" transform=" translate(18 25) scale(0.5)"
@@ -379,7 +352,7 @@
         </yed:ScaledIcon>
       </y:Resource>
       <y:Resource id="5">
-        <yed:ScaledIcon xScale="0.049707602339181284" yScale="0.049707602339181284">
+        <yed:ScaledIcon xScale="0.043478260869565216" yScale="0.043478260869565216">
           <yed:SvgIcon xml:space="preserve">&lt;svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 90"&gt;
   &lt;style&gt;
     #cartouche {
@@ -394,22 +367,29 @@
       stroke-linecap: square;
       fill: none;
     }
+
+    #cartouche_bord {
+      fill:none;
+      stroke: #ffffff;
+      stroke-width: 4;
+      stroke-linecap: square;
+    }
   &lt;/style&gt;
 
-  &lt;path id="cartouche" 
-       d="M 20,60 H 70 L 85,85 H 20 C 10,85 9.892,75.404 9.892,75.404 9.892,75.404 10,85 10,70 10,65 15,60 20,60 Z"
-   /&gt;
+  &lt;path id="cartouche" d="M 20,60 H 70 L 85,85 H 20 c -5,0 -10,-5 -10,-10 0,0 0,10 0,-5 0,-5 5,-10 10,-10 z" /&gt;
+    &lt;path id="cartouche_bord" d="M 70,60 H 20 c -5,0 -10,5 -10,10 v 5 c 0,5 5,10 10,10 h 65"/&gt;
+
   &lt;path id="cover" d="M20 60h50V5H25c-9.769 0-14.858 6.505-15 15v50c0-5 5-10 10-10z" /&gt;
   &lt;path id="pages" d="M85 85H20c-5 0-10-5-10-10v-5" /&gt;
   &lt;path id="back" d="M85 15v70" /&gt;
 
 
-  &lt;g id="TEI" transform="translate(6 37) scale(.095 .095)"&gt;
+  &lt;g id="TEI" transform="translate(6 39) scale(.090 .090)"&gt;
     &lt;path d="M199 281h146.5v44.2h-49.1V460h-48.2V325.2H199V281z" /&gt;
     &lt;path d="M368 281h129.3v38.2h-80.9v28.5h75.1v36.5h-75.1v35.3h83.3V460H368V281z" /&gt;
     &lt;path d="M527 281h52.3v179H527V281z" /&gt;
   &lt;/g&gt;
-  &lt;g id="brackets" transform="translate(16 8) scale(0.068 0.068)"&gt;
+  &lt;g id="brackets" transform="translate(18 10) scale(0.06 0.06)"&gt;
     &lt;g id="gt"&gt;
       &lt;path fill="#c9b23e" d="M418 62l36 65 190.3 114.4-.7 217.2L679 523V254l-28.1-48.7z" /&gt;
       &lt;path fill="#f3d448" d="M418 62l33-19 234 143-34 19z" /&gt;
