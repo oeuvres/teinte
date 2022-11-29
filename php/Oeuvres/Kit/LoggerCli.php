@@ -34,7 +34,7 @@ class LoggerCli extends Logger
 
     public function __construct(
         ?string $level = LogLevel::INFO, 
-        ?string $prefix = "[{level}] {time} "
+        ?string $prefix = "[{level}] {duration} "
     ) {
         parent::__construct($level, $prefix);
     }

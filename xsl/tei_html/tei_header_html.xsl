@@ -16,7 +16,7 @@ BSD-3-Clause https://opensource.org/licenses/BSD-3-Clause
   xmlns:epub="http://www.idpf.org/2007/ops"
   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
   xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
-  exclude-result-prefixes="tei html epub rdf rdfs"
+  exclude-result-prefixes="tei html rdf rdfs"
 >
   <xsl:import href="../tei_common.xsl"/>
 

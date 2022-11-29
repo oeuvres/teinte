@@ -8,21 +8,23 @@ use Psr\Log\LogLevel;
 use Oeuvres\Kit\{Filesys, Log, LoggerCli};
 use Oeuvres\Teinte\Format\{Docx};
 
+$docx_file = __DIR__ . '/data/test.docx';
 
-Log::setLogger(new LoggerCli(LogLevel::DEBUG, "[{level}] {datetime} "));
+Log::setLogger(new LoggerCli(LogLevel::DEBUG));
 
 $source = new Docx();
 $source->template(dirname(__DIR__).'/templates/jamesfr');
-$docx_file = __DIR__ . '/data/ocr.docx';
 $src_name = pathinfo($docx_file, PATHINFO_FILENAME);
 
 $source->load($docx_file);
 $dst_dir = __DIR__ . "/out/";
 Filesys::mkdir(dirname($dst_dir));
-$source->docx_pkg();
+$source->pkg();
 file_put_contents($dst_dir. $src_name .'_1.xml', $source->xml());
-$source->docx_tei();
+$source->teilike();
 file_put_contents($dst_dir. $src_name .'_2.xml', $source->xml());
-$source->tei_pcre();
+$source->pcre();
 file_put_contents($dst_dir. $src_name .'_3.xml', $source->xml());
-
+$source->tmpl();
+file_put_contents($dst_dir. $src_name .'_4.xml', $source->xml());
+Log::info("Done");

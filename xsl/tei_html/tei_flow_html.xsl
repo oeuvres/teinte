@@ -14,7 +14,13 @@ BSD-3-Clause https://opensource.org/licenses/BSD-3-Clause
 
 XSLT 1.0 is compatible browser, PHP, Python, Java…
 -->
-<xsl:transform exclude-result-prefixes="eg tei epub" version="1.0" xmlns="http://www.w3.org/1999/xhtml" xmlns:eg="http://www.tei-c.org/ns/Examples" xmlns:epub="http://www.idpf.org/2007/ops" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:transform  version="1.0"
+  exclude-result-prefixes="eg tei"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:eg="http://www.tei-c.org/ns/Examples"
+  xmlns:epub="http://www.idpf.org/2007/ops"
+  xmlns:tei="http://www.tei-c.org/ns/1.0"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <!-- Import shared templates -->
   <xsl:import href="../tei_common.xsl"/>
   <!-- What kind of root element to output ? html, div, article -->

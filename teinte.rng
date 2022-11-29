@@ -3057,12 +3057,9 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <a:documentation>Mot clé indiquant une analyse, une interprétation.</a:documentation>
       </attribute>
     </define>
-    <define name="att.corresp">
-      <attribute name="corresp">
-        <a:documentation>Pointeur vers une ressource liée</a:documentation>
-        <list>
-          <data type="anyURI"/>
-        </list>
+    <define name="att.cert">
+      <attribute name="cert">
+        <a:documentation>Degré de certitude d'une information</a:documentation>
       </attribute>
     </define>
     <define name="att.copyOf">
@@ -3073,40 +3070,12 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </list>
       </attribute>
     </define>
-    <define name="xml.id">
-      <attribute name="xml:id">
-        <a:documentation>Identifiant, au moins unique pour le document</a:documentation>
-        <data type="ID"/>
-      </attribute>
-    </define>
-    <define name="att.key">
-      <attribute name="key">
-        <a:documentation>Terme normalisé (clé de regroupement) pour une entité indexable (auteur, titre, personne, lieu…)</a:documentation>
-      </attribute>
-    </define>
-    <define name="att.facs">
-      <attribute name="facs">
-        <a:documentation>Lien vers une image</a:documentation>
-      </attribute>
-    </define>
-    <define name="att.cert">
-      <attribute name="cert">
-        <a:documentation>Degré de certitude d'une information</a:documentation>
-      </attribute>
-    </define>
-    <define name="att.precision">
-      <attribute name="precision">
-        <a:documentation>Degré de précision d'une information</a:documentation>
-      </attribute>
-    </define>
-    <define name="att.unit">
-      <attribute name="unit">
-        <a:documentation>Unité d'une information</a:documentation>
-      </attribute>
-    </define>
-    <define name="att.quantity">
-      <attribute name="quantity">
-        <a:documentation>Quantité en chiffre décimaux se rapportant à une information</a:documentation>
+    <define name="att.corresp">
+      <attribute name="corresp">
+        <a:documentation>Pointeur vers une ressource liée</a:documentation>
+        <list>
+          <data type="anyURI"/>
+        </list>
       </attribute>
     </define>
     <define name="att.evidence">
@@ -3117,14 +3086,14 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <!-- NB: d’autres valeurs autorisées sont documentées -->
       </attribute>
     </define>
-    <define name="xml.lang">
-      <attribute name="xml:lang">
-        <a:documentation>Code normalisé de langue.</a:documentation>
+    <define name="att.facs">
+      <attribute name="facs">
+        <a:documentation>Lien vers une image</a:documentation>
       </attribute>
     </define>
-    <define name="xml.base">
-      <attribute name="xml:base">
-        <a:documentation>Base de résolution des liens.</a:documentation>
+    <define name="att.key">
+      <attribute name="key">
+        <a:documentation>Terme normalisé (clé de regroupement) pour une entité indexable (auteur, titre, personne, lieu…)</a:documentation>
       </attribute>
     </define>
     <define name="att.n">
@@ -3168,21 +3137,31 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </choice>
       </attribute>
     </define>
+    <define name="att.precision">
+      <attribute name="precision">
+        <a:documentation>Degré de précision d'une information</a:documentation>
+      </attribute>
+    </define>
+    <define name="att.quantity">
+      <attribute name="quantity">
+        <a:documentation>Quantité en chiffre décimaux se rapportant à une information</a:documentation>
+      </attribute>
+    </define>
     <define name="att.ref">
       <attribute name="ref">
         <a:documentation>URI de référence pour un terme indexable : auteur, titre, personne, lieu…</a:documentation>
         <data type="anyURI"/>
       </attribute>
     </define>
-    <define name="att.source">
-      <attribute name="source">
-        <a:documentation>URI dont est tiré l’information</a:documentation>
-        <data type="anyURI"/>
-      </attribute>
-    </define>
     <define name="att.rend">
       <attribute name="rend">
         <a:documentation>Indication de rendu, selon un vocabulaire contrôlé. Interprété comme une liste de classes CSS comme dans l'attribut @html5:class. Conserve une information de la source, ou suggère une présentation. À distinguer de la précision sémantique de l’élément, indiquée avec l’attribut @type</a:documentation>
+      </attribute>
+    </define>
+    <define name="att.rendition">
+      <attribute name="rendition">
+        <a:documentation>Lien à une déclaration locale de stylage (URI ancre, ex : #surtitre, vers une déclaration &lt;rendition xml:id="surtitre"> dans &lt;teiHeader>). L'attribut @rend est contraint dans ce schéma à une liste close de valeurs dont le traitement est garanti, @rendition permet d'ajouter d’autres classes</a:documentation>
+        <data type="anyURI"/>
       </attribute>
     </define>
     <define name="att.resp">
@@ -3205,9 +3184,36 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <a:documentation>Type, qualifiant l’élément parent, indépendamment de son apparence. Dans la mesure du possible, une liste d’autorité contextuelle sera proposée au niveau de l’élément.</a:documentation>
       </attribute>
     </define>
+    <define name="att.source">
+      <attribute name="source">
+        <a:documentation>URI dont est tiré l’information</a:documentation>
+        <data type="anyURI"/>
+      </attribute>
+    </define>
+    <define name="att.unit">
+      <attribute name="unit">
+        <a:documentation>Unité d'une information</a:documentation>
+      </attribute>
+    </define>
     <define name="att.when">
       <attribute name="when">
         <ref name="date.type"/>
+      </attribute>
+    </define>
+    <define name="xml.id">
+      <attribute name="xml:id">
+        <a:documentation>Identifiant, au moins unique pour le document</a:documentation>
+        <data type="ID"/>
+      </attribute>
+    </define>
+    <define name="xml.lang">
+      <attribute name="xml:lang">
+        <a:documentation>Code normalisé de langue.</a:documentation>
+      </attribute>
+    </define>
+    <define name="xml.base">
+      <attribute name="xml:base">
+        <a:documentation>Base de résolution des liens.</a:documentation>
       </attribute>
     </define>
     <define name="xml-atts">
@@ -3334,12 +3340,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
       <optional>
         <ref name="att.rendition"/>
       </optional>
-    </define>
-    <define name="att.rendition">
-      <attribute name="rendition">
-        <a:documentation>Lien à une déclaration locale de stylage (URI ancre, ex : #surtitre, vers une déclaration &lt;rendition xml:id="surtitre"> dans &lt;teiHeader>). L'attribut @rend est contraint dans ce schéma à une liste close de valeurs dont le traitement est garanti, @rendition permet d'ajouter d’autres classes</a:documentation>
-        <data type="anyURI"/>
-      </attribute>
     </define>
     <define name="rend.lmarg">
       <a:documentation>Retrait gauche de bloc</a:documentation>

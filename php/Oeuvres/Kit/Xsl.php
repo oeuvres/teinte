@@ -95,7 +95,7 @@ class Xsl
     /**
      * Returns a DOM object
      */
-    public static function loadXml(string $xml, ?DOMDocument $dom = null): ?DOMDocument
+    public static function loadXML(string $xml, ?DOMDocument $dom = null): ?DOMDocument
     {
         if ($dom == null) $dom = self::domSkel();
         // suspend error reporting, libxml messages are better
@@ -112,9 +112,9 @@ class Xsl
     private static function domSkel(): DOMDocument
     {
         $dom = new DOMDocument();
+        $dom->substituteEntities = true;
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput = true;
-        $dom->substituteEntities = true;
         return $dom;
     }
 
@@ -183,7 +183,7 @@ class Xsl
             $key = realpath($xsl_file);
         }
         if (!$key) {
-            Log::error("$pref XSLT file not found:\n\"$xsl_file\"");
+            Log::error("\"$xsl_file\" XSLT file not found");
             return null;
         }
         // cache compiled xsl

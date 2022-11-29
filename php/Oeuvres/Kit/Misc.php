@@ -76,7 +76,7 @@ class Misc
         $delim = '@'; // regex delimiter
         $var_search = [$delim]; // macros to replace in search pattern
         $var_replace = ["\\$delim"];
-        if (true != ($ret = Filesys::readable($tsv_file))) {
+        if (true !== ($ret = Filesys::readable($tsv_file))) {
             Log::error('Regex file impossible to read — ' . $ret);
             return null;
         }
@@ -111,7 +111,7 @@ class Misc
                 $var_search[] = $trim1;
                 continue;
             }
-            $mod = 'Su';
+            $mod = 'u';
             $pattern = str_replace($var_search, $var_replace, $row[0]);
 
             $pattern = $delim . $pattern . $delim . $mod;
@@ -141,6 +141,7 @@ class Misc
                 );
                 continue;
             }
+            if (!$row[2]) $row[2] = '';
             $search[] = $pattern;
             $sub[] = $replacement;
         }

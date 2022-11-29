@@ -56,7 +56,7 @@
     <xsl:choose>
       <!-- para in footnote force line break -->
       <xsl:when test="ancestor::w:footnote|ancestor::w:endnote">
-        <xsl:text>&#10;</xsl:text>
+        <xsl:text>&#10;    </xsl:text>
       </xsl:when>
       <xsl:otherwise>
         <xsl:text>&#10;&#10;</xsl:text>
@@ -148,6 +148,7 @@
   </xsl:template>
   <!-- chars -->
   <xsl:template match="w:r">
+    <!-- only text, to avoid notes in superscript -->
     <xsl:variable name="t">
       <xsl:for-each select="*[not(self::w:rPr)]">
         <xsl:apply-templates select="."/>
@@ -184,14 +185,10 @@
         <xsl:when test="w:rPr/w:smallCaps">
           <sc>
             <xsl:copy-of select="$sup"/>
-            <xsl:apply-templates select="w:footnoteReference"/>
-            <xsl:apply-templates select="w:endnoteReference"/>
           </sc>
         </xsl:when>
         <xsl:otherwise>
           <xsl:copy-of select="$sup"/>
-          <xsl:apply-templates select="w:footnoteReference"/>
-          <xsl:apply-templates select="w:endnoteReference"/>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
@@ -247,6 +244,7 @@
   <!-- Notes -->
   <xsl:template match="w:footnoteReference">
     <xsl:for-each select="key('footnotes',@w:id)">
+      <xsl:value-of select="position()"/>
       <note place="foot">
         <xsl:choose>
           <xsl:when test="count(w:p) = 1">
@@ -259,6 +257,8 @@
       </note>
     </xsl:for-each>
   </xsl:template>
+  <!-- number in note -->
+  <xsl:template match="w:footnoteRef | w:endnoteRef"/>
   <xsl:template match="w:endnoteReference">
     <xsl:for-each select="key('endnotes',@w:id)">
       <note place="end">

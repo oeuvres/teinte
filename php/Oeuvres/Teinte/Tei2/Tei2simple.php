@@ -17,14 +17,14 @@ use Oeuvres\Kit\{Filesys, Log, Xsl};
 /**
  * A sinmple Teidoc exporter, with only one xslt
  */
-abstract class Tei2simple extends Tei2
+abstract class Tei2simple extends AbstractTei2
 {
     /** Path to the xslt file, relative to the xsl pack root */
     const XSL = null;
-    /** Build the transformer with a logger and check mandatory params */
-    public function __construct()
+
+    /** Check mandatory params */
+    static public function init()
     {
-        parent::__construct(...func_get_args());
         assert(static::XSL != null, static::class . "::XSL must be defined from an XSL file to apply for this export format");
         assert(
             Filesys::readable(
@@ -35,7 +35,7 @@ abstract class Tei2simple extends Tei2
         );
     }
 
-    public function toUri(DOMDocument $dom, string $dstFile, ?array $pars=null)
+    static public function toUri(DOMDocument $dom, string $dstFile, ?array $pars=null)
     {
         Log::info("Tei2\033[92m" . static::NAME . "->toUri()\033[0m " . $dstFile);
         return Xsl::transformToUri(
@@ -45,7 +45,7 @@ abstract class Tei2simple extends Tei2
             $pars,
         );
     }
-    public function toXml(DOMDocument $dom, ?array $pars=null):string
+    static public function toXml(DOMDocument $dom, ?array $pars=null):string
     {
         return Xsl::transformToXml(
             self::$xsl_dir.static::XSL,
@@ -55,7 +55,7 @@ abstract class Tei2simple extends Tei2
 
     }
 
-    public function toDoc(DOMDocument $dom, ?array $pars=null):DOMDocument
+    static public function toDoc(DOMDocument $dom, ?array $pars=null):DOMDocument
     {
         return Xsl::transformToDoc(
             self::$xsl_dir.static::XSL,
@@ -66,3 +66,4 @@ abstract class Tei2simple extends Tei2
     }
 
 }
+Tei2simple::init();

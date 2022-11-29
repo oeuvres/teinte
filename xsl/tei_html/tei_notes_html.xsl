@@ -9,9 +9,13 @@ BSD-3-Clause https://opensource.org/licenses/BSD-3-Clause
 
 -->
 <xsl:transform version="1.0"
-  exclude-result-prefixes="tei epub" 
-  extension-element-prefixes="exslt" 
-  xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xmlns:exslt="http://exslt.org/common" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  exclude-result-prefixes="tei"
+  extension-element-prefixes="exslt"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:epub="http://www.idpf.org/2007/ops"
+  xmlns:exslt="http://exslt.org/common"
+  xmlns:tei="http://www.tei-c.org/ns/1.0"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <!-- Shared templates -->
   <xsl:import href="../tei_common.xsl"/>
 

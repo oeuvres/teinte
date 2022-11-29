@@ -24,3 +24,4 @@ work/
 *.toc
 *.xdv
 site/img/test.svg
+xsl/docx/_tei.sed

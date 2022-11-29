@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Oeuvres\Teinte\Format;
 
 use DOMDocument, Exception, ZipArchive;
+use ErrorException;
 use Oeuvres\Kit\{Filesys, Log, Misc, Xsl};
 
 
@@ -26,8 +27,12 @@ class Docx extends Zip
     static protected ?string $xsl_dir;
     /** A search replace program */
     static protected ?array $preg;
-    /** A user searc replace program */
+    /** A user search replace program */
     static protected ?array $user_preg;
+    /** Store XML as a string, maybe reused */
+    protected ?string $xml = null;
+    /** DOM Document to process */
+    protected ?DOMDocument $dom = null;
 
     /**
      * Inialize static variables
@@ -35,19 +40,48 @@ class Docx extends Zip
     static function init()
     {
         self::$xsl_dir = dirname(__DIR__, 4) . '/xsl/';
-        $pcre_tsv = self::$xsl_dir . 'docx/docx_pcre.tsv';
+        $pcre_tsv = self::$xsl_dir . 'docx/teilike_pcre.tsv';
         self::$preg = Misc::pcre_tsv($pcre_tsv);
+    }
+
+
+
+    function __construct()
+    {
+        // keep a special dom options
+        $this->dom = new DOMDocument();
+        $this->dom->substituteEntities = true;
+        $this->dom->preserveWhiteSpace = true;
+        $this->dom->formatOutput = false;
+
     }
 
     function xml(): string
     {
+        // a dom have been calculated and kept during process
+        if ($this->xml === null && $this->dom !== null) {
+            $this->xml = $this->dom->saveXML();
+        }
         return $this->xml;
+    }
+
+    function dom(): DOMDocument
+    {
+        return $this->dom;
+    }
+
+    function tei(): void
+    {
+        $this->pkg();
+        $this->teilike();
+        $this->pcre();
+        $this->tmpl();
     }
 
     /**
      * Get an XML concatenation of docx content
      */
-    function docx_pkg(): void
+    function pkg(): void
     {
         if (null === $this->zip) $this->open();
         // concat XML files sxtracted, without XML prolog
@@ -103,17 +137,20 @@ class Docx extends Zip
      * Build a lite TEI with some custom tags like <i> or <sc>, esier to clean
      * with regex
      */
-    function pkg_tei():void
+    function teilike():void
     {
-        $dom = Xsl::loadXml($this->xml);
+        Xsl::loadXml($this->xml, $this->dom);
         // xsl, DO NOT indent 
-        $this->xml = Xsl::transformToXml(self::$xsl_dir . 'docx/docx_tei.xsl', $dom);
+        $this->xml = Xsl::transformToXml(
+            self::$xsl_dir . 'docx/docx_teilike.xsl', 
+            $this->dom,
+        );
     }
 
     /**
      * Clean XML with pcre regex
      */
-    function tei_pcre(): void
+    function pcre(): void
     {
         // clean xml oddities
         $this->xml = preg_replace(self::$preg[0], self::$preg[1], $this->xml);
@@ -123,6 +160,36 @@ class Docx extends Zip
         }
     }
 
+    /**
+     * Clean teilike and apply template
+     */
+    function tmpl(?string $tmpl=null): void
+    {
+        if (!$tmpl) {
+            $tmpl = self::$xsl_dir . 'docx/default.xml';
+        }
+        // resolve relative path to working dir
+        if (!Filesys::isabs($tmpl)) {
+            $tmpl = getcwd() . '/' . $tmpl;
+        }
+        if (($message = Filesys::readable($tmpl))  !== true) {
+            Log::error($message);
+            throw new ErrorException("Tei template not found");
+        }
+        // normalize windows path for xsltproc
+        $tmpl = "file:///" . str_replace(DIRECTORY_SEPARATOR, "/", $tmpl);
+        // xml should come from pcre transform
+
+        Xsl::loadXml($this->xml, $this->dom);
+        // TEI regularisations and model fusion
+        $this->dom = Xsl::transformToDoc(
+            self::$xsl_dir . 'docx/tei_tmpl.xsl',
+            $this->dom,
+            array("template" => $tmpl)
+        );
+        // delete old xml
+        $this->xml = null;
+    }
 
     /**
      * Set a template directory

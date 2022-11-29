@@ -51,6 +51,7 @@ abstract class Logger extends AbstractLogger
     ) {
         $this->level($level);
         $this->prefix($prefix);
+        $this->start_time = microtime(true);
     }
 
     /**
@@ -102,6 +103,7 @@ abstract class Logger extends AbstractLogger
         $context['level'] = $level;
         $context['datetime'] = $date->format('Y-m-d H:i:s');
         $context['time'] = $date->format('H:i:s');
+        $context['duration'] = number_format(microtime(true) - $this->start_time, 3) . " s.";
         $mess = $this->interpolate($this->prefix . $message . $this->suffix, $context);
         
         $this->write($level, $mess);
@@ -165,6 +167,7 @@ abstract class Logger extends AbstractLogger
     public function reset()
     {
         $this->counts = self::COUNTS_INIT;
+        $this->start_time = microtime(true);
     }
 
     /**
