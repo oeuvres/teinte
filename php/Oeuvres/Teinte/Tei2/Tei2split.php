@@ -19,7 +19,7 @@ use Oeuvres\Kit\{Filesys, Log, Xsl};
  * Export a TEI document as an html fragment <article>
  */
 
-class Tei2split extends Tei2
+class Tei2split extends AbstractTei2
 {
     const NAME = 'split';
     const EXT = '_xml/';
@@ -29,7 +29,7 @@ class Tei2split extends Tei2
     /**
      * @ override
      */
-    public function toUri(DOMDocument $dom, string $dstFile, ?array $pars=array())
+    static public function toUri(DOMDocument $dom, string $dstFile, ?array $pars=array())
     {
         if (!$pars) $pars = array();
         $dst_dir = Filesys::cleandir($dstFile) . "/";
@@ -48,7 +48,7 @@ class Tei2split extends Tei2
     /**
      * @ override
      */
-    public function toDoc(DOMDocument $dom, ?array $pars=null):?\DOMDocument
+    static public function toDoc(DOMDocument $dom, ?array $pars=null):?\DOMDocument
     {
         Log::error(__METHOD__." dom export not relevant");
         return null;
@@ -56,9 +56,9 @@ class Tei2split extends Tei2
     /**
      * @ override
      */
-    public function toXml(DOMDocument $dom, ?array $pars=null):?string
+    static public function toXml(DOMDocument $dom, ?array $pars=null):?string
     {
-        $this->logger->error(__METHOD__." string export not relevant");
+        Log::error(__METHOD__." string export not relevant");
         return null;
     }
 

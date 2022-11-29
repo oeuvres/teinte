@@ -95,7 +95,7 @@ class Xsl
     /**
      * Returns a DOM object
      */
-    public static function loadXML(string $xml, ?DOMDocument $dom = null): ?DOMDocument
+    public static function loadXml(string $xml, ?DOMDocument $dom = null): ?DOMDocument
     {
         if ($dom == null) $dom = self::domSkel();
         // suspend error reporting, libxml messages are better

@@ -19,13 +19,14 @@ Check::extension('zip');
  * Output a MS.Word docx document from TEI.
  * code convention https://www.php-fig.org/psr/psr-12/
  */
-class Tei2docx extends Tei2
+class Tei2docx extends AbstractTei2
 {
     /** A docx file used as a template */
-    private string $template;
+    static private string $template;
     const NAME = 'docx';
     const EXT = '.docx';
     const LABEL = 'Microsoft.Word 2007 format';
+    const MIME = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
     /** Some mapping between 3 char iso languange code to 2 char */
     const ISO639_3char = [
         'eng' => 'en',
@@ -44,7 +45,7 @@ class Tei2docx extends Tei2
      * Set a docx file as a template,
      * usually the same for a collection of tei docs.
      */
-    function template(?string $dir = null):string
+    static function template(?string $dir = null):string
     {
         $dir = Filesys::normdir($dir);
         $template = null;
@@ -61,7 +62,7 @@ class Tei2docx extends Tei2
             }
         }
         if ($template) {
-            $this->logger->info(__CLASS__ . "::" . __FUNCTION__ . " $template");
+            Log::info(__CLASS__ . "::" . __FUNCTION__ . " $template");
             $this->template = $template;
         }
         // ask for template, maybe set before
@@ -76,7 +77,7 @@ class Tei2docx extends Tei2
     /**
      * @ override
      */
-    function toDoc(DOMDocument $dom, ?array $pars=null):?\DOMDocument
+    static function toDoc(DOMDocument $dom, ?array $pars=null):?\DOMDocument
     {
         Log::error(__METHOD__." dom export not relevant");
         return null;
@@ -84,7 +85,7 @@ class Tei2docx extends Tei2
     /**
      * @ override
      */
-    function toXml(DOMDocument $dom, ?array $pars=null):?string
+    static function toXml(DOMDocument $dom, ?array $pars=null):?string
     {
         Log::error(__METHOD__." xml export not relevant");
         return null;
@@ -93,7 +94,7 @@ class Tei2docx extends Tei2
     /**
      * @ override
      */
-    function toUri($dom, $dst_file, ?array $pars=null)
+    static function toUri($dom, $dst_file, ?array $pars=null)
     {
         Log::info("Tei2\033[92m" . static::NAME ." \033[0m $dst_file");
         Filesys::writable($dst_file);
@@ -192,7 +193,7 @@ class Tei2docx extends Tei2
         $zip->addFromString('word/_rels/footnotes.xml.rels', $xml);
         // 
         if (!$zip->close()) {
-            $this->logger->error(
+            Log::error(
                 "Tei2" . static::NAME ." ERROR writing \033[91m$dst_file\033[0m\nMaybe an app has an handle on this file. Is this docx open in MS.Word or LibreO.Writer?"
             );
         }
@@ -214,7 +215,7 @@ class Tei2docx extends Tei2
         $srcfile = $tmp['tmp_name'];
         if ($tmp['name']) $dstname = substr($tmp['name'], 0, strrpos($tmp['name'], '.')) . ".docx";
         else $dstname = "tei.docx";
-        header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+        header('Content-Type: ');
         header('Content-Disposition: attachment; filename="' . $dstname);
         header('Content-Description: File Transfer');
         header('Expires: 0');

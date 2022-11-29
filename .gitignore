@@ -25,3 +25,4 @@ work/
 *.xdv
 site/img/test.svg
 xsl/docx/_tei.sed
+/_*.php

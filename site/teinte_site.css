@@ -15,13 +15,16 @@ body {
 
 #header {
     text-align: center;
+    height: 2rem;
+    line-height: 2rem;
+    background-color: #aaa;
+    color: #fff;
 }
 
 #header>h1 {
     margin: 0;
+    padding: 0;
     font-size: 1.5rem;
-    background-color: #aaa;
-    color: #fff;
 }
 
 #win {}
@@ -39,19 +42,15 @@ body {
 #upload,
 #download {
     position: relative;
-    flex-basis: 35ex;
+    flex-basis: 18rem;
     flex-shrink: 0;
+    text-align: center;
 }
 
-
-
-#upload {
-    text-align: left;
-}
-
-
-#download {
-    text-align: right;
+#upload h2,
+#download h2 {
+    margin: 0 0 1rem 0;
+    padding: 0;
 }
 
 #upload > header,
@@ -61,23 +60,24 @@ body {
     text-shadow: #000 0 2px 3px;
 }
 
-#upload img.back,
-#download img.back {
-    top: 0;
-    left: 50%;
-    transform: translate(-50%, 0);
-    opacity: 0.1;
-    display: block;
-    position: absolute;
-    width: 80%;
-    user-select: none;
-    pointer-events: none;
+
+#icons {
+    display: flex;
+    margin-bottom: 1rem;
+}
+#icons img {
+    width: 100%;
 }
 
+img.todo {
+    opacity: 0.3;
+}
 
 #html {
     flex-grow: 4;
     flex-shrink: 4;
+    overflow: auto;
+    height: calc(100vh - 2rem);
 }
 
 #banner {
@@ -97,16 +97,58 @@ body {
     width: 100%;
 }
 
-#dropZone {
+#dropzone {
+    position: relative;
     border-radius: 1rem;
     background-color: #fff;
-    padding: 0.5rem 1rem;
+    padding: 1rem;
     text-align: center;
-    width: 100%;
+    width: 16rem;
     border: groove 2px #fff;
-    height: 200px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
+    height: 16rem;
 }
+
+
+img.back {
+    width: 14rem;
+    left: 50%;
+    transform: translate(-50%, 0);
+    opacity: 0.1;
+    display: block;
+    position: absolute;
+    user-select: none;
+    pointer-events: none;
+}
+
+#dropzone img.back {
+    top: 0;
+}
+
+#dropzone output {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translate(0, -70%);
+    font-weight: bold;
+    font-size: 2rem;
+}
+
+#dropzone .bottom {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.5rem;
+}
+
+#dropzone button {
+    border: ridge 2px #fff;
+    border-radius: 0.5rem;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+#dropzone button:hover {
+    background-color: #eee;
+}
+

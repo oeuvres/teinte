@@ -2180,7 +2180,8 @@ h1.sub {
     font-style: normal
 }
 
-.todo {
+div.todo,
+p.todo {
     border: #F00 solid 1px;
     background: #FFC;
     padding: 0.5rem;

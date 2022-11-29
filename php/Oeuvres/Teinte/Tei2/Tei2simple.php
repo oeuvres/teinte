@@ -25,14 +25,7 @@ abstract class Tei2simple extends AbstractTei2
     /** Check mandatory params */
     static public function init()
     {
-        assert(static::XSL != null, static::class . "::XSL must be defined from an XSL file to apply for this export format");
-        assert(
-            Filesys::readable(
-                self::$xsl_dir.static::XSL, 
-                static::class . "::XSL file is required"
-            ), 
-            "::XSL, path resolved is not a readable file\n".self::$xsl_dir.static::XSL
-        );
+        parent::init();
     }
 
     static public function toUri(DOMDocument $dom, string $dstFile, ?array $pars=null)

@@ -6,7 +6,7 @@ include_once(dirname(__DIR__) . '/php/autoload.php');
 use Psr\Log\LogLevel;
 use Oeuvres\Kit\{Log, LoggerWeb, Web};
 use Oeuvres\Teinte\Format\{Docx};
-use Oeuvres\Teinte\Tei2\{Tei2html};
+use Oeuvres\Teinte\Tei2\{Tei2toc,Tei2article};
 
 // output ERRORS to http client
 Log::setLogger(new LoggerWeb(LogLevel::ERROR, "[{level}] {datetime} "));
@@ -27,4 +27,5 @@ $_SESSION["teinte:file"] = $upload['name'];
 $source = new Docx();
 $source->load($src_file);
 $source->tei();
-echo Tei2html::toXml($source->dom());
+echo Tei2toc::toXml($source->dom());
+echo Tei2article::toXml($source->dom());

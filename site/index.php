@@ -36,6 +36,7 @@ $lang = Web::lang();
 <head>
   <meta charset="utf-8" />
   <link rel="stylesheet" href="<?= Route::home_href() ?>site/teinte_site.css" />
+  <link rel="stylesheet" href="<?= Route::home_href() ?>theme/teinte.css" />
   <title><?php
           if ($lang == 'fr') echo 'Teinte, transformer du TEI (HTML, txt…)';
           else echo 'Teinte, transform TEI (HTML, txt…)'
@@ -49,32 +50,36 @@ $lang = Web::lang();
     </header>
     <div id="row">
       <div id="upload">
-        <img width="64" class="back" src="<?= Route::home_href() ?>site/img/icon_upload.svg" />
         <header>
           <h2>Votre fichier</h2>
+          <div id="icons">
+            <img  class="todo" width="32" src="<?= Route::home_href() ?>site/img/icon_tei.svg" />
+            <img width="32" src="<?= Route::home_href() ?>site/img/icon_docx.svg" />
+            <img class="todo" width="32" src="<?= Route::home_href() ?>site/img/icon_epub.svg" />
+            <img class="todo" width="32" src="<?= Route::home_href() ?>site/img/icon_html.svg" />
+            <img class="todo" width="32" src="<?= Route::home_href() ?>site/img/icon_md.svg" />
+          </div>
         </header>
-        <div id="dropZone">
-          <header>(tei, docx, html, epub, txt)</header>
-          <label></label>
-          <div>
-            <button>Chercher un fichier</button>
+        <div id="dropzone">
+          <img width="64" class="back" src="<?= Route::home_href() ?>site/img/icon_upload.svg" />
+          <output></output>
+          <div class="bottom">
+            <button>ou chercher sur votre disque…</button>
             <input type="file" hidden />
           </div>
-          <!--
-          <p>Déposer ici un document</p>
-          <span>ou bien</span>
-        -->
         </div>
       </div>
       <div id="html">
         <img id="banner" src="<?= Route::home_href() ?>site/img/teinte.png" />
       </div>
       <div id="download">
-        <img width="64" class="back" src="<?= Route::home_href() ?>site/img/icon_download.svg" />
         <header>
           <h2>Téléchargements</h2>
         </header>
-        (formats)
+        <div>
+        <img width="64" class="back" src="<?= Route::home_href() ?>site/img/icon_download.svg" />
+
+        </div>
       </div>
     </div>
   </div>

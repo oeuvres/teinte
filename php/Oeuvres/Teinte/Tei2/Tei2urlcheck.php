@@ -17,7 +17,7 @@ use Oeuvres\Kit\{Filesys, Log};
 /**
  * Load a TEI document and perform an url check on //ref/@target
  */
-class Tei2urlcheck extends Tei2
+class Tei2urlcheck extends AbstractTei2
 {
     const NAME = 'urlcheck';
     const EXT = '.xml';
@@ -28,7 +28,7 @@ class Tei2urlcheck extends Tei2
     /**
      * Write transformation as an Uri, which is mainly, a file
      */
-    public function toUri(DOMDocument $dom, string $dst_file, ?array $pars=null) {
+    static public function toUri(DOMDocument $dom, string $dst_file, ?array $pars=null) {
         $dom = self::toDoc($dom, $pars);
         if ($dom) $dom->save($dst_file);
     }
@@ -36,7 +36,7 @@ class Tei2urlcheck extends Tei2
      * Export transformation as an XML string
      * (maybe not relevant for aggregated formats: docx, epub, site…)
      */
-    public function toXml(DOMDocument $dom, ?array $pars=null):?string
+    static public function toXml(DOMDocument $dom, ?array $pars=null):?string
     {
         $dom = self::toDoc($dom, $pars);
         return $dom->saveXML();
@@ -44,7 +44,7 @@ class Tei2urlcheck extends Tei2
     /**
      * Verify DOM
      */
-    public function toDoc(DOMDocument $dom, ?array $pars=null):?DOMDocument 
+    static public function toDoc(DOMDocument $dom, ?array $pars=null):?DOMDocument 
     {
 
         $context = stream_context_create(

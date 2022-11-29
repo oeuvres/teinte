@@ -9,15 +9,18 @@ const formats = {
 
 
 function dropInit() {
-    const dropZone = document.querySelector("#dropZone");
-    const dropMessage = dropZone.querySelector("label");
+    const dropZone = document.querySelector("#dropzone");
+    const dropOutput = dropZone.querySelector("output");
     const dropBut = dropZone.querySelector("button");
     const dropInput = dropZone.querySelector("input");
     const message = {
-        "leave":"Déposer ici un fichier",
+        "default":"Déposer ici votre fichier",
         "over":"Lâcher pour téléverser",
     }
     let file; //this is a global variable and we'll use it inside multiple functions
+    if (dropOutput) {
+        dropOutput.textContent = message['default'];
+    } 
     if (dropBut) {
         dropBut.onclick = () => {
             dropInput.click(); //if user click on the button then the input also clicked
@@ -35,12 +38,12 @@ function dropInit() {
     dropZone.addEventListener("dragover", (event) => {
         event.preventDefault(); //preventing from default behaviour
         dropZone.classList.add("active");
-        dropMessage.textContent = message['over'];
+        dropOutput.textContent = message['default'];
     });
     //If user leave dragged File from DropArea
     dropZone.addEventListener("dragleave", () => {
         dropZone.classList.remove("active");
-        dropMessage.textContent =  message['leave'];
+        dropOutput.textContent =  message['leave'];
     });
     //If user drop File on DropArea
     dropZone.addEventListener("drop", (event) => {
@@ -52,7 +55,7 @@ function dropInit() {
 
     function showFile() {
         let fileType = file.type; //getting selected file type
-        // dropMessage.textContent = file.type;
+        // dropOutput.textContent = file.type;
         // TODO test inputr format
         if (true) { //if user selected file is an image file
             /*
@@ -64,8 +67,7 @@ function dropInit() {
             */
            upload();
         } else {
-            alert("This is not an Image File!");
-            dropZone.classList.remove("active");
+           dropZone.classList.remove("active");
             dragText.textContent = "Drag & Drop to Upload File";
         }
     }
