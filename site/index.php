@@ -35,29 +35,45 @@ $lang = Web::lang();
 
 <head>
   <meta charset="utf-8" />
-  <link rel="stylesheet" href="<?= Route::home_href() ?>site/teinte_site.css" />
   <link rel="stylesheet" href="<?= Route::home_href() ?>theme/teinte.css" />
+  <link rel="stylesheet" href="<?= Route::home_href() ?>theme/teinte.tree.css" />
+  <script src="<?= Route::home_href() ?>theme/teinte.tree.js"></script>
+  <link rel="stylesheet" href="<?= Route::home_href() ?>site/teinte_site.css" />
   <title><?php
-          if ($lang == 'fr') echo 'Teinte, transformer du TEI (HTML, txt…)';
-          else echo 'Teinte, transform TEI (HTML, txt…)'
+          if ($lang == 'fr') echo 'Teinte, la conversion des livres';
+          else echo 'Teinte, conversion of books'
           ?></title>
 </head>
 
 <body>
   <div id="win">
     <header id="header">
-      <h1>Teinte, la conversion des livres (tei, docx, html, epub, txt)</h1>
+      <h1>Teinte, la conversion des livres (TEI, DOCX, HTML, EPUB, TXT)</h1>
     </header>
     <div id="row">
       <div id="upload">
         <header>
           <h2>Votre fichier</h2>
           <div id="icons">
-            <img  class="todo" width="32" src="<?= Route::home_href() ?>site/img/icon_tei.svg" />
-            <img width="32" src="<?= Route::home_href() ?>site/img/icon_docx.svg" />
-            <img class="todo" width="32" src="<?= Route::home_href() ?>site/img/icon_epub.svg" />
-            <img class="todo" width="32" src="<?= Route::home_href() ?>site/img/icon_html.svg" />
-            <img class="todo" width="32" src="<?= Route::home_href() ?>site/img/icon_md.svg" />
+            <img class="todo" width="32" alt="TEI"
+            title="TEI : texte XML (Text Encoding Initiative)" 
+            src="<?= Route::home_href() ?>site/img/icon_tei.svg" />
+
+            <img width="32" alt="DOCX" 
+            title="DOCX : texte bureautique (LibreOffice, Microsoft.Word…)" 
+            src="<?= Route::home_href() ?>site/img/icon_docx.svg" />
+
+            <img class="todo" width="32" alt="EPUB"
+            title="EPUB : livre électronique ouvert" 
+            src="<?= Route::home_href() ?>site/img/icon_epub.svg" />
+
+            <img class="todo" width="32" alt="HTML"
+            title="HTML : page internet" 
+            src="<?= Route::home_href() ?>site/img/icon_html.svg" />
+
+            <img class="todo" width="32" alt="MD"
+            title="MarkDown : texte brut légèrement formaté" 
+            src="<?= Route::home_href() ?>site/img/icon_md.svg" />
           </div>
         </header>
         <div id="dropzone">
@@ -69,7 +85,7 @@ $lang = Web::lang();
           </div>
         </div>
       </div>
-      <div id="html">
+      <div id="preview">
         <img id="banner" src="<?= Route::home_href() ?>site/img/teinte.png" />
       </div>
       <div id="download">

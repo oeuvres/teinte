@@ -63,10 +63,12 @@ body {
 
 #icons {
     display: flex;
+    align-items: center;
+    justify-content: center;
     margin-bottom: 1rem;
 }
 #icons img {
-    width: 100%;
+    opacity: 0.5;
     /*
     background-color: #fff;
     border: 0.3rem solid #fff;
@@ -74,12 +76,10 @@ body {
 }
 
 #icons img.todo {
-    background-color: transparent;
-    border-color: transparent;
-    opacity: 0;
+    /* opacity: 0; */
 }
 
-#html {
+#preview {
     flex-grow: 4;
     flex-shrink: 4;
     overflow: auto;
@@ -111,6 +111,15 @@ body {
     text-align: center;
     width: 16rem;
     height: 16rem;
+    overflow-wrap: break-word;
+}
+
+#dropzone.inactive {
+    background-color: transparent;    
+}
+
+#preview.active {
+    background-color: #fff;
 }
 
 
@@ -135,9 +144,13 @@ img.back {
     right: 0;
     top: 50%;
     transform: translate(0, -70%);
+}
+
+#dropzone big {
     font-weight: bold;
     font-size: 2rem;
 }
+
 
 #dropzone .bottom {
     position: absolute;
@@ -147,13 +160,46 @@ img.back {
 }
 
 #dropzone button {
-    border: ridge 2px #fff;
+    color: #aaa;
+    border: solid 1px #aaa;
     border-radius: 0.5rem;
     background-color: transparent;
     cursor: pointer;
 }
 
 #dropzone button:hover {
-    background-color: #eee;
+    color: #000;
+    border-color: #000;
 }
 
+div.format {
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+#dropzone  div.format {
+    height: 7rem;
+    padding-top: 1rem;
+    text-align: center;
+}
+#dropzone  div.format,
+#dropzone  div.filename {
+}
+
+
+div.format.docx {
+    background-image: url('img/icon_docx.svg');
+}
+div.format.epub {
+    background-image: url('img/icon_docx.epub');
+}
+div.format.html {
+    background-image: url('img/icon_html.svg');
+}
+div.format.md {
+    background-image: url('img/icon_md.svg');
+}
+div.format.tei {
+    background-image: url('img/icon_tei.svg');
+}

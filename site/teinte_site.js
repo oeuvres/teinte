@@ -1,10 +1,17 @@
-const formats = {
-    // "image/jpeg", "image/jpg", "image/png"
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.document": "docx",
-    // "application/epub+zip":"epub",
-    // "text/html":"html",
-    // "application/xhtml+xml":"html",
-    // "text/xml":"tei",
+const extensions = {
+    "docx": "docx",
+    "epub": "epub",
+    "htm": "html",
+    "html": "html",
+    "md": "md",
+    "txt": "md",
+    "xhtml": "html",
+    "xml": "tei",
+}
+
+const conversions = {
+    "docx": ["tei", "epub", "html", "md"],
+    // "tei": ["docx", "epub", "html", "md"],
 }
 
 
@@ -13,37 +20,48 @@ function dropInit() {
     const dropOutput = dropZone.querySelector("output");
     const dropBut = dropZone.querySelector("button");
     const dropInput = dropZone.querySelector("input");
+    const dropPreview = document.getElementById('preview');
+
     const message = {
-        "default":"Déposer ici votre fichier",
-        "over":"Lâcher pour téléverser",
+        "default": "<big>Déposer ici votre fichier</big>",
+        "over": "Lâcher pour téléverser",
     }
-    let file; //this is a global variable and we'll use it inside multiple functions
+    // shared variable
+    let file;
+    let format;
     if (dropOutput) {
-        dropOutput.textContent = message['default'];
-    } 
+        dropOutput.innerHTML = message['default'];
+    }
     if (dropBut) {
         dropBut.onclick = () => {
             dropInput.click(); //if user click on the button then the input also clicked
         }
     }
-    if (dropBut) {
+    if (dropInput) {
         dropInput.addEventListener("change", function () {
             //getting user select file and [0] this means if user select multiple files then we'll select only the first one
             file = this.files[0];
+            dropZone.classList.remove("inactive");
             dropZone.classList.add("active");
+            dropPreview.classList.remove("active");
+            dropPreview.classList.add("inactive");
             showFile(); //calling function
         });
     }
     //If user Drag File Over DropArea
     dropZone.addEventListener("dragover", (event) => {
         event.preventDefault(); //preventing from default behaviour
+        dropZone.classList.remove("inactive");
         dropZone.classList.add("active");
-        dropOutput.textContent = message['default'];
+        dropPreview.classList.remove("active");
+        dropPreview.classList.add("inactive");
+    dropOutput.innerHTML = message['default'];
     });
     //If user leave dragged File from DropArea
     dropZone.addEventListener("dragleave", () => {
+        dropZone.classList.remove("inactive");
         dropZone.classList.remove("active");
-        dropOutput.textContent =  message['leave'];
+        dropOutput.innerHTML = message['default'];
     });
     //If user drop File on DropArea
     dropZone.addEventListener("drop", (event) => {
@@ -54,34 +72,30 @@ function dropInit() {
     });
 
     function showFile() {
-        let fileType = file.type; //getting selected file type
-        // dropOutput.textContent = file.type;
-        // TODO test inputr format
-        if (true) { //if user selected file is an image file
-            /*
-            let fileReader = new FileReader(); //creating new FileReader object
-            fileReader.onload = () => {
-                let fileURL = fileReader.result; //passing user file source in fileURL variable
-            }
-            fileReader.readAsDataURL(file);
-            */
-           upload();
-        } else {
-           dropZone.classList.remove("active");
-            dragText.textContent = "Drag & Drop to Upload File";
+        dropZone.classList.add("inactive");
+        let ext = file.name.split('.').pop();
+        format = extensions[ext];
+        if (!(format in conversions)) {
+            dropOutput.innerHTML = '<b>“' + format + '” format<br/>is not  supported</b><br/>' + file.name;
+            return;
         }
+        dropOutput.innerHTML = '<div class="filename">' + file.name + '</div>' 
+        + '<div class="format ' + format + '"></div>';
+        upload();
     }
     async function upload() {
-        let out = document.getElementById('html');
         let formData = new FormData();
         formData.append("file", file);
         fetch('site/upload.php', {
-          method: "POST", 
-          body: formData
+            method: "POST",
+            body: formData
         }).then((response) => {
             return response.text();
         }).then((html) => {
-            out.innerHTML = html;
+            dropPreview.classList.add("active");
+            dropPreview.classList.remove("inactive");
+            dropPreview.innerHTML = html;
+            Tree.load();
         });
     }
 }

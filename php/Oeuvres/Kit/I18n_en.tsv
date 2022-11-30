@@ -1,0 +1,20 @@
+key	message simple
+key	"<a href=""blah"">Message with quote</a>"
+
+title	Verbatim
+cts.label	Fast access
+cts.title	urn:cts or Kühn reference (ex : 18b.26.4)
+cts.placeholder	 e.g. XVIII B, 559; 18a.553.3 ; urn:cts:greekLit:tlg0057.tlg001.1st1K-grc1…
+template.de_href	de_en
+template.de	About /<br/>Credits
+template.moto	Browse Galen, ed. Kühn (1821–1833) &amp; al.
+template.opera	Welcome /<br/>Table of works
+template.verba	Frequent<br/>words
+zotero.TitLa	Latin title
+zotero.fichtner	Fichtner number
+zotero.kuhn	Kühn edition
+zotero.AbbrLa	CMG abbreviation
+zotero.TitGrcCMG	Greek title
+zotero.TitFrBM	French title
+zotero.TitEnCGT	English title
+zotero.AbbrEnCGT	CGT abbreviation
