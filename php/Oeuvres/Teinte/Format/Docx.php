@@ -104,6 +104,8 @@ class Docx extends Zip
             'word/endnotes.xml' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.endnotes+xml',
             // link in endnotes
             'word/_rels/endnotes.xml.rels' => 'application/vnd.openxmlformats-package.relationships+xml',
+            // for lists numbering
+            "word/numbering.xml" => "application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml",
         ];
         foreach($entries as $name => $type) {
             // check error here ?
@@ -139,10 +141,15 @@ class Docx extends Zip
      */
     function teilike():void
     {
+        // DO NOT indent, reuse dom object with right props
         Xsl::loadXml($this->xml, $this->dom);
-        // xsl, DO NOT indent 
-        $this->xml = Xsl::transformToXml(
+        $this->dom = Xsl::transformToDoc(
             self::$xsl_dir . 'docx/docx_teilike.xsl', 
+            $this->dom,
+        );
+        // out that as xml for pcre
+        $this->xml = Xsl::transformToXml(
+            self::$xsl_dir . 'docx/divs.xsl', 
             $this->dom,
         );
     }

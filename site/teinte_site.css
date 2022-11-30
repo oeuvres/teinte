@@ -67,10 +67,16 @@ body {
 }
 #icons img {
     width: 100%;
+    /*
+    background-color: #fff;
+    border: 0.3rem solid #fff;
+    */
 }
 
-img.todo {
-    opacity: 0.3;
+#icons img.todo {
+    background-color: transparent;
+    border-color: transparent;
+    opacity: 0;
 }
 
 #html {
@@ -104,7 +110,6 @@ img.todo {
     padding: 1rem;
     text-align: center;
     width: 16rem;
-    border: groove 2px #fff;
     height: 16rem;
 }
 

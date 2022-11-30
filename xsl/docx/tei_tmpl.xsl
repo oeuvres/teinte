@@ -145,6 +145,32 @@ s#</(bg|color|font|mark)_[^>]+>#</hi>#g
       <xsl:apply-templates/>
     </hi>
   </xsl:template>
+  <!-- beter list hierarchy -->
+  <xsl:template match="tei:item">
+    <xsl:variable name="next" select="following-sibling::tei:item[1]"/>
+    <xsl:copy>
+      <xsl:apply-templates select="node()|@*"/>
+      <xsl:for-each select="following-sibling::tei:list[following-sibling::tei:item[count(.|$next) = 1]]">
+        <xsl:text>&#10;</xsl:text>
+        <!-- list/ -->
+        <xsl:copy>
+          <xsl:apply-templates select="node()|@*"/>
+        </xsl:copy>
+        <xsl:text>&#10;</xsl:text>
+      </xsl:for-each>
+    </xsl:copy>
+  </xsl:template>
+  <xsl:template match="tei:list/tei:list"/>
+  <!-- 
+  not logic but possible
+  
+* I
+    * I.?.1
+  * I.2
+  -->
+  <xsl:template match="tei:list/tei:list[not(preceding-sibling::*[1][self::tei:item])]">
+    <xsl:apply-templates/>
+  </xsl:template>
   <xsl:template match="tei:author">
     <xsl:choose>
       <xsl:when test="ancestor::tei:analytic|ancestor::tei:bibl|ancestor::tei:editionStmt|ancestor::tei:monogr|ancestor::tei:msItem|ancestor::tei:msItemStruct|ancestor::tei:titleStmt">

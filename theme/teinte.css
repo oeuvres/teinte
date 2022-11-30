@@ -1379,6 +1379,7 @@ div.lg {
     font-size: 90%;
     margin: 1px 0 1rem 0;
     clear: both;
+    position: relative;
 }
 
 .note blockquote {

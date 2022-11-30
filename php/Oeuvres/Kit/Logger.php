@@ -42,8 +42,10 @@ abstract class Logger extends AbstractLogger
     private string $suffix = ""; 
     /** Default level of message to output */
     private int $verbosity = 4;
-    /** For a duration */
-    private $start_time = 0;
+    /** Global duration */
+    private $time_start = 0;
+    /** Elapsed between log message */
+    private $time_lapse = 0;
 
     public function __construct(
         ?string $level = LogLevel::ERROR, 
@@ -51,7 +53,8 @@ abstract class Logger extends AbstractLogger
     ) {
         $this->level($level);
         $this->prefix($prefix);
-        $this->start_time = microtime(true);
+        $this->time_start = $this->time_lapse = microtime(true);
+
     }
 
     /**
@@ -100,10 +103,12 @@ abstract class Logger extends AbstractLogger
         if ($verbosity > $this->verbosity) return false;
 
         $date = new DateTime();
-        $context['level'] = $level;
+        $context['level'] = str_pad($level, 8, ' ', STR_PAD_LEFT);
         $context['datetime'] = $date->format('Y-m-d H:i:s');
         $context['time'] = $date->format('H:i:s');
-        $context['duration'] = number_format(microtime(true) - $this->start_time, 3) . " s.";
+        $context['duration'] = number_format(microtime(true) - $this->time_start, 3) . "s.";
+        $context['lapse'] = "+" . (number_format(microtime(true) - $this->time_lapse, 3)) . "s.";
+        $this->time_lapse = microtime(true);
         $mess = $this->interpolate($this->prefix . $message . $this->suffix, $context);
         
         $this->write($level, $mess);

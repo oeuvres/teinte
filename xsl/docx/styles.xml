@@ -42,6 +42,15 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
   <style level="0" name="normal"/>
   <style level="0" name="notedebasdepage"/>
   <style level="0" name="notedefin"/>
+  <style level="0" name="titre1car"/>
+  <style level="0" name="titre2car"/>
+  <style level="0" name="titre3car"/>
+  <style level="0" name="titre4car"/>
+  <style level="0" name="titre5car"/>
+  <style level="0" name="titre6car"/>
+  <style level="0" name="titre7car"/>
+  <style level="0" name="titre8car"/>
+  <style level="0" name="titre9car"/>
   <!-- styles paragraph level -->
   <style level="p" name="ab" element="ab" attribute="type" value="ornament" doc="true"/>
   <style level="p" name="address" element="addrLine" parent="address" doc="true"/>
@@ -178,18 +187,6 @@ LGPL  http://www.gnu.org/licenses/lgpl.html
   <style level="p" name="syl14" element="l" attribute="met" value="syl14"/>
   <style level="p" name="texteenvers" element="l" parent="lg"/>
   <style level="p" name="term" element="term" parent="index" doc="true"/>
-  <style level="p" name="title" element="head"/>
-  <style level="p" name="titre" element="head"/>
-  <style level="p" name="titre1" element="head" attribute="subtype" value="1"/>
-  <style level="p" name="titre2" element="head" attribute="subtype" value="2"/>
-  <style level="p" name="titre3" element="head" attribute="subtype" value="3"/>
-  <style level="p" name="titre4" element="head" attribute="subtype" value="4"/>
-  <style level="p" name="titre5" element="head" attribute="subtype" value="5"/>
-  <style level="p" name="titre6" element="head" attribute="subtype" value="6"/>
-  <style level="p" name="titre7" element="head" attribute="subtype" value="7"/>
-  <style level="p" name="titre8" element="head" attribute="subtype" value="8"/>
-  <style level="p" name="titre9" element="head" attribute="subtype" value="9"/>
-  <style level="p" name="titre10" element="head" attribute="subtype" value="10"/>
   <style level="p" name="trailer" element="trailer" doc="true"/>
   <style level="p" name="vers" element="l"/>
   <style level="p" name="versrompu" element="l" attribute="type" value="part"/>

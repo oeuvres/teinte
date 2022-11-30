@@ -30,6 +30,9 @@
   <xsl:key name="endnotes.xml.rels" 
     match="//pkg:part[contains(@pkg:name, 'endnotes.xml.rels')]/*/*/rels:Relationship" 
     use="@Id"/>
+  <xsl:key name="style" 
+    match="w:style" 
+    use="@w:styleId"/>
   <xsl:template match="node()|@*">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
@@ -53,7 +56,16 @@
   <xsl:template match="w:p">
     <xsl:variable name="val" select="normalize-space(translate(w:pPr/w:pStyle/@w:val, $UC, $lc))"/>
     <xsl:variable name="style" select="$sheet/*/teinte:style[@level='p'][@name=$val]"/>
+    <xsl:variable name="w:style" select="key('style', w:pPr/w:pStyle/@w:val)"/>
+    <xsl:variable name="lvl" select="$w:style/w:pPr/w:outlineLvl/@w:val"/>
     <xsl:choose>
+      <!-- para in table cell -->
+      <xsl:when test="ancestor::w:tc">
+        <xsl:text>&#10;      </xsl:text>
+      </xsl:when>
+      <xsl:when test="w:pPr/w:numPr">
+        <xsl:text>&#10;</xsl:text>
+      </xsl:when>
       <!-- para in footnote force line break -->
       <xsl:when test="ancestor::w:footnote|ancestor::w:endnote">
         <xsl:text>&#10;    </xsl:text>
@@ -69,6 +81,17 @@
     </xsl:variable>
     <xsl:variable name="rend" select="normalize-space($_rend)"/>
     <xsl:choose>
+      <!-- list item -->
+      <xsl:when test="w:pPr/w:numPr">
+        <item level="{w:pPr/w:numPr/w:ilvl/@w:val + 1}" n="{w:pPr/w:numPr/w:numId/@w:val}">
+          <xsl:apply-templates select="w:hyperlink | w:r"/>
+        </item>
+      </xsl:when>
+      <xsl:when test="$lvl != '' and not(ancestor::w:tc|ancestor::w:footnote|ancestor::w:footnote)">
+        <head level="{$lvl+1}">
+          <xsl:apply-templates select="w:hyperlink | w:r"/>
+        </head>
+      </xsl:when>
       <xsl:when test="$sheet/*/teinte:style[@level='0'][@name=$val] or $val = ''">
         <p>
           <xsl:if test="$rend != ''">
@@ -241,6 +264,36 @@
       <xsl:text>    </xsl:text>
     </space>
   </xsl:template>
+  <!-- 
+      <w:tblGrid>
+      <w:gridCol w:w="3020" />
+      <w:gridCol w:w="3021" />
+      <w:gridCol w:w="3021" />
+    </w:tblGrid>
+    -->
+  <xsl:template match="w:tbl">
+    <xsl:text>&#10;&#10;</xsl:text>
+    <table>
+      <xsl:apply-templates select="w:tr"/>
+      <xsl:text>&#10;</xsl:text>
+    </table>
+  </xsl:template>
+  <xsl:template match="w:tr">
+    <xsl:text>&#10;  </xsl:text>
+    <row>
+      <xsl:apply-templates select="w:tc"/>
+      <xsl:text>&#10;  </xsl:text>
+    </row>
+  </xsl:template>
+  <xsl:template match="w:tc">
+    <xsl:text>&#10;    </xsl:text>
+    <cell>
+      <xsl:apply-templates/>
+    <xsl:text>&#10;    </xsl:text>
+    </cell>
+  </xsl:template>
+  <!-- Info cell -->
+  <xsl:template match="w:tcPr"/>
   <!-- Notes -->
   <xsl:template match="w:footnoteReference">
     <xsl:for-each select="key('footnotes',@w:id)">

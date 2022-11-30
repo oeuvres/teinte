@@ -27,5 +27,4 @@ $_SESSION["teinte:file"] = $upload['name'];
 $source = new Docx();
 $source->load($src_file);
 $source->tei();
-echo Tei2toc::toXml($source->dom());
 echo Tei2article::toXml($source->dom());
