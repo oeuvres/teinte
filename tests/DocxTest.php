@@ -9,6 +9,10 @@ use Oeuvres\Kit\{Filesys, Log, LoggerCli};
 use Oeuvres\Teinte\Format\{Docx};
 
 $docx_file = __DIR__ . '/data/test.docx';
+if (isset($argv[1])) {
+    $docx_file = $argv[1];
+}
+// $docx_file = __DIR__ . '/data/test.docx';
 
 Log::setLogger(new LoggerCli(LogLevel::DEBUG));
 

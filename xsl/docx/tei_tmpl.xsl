@@ -607,11 +607,27 @@ s#</(bg|color|font|mark)_[^>]+>#</hi>#g
     </xsl:choose>
   </xsl:template>
   <xsl:template match="tei:div/tei:head/tei:id"/>
+  
+  <!-- simplify some  -->
   <xsl:template match="tei:p">
     <xsl:variable name="mixed" select="text()[normalize-space(.) != '']"/>
     <xsl:choose>
-      <xsl:when test="not($mixed) and count(*) = 1 and tei:pb">
+      <xsl:when test="$mixed">
+        <xsl:copy>
+          <xsl:apply-templates select="@* | node()"/>
+        </xsl:copy>
+      </xsl:when>
+      <!-- para with only on epage break -->
+      <xsl:when test="count(*) = 1 and tei:pb">
         <xsl:apply-templates/>
+      </xsl:when>
+      <!-- para all in italic -->
+      <xsl:when test="count(*) = 1 and tei:hi">
+        <xsl:copy>
+          <xsl:apply-templates select="@*"/>
+          <xsl:attribute name="rend">i</xsl:attribute>
+          <xsl:apply-templates select="tei:hi/node()"/>
+        </xsl:copy>
       </xsl:when>
       <xsl:otherwise>
         <xsl:copy>
@@ -630,7 +646,7 @@ s#</(bg|color|font|mark)_[^>]+>#</hi>#g
   <xsl:template match="tei:note">
     <xsl:variable name="prev" select="local-name(preceding-sibling::*[1])"/>
     <xsl:copy>
-      <!-- auto id -->
+      <!-- autoid ?
       <xsl:attribute name="xml:id">
         <xsl:choose>
           <xsl:when test="@resp">
@@ -661,6 +677,7 @@ s#</(bg|color|font|mark)_[^>]+>#</hi>#g
           </xsl:otherwise>
         </xsl:choose>
       </xsl:attribute>
+      -->
       <xsl:copy-of select="@*"/>
       <xsl:apply-templates/>
     </xsl:copy>

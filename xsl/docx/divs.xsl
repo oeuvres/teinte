@@ -163,6 +163,7 @@
     <xsl:param name="tag"/>
     <xsl:choose>
       <xsl:when test="$n &gt; 0">
+        <xsl:text>&#10;</xsl:text>
         <xsl:processing-instruction name="{$tag}"/>
         <xsl:text>&#10;</xsl:text>
         <xsl:call-template name="tagOpen">
@@ -182,6 +183,7 @@
         <xsl:with-param name="tag">div</xsl:with-param>
         <xsl:with-param name="n" select="$last/@level"/>
       </xsl:call-template>
+      <xsl:text>&#10;</xsl:text>
     </xsl:copy>
   </xsl:template>
 

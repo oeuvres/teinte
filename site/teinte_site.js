@@ -23,8 +23,8 @@ function dropInit() {
     const dropPreview = document.getElementById('preview');
 
     const message = {
-        "default": "<big>Déposer ici votre fichier</big>",
-        "over": "Lâcher pour téléverser",
+        "default": "Déposer ici votre fichier",
+        "over": "<big>Lâcher pour téléverser</big>",
     }
     // shared variable
     let file;
@@ -55,7 +55,7 @@ function dropInit() {
         dropZone.classList.add("active");
         dropPreview.classList.remove("active");
         dropPreview.classList.add("inactive");
-    dropOutput.innerHTML = message['default'];
+        dropOutput.innerHTML = message['over'];
     });
     //If user leave dragged File from DropArea
     dropZone.addEventListener("dragleave", () => {
@@ -84,6 +84,9 @@ function dropInit() {
         upload();
     }
     async function upload() {
+        dropPreview.classList.add("active");
+        dropPreview.classList.remove("inactive");
+        dropPreview.innerHTML = '<img align="center" width="80%" class="waiting" src="site/img/waiting.svg"/>';
         let formData = new FormData();
         formData.append("file", file);
         fetch('site/upload.php', {
@@ -92,8 +95,6 @@ function dropInit() {
         }).then((response) => {
             return response.text();
         }).then((html) => {
-            dropPreview.classList.add("active");
-            dropPreview.classList.remove("inactive");
             dropPreview.innerHTML = html;
             Tree.load();
         });

@@ -76,7 +76,7 @@ body {
 }
 
 #icons img.todo {
-    /* opacity: 0; */
+    opacity: 0;
 }
 
 #preview {
@@ -112,6 +112,11 @@ body {
     width: 16rem;
     height: 16rem;
     overflow-wrap: break-word;
+}
+
+#dropzone * {
+    /*should avoid some events odds */
+    pointer-events: none;
 }
 
 #dropzone.inactive {

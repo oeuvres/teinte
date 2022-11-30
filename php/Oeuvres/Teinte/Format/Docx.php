@@ -116,22 +116,33 @@ class Docx extends Zip
                 else Log::debug($m);
                 continue;
             }
-            // strip xml prolog
-            $offset = 0;
-            if(preg_match(
-                "/\s*<\?xml[^\?>]*\?>\s*/",
-                $content, 
-                $matches, 
-                PREG_OFFSET_CAPTURE
-            )) {
-                $offset = $matches[0][1] + strlen($matches[0][0]);
-            }
+            // delete different things for a lighter do
+            $content = preg_replace(
+                [
+                    "/\s*<\?xml[^\?>]*\?>\s*/",
+                    // no effects seen on performances
+                    // '/<w:latentStyles.*?<\/w:latentStyles>/s',
+                    // '/ w:rsidRPr="[^"]+"/',
+                ],
+                [
+                    '',
+                ],
+                $content
+            );
             $this->xml .= "
   <pkg:part pkg:contentType=\"$type\" pkg:name=\"/$name\">
-    <pkg:xmlData>\n" . substr($content, $offset) . "\n    </pkg:xmlData>
+    <pkg:xmlData>\n" . $content . "\n    </pkg:xmlData>
   </pkg:part>
 ";
         }
+        // add custom style table here for tag mapping
+        $content = file_get_contents(self::$xsl_dir . 'docx/styles.xml');
+        $content = preg_replace('/^.*<sheet/ms', '<sheet', $content);
+        $this->xml .= "
+        <pkg:part pkg:contentType=\"$type\" pkg:name=\"/teinte/styles.xml\">
+          <pkg:xmlData>\n" . $content . "\n    </pkg:xmlData>
+        </pkg:part>
+      ";
         $this->xml .= "\n</pkg:package>\n";
     }
 

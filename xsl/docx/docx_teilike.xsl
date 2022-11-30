@@ -22,24 +22,33 @@
   <xsl:key name="footnotes" match="//w:footnotes/w:footnote" use="@w:id"/>
   <xsl:key name="endnotes" match="//w:endnotes/w:endnote" use="@w:id"/>
   <xsl:key name="document.xml.rels" 
-    match="//pkg:part[contains(@pkg:name, 'document.xml.rels')]/*/*/rels:Relationship" 
+    match="/pkg:package/pkg:part[@pkg:name = '/word/_rels/document.xml.rels']/pkg:xmlData/*/rels:Relationship" 
     use="@Id"/>
   <xsl:key name="footnotes.xml.rels" 
-    match="//pkg:part[contains(@pkg:name, 'footnotes.xml.rels')]/*/*/rels:Relationship" 
+    match="/pkg:package/pkg:part[@pkg:name = '/word/_rels/ootnotes.xml.rels']/pkg:xmlData/*/rels:Relationship" 
     use="@Id"/>
   <xsl:key name="endnotes.xml.rels" 
-    match="//pkg:part[contains(@pkg:name, 'endnotes.xml.rels')]/*/*/rels:Relationship" 
+    match="/pkg:package/pkg:part[@pkg:name = '/word/_rels/ndnotes.xml.rels']/pkg:xmlData/*/rels:Relationship" 
     use="@Id"/>
-  <xsl:key name="style" 
+  <xsl:key name="w:style" 
     match="w:style" 
     use="@w:styleId"/>
+  <xsl:key name="teinte_p" 
+    match="teinte:style[@level='p']" 
+    use="@name"/>
+  <xsl:key name="teinte_c" 
+    match="teinte:style[@level='c']" 
+    use="@name"/>
+  <xsl:key name="teinte_0" 
+    match="teinte:style[@level='0']" 
+    use="@name"/>
   <xsl:template match="node()|@*">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="/">
-    <xsl:apply-templates select="//w:document"/>
+    <xsl:apply-templates select="/pkg:package/pkg:part[@pkg:name = '/word/document.xml']/pkg:xmlData/w:document"/>
   </xsl:template>
   <!-- root element -->
   <xsl:template match="w:document">
@@ -55,8 +64,8 @@
   <!-- block -->
   <xsl:template match="w:p">
     <xsl:variable name="val" select="normalize-space(translate(w:pPr/w:pStyle/@w:val, $UC, $lc))"/>
-    <xsl:variable name="style" select="$sheet/*/teinte:style[@level='p'][@name=$val]"/>
-    <xsl:variable name="w:style" select="key('style', w:pPr/w:pStyle/@w:val)"/>
+    <xsl:variable name="teinte_p" select="key('teinte_p', $val)"/>
+    <xsl:variable name="w:style" select="key('w:style', w:pPr/w:pStyle/@w:val)"/>
     <xsl:variable name="lvl" select="$w:style/w:pPr/w:outlineLvl/@w:val"/>
     <xsl:choose>
       <!-- para in table cell -->
@@ -81,9 +90,9 @@
     </xsl:variable>
     <xsl:variable name="rend" select="normalize-space($_rend)"/>
     <xsl:choose>
-      <!-- list item -->
+      <!-- list item, TODO listStyle, see in w:pPr/w:numPr/w:numId/@w:val -->
       <xsl:when test="w:pPr/w:numPr">
-        <item level="{w:pPr/w:numPr/w:ilvl/@w:val + 1}" n="{w:pPr/w:numPr/w:numId/@w:val}">
+        <item level="{w:pPr/w:numPr/w:ilvl/@w:val + 1}">
           <xsl:apply-templates select="w:hyperlink | w:r"/>
         </item>
       </xsl:when>
@@ -102,23 +111,23 @@
           <xsl:apply-templates select="w:hyperlink | w:r"/>
         </p>
       </xsl:when>
-      <xsl:when test="$style/@parent != ''">
-        <xsl:element name="{$style/@parent}">
-          <xsl:element name="{$style/@element}">
-            <xsl:if test="$style/@attribute">
-              <xsl:attribute name="{$style/@attribute}">
-                <xsl:value-of select="$style/@value"/>
+      <xsl:when test="$teinte_p/@parent != ''">
+        <xsl:element name="{$teinte_p/@parent}">
+          <xsl:element name="{$teinte_p/@element}">
+            <xsl:if test="$teinte_p/@attribute">
+              <xsl:attribute name="{$teinte_p/@attribute}">
+                <xsl:value-of select="$teinte_p/@value"/>
               </xsl:attribute>
             </xsl:if>
             <xsl:apply-templates select="w:hyperlink | w:r"/>
           </xsl:element>
         </xsl:element>
       </xsl:when>
-      <xsl:when test="$style/@element">
-        <xsl:element name="{$style/@element}">
-          <xsl:if test="$style/@attribute">
-            <xsl:attribute name="{$style/@attribute}">
-              <xsl:value-of select="$style/@value"/>
+      <xsl:when test="$teinte_p/@element">
+        <xsl:element name="{$teinte_p/@element}">
+          <xsl:if test="$teinte_p/@attribute">
+            <xsl:attribute name="{$teinte_p/@attribute}">
+              <xsl:value-of select="$teinte_p/@value"/>
             </xsl:attribute>
           </xsl:if>
           <xsl:apply-templates select="w:hyperlink | w:r"/>
@@ -169,27 +178,43 @@
     </figure>
     <xsl:text>&#10;</xsl:text>
   </xsl:template>
+  <!-- Do nothing with that -->
+  <xsl:template match="w:rPr"/>
   <!-- chars -->
   <xsl:template match="w:r">
-    <!-- only text, to avoid notes in superscript -->
+    <!-- 
+LibreOffice
+<w:r>
+  <w:rPr/>
+  <w:t>Une ligne avec saut de ligne</w:t>
+  <w:br/>
+  <w:t>Ligne de suite</w:t>
+</w:r>
+Seen
+<w:r w:rsidR="00E74673" w:rsidRPr="00C04750">
+  <w:rPr>
+    <w:i/>
+  </w:rPr>
+  <w:br w:type="page"/>
+</w:r>
+
+-->
     <xsl:variable name="t">
-      <xsl:for-each select="*[not(self::w:rPr)]">
-        <xsl:apply-templates select="."/>
-      </xsl:for-each>
+      <xsl:apply-templates/>
     </xsl:variable>
-    <!-- What about line break in superscript ? -->
+    <xsl:variable name="subsup" select="w:rPr/w:vertAlign/@w:val"/>
     <xsl:variable name="sup">
       <xsl:choose>
         <!-- probably footnote reference or graphic, do not put in <tag> -->
         <xsl:when test="$t = ''">
            <xsl:copy-of select="$t"/>
         </xsl:when>
-        <xsl:when test="w:rPr/w:vertAlign/@w:val = 'superscript'">
+        <xsl:when test="$subsup = 'superscript'">
           <sup>
             <xsl:copy-of select="$t"/>
           </sup>
         </xsl:when>
-        <xsl:when test="w:rPr/w:vertAlign/@w:val = 'subscript'">
+        <xsl:when test="$subsup = 'subscript'">
           <sup>
             <xsl:copy-of select="$t"/>
           </sup>
@@ -231,31 +256,32 @@
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
-    <!-- last out -->
+        <!-- style tag -->
     <xsl:variable name="val" select="normalize-space(translate(w:rPr/w:rStyle/@w:val, $UC, $lc))"/>
-    <xsl:variable name="style" select="$sheet/*/teinte:style[@level='c'][@name=$val]"/>
+    <xsl:variable name="teinte_c" select="key('teinte_c', $val)"/>
     <xsl:choose>
       <xsl:when test="$val = ''">
         <xsl:copy-of select="$i"/>
       </xsl:when>
       <!-- redundant -->
-      <xsl:when test="ancestor::w:hyperlink and $style/@element = 'ref'">
+      <xsl:when test="ancestor::w:hyperlink">
         <xsl:copy-of select="$i"/>
       </xsl:when>
-      <xsl:when test="$style/@element != ''">
-        <xsl:element name="{$style/@element}">
-          <xsl:copy-of select="$i"/>
+      <xsl:when test="$teinte_c/@element != ''">
+        <xsl:element name="{$teinte_c/@element}">
+        <xsl:copy-of select="$i"/>
         </xsl:element>
       </xsl:when>
-      <xsl:when test="$sheet/*/teinte:style[@level='0'][@name=$val]">
+      <xsl:when test="key('teinte_0', $val)">
         <xsl:copy-of select="$i"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:element name="{$val}">
-          <xsl:copy-of select="$i"/>
+        <xsl:copy-of select="$i"/>
         </xsl:element>
       </xsl:otherwise>
     </xsl:choose>
+
   </xsl:template>
   <xsl:template match="w:sectPr"/>
   <!-- spaces -->
@@ -297,7 +323,6 @@
   <!-- Notes -->
   <xsl:template match="w:footnoteReference">
     <xsl:for-each select="key('footnotes',@w:id)">
-      <xsl:value-of select="position()"/>
       <note place="foot">
         <xsl:choose>
           <xsl:when test="count(w:p) = 1">
