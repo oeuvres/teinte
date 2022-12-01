@@ -71,15 +71,16 @@ class Misc
      */
     public static function pcre_tsv($tsv_file, $sep = "\t")
     {
+        if (true !== ($ret = Filesys::readable($tsv_file))) {
+            Log::error('Regex file impossible to read — ' . $ret);
+            return null;
+        }
+
         $search = []; // pattern to compile
         $sub = []; // replacement 
         $delim = '@'; // regex delimiter
         $var_search = [$delim]; // macros to replace in search pattern
         $var_replace = ["\\$delim"];
-        if (true !== ($ret = Filesys::readable($tsv_file))) {
-            Log::error('Regex file impossible to read — ' . $ret);
-            return null;
-        }
 
 
         $n = 0;
@@ -152,15 +153,24 @@ class Misc
     /**
      * Build a map from tsv file where first col is the key.
      */
-    static function tsv_map($tsvfile, $sep = "\t")
+    static function tsv_map($file, $sep = "\t")
     {
+        if (true !== ($ret = Filesys::readable($file))) {
+            Log::error('Map file not readable — ' . $ret);
+            return null;
+        }
+
         $ret = array();
-        $handle = fopen($tsvfile, "r");
-        $l = 0;
+        $handle = fopen($file, "r");
+        $n = 0;
         while (($data = fgetcsv($handle, 0, $sep)) !== FALSE) {
-            $l++;
+            $n++;
             if (!$data || !count($data) || !$data[0]) {
                 continue; // empty lines
+            }
+            // comment
+            if (substr(trim($data[0]), 0, 1) === '#') {
+                continue;
             }
             /* Log ?
             if (isset($ret[$data[0]])) {
@@ -171,9 +181,33 @@ class Misc
                 continue;
             }
 
-            $ret[$data[0]] = stripslashes($data[1]);
+            $ret[stripslashes($data[0])] = stripslashes($data[1]);
         }
         fclose($handle);
         return $ret;
+    }
+
+    /**
+     * Send debug message for json decode
+     */
+    static function json(string $json)
+    {
+        $data = json_decode($json, true);
+        // something went wrong, say it
+        if ($data === null) {
+            $json_error = json_last_error();
+            // it’s really null
+            if ($json_error === JSON_ERROR_NONE) return $data;
+            // php messages are not very informative, lib could do better here
+            // https://github.com/Seldaek/jsonlint
+            $msg = json_last_error_msg();
+            // loop on known error messages, take a nice translation
+            switch ($json_error) {
+                case JSON_ERROR_SYNTAX:
+                    $msg = I18n::_('JSON_ERROR_SYNTAX');
+            }
+            Log::warning($msg);
+        }
+        return $data;
     }
 }

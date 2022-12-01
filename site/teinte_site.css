@@ -114,8 +114,9 @@ body {
     overflow-wrap: break-word;
 }
 
-#dropzone * {
-    /*should avoid some events odds */
+#dropzone output,
+#dropzone img {
+    /*should avoid some events odds, exept for the serach but */
     pointer-events: none;
 }
 

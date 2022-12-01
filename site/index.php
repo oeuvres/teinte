@@ -55,7 +55,7 @@ $lang = Web::lang();
         <header>
           <h2>Votre fichier</h2>
           <div id="icons">
-            <img class="todo" width="32" alt="TEI"
+            <img width="32" alt="TEI"
             title="TEI : texte XML (Text Encoding Initiative)" 
             src="<?= Route::home_href() ?>site/img/icon_tei.svg" />
 
@@ -99,7 +99,7 @@ $lang = Web::lang();
       </div>
     </div>
   </div>
-  <script type="text/javascript" src="<?= Route::home_href() ?>site/teinte_site.js"> </script>
+  <script type="module" type="text/javascript" src="<?= Route::home_href() ?>site/teinte_site.js"> </script>
 </body>
 
 </html>

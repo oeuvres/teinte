@@ -26,7 +26,7 @@ use Oeuvres\Teinte\Tei2\{TeiExportFactory};
 class Xml extends File
 {
     /** Store XML as a string, maybe reused */
-    protected $xml;
+    protected ?string $xml = null;
     /** DOM Document to process */
     protected $dom;
     /** Xpath processor for the doc */
@@ -76,7 +76,12 @@ class Xml extends File
         return $this->xpath;
     }
 
-
-
+    /**
+     * Return xml as loaded
+     */
+    public function xml(): string
+    {
+        return $this->xml;
+    }
 }
 // EOF

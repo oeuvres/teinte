@@ -1,0 +1,11 @@
+{
+    "docx": "docx",
+    "epub": "epub",
+    "htm": "html",
+    "html": "html",
+    "md": "md",
+    "tei": "tei",
+    "txt": "md",
+    "xhtml": "html",
+    "xml": "tei"
+}

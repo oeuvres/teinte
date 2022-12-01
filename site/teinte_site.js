@@ -1,17 +1,8 @@
-const extensions = {
-    "docx": "docx",
-    "epub": "epub",
-    "htm": "html",
-    "html": "html",
-    "md": "md",
-    "txt": "md",
-    "xhtml": "html",
-    "xml": "tei",
-}
+import extensions from './extensions.json' assert { type: 'json' };
 
 const conversions = {
     "docx": ["tei", "epub", "html", "md"],
-    // "tei": ["docx", "epub", "html", "md"],
+    "tei": ["docx", "epub", "html", "md"],
 }
 
 
