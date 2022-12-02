@@ -17,7 +17,7 @@ session_start();
 if (!isset($_SESSION['tei'])) {
     http_response_code(404);
     echo "<h1>" . I18n::_('download.notei') . "</h1>";
-    exit();
+    exit("\n");
 }
 $par_format = Web::par('format');
 $src_filename = "";
@@ -29,7 +29,7 @@ if (!$dst_name) $dst_name = I18n::_('book');
 if (!$par_format) {
     http_response_code(400);
     echo "<h1>" . I18n::_('download.noformat', $src_filename) . "</h1>";
-    exit();
+    exit("\n");
 }
 $format = File::path2format($par_format);
 // exports supported
@@ -37,7 +37,7 @@ $supported = ['tei', 'html'];
 if (!$format || !in_array($format, $supported)) {
     http_response_code(400);
     echo "<h1>" . I18n::_('download.format404', $par_format, $src_filename) . "</h1>";
-    exit();
+    exit("\n");
 }
 
 
@@ -58,7 +58,7 @@ if ($format == 'tei') {
     header("Content-Length: " . Web::length($_SESSION['tei']));
     flush();
     print($_SESSION['tei']);
-    exit();
+    exit("\n");
 }
 $tei = new Tei();
 $tei->loadXml($_SESSION['tei']);
@@ -71,7 +71,7 @@ if ($format == 'html') {
     header("Content-Length: " . Web::length($html));
     flush();
     print($html);
-    exit();
+    exit("\n");
 }
 
 
