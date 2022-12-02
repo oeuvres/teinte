@@ -518,6 +518,7 @@ class Web
      * Get length in byte from a string content, for Content-Length http header
      */
     static function length(string &$str) {
+        if (!$str) return 0;
         return ini_get('mbstring.func_overload') ? mb_strlen($str , '8bit') : strlen($str);
     }
 }

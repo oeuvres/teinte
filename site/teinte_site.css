@@ -34,7 +34,7 @@ body {
 }
 
 #header h1 a:hover {
-    background-color: #888;
+    background-color: #333;
 }
 
 #win {}
@@ -103,6 +103,7 @@ img.waiting {
     margin-left: auto;
     margin-right: auto;
     margin-top: 3rem;
+    height: 70vh;
 }
 
 #banner {

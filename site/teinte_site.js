@@ -42,6 +42,9 @@ function dropInit() {
             dropInput.click(); //if user click on the button then the input also clicked
         }
     }
+    dropZone.onmousedown = () => {
+        dropInput.click(); 
+    }
     if (dropInput) {
         dropInput.addEventListener("change", function () {
             //getting user select file and [0] this means if user select multiple files then we'll select only the first one
@@ -118,9 +121,7 @@ function dropInit() {
             return response.text();
         }).then((html) => {
             dropPreview.innerHTML = html;
-            console.log(( (Date.now() - timeStart) / 1000).toFixed(3));
             Tree.load();
-            console.log(( (Date.now() - timeStart) / 1000).toFixed(3));
         });
     }
 }
