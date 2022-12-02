@@ -5,16 +5,19 @@ include_once(dirname(__DIR__) . '/php/autoload.php');
 
 use Psr\Log\LogLevel;
 use Oeuvres\Kit\{Log, LoggerWeb, Misc, Web};
-use Oeuvres\Teinte\Format\{Docx, Tei};
+use Oeuvres\Teinte\Format\{Docx, File, Tei};
 use Oeuvres\Teinte\Tei2\{Tei2toc,Tei2article};
 
-$extensions = Misc::json(file_get_contents('extensions.json'));
 // output ERRORS to http client
 Log::setLogger(new LoggerWeb(LogLevel::ERROR));
 
 
 const DOCX = "docx";
 const TEI = "tei";
+
+// clean even with error
+session_start();
+$_SESSION = [];
 
 // get file
 $upload = Web::upload();
@@ -24,16 +27,14 @@ if (!$upload || !count($upload) && !isset($upload['tmp_name'])) {
     http_response_code(400 );
     exit();
 }
-// file should be OK here, start session
-session_start();
-$_SESSION = [];
 
 $src_file = $upload['tmp_name'];
 // orginal name
-$filename = $upload['name'];
-$ext = pathinfo($filename, PATHINFO_EXTENSION);
-$format = $ext;
-if (isset($extensions[$ext])) $format = $extensions[$ext];
+$file_name = $upload['name'];
+$_SESSION['name'] = $file_name;
+// $ext = pathinfo($filename, PATHINFO_EXTENSION);
+$format = File::path2format($file_name);
+
 
 if ($format === DOCX) {
     // check if docx ?
@@ -50,4 +51,7 @@ else if ($format === TEI) {
     $source->load($src_file);
     $_SESSION['tei'] = $source->xml();
     echo $source->toXml('article');
-} 
+}
+else {
+    $_SESSION['tei'] = null;
+}

@@ -1,27 +1,25 @@
-<svg xmlns="http://www.w3.org/2000/svg" id="svg833" version="1.1" viewBox="0 0 90 90">
-   <style id="style828">
+<svg xmlns="http://www.w3.org/2000/svg" id="svg7" version="1.1" viewBox="0 0 90 90">
+   <style id="style2">
       #cover,
-      #pages {
+      #pages,
+      #arrow {
          stroke: #000;
-         stroke-width: 2;
-         stroke-linecap: square;
+         stroke-width: 3;
+         stroke-linecap: round;
+         stroke-linejoin: round;
+         fill: none;
       }
 
       #cover {
          fill: #cccccc;
       }
 
-      #pages {
-         fill: none;
-      }
-
       #arrow {
-         stroke: #000;
-         stroke-width: 4;
+         stroke-linecap: butt;
          fill: #fff;
       }
    </style>
-   <path id="cover" d="M10 25c0-5 5-10 10-10h50v50H20c-5 0-10 5-10 10z" />
-   <path id="pages" d="M10 70v5c0 5 5 10 10 10h60V20" />
-   <path id="arrow" d="M35 75V35L15 45 45 5l30 40-20-10v40" />
+   <path id="cover" d="M20 65h50V35H20c-5 0-10 5-10 10v30c0-5 5-10 10-10z" />
+   <path id="pages" d="M80 50v35H20c-5 0-10-5-10-10V65" />
+   <path id="arrow" d="M35 75V25H5L45 5l40 20H55v50" />
 </svg>

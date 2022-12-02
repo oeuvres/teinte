@@ -1,0 +1,22 @@
+{
+    "docx": {
+        "ext":".docx",
+        "mime":"application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    },
+    "epub": {
+        "ext":".epub",
+        "mime":"application/epub+zip"
+    },
+    "html": {
+        "ext":".html",
+        "mime":"text/html; charset=utf-8"
+    },
+    "md": {
+        "ext":".md",
+        "mime":"text/plain; charset=utf-8"
+    },
+    "tei": {
+        "ext":".xml",
+        "mime":"text/xml"
+    }
+}

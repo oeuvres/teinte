@@ -13,7 +13,7 @@ namespace Oeuvres\Teinte\Format;
 
 use DOMDocument, Exception, ZipArchive;
 use ErrorException;
-use Oeuvres\Kit\{Filesys, Log, Misc, Xsl};
+use Oeuvres\Kit\{Filesys, Log, Parse, Xsl};
 
 
 /**
@@ -23,6 +23,8 @@ use Oeuvres\Kit\{Filesys, Log, Misc, Xsl};
  */
 class Docx extends Zip
 {
+    /** Avoid multiple initialisation */
+    static private bool $init = false;
     /** Where is the xsl pack, set in one place, do not repeat */
     static protected ?string $xsl_dir;
     /** A search replace program */
@@ -37,11 +39,14 @@ class Docx extends Zip
     /**
      * Inialize static variables
      */
-    static function init()
+    static function init(): void
     {
+        if (self::$init) return;
+        parent::init();
         self::$xsl_dir = dirname(__DIR__, 4) . '/xsl/';
         $pcre_tsv = self::$xsl_dir . 'docx/teilike_pcre.tsv';
-        self::$preg = Misc::pcre_tsv($pcre_tsv);
+        self::$preg = Parse::pcre_tsv($pcre_tsv);
+        self::$init = true;
     }
 
 
@@ -231,7 +236,7 @@ class Docx extends Zip
         }
         if ($pcre_tsv) {
             Log::info("Docx => TEI, user pattern loading: $pcre_tsv");
-            self::$user_preg = Misc::pcre_tsv($pcre_tsv);
+            self::$user_preg = Parse::pcre_tsv($pcre_tsv);
         }
     }
 

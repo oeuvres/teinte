@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Part of Teinte https://github.com/oeuvres/teinte
  * Copyright (c) 2020 frederic.glorieux@fictif.org
@@ -19,7 +20,7 @@ use Psr\Log\{AbstractLogger, InvalidArgumentException, LogLevel, LoggerInterface
  *
  * @see https://www.php-fig.org/psr/psr-3/
  */
-class Log 
+class Log
 {
     const MAIN = "main";
     /** different channels to log in */
@@ -157,10 +158,19 @@ class Log
     /**
      * Return a Psr/3 logger
      */
-    static public function channel(string $channel):LoggerInterface
+    static public function channel(string $channel): LoggerInterface
     {
         if (!isset(self::$loggers[$channel])) return false;
         return self::$loggers[$channel];
+    }
+
+    /**
+     * return last error message if logger allow it or false
+     */
+    static public function last(): string
+    {
+        if (!method_exists(self::$loggers[self::MAIN], 'last')) return false;
+        return self::$loggers[self::MAIN]->last();
     }
 
     /**
@@ -169,10 +179,9 @@ class Log
     public static function init()
     {
         // ensure timezone ()
-        if(ini_get('date.timezone')) {
+        if (ini_get('date.timezone')) {
             date_default_timezone_set(ini_get('date.timezone'));
-        }
-        else {
+        } else {
             date_default_timezone_set("Europe/Paris");
         }
         // ensure static logging
@@ -180,7 +189,7 @@ class Log
     }
 
 
-    public static function setLogger(LoggerInterface $logger, ?string $channel = self::MAIN):void
+    public static function setLogger(LoggerInterface $logger, ?string $channel = self::MAIN): void
     {
         self::$loggers[$channel] = $logger;
     }

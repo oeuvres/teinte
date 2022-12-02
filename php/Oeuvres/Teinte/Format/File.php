@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Part of Teinte https://github.com/oeuvres/teinte
  * Copyright (c) 2020 frederic.glorieux@fictif.org
@@ -11,13 +12,19 @@ declare(strict_types=1);
 
 namespace Oeuvres\Teinte\Format;
 
-use Oeuvres\Kit\{Filesys, Log};
+use Oeuvres\Kit\{Filesys, Log, Parse};
 
 /**
  * A file, tools to read and write
  */
 class File
 {
+    /** Avoid multiple initialisation */
+    static private bool $init = false;
+    /** Convert extension to a format known here */
+    private static array $ext2format = [];
+    /** Properties for a format */
+    private static array $formats = [];
     /** filepath */
     protected $file;
     /** filename without extension */
@@ -26,6 +33,62 @@ class File
     protected $filemtime;
     /** file size */
     protected $filesize;
+
+    static function init(): void
+    {
+        if (self::$init) return;
+        self::$ext2format = Parse::json(file_get_contents(__DIR__ . '/ext2format.json'));
+        self::$formats = Parse::json(file_get_contents(__DIR__ . '/formats.json'));
+        self::$init = true;
+    }
+
+    /**
+     * Get a normalized known format from extension
+     */
+    static public function path2format(string &$file): ?string
+    {
+        $ext = pathinfo('.' . $file, PATHINFO_EXTENSION);
+        $ext = strtolower($ext);
+        if (!isset(self::$ext2format[$ext])) return null;
+        return self::$ext2format[$ext];
+    }
+
+    /**
+     * Mime for a known format
+     */
+    static public function mime(string &$format): ?string
+    {
+        if (!isset(self::$formats[$format])) return null;
+        return self::$formats[$format]['mime'];
+    }
+
+    /**
+     * Extension for a known format
+     */
+    static public function ext(string &$format): ?string
+    {
+        if (!isset(self::$formats[$format])) return null;
+        return self::$formats[$format]['ext'];
+    }
+
+    /**
+     * Get length in byte from a string content
+     */
+    static function length(string &$str) {
+        return ini_get('mbstring.func_overload') ? mb_strlen($str , '8bit') : strlen($str);
+    }
+    
+    /**
+     * Get a class 
+     */
+    static public function path2class(string &$file): ?string
+    {
+        $format = self::path2format($file);
+        if (!$format) return null;
+        $format = ucfirst($format);
+        $class = "Oeuvres\\Teinte\\Format\\" . $format;
+        return $class;
+    }
 
     /**
      * Load a file, return nothing, used by child classes.
@@ -72,5 +135,5 @@ class File
     {
         return $this->filesize;
     }
-
 }
+File::init();

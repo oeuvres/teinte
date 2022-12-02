@@ -3,6 +3,7 @@
     #cartouche {
       fill: #86B918;
     }
+
     #cover,
     #pages,
     #back {
@@ -11,8 +12,9 @@
       stroke-linecap: square;
       fill: none;
     }
+
     #cartouche_bord {
-      fill:none;
+      fill: none;
       stroke: #ffffff;
       stroke-width: 4;
       stroke-linecap: square;
@@ -20,9 +22,9 @@
   </style>
 
   <path id="cartouche" d="M 20,60 H 70 L 85,85 H 20 c -5,0 -10,-5 -10,-10 0,0 0,10 0,-5 0,-5 5,-10 10,-10 z" />
-    <path id="cartouche_bord" d="M 70,60 H 20 c -5,0 -10,5 -10,10 v 5 c 0,5 5,10 10,10 h 65"/>
+  <path id="cartouche_bord" d="M 70,60 H 20 c -5,0 -10,5 -10,10 v 5 c 0,5 5,10 10,10 h 65" />
 
-  <path id="cover" d="M20 60h50V5H25c-9.769 0-14.858 6.505-15 15v50c0-5 5-10 10-10z" />
+  <path id="cover" d="M 20,60 H 70 V 5 H 20 C 15,5 10,10 10,15 v 55 c 0,-5 5,-10 10,-10 z" />
   <path id="pages" d="M85 85H20c-5 0-10-5-10-10v-5" />
   <path id="back" d="M85 15v70" />
 

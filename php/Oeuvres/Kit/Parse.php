@@ -16,29 +16,10 @@ Check::extension('mbstring');
 /**
  * code convention https://www.php-fig.org/psr/psr-12/
  */
-class Misc
+class Parse
 {
     /** An error message, used for preg_replace messages */
     static private $errstr = "";
-
-    static function mois($num)
-    {
-        $mois = array(
-            1 => 'janvier',
-            2 => 'février',
-            3 => 'mars',
-            4 => 'avril',
-            5 => 'mai',
-            6 => 'juin',
-            7 => 'juillet',
-            8 => 'août',
-            9 => 'septembre',
-            10 => 'octobre',
-            11 => 'novembre',
-            12 => 'décembre',
-        );
-        return $mois[(int)$num];
-    }
 
     /**
      * Build a search/replace regexp table from a sed script
@@ -87,7 +68,8 @@ class Misc
         $handle = fopen($tsv_file, "r");
         // handle regex compilation warnings
         set_error_handler(function($errno, $errstr, $errfile, $errline) {
-            self::$errstr = $errstr;
+            if (self::$errstr) self::$errstr .= "\n";
+            self::$errstr .= $errstr;
         });
         while (($row = fgetcsv($handle, 0, $sep)) !== FALSE) {
             $n++;
@@ -122,7 +104,9 @@ class Misc
                 $row[1]
             );
             // try to compile re
+            self::$errstr = '';
             preg_replace($pattern, $replacement, "");
+
             if (preg_last_error() !== PREG_NO_ERROR) {
                 preg_match('/offset (\d+)/', self::$errstr, $matches);
                 $offset = $matches[1];

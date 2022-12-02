@@ -27,7 +27,7 @@ class I18n
      */
     public static function load($tsv_file)
     {
-        $map = Misc::tsv_map($tsv_file);
+        $map = Parse::tsv_map($tsv_file);
         self::put($map);
     }
 

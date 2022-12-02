@@ -45,6 +45,8 @@ body {
     flex-basis: 18rem;
     flex-shrink: 0;
     text-align: center;
+    overflow: auto;
+    height: calc(100vh - 2rem);
 }
 
 #upload h2,
@@ -84,6 +86,13 @@ body {
     flex-shrink: 4;
     overflow: auto;
     height: calc(100vh - 2rem);
+}
+
+img.waiting {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 3rem;
 }
 
 #banner {
@@ -183,6 +192,29 @@ div.format {
     background-position: center;
     background-repeat: no-repeat;
 }
+
+a.download {
+    margin: 1rem 0;
+    padding: 0.5rem;
+    color: #000;
+    text-decoration: none;
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.7);
+}
+
+a.download  div.format {
+    height: 5rem;
+    width: 5rem;
+    text-align: center;
+}
+
+a.download:hover {
+    background: #fff;
+}
+
 
 #dropzone  div.format {
     height: 7rem;

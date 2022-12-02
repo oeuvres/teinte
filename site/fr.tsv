@@ -1,0 +1,5 @@
+key	message
+book	livre
+download.notei	Avec vous déposé un fichier ? Rien à transformer.
+download.noformat	Pas de format de sortie indiqué pour “%s”
+download.format404	“%s” n’est pas un format d’export connu

@@ -7,25 +7,18 @@ include_once(dirname(__DIR__) . '/php/autoload.php');
 use \Oeuvres\Kit\{Route, Web};
 
 error_reporting(E_ALL);
-
-$format = "html";
-if (isset($_REQUEST['format'])) $format = $_REQUEST['format'];
-// A file is submited, work
-$upload = Web::upload();
-if ($upload) {
-  // TODO
-  /*
-    $teinte = new Teinte_Doc( $upload['tmp_name'] );
-    $teinte->filename( $upload['filename'] );
-    $content = $teinte->export($format, null, array('theme'=>'../theme/'));
-    header( 'Content-Type: '.Teinte_Web::$mime[$format] );
-    if ( isset( $_REQUEST['download'] ) ) {
-      header('Content-Disposition: attachment; filename="'.$upload['filename'].Teinte_Doc::$ext[$format].'"');
-    }
-    echo $content;
-    */
-  exit();
+// onload, destroy session, 
+session_start();
+$_SESSION = [];
+// destroy session cookie
+if (ini_get("session.use_cookies")) {
+    $params = session_get_cookie_params();
+    setcookie(session_name(), '', time() - 42000,
+        $params["path"], $params["domain"],
+        $params["secure"], $params["httponly"]
+    );
 }
+session_destroy();
 $lang = Web::lang();
 
 
@@ -48,7 +41,7 @@ $lang = Web::lang();
 <body>
   <div id="win">
     <header id="header">
-      <h1>Teinte, la conversion des livres (TEI, DOCX, HTML, EPUB, TXT)</h1>
+      <h1><a href="?refresh=<?= time() ?>">Teinte, la conversion des livres (TEI, DOCX, HTML, EPUB, TXT)</a></h1>
     </header>
     <div id="row">
       <div id="upload">
@@ -92,8 +85,8 @@ $lang = Web::lang();
         <header>
           <h2>Téléchargements</h2>
         </header>
-        <div>
         <img width="64" class="back" src="<?= Route::home_href() ?>site/img/icon_download.svg" />
+        <div id="exports">
 
         </div>
       </div>

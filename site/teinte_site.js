@@ -1,10 +1,23 @@
-import extensions from './extensions.json' assert { type: 'json' };
-
+const home_href = '';
+let response;
+response = await fetch(
+    home_href + 'php/Oeuvres/Teinte/Format/ext2format.json',
+    {cache: "no-cache"}
+);
+const ext2format = await response.json();
+response = await fetch(
+    home_href + 'php/Oeuvres/Teinte/Format/formats.json',
+    {cache: "no-cache"}
+);
+const formats = await response.json();
 const conversions = {
     "docx": ["tei", "epub", "html", "md"],
     "tei": ["docx", "epub", "html", "md"],
+    "docx": ["tei", "html"],
+    "tei": ["html"],
 }
 
+console.log(formats);
 
 function dropInit() {
     const dropZone = document.querySelector("#dropzone");
@@ -12,6 +25,7 @@ function dropInit() {
     const dropBut = dropZone.querySelector("button");
     const dropInput = dropZone.querySelector("input");
     const dropPreview = document.getElementById('preview');
+    const dropExports = document.getElementById('exports');
 
     const message = {
         "default": "Déposer ici votre fichier",
@@ -63,9 +77,12 @@ function dropInit() {
     });
 
     function showFile() {
+        // user interrupt ?
+        if (!file || !file.name) return;
         dropZone.classList.add("inactive");
         let ext = file.name.split('.').pop();
-        format = extensions[ext];
+        format = ext2format[ext];
+        if (!format) format = ext;
         if (!(format in conversions)) {
             dropOutput.innerHTML = '<b>“' + format + '” format<br/>is not  supported</b><br/>' + file.name;
             return;
@@ -75,19 +92,35 @@ function dropInit() {
         upload();
     }
     async function upload() {
-        dropPreview.classList.add("active");
         dropPreview.classList.remove("inactive");
-        dropPreview.innerHTML = '<img align="center" width="80%" class="waiting" src="site/img/waiting.svg"/>';
+        dropPreview.innerHTML = '<p class="center">Fichier en cours de traitement… (jusqu’à plusieurs secondes selon le format et la taille du fichier)</p>'
+        + '<img width="80%" class="waiting" src="site/img/c.svg"/>';
+        let timeStart = Date.now();
         let formData = new FormData();
         formData.append("file", file);
         fetch('site/upload.php', {
             method: "POST",
             body: formData
         }).then((response) => {
+            let downs = conversions[format];
+            let html = "";
+            const name = file.name.replace(/\.[^/.]+$/, "");
+            for (let i = 0, length = downs.length; i < length; i++) {
+                const format2 = downs[i];
+                let ext = formats[format2].ext;
+                html += '\n<a target="_blank" class="download" href="download?format=' + format2 + '">' 
+                + '<div class="format ' + format2 + '"></div>'
+                + '<div class="filename">' + name + ext + '</div>'
+                + '</a>';
+            }
+            dropExports.innerHTML = html;
+            dropPreview.classList.add("active");
             return response.text();
         }).then((html) => {
             dropPreview.innerHTML = html;
+            console.log(( (Date.now() - timeStart) / 1000).toFixed(3));
             Tree.load();
+            console.log(( (Date.now() - timeStart) / 1000).toFixed(3));
         });
     }
 }
