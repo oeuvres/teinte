@@ -108,7 +108,7 @@ function dropInit() {
             for (let i = 0, length = downs.length; i < length; i++) {
                 const format2 = downs[i];
                 let ext = formats[format2].ext;
-                html += '\n<a target="_blank" class="download" href="download?format=' + format2 + '">' 
+                html += '\n<a class="download" href="download?format=' + format2 + '">' 
                 + '<div class="format ' + format2 + '"></div>'
                 + '<div class="filename">' + name + ext + '</div>'
                 + '</a>';

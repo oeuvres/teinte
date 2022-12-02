@@ -168,7 +168,6 @@ class Xsl
 
     /**
      * An xslt transformer with cache
-     * TOTHINK : deal with errors
      */
     private static function transform(
         string $xsl_file,

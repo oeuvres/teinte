@@ -26,7 +26,6 @@ class Tei2docx extends AbstractTei2
     const NAME = 'docx';
     const EXT = '.docx';
     const LABEL = 'Microsoft.Word 2007 format';
-    const MIME = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
     /** Some mapping between 3 char iso languange code to 2 char */
     const ISO639_3char = [
         'eng' => 'en',

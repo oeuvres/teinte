@@ -47,7 +47,7 @@ class I18n
         $args = func_get_args();
         if (count($args) < 1) {
             Log::warning("No message requested");
-            return ' ';
+            return '';
         }
         $key = $args[0];
         if (isset(self::$messages[$key])) {

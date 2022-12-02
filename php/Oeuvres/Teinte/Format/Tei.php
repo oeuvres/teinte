@@ -37,33 +37,33 @@ class Tei extends Xml
     /**
      * Transform current dom and write to file.
      */
-    public function toUri(string $format, String $uri)
+    public function toUri(string $format, String $uri, ?array $pars=null)
     {
         $transfo = self::transfo($format);
         $transfo::template($this->template);
-        $transfo::toUri($this->dom, $uri);
+        $transfo::toUri($this->dom, $uri, $pars);
     }
 
     /**
      * Transform current dom and returns XML
      * (when relevant)
      */
-    public function toXml(string $format): string
+    public function toXml(string $format, ?array $pars=null): string
     {
         $transfo = self::transfo($format);
         $transfo::template($this->template);
-        return $transfo::toXml($this->dom);
+        return $transfo::toXml($this->dom, $pars);
     }
 
     /**
      * Transform current and returns result as dom
      * (when relevant)
      */
-    public function toDoc(string $format): DOMDocument
+    public function toDoc(string $format, ?array $pars=null): DOMDocument
     {
         $transfo = self::transfo($format);
         $transfo::template($this->template);
-        return $transfo::toDoc($this->dom);
+        return $transfo::toDoc($this->dom, $pars);
     }
 
     /**

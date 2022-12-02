@@ -87,7 +87,6 @@ $lang = Web::lang();
         </header>
         <img width="64" class="back" src="<?= Route::home_href() ?>site/img/icon_download.svg" />
         <div id="exports">
-
         </div>
       </div>
     </div>

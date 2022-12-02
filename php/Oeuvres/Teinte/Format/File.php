@@ -56,8 +56,9 @@ class File
     /**
      * Mime for a known format
      */
-    static public function mime(string &$format): ?string
+    static public function mime(?string &$format): ?string
     {
+        if (!$format) return null;
         if (!isset(self::$formats[$format])) return null;
         return self::$formats[$format]['mime'];
     }
@@ -65,24 +66,19 @@ class File
     /**
      * Extension for a known format
      */
-    static public function ext(string &$format): ?string
+    static public function ext(?string &$format): ?string
     {
+        if (!$format) return null;
         if (!isset(self::$formats[$format])) return null;
         return self::$formats[$format]['ext'];
-    }
-
-    /**
-     * Get length in byte from a string content
-     */
-    static function length(string &$str) {
-        return ini_get('mbstring.func_overload') ? mb_strlen($str , '8bit') : strlen($str);
     }
     
     /**
      * Get a class 
      */
-    static public function path2class(string &$file): ?string
+    static public function path2class(?string &$file): ?string
     {
+        if (!$file) return null;
         $format = self::path2format($file);
         if (!$format) return null;
         $format = ucfirst($format);

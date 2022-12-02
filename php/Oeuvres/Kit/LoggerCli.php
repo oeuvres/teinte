@@ -29,14 +29,15 @@ class LoggerCli extends Logger
         } else {
             $out = STDERR;
         }
-        fwrite( $out, $message . "\n");
+        fwrite($out, $message . "\n");
     }
 
     public function __construct(
         ?string $level = LogLevel::INFO, 
-        ?string $prefix = "{level} {duration} {lapse} — "
+        ?string $prefix = "{level} {duration} {lapse} — ",
+        ?string $suffix = ""
     ) {
-        parent::__construct($level, $prefix);
+        parent::__construct($level, $prefix, $suffix);
     }
 
 }

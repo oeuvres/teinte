@@ -51,10 +51,12 @@ abstract class Logger extends AbstractLogger
 
     public function __construct(
         ?string $level = LogLevel::ERROR, 
-        ?string $prefix = "[{level}] "
+        ?string $prefix = "[{level}] ",
+        ?string $suffix = ""
     ) {
         $this->level($level);
         $this->prefix($prefix);
+        $this->suffix($suffix);
         $this->time_start = $this->time_lapse = microtime(true);
 
     }
@@ -106,6 +108,7 @@ abstract class Logger extends AbstractLogger
 
         $date = new DateTime();
         $context['level'] = str_pad($level, 8, ' ', STR_PAD_LEFT);
+        $context['date'] = $date->format('Y-m-d');
         $context['datetime'] = $date->format('Y-m-d H:i:s');
         $context['time'] = $date->format('H:i:s');
         $context['duration'] = number_format(microtime(true) - $this->time_start, 3) . "s.";

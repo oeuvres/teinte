@@ -19,20 +19,11 @@ use Psr\Log\LogLevel;
  *
  * @see https://www.php-fig.org/psr/psr-3/
  */
-class LoggerWeb extends Logger
+class LoggerTxt extends Logger
 {
     protected function write($level, $message)
     {
-        $message = preg_replace('/\n/', "\n<br/>", $message);
-        echo "<p class=\"log $level\">[$level] $message</p>\n";
-    }
-
-    public function __construct(
-        ?string $level = LogLevel::ERROR,
-        ?string $prefix = "",
-        ?string $suffix = ""
-    ) {
-        parent::__construct($level, $prefix, $suffix);
+        echo $message . "\n";
     }
 
 }
