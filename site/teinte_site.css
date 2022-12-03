@@ -37,7 +37,6 @@ body {
     background-color: #333;
 }
 
-#win {}
 
 #row {
     display: flex;
@@ -232,10 +231,6 @@ a.download:hover {
     padding-top: 1rem;
     text-align: center;
 }
-#dropzone  div.format,
-#dropzone  div.filename {
-}
-
 
 div.format.docx {
     background-image: url('img/icon_docx.svg');
@@ -247,7 +242,10 @@ div.format.html {
     background-image: url('img/icon_html.svg');
 }
 div.format.md {
-    background-image: url('img/icon_md.svg');
+    background-image: url('img/icon_markdown.svg');
+}
+div.format.markdown {
+    background-image: url('img/icon_markdown.svg');
 }
 div.format.tei {
     background-image: url('img/icon_tei.svg');

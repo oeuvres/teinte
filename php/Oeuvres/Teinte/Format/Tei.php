@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Part of Teinte https://github.com/oeuvres/teinte
  * BSD-3-Clause https://opensource.org/licenses/BSD-3-Clause
@@ -16,11 +17,7 @@ use Oeuvres\Kit\{Log};
 use Oeuvres\Teinte\Tei2\{Tei2};
 
 /**
- * Tei exports are designed as a Strategy pattern
- * {@see \Oeuvres\Teinte\Tei2}
- * This class is the Context to use the different strategies.
- * All initialisations are as lazy as possible
- * to scan fast big directories.
+ * A tei file with export strategies
  */
 class Tei extends Xml
 {
@@ -30,14 +27,14 @@ class Tei extends Xml
 
     static public function transfo($format)
     {
-        $class = "Oeuvres\\Teinte\\Tei2\\Tei2".$format;
+        $class = "Oeuvres\\Teinte\\Tei2\\Tei2" . $format;
         return $class;
     }
 
     /**
      * Transform current dom and write to file.
      */
-    public function toUri(string $format, String $uri, ?array $pars=null)
+    public function toUri(string $format, String $uri, ?array $pars = null)
     {
         $transfo = self::transfo($format);
         $transfo::template($this->template);
@@ -48,7 +45,7 @@ class Tei extends Xml
      * Transform current dom and returns XML
      * (when relevant)
      */
-    public function toXml(string $format, ?array $pars=null): string
+    public function toXml(string $format, ?array $pars = null): string
     {
         $transfo = self::transfo($format);
         $transfo::template($this->template);
@@ -59,7 +56,7 @@ class Tei extends Xml
      * Transform current and returns result as dom
      * (when relevant)
      */
-    public function toDoc(string $format, ?array $pars=null): DOMDocument
+    public function toDoc(string $format, ?array $pars = null): DOMDocument
     {
         $transfo = self::transfo($format);
         $transfo::template($this->template);
@@ -71,7 +68,7 @@ class Tei extends Xml
      * extension. Nothing is supposed to be loaded, such path is used
      * for testing.
      */
-    function destination(string $src_file, string $format, ?string $dst_dir):string
+    public static function destination(string $src_file, string $format, ?string $dst_dir = null): string
     {
         $transfo = self::transfo($format);
         return $transfo::destination($src_file, $dst_dir);
@@ -80,7 +77,8 @@ class Tei extends Xml
     /**
      * Set a template directory here
      */
-    public function template(?string $dir = null) {
+    public function template(?string $dir = null)
+    {
         if ($dir && !is_dir($dir)) {
             throw new \InvalidArgumentException(
                 "Template: \"\033[91m$dir\033[0m\" is not a valid directory."
@@ -95,7 +93,7 @@ class Tei extends Xml
      * Load a TEI string, and normalize things, especially 
      * spaces, for docx (bad indent produce bad spacing)
      */
-    public static function normTei(string $srcXml):string
+    public static function normTei(string $srcXml): string
     {
         $block = "(ab|bibl|byline|dateline|desc|head|l|label|lb|p|signed|salute)";
         $re_norm = array(
@@ -211,7 +209,7 @@ class Tei extends Xml
 
         return $meta;
     }
-    
+
     /**
      * Output a txt fragment with no html tags for full-text searching
      */
@@ -301,8 +299,6 @@ class Tei extends Xml
         // resize image before copy ?
         // NO delete of <graphic> element if broken link
     }
-
-
 }
 
 // EOF

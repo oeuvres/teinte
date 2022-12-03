@@ -22,7 +22,7 @@ Check::extension('zip');
 class Tei2docx extends AbstractTei2
 {
     /** A docx file used as a template */
-    static private string $template;
+    static private ?string $template_docx = "";
     const NAME = 'docx';
     const EXT = '.docx';
     const LABEL = 'Microsoft.Word 2007 format';
@@ -33,10 +33,11 @@ class Tei2docx extends AbstractTei2
         'lat' => 'la',    
     ];
 
-    public function __construct()
+    public static function init()
     {
+        parent::init();
         // set default template
-        $this->template = self::$xsl_dir . '/tei_docx/template.docx';
+        self::$template_docx = self::$xsl_dir . '/tei_docx/template.docx';
     }
 
 
@@ -47,30 +48,24 @@ class Tei2docx extends AbstractTei2
     static function template(?string $dir = null):string
     {
         $dir = Filesys::normdir($dir);
-        $template = null;
+        $template_docx = null;
         if ($dir && is_dir($dir)) {
-            $template =  $dir . basename($dir) . ".docx";
+            $template_docx =  $dir . basename($dir) . ".docx";
             // first doc of dir ?
-            if (!is_file($template)) {
+            if (!is_file($template_docx)) {
                 $glob = glob($dir . "*.docx");
                 if (!$glob || count($glob) < 1) {
-                    $template = null;
+                    $template_docx= null;
                 } else {
-                    $template = $glob[0];
+                    $template_docx = $glob[0];
                 }
             }
         }
-        if ($template) {
-            Log::info(__CLASS__ . "::" . __FUNCTION__ . " $template");
-            $this->template = $template;
+        if ($template_docx) {
+            Log::info(__CLASS__ . "::" . __FUNCTION__ . " $template_docx");
+            self::$template_docx = $template_docx;
         }
-        // ask for template, maybe set before
-        else if(!$dir && $this->template) {
-        }
-        else {
-            $this->template = self::$xsl_dir . '/tei_docx/template.docx';
-        }
-        return $this->template;
+        return self::$template_docx;
     }
 
     /**
@@ -98,8 +93,8 @@ class Tei2docx extends AbstractTei2
         Log::info("Tei2\033[92m" . static::NAME ." \033[0m $dst_file");
         Filesys::writable($dst_file);
         $name = pathinfo($dom->documentURI, PATHINFO_FILENAME);
-        $template = $this->template; // should have been set
-        copy($template, $dst_file);
+        $template_docx = self::$template_docx; // should have been set
+        copy($template_docx, $dst_file);
         $zip = new ZipArchive();
         $zip->open($dst_file);
 
@@ -232,4 +227,5 @@ class Tei2docx extends AbstractTei2
     }
 
 }
-// EOF
+
+Tei2docx::init();

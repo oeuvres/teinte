@@ -13,11 +13,9 @@ const formats = await response.json();
 const conversions = {
     "docx": ["tei", "epub", "html", "md"],
     "tei": ["docx", "epub", "html", "md"],
-    "docx": ["tei", "html"],
-    "tei": ["html"],
+    "docx": ["tei", "html", "markdown"],
+    "tei": ["html", "docx", "markdown"],
 }
-
-console.log(formats);
 
 function dropInit() {
     const dropZone = document.querySelector("#dropzone");
@@ -126,28 +124,4 @@ function dropInit() {
     }
 }
 dropInit();
-/*
-function dropFile(e) {
-  e.preventDefault();
-  console.log(e.dataTransfer);
-  if (e.dataTransfer.items) {
-    // Use DataTransferItemList interface to access the file(s)
-    [...e.dataTransfer.items].forEach((item, i) => {
-      // If dropped items aren't files, reject them
-      if (item.kind === 'file') {
-        const file = item.getAsFile();
-        console.log(`… file[${i}].name = ${file.name}`);
-      }
-    });
-  } else {
-    // Use DataTransfer interface to access the file(s)
-    [...e.dataTransfer.files].forEach((file, i) => {
-      console.log(`… file[${i}].name = ${file.name}`);
-    });
-  }
-}
-*/
 
-function dropDrag(e) {
-    e.preventDefault();
-}

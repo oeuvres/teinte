@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-include_once(__DIR__ . '/inc.php');
+require_once(__DIR__ . '/inc.php');
 
 use Psr\Log\LogLevel;
 use Oeuvres\Kit\{I18n, Log, LoggerTxt, Parse, Web};
@@ -20,8 +20,9 @@ function attach($dst_name) {
         . sprintf('filename="%s"; ', rawurlencode($dst_name))
         // . sprintf("filename*=utf-8''%s", rawurlencode($dst_name))
     ;
-header($contentDisposition);
+    header($contentDisposition);
 }
+
 
 // do not output response code for download
 header('Content-Description: File Transfer');
@@ -55,7 +56,7 @@ if (!$par_format) {
 }
 $format = File::path2format($par_format);
 // exports supported
-$supported = ['tei', 'html'];
+$supported = [DOCX, HTML, TEI, MARKDOWN];
 if (!in_array($format, $supported)) {
     attach("Teinte, " . I18n::_("ERROR_UNKNOWN_FORMAT"). '.txt');
     echo I18n::_('download.format404', $par_format, $upload_name);
@@ -70,7 +71,7 @@ attach($dst_file);
 
 $tei_file = $_SESSION['teinte_tei_file'];
 // Tei Export
-if ($format == 'tei') {
+if ($format == TEI) {
     $length = filesize($tei_file);
     header("Content-Length: $length");
     header("Accept-Ranges: $length");
@@ -81,7 +82,7 @@ $tei = new Tei();
 $tei->load($tei_file);
 
 // html Export
-if ($format == 'html') {
+if ($format == HTML) {
     $content = ltrim($tei->toXml('html', ['theme' => 'https://oeuvres.github.io/teinte/theme/']));
     $length = Web::length($content);
     header("Content-Length: $length", true);
@@ -89,5 +90,22 @@ if ($format == 'html') {
     echo $content;
     die();
 }
-
-
+else if ($format == MARKDOWN) {
+    $content = ltrim($tei->toXml(MARKDOWN));
+    $length = Web::length($content);
+    header("Content-Length: $length", true);
+    header("Accept-Ranges: $length", true);
+    echo $content;
+    die();
+}
+else if ($format == DOCX) {
+    $dst_file = Tei::destination($tei_file, DOCX);
+    $tei->toUri(DOCX, $dst_file);
+    $length = filesize($dst_file);
+    header("Content-Length: $length");
+    header("Accept-Ranges: $length");
+    readfile($dst_file);
+}
+else {
+    echo "GROS BUG";
+}

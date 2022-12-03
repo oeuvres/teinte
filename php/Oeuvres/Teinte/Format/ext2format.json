@@ -3,9 +3,10 @@
     "epub": "epub",
     "htm": "html",
     "html": "html",
-    "md": "md",
+    "markdown": "markdown",
+    "md": "markdown",
     "tei": "tei",
-    "txt": "md",
+    "txt": "markdown",
     "xhtml": "html",
     "xml": "tei"
-}
+} 

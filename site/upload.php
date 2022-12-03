@@ -1,7 +1,8 @@
 <?php
 declare(strict_types=1);
 
-include_once(dirname(__DIR__) . '/php/autoload.php');
+require_once(__DIR__ . '/inc.php');
+
 
 use Psr\Log\LogLevel;
 use Oeuvres\Kit\{Filesys, I18n, Log, LoggerWeb, Web};
@@ -10,10 +11,6 @@ use Oeuvres\Teinte\Tei2\{Tei2toc,Tei2article};
 
 // output ERRORS to http client
 Log::setLogger(new LoggerWeb(LogLevel::ERROR));
-
-
-const DOCX = "docx";
-const TEI = "tei";
 
 // clean even with error
 session_start();
