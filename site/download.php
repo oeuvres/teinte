@@ -34,22 +34,21 @@ header('Pragma: public');
 ob_clean();
 
 // nothing has been uploaded
-if (!isset($_SESSION['tei'])) {
+if (!isset($_SESSION['teinte_tei_file'])) {
     attach("Teinte, " . I18n::_("ERROR_NO_UPLOAD") . '.txt');
     Log::error(I18n::_('download.notei'));
     exit();
 }
 $dst_name = I18n::_('book');
-$src_file = ""; 
-if (isset($_SESSION['name'])) {
-    $src_file =  $_SESSION['name'];
-    $dst_name = pathinfo($src_file, PATHINFO_FILENAME);
+if (isset($_SESSION['teinte_name'])) {
+    $upload_name =  $_SESSION['teinte_upload_name'];
+    $dst_name = $_SESSION['teinte_name'];
 }
 
 $par_format = Web::par('format');
 if (!$par_format) {
     attach("Teinte, " . I18n::_("ERROR_NO_FORMAT") . '.txt');
-    Log::error(I18n::_('download.noformat', $src_file));
+    Log::error(I18n::_('download.noformat', $upload_name));
     exit();
 }
 $format = File::path2format($par_format);
@@ -57,7 +56,7 @@ $format = File::path2format($par_format);
 $supported = ['tei', 'html'];
 if (!in_array($format, $supported)) {
     attach("Teinte, " . I18n::_("ERROR_UNKNOWN_FORMAT"). '.txt');
-    echo I18n::_('download.format404', $par_format, $src_file);
+    echo I18n::_('download.format404', $par_format, $upload_name);
     exit("\n");
 }
 
@@ -67,20 +66,17 @@ $dst_file = $dst_name . File::ext($format);
 attach($dst_file);
 
 
+$tei_file = $_SESSION['teinte_tei_file'];
 // Tei Export
 if ($format == 'tei') {
-    // erro length ?
-    $content = ltrim($_SESSION['tei']);
-    $length = Web::length($content);
-    header("Content-Length: $length", true);
+    $length = filesize($tei_file);
+    header("Content-Length: $length");
     header("Accept-Ranges: $length");
-    echo $content;
+    readfile($tei_file);
     die();
 }
 $tei = new Tei();
-$tei->loadXml($_SESSION['tei']);
-// if tmp file needed
-$tmp_file = tempnam(sys_get_temp_dir(), "teinte_");
+$tei->load($tei_file);
 
 // html Export
 if ($format == 'html') {

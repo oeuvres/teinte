@@ -1,5 +1,8 @@
 key	message
 book	livre
+upload.noname	Téléversement, erreur sur le serveur (mo name ?)
+upload.nomove	Téléversement, “%s”, impossible de déplacer vers “%s”
+upload.format404	Téléversement, “%s”, format non spporté (%s)
 download.notei	Avec vous déposé un fichier ? Rien à transformer.
 download.noformat	Pas de format de sortie indiqué pour “%s”
 download.format404	“%s” n’est pas un format d’export connu

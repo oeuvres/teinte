@@ -45,8 +45,9 @@ class File
     /**
      * Get a normalized known format from extension
      */
-    static public function path2format(string &$file): ?string
+    static public function path2format(?string &$file): ?string
     {
+        if (!$file) return null;
         $ext = pathinfo('.' . $file, PATHINFO_EXTENSION);
         $ext = strtolower($ext);
         if (!isset(self::$ext2format[$ext])) return null;
