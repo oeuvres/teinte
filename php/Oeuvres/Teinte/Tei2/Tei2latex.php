@@ -13,19 +13,19 @@ declare(strict_types=1);
 namespace Oeuvres\Teinte\Tei2;
 
 use DOMDocument;
-use Oeuvres\Kit\File;
+use Oeuvres\Kit\{Filesys, Log};
 
 
 /**
  * Transform an XML/TEI file in LaTeX
  */
-class Tei2latex  extends Tei2
+class Tei2latex  extends AbstractTei2
 {
     
     private string $template = "";
-    const NAME = 'LaTeX';
     const EXT = '.tex';
-    const LABEL = 'LaTeX';
+    const NAME = "latex";
+
 
 
     public $dom; // dom prepared for TeX (escapings, images)
@@ -71,7 +71,7 @@ class Tei2latex  extends Tei2
             // same folder
             if (!$grafdir);
             // absolute path
-            else if (File::isPathAbs($grafdir)) {
+            else if (Filesys::isPathAbs($grafdir)) {
                 $grafabs = $grafdir;
             } else {
                 $grafabs = $workdir . $grafdir;
@@ -81,7 +81,7 @@ class Tei2latex  extends Tei2
             '@(\\\includegraphics[^{]*){(.*?)}@',
             function ($matches) use ($srcdir, $workdir, $grafdir, $grafabs) {
                 $imgfile = $matches[2];
-                if (!File::isPathAbs($grafdir)) $imgfile = $srcdir . $imgfile;
+                if (!Filesys::isPathAbs($grafdir)) $imgfile = $srcdir . $imgfile;
                 $imgbname = basename($imgfile);
                 $replace = $matches[0];
                 if (!file_exists($imgfile)) {
@@ -220,10 +220,10 @@ class Tei2latex  extends Tei2
         $workdir = self::workdir($this->srcfile);
 
         $grafdir = $workdir . $texname . '/';
-        File::cleandir($grafdir); // empty graf dir
+        Filesys::cleandir($grafdir); // empty graf dir
 
         // resolve includes and graphics of tex template
-        $tex = Latex::includes($skelfile, $workdir, $grafdir);
+        $tex = self::includes($skelfile, $workdir, $grafdir);
         // resolve image links in tei source
         $this->teigraf($grafdir, $texname . '/');
         $this->dom->save($workdir . $texname . '.xml'); // for debug, save a copy of XML
@@ -266,21 +266,28 @@ class Tei2latex  extends Tei2
             }
         }
     */
+    /**
+     * @ override
+     */
+    static public function toUri(DOMDocument $dom, string $dstFile, ?array $pars = null)
+    {
+        Log::error(__METHOD__." Not yet implemented");
+    }
 
     /**
      * @ override
      */
-    function toDoc(DOMDocument $dom, ?array $pars=null):?\DOMDocument
+    static function toDoc(DOMDocument $dom, ?array $pars=null):?\DOMDocument
     {
-        $this->logger->error(__METHOD__." dom export not relevant");
+        Log::error(__METHOD__." dom export not relevant");
         return null;
     }
     /**
      * @ override
      */
-    function toXml(DOMDocument $dom, ?array $pars=null):?string
+    static function toXml(DOMDocument $dom, ?array $pars=null):?string
     {
-        $this->logger->error(__METHOD__." xml export not relevant");
+        Log::error(__METHOD__." xml export not relevant");
         return null;
     }
 

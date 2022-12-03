@@ -14,7 +14,7 @@ include_once(__DIR__ . '/php/autoload.php');
 use Psr\Log\{LogLevel};
 use Oeuvres\Kit\{Filesys, Log, LoggerCli};
 use Oeuvres\Teinte\Format\{Tei};
-use Oeuvres\Teinte\Tei2\{Tei2};
+use Oeuvres\Teinte\Tei2\{AbstractTei2};
 
 /**
  * A simple command line for Tei output formats
@@ -29,7 +29,7 @@ Tranform tei files in different formats
 
 PARAMETERS
 format      : + among
-' . Tei2::help() .
+' . AbstractTei2::help() .
 'globs       : + files or globs
 
 OPTIONS
@@ -56,14 +56,14 @@ foreach ($glob as $dir) {
         if ($count < 2) exit(self::help());
         // loop on args to find first format
         for ($i = 1; $i < $count; $i++) {
-            if (Tei2::has($argv[$i])) break;
+            if (AbstractTei2::has($argv[$i])) break;
         }
         if ($i == $count) {
             exit("\nNo available format found for transform\n" . self::help());
         }
         $formats = array();
         for (; $i < $count; $i++) {
-            if (!Tei2::has($argv[$i])) break;
+            if (!AbstractTei2::has($argv[$i])) break;
             $formats[$argv[$i]] = null;
         }
         if ($i == $count) {

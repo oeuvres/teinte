@@ -19,9 +19,9 @@ namespace Oeuvres\Teinte\Tei2;
 class Tei2iramuteq extends Tei2simple
 {
     const EXT = '_ira.txt';
-    const NAME = 'iramuteq';
-    const LABEL = 'IRaMuteQ (formatted text)';
     const XSL = "tei_txt/tei_iramuteq.xsl";
+    const NAME = "iramuteq";
+
 }
 
 // EOF

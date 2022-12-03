@@ -26,26 +26,29 @@ class File
     /** Properties for a format */
     private static array $formats = [];
     /** filepath */
-    protected $file;
+    protected ?string $file;
     /** filename without extension */
-    protected $filename;
+    protected ?string $filename;
     /** file freshness */
-    protected $filemtime;
+    protected int $filemtime;
     /** file size */
-    protected $filesize;
+    protected int $filesize;
+    /** file content if has been loaded */
+    protected ?string $contents = null;
 
     static function init(): void
     {
         if (self::$init) return;
         self::$ext2format = Parse::json(file_get_contents(__DIR__ . '/ext2format.json'));
         self::$formats = Parse::json(file_get_contents(__DIR__ . '/formats.json'));
+        Log::debug(__METHOD__);
         self::$init = true;
     }
 
     /**
      * Get a normalized known format from extension
      */
-    static public function path2format(?string &$file): ?string
+    static public function path2format(?string $file): ?string
     {
         if (!$file) return null;
         $ext = pathinfo('.' . $file, PATHINFO_EXTENSION);
@@ -57,7 +60,7 @@ class File
     /**
      * Mime for a known format
      */
-    static public function mime(?string &$format): ?string
+    static public function mime(?string $format): ?string
     {
         if (!$format) return null;
         if (!isset(self::$formats[$format])) return null;
@@ -67,7 +70,7 @@ class File
     /**
      * Extension for a known format
      */
-    static public function ext(?string &$format): ?string
+    static public function ext(?string $format): ?string
     {
         if (!$format) return null;
         if (!isset(self::$formats[$format])) return null;
@@ -77,7 +80,7 @@ class File
     /**
      * Get a class 
      */
-    static public function path2class(?string &$file): ?string
+    static public function path2class(?string $file): ?string
     {
         if (!$file) return null;
         $format = self::path2format($file);
@@ -88,7 +91,7 @@ class File
     }
 
     /**
-     * Load a file, return nothing, used by child classes.
+     * Load a file lazily, return nothing, used by child classes.
      */
     public function load(string $file)
     {
@@ -105,32 +108,43 @@ class File
     }
 
     /**
-     * For a readonly property
+     * Return path for this file
      */
-    public function file()
+    public function file(): string
     {
         return $this->file;
     }
     /**
      * Get the filename (with no extention)
      */
-    public function filename()
+    public function filename(): string
     {
         return $this->filename;
     }
     /**
      * Read a readonly property
      */
-    public function filemtime()
+    public function filemtime(): int
     {
         return $this->filemtime;
     }
     /**
      * For a readonly property
      */
-    public function filesize()
+    public function filesize(): int
     {
         return $this->filesize;
+    }
+
+    /*
+    * Return content if loaded or load it
+    */
+    public function contents(): string
+    {
+        if ($this->contents === null) {
+            $this->contents = file_get_contents($this->file);
+        }
+        return  $this->contents;
     }
 }
 File::init();

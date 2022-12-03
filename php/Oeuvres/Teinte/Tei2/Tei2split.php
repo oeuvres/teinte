@@ -21,10 +21,9 @@ use Oeuvres\Kit\{Filesys, Log, Xsl};
 
 class Tei2split extends AbstractTei2
 {
-    const NAME = 'split';
     const EXT = '_xml/';
-    const LABEL = 'split chapters in <tei:div>';
     const XSL = "tei_split.xsl";
+    const NAME = "split";
 
     /**
      * @ override
@@ -37,7 +36,7 @@ class Tei2split extends AbstractTei2
             $dst_dir = "file:///" . str_replace('\\', '/', $dst_dir);
         }
         $pars = array_merge($pars, array("dst_dir" => $dst_dir));
-        Log::info("Tei2\033[92m" . static::NAME . "->toUri()\033[0m " . $dst_dir);
+        // Log::info("Tei2\033[92m" . static::NAME . "->toUri()\033[0m " . $dst_dir);
         return Xsl::transformToXml(
             self::$xsl_dir.static::XSL,
             $dom,

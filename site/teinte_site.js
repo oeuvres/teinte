@@ -15,6 +15,7 @@ const conversions = {
     "tei": ["docx", "epub", "html", "md"],
     "docx": ["tei", "html", "markdown"],
     "tei": ["html", "docx", "markdown"],
+    "markdown": [],
 }
 
 function dropInit() {

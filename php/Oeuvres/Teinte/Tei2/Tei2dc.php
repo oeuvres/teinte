@@ -17,9 +17,8 @@ namespace Oeuvres\Teinte\Tei2;
 class Tei2dc extends Tei2simple
 {
     const EXT = '_dc.xml';
-    const NAME = 'dc';
-    const LABEL = 'Dublin Core (metadata)';
     const XSL = "tei_misc/tei_dc.xsl";
+    const NAME = "dc";
 }
 
 // EOF

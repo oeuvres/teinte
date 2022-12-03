@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Oeuvres\Teinte\Tei2;
 
 use DOMDocument;
-use Oeuvres\Kit\{Filesys, Log};
+use Oeuvres\Kit\{Filesys, Log, Parse};
 
 /**
  * A Tei document exporter.
@@ -24,18 +24,14 @@ abstract class AbstractTei2
     static private bool $init = false;
     /** Where is the xsl pack, set in one place, do not repeat */
     static protected ?string $xsl_dir = null;
-    /** Parameters for the transformer */
+    /** Parameters for all (?) transformers */
     static protected array $pars = [];
-    /** Should be the same as in the class name Tei2{NAME} */
-    const NAME = null;
     /** Prefered extension for exported files */
     const EXT = null;
-    /** A more human name for this exporter */
-    const LABEL = null;
-    /** Some description */
-    const DESC = null;
-    /** A mime type for serving */
-    const MIME = null;
+    /** Name of the transo for logging */
+    const NAME = null;
+    /** List of registred transfos */
+    static private array $transfos = [];
 
     /**
      * Initialize static variable
@@ -43,9 +39,44 @@ abstract class AbstractTei2
     static public function init()
     {
         if (self::$init) return;
+        echo "class = " .get_called_class() . "\n";
         // TO THINK, good way to configure xsl pack
         self::$xsl_dir = dirname(__DIR__, 4) . "/xsl/";
+        self::$transfos = Parse::json(file_get_contents(__DIR__ . '/tei2.json'));
         self::$init = true;
+    }
+
+    /**
+     * Test if a format is supported
+     */
+    public static function has(string $format): bool
+    {
+        return array_key_exists($format, self::$transfos);
+    }
+
+    /**
+     * Return the static class for a transfo
+     */
+    public static function transfo(string $format):?string 
+    {
+        if (!self::has($format)) {
+            Log::warning($format . " format not yet available as a TEI export");
+            return null;
+        }
+        $class = "Oeuvres\\Teinte\\Tei2\\Tei2" . $format;
+        return $class;
+    }
+
+    /**
+     * Show some help 
+     */
+    public static function help(): string
+    {
+        $help = "";
+        foreach(self::$transfos as $format => $doc) {
+            $help .= "    " . $format. "  \t" . $doc['label']."\n";
+        }
+        return $help;
     }
 
     /**

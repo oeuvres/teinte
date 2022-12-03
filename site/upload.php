@@ -6,8 +6,8 @@ require_once(__DIR__ . '/inc.php');
 
 use Psr\Log\LogLevel;
 use Oeuvres\Kit\{Filesys, I18n, Log, LoggerWeb, Web};
-use Oeuvres\Teinte\Format\{Docx, File, Tei};
-use Oeuvres\Teinte\Tei2\{Tei2toc,Tei2article};
+use Oeuvres\Teinte\Format\{Docx, File, Markdown, Tei};
+use Oeuvres\Teinte\Tei2\{Tei2article};
 
 // output ERRORS to http client
 Log::setLogger(new LoggerWeb(LogLevel::ERROR));
@@ -80,8 +80,20 @@ else if ($format === TEI) {
     echo $tei->toXml('article');
     die();
 }
+else if ($format === MARKDOWN) {
+    $source = new Markdown();
+    $source->load($src_file);
+    $html = "<article>";
+    $html .= $source->html();
+    $html .= "</article>";
+    echo $html;
+    flush();
+    $_SESSION['teinte_markdown_file'] = $src_file;
+
+    $_SESSION['teinte_tei_file'] = $tei_file;
+}
 else {
-    echo I18n::_('upload.format404', $upload["tmp_name"],  $format);
+    echo I18n::_('upload.format404', $upload["name"],  $format);
     die();
 }
 

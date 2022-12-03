@@ -17,11 +17,10 @@ use Oeuvres\Kit\{Filesys, Log};
 /**
  * Load a TEI document and perform an url check on //ref/@target
  */
-class Tei2urlcheck extends AbstractTei2
+class Tei2checkurl extends AbstractTei2
 {
-    const NAME = 'urlcheck';
     const EXT = '.xml';
-    const LABEL = 'Check url in //ref/@target';
+    const NAME = "checkurl";
     /** A file is OK by default, except when a problem is found */
     private $ok = true;
 

@@ -13,15 +13,14 @@ declare(strict_types=1);
 namespace Oeuvres\Teinte\Tei2;
 
 /**
- * Export a TEI document as an html fragment <article>
+ * Export toc of a TEI document as an html <nav>
  */
 
 class Tei2toc extends Tei2simple
 {
-    const NAME = 'toc';
     const EXT = '_toc.html';
-    const LABEL = '<nav> table of contents';
     const XSL = "tei_html_toc.xsl";
+    const NAME = "toc";
 }
 
 // EOF

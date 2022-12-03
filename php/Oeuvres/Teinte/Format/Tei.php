@@ -14,7 +14,7 @@ namespace Oeuvres\Teinte\Format;
 
 use Exception, DOMDocument, DOMXpath;
 use Oeuvres\Kit\{Log};
-use Oeuvres\Teinte\Tei2\{Tei2};
+use Oeuvres\Teinte\Tei2\{AbstractTei2};
 
 /**
  * A tei file with export strategies
@@ -24,19 +24,12 @@ class Tei extends Xml
 
     /** A template directory for different resources */
     protected ?string $template = null;
-
-    static public function transfo($format)
-    {
-        $class = "Oeuvres\\Teinte\\Tei2\\Tei2" . $format;
-        return $class;
-    }
-
     /**
      * Transform current dom and write to file.
      */
     public function toUri(string $format, String $uri, ?array $pars = null)
     {
-        $transfo = self::transfo($format);
+        $transfo = AbstractTei2::transfo($format);
         $transfo::template($this->template);
         $transfo::toUri($this->dom, $uri, $pars);
     }
@@ -47,7 +40,7 @@ class Tei extends Xml
      */
     public function toXml(string $format, ?array $pars = null): string
     {
-        $transfo = self::transfo($format);
+        $transfo = AbstractTei2::transfo($format);
         $transfo::template($this->template);
         return $transfo::toXml($this->dom, $pars);
     }
@@ -58,7 +51,7 @@ class Tei extends Xml
      */
     public function toDoc(string $format, ?array $pars = null): DOMDocument
     {
-        $transfo = self::transfo($format);
+        $transfo = AbstractTei2::transfo($format);
         $transfo::template($this->template);
         return $transfo::toDoc($this->dom, $pars);
     }
@@ -70,7 +63,7 @@ class Tei extends Xml
      */
     public static function destination(string $src_file, string $format, ?string $dst_dir = null): string
     {
-        $transfo = self::transfo($format);
+        $transfo = AbstractTei2::transfo($format);
         return $transfo::destination($src_file, $dst_dir);
     }
 

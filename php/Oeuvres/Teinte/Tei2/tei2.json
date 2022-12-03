@@ -1,0 +1,29 @@
+{
+    "article": {
+        "label": "html <article> text+notes"
+    },
+    "checkurl": {
+        "label": "Check url in //ref/@target"
+    },
+    "dc": {
+        "label": "Dublin Core (metadata)"
+    },
+    "docx": {
+        "label": "Microsoft.Word 2007 format"
+    },
+    "html": {
+        "label": "<html> full document"
+    },
+    "iramuteq": {
+        "label": "IRaMuteQ (formatted text)"
+    },
+    "markdown": {
+        "label": "Markdown (formatted text)"
+    },
+    "site": {
+        "label": "Split tei chapters in a browsable html site"
+    },
+    "toc": {
+        "label": "Html <nav> table of contents"
+    }
+}

@@ -58,7 +58,6 @@ class Docx extends Zip
         $this->dom->substituteEntities = true;
         $this->dom->preserveWhiteSpace = true;
         $this->dom->formatOutput = false;
-
     }
 
     function xml(): string

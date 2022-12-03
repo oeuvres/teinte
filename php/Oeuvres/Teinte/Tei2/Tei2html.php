@@ -18,10 +18,9 @@ namespace Oeuvres\Teinte\Tei2;
 
 class Tei2html extends Tei2simple
 {
-    const NAME = 'html';
     const EXT = '.html';
-    const LABEL = '<html> full document';
     const XSL = "tei_html.xsl";
+    const NAME = "html";
     // TODO parameters for XSLT 
 
     /**

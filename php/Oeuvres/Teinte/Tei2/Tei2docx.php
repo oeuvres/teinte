@@ -23,9 +23,9 @@ class Tei2docx extends AbstractTei2
 {
     /** A docx file used as a template */
     static private ?string $template_docx = "";
-    const NAME = 'docx';
     const EXT = '.docx';
-    const LABEL = 'Microsoft.Word 2007 format';
+    const NAME = "docx";
+
     /** Some mapping between 3 char iso languange code to 2 char */
     const ISO639_3char = [
         'eng' => 'en',
@@ -188,42 +188,9 @@ class Tei2docx extends AbstractTei2
         // 
         if (!$zip->close()) {
             Log::error(
-                "Tei2" . static::NAME ." ERROR writing \033[91m$dst_file\033[0m\nMaybe an app has an handle on this file. Is this docx open in MS.Word or LibreO.Writer?"
+                "Tei2docx ERROR writing \033[91m$dst_file\033[0m\nMaybe an app has an handle on this file. Is this docx open in MS.Word or LibreO.Writer?"
             );
         }
-    }
-
-
-    /**
-     *  Apply code to an uploaded file
-     */
-    public static function doPost($download = true)
-    {
-        if (!count($_FILES)) return false;
-        reset($_FILES);
-        $tmp = current($_FILES);
-        if ($tmp['name'] && !$tmp['tmp_name']) {
-            echo $tmp['name'], ' seems bigger than allowed size for upload in your php.ini: upload_max_filesize=', ini_get('upload_max_filesize'), ', post_max_size=', ini_get('post_max_size');
-            return false;
-        }
-        $srcfile = $tmp['tmp_name'];
-        if ($tmp['name']) $dstname = substr($tmp['name'], 0, strrpos($tmp['name'], '.')) . ".docx";
-        else $dstname = "tei.docx";
-        header('Content-Type: ');
-        header('Content-Disposition: attachment; filename="' . $dstname);
-        header('Content-Description: File Transfer');
-        header('Expires: 0');
-        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-        header('Pragma: public');
-
-        $dst_file = tempnam(dirname($tmp['tmp_name']), "Reteint");
-        // self::export($srcfile, $dst_file);
-        header('Content-Length: ' . filesize($dst_file));
-        ob_clean();
-        flush();
-        readfile($dst_file);
-        unlink($dst_file);
-        exit();
     }
 
 }

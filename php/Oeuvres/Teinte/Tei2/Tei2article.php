@@ -18,10 +18,9 @@ namespace Oeuvres\Teinte\Tei2;
 
 class Tei2article extends Tei2simple
 {
-    const NAME = 'article';
     const EXT = '_art.html';
-    const LABEL = '<article> text+notes';
     const XSL = "tei_html_article.xsl";
+    const NAME = "article";
 }
 
 // EOF

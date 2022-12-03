@@ -17,9 +17,8 @@ namespace Oeuvres\Teinte\Tei2;
 class Tei2markdown extends Tei2simple
 {
     const EXT = '.md';
-    const NAME = 'markdown';
-    const LABEL = 'Markdown (formatted text)';
     const XSL = "tei_txt/tei_markdown.xsl";
+    const NAME = "markdown";
 }
 
 // EOF
