@@ -61,7 +61,7 @@ $tei_file = $teinte_dir . $src_name . ".xml";
 $_SESSION['teinte_name'] =  $src_name;
 $_SESSION['teinte_upload_name'] = $upload['name'];
 $format = File::path2format($upload['name']);
-echo  $upload['name'] . "  $format<br/>";
+echo  $upload['name'] . "<br/>";
 
 
 if ($format === DOCX) {
@@ -73,17 +73,18 @@ if ($format === DOCX) {
     $_SESSION['teinte_tei_file'] = $tei_file;
     $_SESSION['teinte_docx_file'] = $src_file;
     echo Tei2article::toXml($docx->dom());
-    return;
+    die();
 }
 else if ($format === TEI) {
     // check if docx ?
     $tei = new Tei();
     $tei->load($src_file);
-    $_SESSION['teinte_tei_docx'] = $src_file;
+    $_SESSION['teinte_tei_file'] = $src_file;
     echo $tei->toXml('article');
+    die();
 }
 else {
-    $_SESSION['tei'] = null;
     echo I18n::_('upload.format404', $upload["tmp_name"],  $format);
+    die();
 }
 

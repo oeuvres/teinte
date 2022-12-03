@@ -37,6 +37,7 @@ ob_clean();
 if (!isset($_SESSION['teinte_tei_file'])) {
     attach("Teinte, " . I18n::_("ERROR_NO_UPLOAD") . '.txt');
     Log::error(I18n::_('download.notei'));
+    print_r($_SESSION);
     exit();
 }
 $dst_name = I18n::_('book');
@@ -49,6 +50,7 @@ $par_format = Web::par('format');
 if (!$par_format) {
     attach("Teinte, " . I18n::_("ERROR_NO_FORMAT") . '.txt');
     Log::error(I18n::_('download.noformat', $upload_name));
+    print_r($_SESSION);
     exit();
 }
 $format = File::path2format($par_format);
