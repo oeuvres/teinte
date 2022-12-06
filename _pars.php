@@ -10,5 +10,6 @@
  /** Installation parameters */
  return [
     "template" => "templates/default/",
- ];
+    "workdir" => null,
+ ]
  

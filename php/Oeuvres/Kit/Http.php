@@ -42,6 +42,7 @@ class Http
         session_set_cookie_params(["SameSite" => "lax"]); //none, lax, strict
         session_set_cookie_params(["Secure" => "true"]); //false, true
         session_set_cookie_params(["HttpOnly" => "true"]); //false, true
+        ini_set('session.gc_maxlifetime', strval(60*60));
     }
 
     /**

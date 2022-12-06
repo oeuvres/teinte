@@ -11,6 +11,12 @@ use Oeuvres\Teinte\Tei2\{Tei2article};
 
 // output ERRORS to http client
 Log::setLogger(new LoggerWeb(LogLevel::ERROR));
+// get workdir from params
+$pars = require(dirname(__DIR__).'/pars.php');
+if (!isset($pars['workdir']) || !$pars['workdir']) {
+    // tmp maybe highly volatil on some servers
+    $pars['workdir'] = session_save_path();
+} 
 I18n::load(__DIR__ . "/messages.tsv");
 
 Http::session_before(); // needed for some oddities before session_start()
@@ -49,7 +55,7 @@ $src_file = $upload['tmp_name'];
 // make a session dir
 $sessid = session_id();
 if (!$sessid) $sessid = "teinte";
-$teinte_dir = sys_get_temp_dir() . "/" . $sessid . "/";
+$teinte_dir = $pars['workdir'] . "/" . $sessid . "/";
 if (isset($_SESSION['teinte_dir'])) {
     if($_SESSION['teinte_dir'] != $teinte_dir) {
         // where to log that ? something is going wrong
