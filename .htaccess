@@ -7,7 +7,6 @@ DirectoryIndex index.php index.html index.htm
     RewriteEngine On
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
     RewriteRule ^index\.php$ - [L]
-    RewriteRule ^download$ site/download.php [QSA,L]
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule (.*) index.php [QSA,L]

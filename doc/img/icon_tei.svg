@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 90">
+  <style>
+    #cartouche {
+      fill: #f3d448;
+    }
+
+    #cover,
+    #pages,
+    #back {
+      stroke: #000;
+      stroke-width: 2;
+      stroke-linecap: square;
+      fill: none;
+    }
+
+    #cartouche_bord {
+      fill: none;
+      stroke: #ffffff;
+      stroke-width: 4;
+      stroke-linecap: square;
+    }
+  </style>
+
+  <path id="cartouche" d="M 20,60 H 70 L 85,85 H 20 c -5,0 -10,-5 -10,-10 0,0 0,10 0,-5 0,-5 5,-10 10,-10 z" />
+  <path id="cartouche_bord" d="M 70,60 H 20 c -5,0 -10,5 -10,10 v 5 c 0,5 5,10 10,10 h 65" />
+
+  <path id="cover" d="M 20,60 H 70 V 5 H 20 C 15,5 10,10 10,15 v 55 c 0,-5 5,-10 10,-10 z" />
+  <path id="pages" d="M85 85H20c-5 0-10-5-10-10v-5" />
+  <path id="back" d="M85 15v70" />
+
+
+  <g id="TEI" transform="translate(6 39) scale(.090 .090)">
+    <path d="M199 281h146.5v44.2h-49.1V460h-48.2V325.2H199V281z" />
+    <path d="M368 281h129.3v38.2h-80.9v28.5h75.1v36.5h-75.1v35.3h83.3V460H368V281z" />
+    <path d="M527 281h52.3v179H527V281z" />
+  </g>
+  <g id="brackets" transform="translate(18 10) scale(0.06 0.06)">
+    <g id="gt">
+      <path fill="#c9b23e" d="M418 62l36 65 190.3 114.4-.7 217.2L679 523V254l-28.1-48.7z" />
+      <path fill="#f3d448" d="M418 62l33-19 234 143-34 19z" />
+      <path fill="#ffe14d" d="M713 237l-28-51-34 19 28 49z" />
+      <path fill="#e5c944" d="M713 504V237l-34 17v269z" />
+    </g>
+    <g id="lt">
+      <path fill="#c9b23e" d="M86 243v269l29 50 233 142-36-64-190-116V307z" />
+      <path fill="#ffe14d" d="M119 224l36 66-33 17-36-64z" />
+      <path fill="#e5c944" d="M155 506V290l-33 17v217z" />
+      <path fill="#f3d448" d="M345 620L155 506l-33 18 190 116z" />
+      <path fill="#ffe14d" d="M381 684l-36-64-33 20 36 64z" />
+    </g>
+  </g>
+</svg>

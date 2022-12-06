@@ -1,20 +1,15 @@
-key	message simple
-key	"<a href=""blah"">Message with quote</a>"
+key	message
 
-title	Verbatim
-cts.label	Fast access
-cts.title	urn:cts or Kühn reference (ex : 18b.26.4)
-cts.placeholder	 e.g. XVIII B, 559; 18a.553.3 ; urn:cts:greekLit:tlg0057.tlg001.1st1K-grc1…
-template.de_href	de_en
-template.de	About /<br/>Credits
-template.moto	Browse Galen, ed. Kühn (1821–1833) &amp; al.
-template.opera	Welcome /<br/>Table of works
-template.verba	Frequent<br/>words
-zotero.TitLa	Latin title
-zotero.fichtner	Fichtner number
-zotero.kuhn	Kühn edition
-zotero.AbbrLa	CMG abbreviation
-zotero.TitGrcCMG	Greek title
-zotero.TitFrBM	French title
-zotero.TitEnCGT	English title
-zotero.AbbrEnCGT	CGT abbreviation
+JSON_ERROR_NONE	Json, décodage OK
+JSON_ERROR_DEPTH	Json, hiérarchie trop profonde 
+JSON_ERROR_STATE_MISMATCH	Json malformé
+# JSON_ERROR_CTRL_CHAR	
+# JSON_ERROR_SYNTAX	
+# JSON_ERROR_UTF8	
+# JSON_ERROR_RECURSION	
+# JSON_ERROR_INF_OR_NAN	
+# JSON_ERROR_UNSUPPORTED_TYPE	
+# JSON_ERROR_INVALID_PROPERTY_NAME	
+# JSON_ERROR_UTF16	
+
+Web.readfile.404	“%s”, File not found for an http response

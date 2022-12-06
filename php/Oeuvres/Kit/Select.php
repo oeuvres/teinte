@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace Oeuvres\Kit;
 
-use Oeuvres\Kit\{Web};
+use Oeuvres\Kit\{Http};
 
 /**
  * Helper class to print a select with correct value for parameters
@@ -61,7 +61,7 @@ class Select
         if (!$this->default) {
             $this->default = $values[0];
         }
-        $check = Web::par($this->name, $this->default, $pattern);
+        $check = Http::par($this->name, $this->default, $pattern);
         $html = '<select name="' . $this->name .'"';
         if ($this->id != null) $html .= ' id="' . $this->id . '"';
         $html .= '>';

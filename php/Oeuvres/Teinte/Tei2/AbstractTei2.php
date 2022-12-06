@@ -39,7 +39,6 @@ abstract class AbstractTei2
     static public function init()
     {
         if (self::$init) return;
-        echo "class = " .get_called_class() . "\n";
         // TO THINK, good way to configure xsl pack
         self::$xsl_dir = dirname(__DIR__, 4) . "/xsl/";
         self::$transfos = Parse::json(file_get_contents(__DIR__ . '/tei2.json'));

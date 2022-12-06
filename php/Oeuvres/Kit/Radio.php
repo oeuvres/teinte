@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace Oeuvres\Kit;
 
-use Oeuvres\Kit\{Web};
+use Oeuvres\Kit\{Http};
 
 /**
  * Helper class to print radio button with correct value for parameters
@@ -58,7 +58,7 @@ class Radio
         if (!$this->default) {
             $this->default = $values[0];
         }
-        $check = Web::par($this->name, $this->default, $pattern);
+        $check = Http::par($this->name, $this->default, $pattern);
         $n = 0;
         $html = '';
         foreach($this->buts as $value => $label) {

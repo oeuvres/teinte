@@ -3,9 +3,17 @@ __pycache__/
 *.egg-info/
 *.py[cod]
 
+# tmp
+_epub
+_up.php
+site/img/test.svg
+xsl/docx/_tei.sed
+
 
 tests/out/
 work/
+
+# generators garbage
 .~*
 ~$*
 ~WRL*
@@ -23,6 +31,3 @@ work/
 *.swp
 *.toc
 *.xdv
-site/img/test.svg
-xsl/docx/_tei.sed
-/_*.php

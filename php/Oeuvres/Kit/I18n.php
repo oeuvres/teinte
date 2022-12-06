@@ -14,27 +14,40 @@ declare(strict_types=1);
 
 namespace Oeuvres\Kit;
 
-use Psr\Log\{LoggerInterface, NullLogger};
+use Oeuvres\Teinte\Format\File;
 
 mb_internal_encoding("UTF-8");
+
 class I18n
 {
     /** Messages */
     private static $messages = array();
 
     /**
+     * Load default error messages send by app
+     */
+    public static function init(): void
+    {
+        self::load(__DIR__ . '/I18n_en.tsv');
+    }
+
+    /**
      * Load an array of messages
      */
-    public static function load($tsv_file)
+    public static function load($tsv_file): void
     {
         $map = Parse::tsv_map($tsv_file);
+        if ($map === null) {
+            Log::warning("I18n error");
+            return;
+        }
         self::put($map);
     }
 
     /**
      * Put an array of messages, new value for same key overwrite old one
      */
-    public static function put($messages)
+    public static function put($messages): void
     {
         self::$messages = array_merge(self::$messages, $messages);
     }
@@ -87,3 +100,4 @@ class I18n
 
 
 }
+I18n::init();

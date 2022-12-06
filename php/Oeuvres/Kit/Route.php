@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Part of Teinte https://github.com/oeuvres/teinte
  * MIT License https://opensource.org/licenses/mit-license.php
@@ -9,38 +9,38 @@
  *                    & École nationale des chartes
  */
 
-declare(strict_types=1);
+
 
 namespace Oeuvres\Kit;
 
-use Oeuvres\Kit\{File,I18n};
+use Oeuvres\Kit\{I18n, Log};
 use Exception;
 
 Route::init();
 
 class Route {
     /** root directory of the app when outside site */
-    private static $lib_dir;
+    static private ?string $lib_dir;
     /** Href to app resources */
-    private static $lib_href;
+    static private ?string $lib_href;
     /** Home dir where is the index.php answering */
-    private static $home_dir;
+    static private ?string $home_dir;
     /** Home href for routing */
-    private static $home_href;
+    static private ?string $home_href;
     /** Default php template */
-    private static $templates = array();
+    static private ?array $templates = [];
     /** An html file to include as main */
-    private static $main_inc;
+    static private ?string $main_inc;
     /** A file to include */
-    private static $main_contents;
+    static private ?string $main_contents;
     /** Path relative to the root app */
-    private static $url_request;
+    static private ?string $url_request;
     /** Split of url parts */
-    static $url_parts;
+    static ?array $url_parts;
     /** The resource to deliver */
-    private static $resource;
+    private static ?string $resource;
     /** Has a routage been done ? */
-    static $routed;
+    static ?bool $routed;
 
     /**
      * Initialisation of static vatriables, done one time on initial loading 
@@ -60,8 +60,8 @@ class Route {
         }
         self::$url_request = $url_request;
         self::$url_parts = explode('/', ltrim($url_request, '/'));
-        // quite robust on most server, wor directory is the answering index.php
-        self::$home_dir = getcwd();
+        // quite robust on most server, work directory is the answering index.php
+        self::$home_dir = getcwd() . DIRECTORY_SEPARATOR;
         self::$home_href = str_repeat('../', count(self::$url_parts) - 1);
         // get relative path from index.php caller to the root of app to calculate href for resources in this folder
         self::$lib_href = self::$home_href . Filesys::relpath(
@@ -165,8 +165,10 @@ class Route {
             return false;
         }
         // rewrite file destination according to $route url
-        preg_match('@'.$route.'@', self::$url_request, $route_match);
-        $resource = self::replace($resource, $route_match);
+        $resource = preg_replace('@'.$route.'@', $resource, self::$url_request);
+
+
+
         if (!Filesys::isabs($resource)) {
             // resolve links from welcome page
             $resource = self::$home_dir . $resource;
@@ -178,6 +180,7 @@ class Route {
         }
         // modyfy parameters according to route
         if ($pars != null) {
+            preg_match('@'.$route.'@', self::$url_request, $route_match);
             foreach($pars as $key => $value) {
                 $pars[$key] = urldecode(self::replace($value, $route_match));
             }
@@ -220,28 +223,34 @@ Use Route::template('tmpl_my.php', '$tmpl_key');"
             }
             $tmpl_php = self::$templates[$tmpl_key];
         }
-        // if no template requested include flow
-        if ($tmpl_php == null) {
+
+
+        // no template, include html or php as direct
+        if ($tmpl_php == null && ($ext == 'php' || $ext == 'html' || $ext == 'htm')) {
             include_once($resource);
             exit();            
         }
         // html to include in template
-        if ($ext == 'html' || $ext == 'htm') {
+       else  if ($tmpl_php == null && ($ext == 'html' || $ext == 'htm')) {
             self::$main_inc = $resource;
+            include_once($tmpl_php);
+            exit();            
         }
-        // supposed to be php 
-        else {
+        // php in template
+        else if ($ext == 'php') {
             // capture content if it is php direct
             ob_start();
             include_once($resource);
             self::$main_contents = ob_get_contents();
             ob_end_clean();
+            include_once($tmpl_php);
+            exit();            
         }
-        // now everything should be OK to render page
-        // include the template
-        // template should call at least Route::main() to display something 
-        include_once($tmpl_php);
-        exit();            
+        // static resource
+        else {
+            Http::readfile($resource);
+            exit();
+        }
     }
 
     /**
@@ -249,18 +258,14 @@ Use Route::template('tmpl_my.php', '$tmpl_key');"
      */
     public static function match($route):bool
     {
-        $route_parts = explode('/', ltrim($route, '/'));
-        // too long url
-        if (count($route_parts) != count(self::$url_parts)) {
-            return false;
+        if (substr($route, -1) == '$') {
+            $search = "@$route@";
         }
-        // test if path is matching
-        for ($i = 0; $i < count($route_parts); $i++) {
-            // escape ^and $ ?
-            $search = '/^'.$route_parts[$i].'$/';
-            if(!preg_match($search, self::$url_parts[$i])) {
-                return false;
-            }
+        else {
+            $search = "@^$route$@";
+        }
+        if(!preg_match($search, self::$url_request)) {
+            return false;
         }
         return true;
     }
