@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Part of Teinte https://github.com/oeuvres/teinte
  * BSD-3-Clause https://opensource.org/licenses/BSD-3-Clause
@@ -6,8 +6,6 @@
  * Copyright (c) 2013 frederic.glorieux@fictif.org & LABEX OBVIL
  * Copyright (c) 2012 frederic.glorieux@fictif.org
  */
-
-declare(strict_types=1);
 
 namespace Oeuvres\Teinte\Format;
 
@@ -45,7 +43,7 @@ class Xml extends File
      */
     public function load(string $src_file): DOMDocument
     {
-        parent::load($src_file);
+        parent::{__FUNCTION__}(...func_get_args());
         $this->xpath = null;
         $dom = $this->loadXml(file_get_contents($src_file));
         return $dom;

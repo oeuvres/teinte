@@ -2181,13 +2181,6 @@ h1.sub {
     font-style: normal
 }
 
-div.todo,
-p.todo {
-    border: #F00 solid 1px;
-    background: #FFC;
-    padding: 0.5rem;
-}
-
 .u,
 .underline {
     text-decoration: underline;

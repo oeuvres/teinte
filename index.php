@@ -1,6 +1,6 @@
 <?php
 include_once(__DIR__ . '/php/autoload.php');
-$pars = include_once(__DIR__ . '/_pars.php');
+$pars = include_once(__DIR__ . '/pars.php');
 
 use Oeuvres\Kit\{Route};
 

@@ -29,13 +29,13 @@
       .inner-group:nth-child(even) .rect {
         transform-origin: 0 0;
         animation: rect 13s linear infinite;
-        stroke: rgba(243, 212, 72, 0.6);
+        stroke: rgba(243,149,8, 0.3);
       }
       
       .inner-group:nth-child(odd) .rect {
         transform-origin: 0 0;
         animation: rect 13s linear reverse infinite;
-        stroke: rgba(41, 84, 151, 0.3);
+        stroke: rgba(38,69,138, 0.3);
       }
       
       .outer-group {

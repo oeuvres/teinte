@@ -2,25 +2,9 @@
 
 declare(strict_types=1);
 
-include_once(dirname(__DIR__) . '/php/autoload.php');
+include_once(dirname(__DIR__, 2) . '/php/autoload.php');
 
 use \Oeuvres\Kit\{Http, Route};
-
-error_reporting(E_ALL);
-// onload, destroy session, 
-session_start();
-$_SESSION = [];
-// destroy session cookie
-if (ini_get("session.use_cookies")) {
-    $params = session_get_cookie_params();
-    setcookie(session_name(), '', time() - 42000,
-        $params["path"], $params["domain"],
-        $params["secure"], $params["httponly"]
-    );
-}
-session_destroy();
-$lang = Http::lang();
-
 
 ?>
 <!DOCTYPE html>
@@ -28,49 +12,44 @@ $lang = Http::lang();
 
 <head>
   <meta charset="utf-8" />
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Lato&amp;display=swap" rel="stylesheet">
   <link rel="stylesheet" href="<?= Route::home_href() ?>theme/teinte.css" />
   <link rel="stylesheet" href="<?= Route::home_href() ?>theme/teinte.tree.css" />
   <script src="<?= Route::home_href() ?>theme/teinte.tree.js"></script>
-  <link rel="stylesheet" href="<?= Route::home_href() ?>site/teinte_site.css" />
-  <title><?php
-          if ($lang == 'fr') echo 'Teinte, la conversion des livres';
-          else echo 'Teinte, conversion of books'
-          ?></title>
+  <link rel="stylesheet" href="<?= Route::home_href() ?>teinte_obtic.css" />
+  <title>ObTiC, Teinte, conversion de livres</title>
 </head>
 
 <body>
   <div id="win">
     <header id="header">
-      <h1><a href="?refresh=<?= time() ?>">Teinte, la conversion des livres (TEI, DOCX, HTML, EPUB, TXT)</a></h1>
+      <a class="logo" href="."  rel="home"><img src="<?= Route::home_href() ?>obtic_logo.svg" class="custom-logo astra-logo-svg" alt="ObTIC"></a>
+      <div class="moto"><a href="http://github.com/oeuvres/teinte">Teinte</a>, la conversion des livres (TEI, DOCX, HTML, EPUB, TXT)</div>
     </header>
     <div id="row">
       <div id="upload">
         <header>
-          <h2>Votre fichier</h2>
           <div id="icons">
-            <img width="32" alt="TEI"
-            title="TEI : texte XML (Text Encoding Initiative)" 
-            src="<?= Route::home_href() ?>site/img/icon_tei.svg" />
+            <div class="format tei"
+            title="TEI : texte XML (Text Encoding Initiative)"></div>
 
-            <img width="32" alt="DOCX" 
-            title="DOCX : texte bureautique (LibreOffice, Microsoft.Word…)" 
-            src="<?= Route::home_href() ?>site/img/icon_docx.svg" />
+            <div class="format docx"
+            title="DOCX : texte bureautique (LibreOffice, Microsoft.Word…)"></div>
 
-            <img class="todo" width="32" alt="EPUB"
-            title="EPUB : livre électronique ouvert" 
-            src="<?= Route::home_href() ?>site/img/icon_epub.svg" />
+            <div  class="todo format epub"
+            title="EPUB : livre électronique ouvert" ></div>
 
-            <img class="todo" width="32" alt="HTML"
-            title="HTML : page internet" 
-            src="<?= Route::home_href() ?>site/img/icon_html.svg" />
+            <div  class="todo format html"
+            title="HTML : page internet"></div>
 
-            <img class="todo" width="32" alt="MD"
-            title="MarkDown : texte brut légèrement formaté" 
-            src="<?= Route::home_href() ?>site/img/icon_md.svg" />
+            <div class="todo format markdown"
+            title="MarkDown : texte brut légèrement formaté"></div>
+
           </div>
         </header>
-        <div id="dropzone">
-          <img width="64" class="back" src="<?= Route::home_href() ?>site/img/icon_upload.svg" />
+        <div id="dropzone" class="card">
+          <h3>Votre fichier</h3>
           <output></output>
           <div class="bottom">
             <button>ou chercher sur votre disque…</button>
@@ -79,100 +58,51 @@ $lang = Http::lang();
         </div>
       </div>
       <div id="preview">
-        <img id="banner" src="<?= Route::home_href() ?>site/img/teinte.png" />
-      </div>
+      <h1>Teinte</h1>
+        <p>Convertissez vos livres électroniques, <b>de</b>, et <b>vers</b>, plusieurs formats : TEI, DOCX, HTML, EPUB, MARKDOWN.</p>
+
+        <p>À gauche, déposez un de vos fichiers ; au centre, prévisualisez le contentu ; à droite, téléchargez un export dans le format de votre choix.</p>
+
+        <p>Cette installation est en développement, certains chemins de conversion ne sont pas encore fonctionnels.</p>
+
+        <p>Les feuilles de styles de cette installation ont été personnalisées pour l’<a href="https://obtic.sorbonne-universite.fr/">ObTiC</a>.</p>
+        
+        <p>Teinte est un logiciel libre développé par <a onmouseover="this.href='mailto'+'\x3A'+'frederic.glorieux'+'\x40'+'fictif.org'" href="#">Frédéric Glorieux</a> (cf <a href="http://github.com/oeuvres/teinte">github.com/oeuvres/teinte</a>). Vous pouvez librement l’utiliser. Vous pouvez aussi financer des développements supplémentaires pour mieux ajuster le logiciel à vos projets.</p> 
+
+    </div>
       <div id="download">
         <header>
-          <h2>Téléchargements</h2>
+          <div id="icons">
+            <div class="format tei"
+            title="TEI : texte XML (Text Encoding Initiative)"></div>
+
+            <div class="format docx"
+            title="DOCX : texte bureautique (LibreOffice, Microsoft.Word…)"></div>
+
+            <div  class="todo format epub"
+            title="EPUB : livre électronique ouvert" ></div>
+
+            <div  class="format html"
+            title="HTML : page internet"></div>
+
+            <div class="format markdown"
+            title="MarkDown : texte brut légèrement formaté"></div>
+
+          </div>
         </header>
-        <img width="64" class="back" src="<?= Route::home_href() ?>site/img/icon_download.svg" />
-        <div id="exports">
+        <div class="card inactive" id="downzone">
+          <h3>Téléchargements</h3>
+          <output id="exports"></output>
         </div>
       </div>
     </div>
+    <footer id="footer">
+      <div class="rule">
+        <div class="monogram"></div>
+      </div>
+    </footer>
   </div>
-  <script type="module" type="text/javascript" src="<?= Route::home_href() ?>site/teinte_site.js"> </script>
+  <script type="module" type="text/javascript" src="<?= Route::home_href() ?>teinte_obtic.js"> </script>
 </body>
 
 </html>
-
-
-<?php
-/*
-      <form class="center"
-        enctype="multipart/form-data" method="POST" name="upload" target="_blank"
-        onsubmit="
-var filename=this.tei.value;
-var pos=filename.lastIndexOf('.');
-if(pos>0) filename=filename.substring(0, pos);
-var radios = document.getElementsByName('format');
-var format = 'html';
-for ( var i = 0, length = radios.length; i < length; i++) {
-  if (radios[i].checked) format = radios[i].value;
-  break;
-}
-var ext = '.html';
-if ( format == 'markdown' ) ext = '.md';
-else if ( format == 'iramuteq' ) ext = '.txt';
-else if ( format == 'naked' ) ext = '.txt';
-this.action = 'index.php/'+filename+ext;
-      ">
-        <?php
-if ($lang=='fr') {
-echo '<p>Choisir un fichiers XML/TEI
-<input type="file" size="70" name="tei"/>
-</p>
-
-<p>Choisir un format :
-<label><input name="format" type="radio" value="html"'.( ($format == 'html')?' checked="checked"':'' ).'/> HTML</label>
-<label><input name="format" type="radio" value="markdown"'.( ($format == 'markdown')?' checked="checked"':'' ).'/> Markdown</label>
-<label><input name="format" type="radio" value="iramuteq"'.( ($format == 'iramuteq')?' checked="checked"':'' ).'/> Iramuteq</label>
-<label><input name="format" type="radio" value="naked"'.( ($format == 'naked')?' checked="checked"':'' ).'/> Texte nu</label>
-</p>
-<p>
-<button name="view">Voir</button> ou
-<button name="download">Télécharger</button>
-</p>
-';} else {
-echo '<p>Choose an XML/TEI file
-<input type="file" size="70" name="tei"/>
-</p>
-<p>Choose a format
-<label><input name="format" type="radio" value="html"'.( ($format == 'html')?' checked="checked"':'' ).'/> HTML</label>
-<label><input name="format" type="radio" value="markdown"'.( ($format == 'markdown')?' checked="checked"':'' ).'/> Markdown</label>
-<label><input name="format" type="radio" value="iramuteq"'.( ($format == 'iramuteq')?' checked="checked"':'' ).'/> Iramuteq</label>
-<label><input name="format" type="radio" value="naked"'.( ($format == 'naked')?' checked="checked"':'' ).'/> Texte nu</label>
-</p>
-<p>
-<button name="view">See</button> or
-<button name="download">Download</button>
-</p>
-';
-}
-        ?>
-      </form>
-      <?php
-if ($lang=='fr') echo '
-<div class="small">
-      <p>
-Teinte est une librairie XSLT1+php qui peut s‘intégrer à plus d’un contexte, par exemple <a href="https://github.com/oeuvres/Bookmeka">Omeka</a>.
-Cette transformation est générique, elle ne supporte qu’une partie des balises TEI,
-      dite “<a href="http://obvil-dev.paris-sorbonne.fr/developpements/teibook/">Teibook</a>”.
-Si vous trouvez que vos balises ne sont pas transformées à votre convenance,
-<a href="#" onmouseover="if(this.ok)return; this.href=\'mai\'+\'lt\'+\'o:frederic.glorieux\'+\'\\u0040\'+\'fictif.org\'; this.ok=true">écrivez-moi</a> (avec un fichier exemple).
-      </p>
-</div>
-      ';
-else echo '
-<div class="small">
-      <p>
-Teinte is an XSLT1-php lib, free to embed in different contexts, for example <a href="https://github.com/oeuvres/Bookmeka">Omeka</a>.
-We do not claim to support all TEI, but a profile called “<a href="http://obvil-dev.paris-sorbonne.fr/developpements/teibook/">Teibook</a>”.
-If you think that your tags are not well rendered, fill free to <a href="#" onmouseover="if(this.ok)return; alert(\'\u064\'); this.href=\'mai\'+\'lt\'+\'o:frederic.glorieux\'+\'\\u0040\'+\'fictif.org\'; this.ok=true">send me a mail</a> (with a sample file).
-      </p>
-</div>
-      ';
-
-
-      ?>
-*/

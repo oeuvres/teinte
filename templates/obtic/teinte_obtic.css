@@ -1,3 +1,34 @@
+:root {
+    --col1: #26458A;
+    --bg1: #fff;
+    --col2: #f39508;
+}
+
+.format.docx {
+    background-image: url('doc/img/icon_docx.svg');
+}
+
+.format.epub {
+    background-image: url('doc/img/icon_epub.svg');
+}
+
+.format.html {
+    background-image: url('doc/img/icon_html.svg');
+}
+
+.format.md {
+    background-image: url('doc/img/icon_markdown.svg');
+}
+
+.format.markdown {
+    background-image: url('doc/img/icon_markdown.svg');
+}
+
+.format.tei {
+    background-image: url('doc/img/icon_tei.svg');
+}
+
+
 html, body {
     padding: 0;
     margin: 0;
@@ -9,38 +40,63 @@ html, body {
 }
 
 body {
-    font-family: sans-serif;
-    background-color: #eee;
+    font-family: Lato, Helvetica, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: var(--col1);
+    font-size: 16px;
+}
+
+a {
+    color: var(--col2);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+#win {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    justify-content: space-between;
 }
 
 #header {
     text-align: center;
-    height: 2rem;
-    line-height: 2rem;
-    background-color: #aaa;
-    color: #fff;
+    background-color: var(--col1);
+    color: var(--bg1);
 }
 
-#header>h1 {
+#header>a.logo {
+    background-color: var(--bg1);
+    display: block;
+    text-align: center;
+    padding: 15px;
+    position: relative;
+}
+
+a.logo>img {
+    height: 93px;
+}
+
+#header>.moto {
     margin: 0;
-    padding: 0;
-    font-size: 1.5rem;
-    height: 2rem;
-    line-height: 2rem;
+    padding: 20px;
+    font-weight: bold;
 }
 
 #header>h1 a {
     display: block;
 }
 
-#header h1 a:hover {
-    background-color: #333;
-}
-
-
 #row {
+    min-height: 100px;
     display: flex;
+    justify-content: space-between;
     width: 100%;
+    flex-grow: 1;
 }
 
 #row>* {
@@ -55,7 +111,6 @@ body {
     flex-shrink: 0;
     text-align: center;
     overflow: auto;
-    height: calc(100vh - 2rem);
 }
 
 #upload h2,
@@ -64,37 +119,29 @@ body {
     padding: 0;
 }
 
-#upload > header,
-#download > header {
-    color: #fff;
-    font-size: 1.5rem;
-    text-shadow: #000 0 2px 3px;
-}
-
-
 #icons {
     display: flex;
     align-items: center;
     justify-content: center;
     margin-bottom: 1rem;
 }
-#icons img {
-    opacity: 0.5;
+
+#icons>* {
+    width: 3rem;
+    height: 3rem;
     /*
     background-color: #fff;
     border: 0.3rem solid #fff;
     */
 }
 
-#icons img.todo {
-    opacity: 0;
+#icons>*.todo {
+    opacity: 0.2;
 }
 
 #preview {
-    flex-grow: 4;
-    flex-shrink: 4;
+    max-width: 40rem;
     overflow: auto;
-    height: calc(100vh - 2rem);
 }
 
 img.waiting {
@@ -122,15 +169,42 @@ img.waiting {
     width: 100%;
 }
 
-#dropzone {
+.card {
+    font-size: 14px;
     position: relative;
-    border-radius: 1rem;
-    background-color: #fff;
-    padding: 1rem;
+    border: solid 4px var(--col1);
+    background-color: var(--bg1);
+    padding: 15px;
     text-align: center;
+}
+
+.card.inactive {
+    opacity: 0.5;
+}
+
+.card h3 {
+    color: var(--col1);
+    font-weight: 600;
+    line-height: 1;
+    font-size: 22px;
+    margin: 10px 0 20px 0;
+    text-indent: 0;
+    padding: 0;
+}
+
+#dropzone {
     width: 16rem;
     height: 16rem;
     overflow-wrap: break-word;
+    box-shadow: rgb(0 0 0 / 35%) 0px 5px 15px;
+}
+
+#dropzone output {
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    right: 15px;
+    transform: translate(0, -50%);
 }
 
 #dropzone output,
@@ -140,11 +214,11 @@ img.waiting {
 }
 
 #dropzone.inactive {
-    background-color: transparent;    
+    box-shadow: none;
 }
 
-#preview.active {
-    background-color: #fff;
+#downzone.active {
+    box-shadow: rgb(0 0 0 / 35%) 0px 5px 15px;
 }
 
 
@@ -163,18 +237,8 @@ img.back {
     top: 0;
 }
 
-#dropzone output {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 50%;
-    transform: translate(0, -70%);
-}
 
-#dropzone big {
-    font-weight: bold;
-    font-size: 2rem;
-}
+
 
 
 #dropzone .bottom {
@@ -204,18 +268,20 @@ div.format {
 }
 
 a.download {
-    margin: 1rem 0;
-    padding: 0.5rem;
+    padding: 0 0.5rem;
     color: #000;
     text-decoration: none;
     position: relative;
     z-index: 2;
     display: flex;
     align-items: center;
-    background: rgba(255, 255, 255, 0.7);
+}
+a.download:hover {
+    box-shadow: rgb(0 0 0 / 35%) 0px 5px 15px;
 }
 
-a.download  div.format {
+
+a.download div.format {
     height: 5rem;
     width: 5rem;
     flex-basis: 5rem;
@@ -226,27 +292,37 @@ a.download:hover {
 }
 
 
-#dropzone  div.format {
+#dropzone div.format {
     height: 7rem;
     padding-top: 1rem;
     text-align: center;
 }
 
-div.format.docx {
-    background-image: url('img/icon_docx.svg');
+#footer .rule {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--col1);
+    padding: 10px;
 }
-div.format.epub {
-    background-image: url('img/icon_docx.epub');
+
+.monogram {
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url('obtic_monogram.svg');
 }
-div.format.html {
-    background-image: url('img/icon_html.svg');
+
+.rule .monogram {
+    width: 50px;
+    height: 50px;
 }
-div.format.md {
-    background-image: url('img/icon_markdown.svg');
-}
-div.format.markdown {
-    background-image: url('img/icon_markdown.svg');
-}
-div.format.tei {
-    background-image: url('img/icon_tei.svg');
+
+.rule::before,
+.rule::after {
+    content: "  ";
+    font-size: 0;
+    border: 1px solid var(--bg1);
+    margin: 0 10px;
+    width: 35%;
 }

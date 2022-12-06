@@ -11,7 +11,7 @@ use Oeuvres\Teinte\Tei2\{Tei2article};
 
 // output ERRORS to http client
 Log::setLogger(new LoggerWeb(LogLevel::ERROR));
-I18n::load(__DIR__ . "/teinte_messages.tsv");
+I18n::load(__DIR__ . "/messages.tsv");
 
 Http::session_before(); // needed for some oddities before session_start()
 // clean even with error

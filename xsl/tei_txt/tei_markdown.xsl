@@ -88,9 +88,9 @@ TODO: listes, tables, liens
   <xsl:template match="tei:note" mode="txt-fn">
     <xsl:value-of select="$lf"/>
     <xsl:value-of select="$lf"/>
-    <xsl:text>[</xsl:text>
+    <xsl:text>[^</xsl:text>
     <xsl:call-template name="n"/>
-    <xsl:text>] </xsl:text>
+    <xsl:text>]: </xsl:text>
     <xsl:apply-templates mode="md"/>
   </xsl:template>
   <!-- éléments à arrêter -->
@@ -136,7 +136,7 @@ TODO: listes, tables, liens
   </xsl:template>
   <!-- Traitement des notes -->
   <xsl:template match="tei:note" mode="md">
-     <xsl:text> [</xsl:text>
+     <xsl:text> [^</xsl:text>
      <xsl:call-template name="n"/>
      <xsl:text>]</xsl:text>
   </xsl:template>

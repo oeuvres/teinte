@@ -26,7 +26,7 @@ function dropInit() {
     const dropBut = dropZone.querySelector("button");
     const dropInput = dropZone.querySelector("input");
     const dropPreview = document.getElementById('preview');
-    const dropDownload = document.getElementById('download');
+    const dropDownzone = document.getElementById('downzone');
     const dropExports = document.getElementById('exports');
 
     const message = {
@@ -50,8 +50,8 @@ function dropInit() {
         dropZone.classList.add("active");
         dropPreview.classList.remove("active");
         dropPreview.classList.add("inactive");
-        dropDownload.classList.remove("active");
-        dropDownload.classList.add("inactive");
+        dropDownzone.classList.remove("active");
+        dropDownzone.classList.add("inactive");
     }
     dropZone.onmousedown = () => {
         dropFocus();
@@ -112,7 +112,8 @@ function dropInit() {
             body: formData
         }).then((response) => {
             let downs = conversions[format];
-            dropDownload.classList.add("active");
+            dropDownzone.classList.remove("inactive");
+            dropDownzone.classList.add("active");
             let html = "";
             const name = file.name.replace(/\.[^/.]+$/, "");
             for (let i = 0, length = downs.length; i < length; i++) {
@@ -127,7 +128,7 @@ function dropInit() {
             dropPreview.classList.add("active");
             return response.text();
         }).then((html) => {
-            // dropPreview.innerHTML = html;
+            dropPreview.innerHTML = html;
             Tree.load();
         });
     }
