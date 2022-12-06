@@ -15,7 +15,7 @@ Log::setLogger(new LoggerWeb(LogLevel::ERROR));
 $pars = require(dirname(__DIR__).'/pars.php');
 if (!isset($pars['workdir']) || !$pars['workdir']) {
     // tmp maybe highly volatil on some servers
-    $pars['workdir'] = session_save_path();
+    $pars['workdir'] = realpath(session_save_path());
 } 
 I18n::load(__DIR__ . "/messages.tsv");
 

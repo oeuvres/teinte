@@ -39,10 +39,11 @@ class Http
     static public function session_before()
     {
         // required for the php PHPSESSID param
-        session_set_cookie_params(["SameSite" => "lax"]); //none, lax, strict
-        session_set_cookie_params(["Secure" => "true"]); //false, true
-        session_set_cookie_params(["HttpOnly" => "true"]); //false, true
-        ini_set('session.gc_maxlifetime', strval(60*60));
+        session_set_cookie_params(["SameSite" => "lax"]); // none, lax, strict
+        session_set_cookie_params(["Secure" => "true"]); // false, true
+        session_set_cookie_params(["HttpOnly" => "true"]); // false, true
+        // needed ?
+        // ini_set('session.gc_maxlifetime', strval(60*60));
     }
 
     /**
