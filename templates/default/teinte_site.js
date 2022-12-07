@@ -127,7 +127,7 @@ function dropInit() {
             dropPreview.classList.add("active");
             return response.text();
         }).then((html) => {
-            // dropPreview.innerHTML = html;
+            dropPreview.innerHTML = html;
             Tree.load();
         });
     }

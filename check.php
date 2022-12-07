@@ -14,9 +14,6 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-throw("Error are repoted");
-echo "This is an error";
-
 include_once(__DIR__ . '/php/autoload.php');
 
 use Psr\Log\LogLevel;
@@ -26,9 +23,13 @@ Log::setLogger(new LoggerWeb(LogLevel::DEBUG));
 
 Check::extension('xsl', 'mbstring', 'zip');
 if (!Filesys::readable(__DIR__.'/pars.php')) {
-    Log::warning("Yous have no parameters file, a default one has been created, find it in your webapp, feel free to modify");
+    Log::warning("You have no parameters file, a default one has been created, find it in your webapp, feel free to modify");
     copy(__DIR__ . '_pars.php', __DIR__ . 'pars.php');
 }
+
+$pars = include_once(__DIR__ . '/pars.php');
+
+echo "<h1>Teinte should work, visit <a href=\".\">this link</a></h1>\n";
         ?>
     </body>
 </html>

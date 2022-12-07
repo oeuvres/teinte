@@ -1,10 +1,15 @@
 <?php
+
 include_once(__DIR__ . '/php/autoload.php');
 $pars = include_once(__DIR__ . '/pars.php');
 
-use Oeuvres\Kit\{Route};
+use Oeuvres\Kit\{Filesys, Route};
 
 $template = realpath($pars['template']);
+// a template folder maybe providen without an index.php
+if (!Filesys::readable("$template/index.php")) {
+    $template = __DIR__ . "/templates/default";
+}
 
 // welcome page
 Route::get('/', "$template/index.php");
