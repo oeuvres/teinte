@@ -1,5 +1,12 @@
 key	message
 
+key	message
+Filesys.readable.is_file	“%s”, file exists but is not readable
+Filesys.readable.exists	“%s”, path exists but is not a file
+Filesys.readable.404	“%s”, path not found
+Filesys.writable.is_link	“%s”, maybe dangerous to write, “%s” is a link
+Filesys.writable.is_readable	“%s”, impossible to write, “$parent” exists but is not writable
+Filesys.mkdir.error	“%s”, impossible to create
 JSON_ERROR_NONE	Json, décodage OK
 JSON_ERROR_DEPTH	Json, hiérarchie trop profonde 
 JSON_ERROR_STATE_MISMATCH	Json malformé

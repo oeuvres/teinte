@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * Part of Teinte https://github.com/oeuvres/teinte
@@ -8,12 +8,11 @@
  * BSD-3-Clause https://opensource.org/licenses/BSD-3-Clause
  */
 
-declare(strict_types=1);
+
 
 namespace Oeuvres\Kit;
 
 use ZipArchive;
-use Psr\Log\{LoggerInterface, NullLogger};
 
 /**
  * code convention https://www.php-fig.org/psr/psr-12/
@@ -43,7 +42,7 @@ class Filesys
      *
      * @return mixed true if Yes, "message" if not
      */
-    public static function writable(string $path)
+    public static function writable(string $path):bool
     {
         if (is_writable($path)) return true;
         // if not file exists, go up to parents
@@ -52,11 +51,13 @@ class Filesys
             $parent = dirname($parent);
         }
         if (is_link($parent)) {
-            return "\"$path\" is dangerous to write, \"$parent\" is a link";
+            Log::warning(I18n::_('Filesys.writable.is_link', $path, $parent));
+            return false;
         }
         if (is_writable($parent)) return true;
         if (is_readable($parent)) {
-            return "\"$path\" impossible to write, \"$parent\" exists but is not writable";
+            Log::warning(I18n::_('Filesys.writable.is_readable', $path, $parent));
+            return false;
         }
         return self::readable($parent);
     }
@@ -89,7 +90,7 @@ class Filesys
     /**
      * Get relative path between 2 absolute file path
      */
-    public static function relpath(string $from, string $to)
+    public static function relpath(string $from, string $to): string
     {
         // some compatibility fixes for Windows paths
         $from = is_dir($from) ? rtrim($from, '\/') . '/' : $from;
@@ -136,23 +137,26 @@ class Filesys
      *
      * @return mixed true if Yes, "message" on error
      */
-    public static function readable(string $file)
+    public static function readable(string $file):bool
     {
         if (is_readable($file)) return true;
         if (is_file($file)) {
-            return "File exists but not readable:\n\"$file\"";
+            Log::warning(I18n::_('Filesys.readable.is_file', $file));
+            return false;
         }
         if (file_exists($file)) {
-            return "Path exists but is not a file:\n\"$file\"";
+            Log::warning(I18n::_('Filesys.readable.exists', $file));
+            return false;
         }
-        return "Path not found:\n\"$file\"";
+        Log::warning(I18n::_('Filesys.readable.404', $file));
+        return false;
     }
     /**
      * A safe mkdir dealing with rights
      * 
      * @return mixed true if done, "message" on error
      */
-    static function mkdir(string $dir)
+    static function mkdir(string $dir):bool
     {
         $pref = __CLASS__ . "::" . __FUNCTION__ . "  ";
 
@@ -160,8 +164,10 @@ class Filesys
         if (is_dir($dir)) {
             return false;
         }
+        if (!self::writable($dir)) return false;
         if (!mkdir($dir, 0775, true)) {
-            return $pref . "Directory not created:\n\"$dir\"";
+            Log::warning(I18n::_('Filesys.mkdir.error', $dir));
+            return false;
         }
         // let @, if www-data is not owner but allowed to write
         @chmod($dir, 0775);  

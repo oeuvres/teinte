@@ -86,7 +86,7 @@ class Tei extends Xml
      * Load a TEI string, and normalize things, especially 
      * spaces, for docx (bad indent produce bad spacing)
      */
-    public static function normTei(string $srcXml): string
+    public static function lint(string $xml): string
     {
         $block = "(ab|bibl|byline|dateline|desc|head|l|label|lb|p|signed|salute)";
         $re_norm = array(
@@ -103,7 +103,7 @@ class Tei extends Xml
         $xml = preg_replace(
             array_keys($re_norm),
             array_values($re_norm),
-            $srcXml
+            $xml
         );
         /* libxml indent is quite nice, 
         but may produce undesired line break for some inlines containing inlines

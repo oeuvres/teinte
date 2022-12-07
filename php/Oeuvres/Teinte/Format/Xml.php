@@ -54,6 +54,7 @@ class Xml extends File
      */
     public function loadXml(string $xml):DOMDocument
     {
+        $xml = static::lint($xml);
         $this->xml = $xml;
         $this->dom = Xsl::loadXml($this->xml);
         if (!$this->dom) {
@@ -62,6 +63,14 @@ class Xml extends File
         // spaces are normalized upper, keep them
         $this->dom->preserveWhiteSpace = true;
         return $this->dom;
+    }
+
+    /**
+     * Some formats may override
+     */
+    static public function lint(string $xml):string
+    {
+        return $xml;
     }
 
     /**

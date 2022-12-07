@@ -59,7 +59,6 @@ if (!move_uploaded_file($upload["tmp_name"], $src_file)) {
     echo I18n::_('upload.nomove', $upload["tmp_name"],  $src_file);
     die();
 }
-echo  $upload['name'] . "<br/>";
 $cookie['src_basename'] = $upload['name'];
 $src_name =  pathinfo($upload['name'], PATHINFO_FILENAME);
 $cookie['name'] =  $src_name;
@@ -81,6 +80,7 @@ if ($format === "docx") {
     $cookie['docx_basename'] = basename($src_file);
     cookie($cookie);
     flush();
+    echo  $upload['name'] . "<br/>";
     echo Tei2article::toXml($docx->dom());
 }
 else if ($format === "tei") {
@@ -90,6 +90,7 @@ else if ($format === "tei") {
     $cookie['tei_basename'] = basename($src_file);
     cookie($cookie);
     flush();
+    echo  $upload['name'] . "<br/>";
     echo $tei->toXml('article');
 }
 else if ($format === "markdown") {
@@ -102,6 +103,7 @@ else if ($format === "markdown") {
     $html = "<article>";
     $html .= $source->html();
     $html .= "</article>";
+    echo  $upload['name'] . "<br/>";
     echo $html;
 }
 else {
