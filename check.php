@@ -22,9 +22,17 @@ use Oeuvres\Kit\{Check, Filesys, Log, LoggerWeb};
 Log::setLogger(new LoggerWeb(LogLevel::DEBUG));
 
 Check::extension('xsl', 'mbstring', 'zip');
-if (!Filesys::readable(__DIR__.'/pars.php')) {
-    Log::warning("You have no parameters file, a default one has been created, find it in your webapp, feel free to modify");
-    copy(__DIR__ . '/_pars.php', __DIR__ . '/pars.php');
+$pars_file = __DIR__ . '/pars.php';
+if (!Filesys::readable($pars_file)) {
+    Log::warning("You have no parameters file, attempt to create a default one");
+    $from = __DIR__ . '/_pars.php';
+    if (!copy($from, $pars_file)) { // probably writes problem
+        Filesys::writable($pars_file);
+        Log::error("You have to create pars.php file by yourself, see the model file, _pars.php
+".dirname($pars_file)."$ cp _pars.php pars.php
+        ");
+        die();
+    }
 }
 
 $pars = include_once(__DIR__ . '/pars.php');
