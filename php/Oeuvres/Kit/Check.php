@@ -56,4 +56,5 @@ class Check
             Log::alert($m);
         }
     }
+
 }

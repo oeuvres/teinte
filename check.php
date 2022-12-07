@@ -22,6 +22,23 @@ use Oeuvres\Kit\{Check, Filesys, Log, LoggerWeb};
 Log::setLogger(new LoggerWeb(LogLevel::DEBUG));
 
 Check::extension('xsl', 'mbstring', 'zip');
+
+// verify .htaccess
+$htaccess = __DIR__ . "/.htaccess";
+if (!Filesys::readable($htaccess)) {
+    Log::error(".htaccess is required");
+    die();
+}
+if (!isset($_GET['rewrite'])) {
+    Log::error("Apache mod_rewrite is not enabled, and/or .htaccess files are not read
+    $ sudo a2enmod rewrite
+    $ sudo nano /etc/apache2/sites-enabled/000-default.conf
+    # find AllowOverride, set to All
+    $ sudo service apache2 restart
+    ");
+    die();
+}
+
 $pars_file = __DIR__ . '/pars.php';
 if (!Filesys::readable($pars_file)) {
     Log::warning("You have no parameters file, attempt to create a default one");

@@ -2,10 +2,14 @@
     # content negogiations do strange things with /myfile > /myfile.php
     Options -MultiViews
 </IfModule>
+
 DirectoryIndex index.php index.html index.htm
+
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+    # testing mod_rewrite 
+    RewriteRule ^(check\.php)$     $1?rewrite=on [QSA,L]
     RewriteRule ^index\.php$ - [L]
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
