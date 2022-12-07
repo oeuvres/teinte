@@ -24,7 +24,7 @@ Log::setLogger(new LoggerWeb(LogLevel::DEBUG));
 Check::extension('xsl', 'mbstring', 'zip');
 if (!Filesys::readable(__DIR__.'/pars.php')) {
     Log::warning("You have no parameters file, a default one has been created, find it in your webapp, feel free to modify");
-    copy(__DIR__ . '_pars.php', __DIR__ . 'pars.php');
+    copy(__DIR__ . '/_pars.php', __DIR__ . '/pars.php');
 }
 
 $pars = include_once(__DIR__ . '/pars.php');
