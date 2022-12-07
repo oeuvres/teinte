@@ -51,12 +51,12 @@ class Filesys
             $parent = dirname($parent);
         }
         if (is_link($parent)) {
-            Log::warning(I18n::_('Filesys.writable.is_link', $path, $parent, get_current_user()));
+            Log::warning(I18n::_('Filesys.writable.is_link', $path, $parent));
             return false;
         }
         if (is_writable($parent)) return true;
         if (is_readable($parent)) {
-            Log::warning(I18n::_('Filesys.writable.is_readable', $path, $parent, get_current_user()));
+            Log::warning(I18n::_('Filesys.writable.is_readable', $path, $parent, fileowner($parent) ));
             return false;
         }
         return self::readable($parent);
@@ -141,7 +141,7 @@ class Filesys
     {
         if (is_readable($file)) return true;
         if (is_file($file)) {
-            Log::warning(I18n::_('Filesys.readable.is_file', $file, get_current_user()));
+            Log::warning(I18n::_('Filesys.readable.is_file', $file));
             return false;
         }
         if (file_exists($file)) {
@@ -166,7 +166,7 @@ class Filesys
         }
         if (!self::writable($dir)) return false;
         if (!mkdir($dir, 0775, true)) {
-            Log::warning(I18n::_('Filesys.mkdir.error', $dir, get_current_user()));
+            Log::warning(I18n::_('Filesys.mkdir.error', $dir));
             return false;
         }
         // let @, if www-data is not owner but allowed to write

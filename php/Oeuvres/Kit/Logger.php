@@ -107,6 +107,7 @@ abstract class Logger extends AbstractLogger
         if ($verbosity > $this->verbosity) return false;
 
         $date = new DateTime();
+        $context['whoami'] = getenv('APACHE_RUN_USER');
         $context['level'] = str_pad($level, 8, ' ', STR_PAD_LEFT);
         $context['date'] = $date->format('Y-m-d');
         $context['datetime'] = $date->format('Y-m-d H:i:s');
