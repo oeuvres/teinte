@@ -24,7 +24,11 @@ use \Oeuvres\Kit\{Http, Route};
 <body>
   <div id="win">
     <header id="header">
-      <a class="logo" href="."  rel="home"><img src="<?= Route::home_href() ?>obtic_logo.svg" class="custom-logo astra-logo-svg" alt="ObTIC"></a>
+      <form method="POST" action="<?= Route::home_href() ?>">
+        <a class="logo" href="."  rel="home">
+          <img src="<?= Route::home_href() ?>obtic_logo.svg" alt="ObTIC"/>
+        </a>
+      </form>
       <div class="moto"><a href="http://github.com/oeuvres/teinte">Teinte</a>, la conversion des livres (TEI, DOCX, HTML, EPUB, TXT)</div>
     </header>
     <div id="row">
@@ -59,7 +63,7 @@ use \Oeuvres\Kit\{Http, Route};
       </div>
       <div id="preview">
       <h1>Teinte</h1>
-        <p>Convertissez vos livres électroniques, <b>de</b>, et <b>vers</b>, plusieurs formats : TEI, DOCX, HTML, EPUB, MARKDOWN.</p>
+        <p>Convertissez vos livres électroniques, <b>de</b>, et <b>vers</b>, plusieurs formats : TEI, DOCX, HTML, EPUB, MARKDOWN.</p>
 
         <p>À gauche, déposez un de vos fichiers ; au centre, prévisualisez le contentu ; à droite, téléchargez un export dans le format de votre choix.</p>
 

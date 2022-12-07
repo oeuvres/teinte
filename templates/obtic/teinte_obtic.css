@@ -69,7 +69,7 @@ a:hover {
     color: var(--bg1);
 }
 
-#header>a.logo {
+#header a.logo {
     background-color: var(--bg1);
     display: block;
     text-align: center;

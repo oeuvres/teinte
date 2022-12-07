@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-include_once(dirname(__DIR__) . '/php/autoload.php');
+include_once(__DIR__ . '/inc.php');
 
 
 use Psr\Log\LogLevel;
@@ -10,12 +10,8 @@ use Oeuvres\Teinte\Tei2\{Tei2toc,Tei2article};
 
 // for debug, output ERRORS to http client
 Log::setLogger(new LoggerTxt(LogLevel::WARNING, 'Teinte, download [{datetime}] '));
-I18n::load(__DIR__ . "/messages.tsv");
-// start session
-Http::session_before(); // needed for some oddities before session_start()
-session_start();
 
-
+// 
 
 function attach($dst_name) {
     $contentDisposition = 'Content-Disposition:  attachment; '
@@ -36,24 +32,32 @@ header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 header('Pragma: public');
 ob_clean();
 
+
 // nothing has been uploaded
-if (!isset($_SESSION['teinte_tei_file'])) {
+if (!isset($_COOKIE['teinte'])) {
     attach("Teinte, " . I18n::_("ERROR_NO_UPLOAD") . '.txt');
-    Log::error(I18n::_('download.notei'));
-    print_r($_SESSION);
+    Log::error(I18n::_('download.nofile'));
+    print_r($_COOKIE);
     exit();
 }
-$dst_name = I18n::_('book');
-if (isset($_SESSION['teinte_name'])) {
-    $upload_name =  $_SESSION['teinte_upload_name'];
-    $dst_name = $_SESSION['teinte_name'];
+$cookie = json_decode($_COOKIE[TEINTE], true);
+if (!isset($cookie['id'])) {
+    attach("Teinte, " . I18n::_("ERROR_NO_UPLOAD") . '.txt');
+    Log::error(I18n::_('download.nofile'));
+    print_r($cookie);
+    exit();
 }
-
+if (!isset($cookie['tei_basename'])) {
+    attach("Teinte, " . I18n::_("ERROR_NO_UPLOAD") . '.txt');
+    Log::error(I18n::_('download.nofile'));
+    print_r($cookie);
+    exit();
+}
 $par_format = Http::par('format');
 if (!$par_format) {
     attach("Teinte, " . I18n::_("ERROR_NO_FORMAT") . '.txt');
     Log::error(I18n::_('download.noformat', $upload_name));
-    print_r($_SESSION);
+    print_r($_REQUEST);
     exit();
 }
 $format = File::path2format($par_format);
@@ -62,16 +66,20 @@ $supported = ["docx", "html", "tei", "markdown"];
 if (!in_array($format, $supported)) {
     attach("Teinte, " . I18n::_("ERROR_UNKNOWN_FORMAT"). '.txt');
     echo I18n::_('download.format404', $par_format, $upload_name);
-    exit("\n");
+    exit();
+}
+if (!isset($cookie['name'])) {
+    attach("Teinte, bad cookie .txt");
+    print_r($cookie);
+    exit();
 }
 
-// Let binary and Google.Chrome is happy
-// header('Content-Type: ' . File::mime($format));
-$dst_file = $dst_name . File::ext($format);
-attach($dst_file);
+$dst_basename = $cookie['name'] . File::ext($format);
+attach($dst_basename);
 
 
-$tei_file = $_SESSION['teinte_tei_file'];
+$tmp_dir = $pars['workdir'] . $cookie['id'] . "/";
+$tei_file = $tmp_dir . $cookie['tei_basename'];
 // Tei Export
 if ($format == "tei") {
     $length = filesize($tei_file);
