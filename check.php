@@ -31,10 +31,10 @@ if (!Filesys::readable($htaccess)) {
 }
 if (!isset($_GET['rewrite'])) {
     Log::error("Apache mod_rewrite is not enabled, and/or .htaccess files are not read
-    $ sudo a2enmod rewrite
-    $ sudo nano /etc/apache2/sites-enabled/000-default.conf
-    # find AllowOverride, set to All
-    $ sudo service apache2 restart
+sudo a2enmod rewrite
+sudo nano /etc/apache2/sites-enabled/000-default.conf
+# find AllowOverride, set to All
+$ sudo service apache2 restart
     ");
     die();
 }
