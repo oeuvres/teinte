@@ -56,7 +56,7 @@ class Filesys
         }
         if (is_writable($parent)) return true;
         if (is_readable($parent)) {
-            Log::warning(I18n::_('Filesys.writable.is_readable', $path, $parent, fileowner($parent) ));
+            Log::warning(I18n::_('Filesys.writable.is_readable', $path, $parent, self::owner($parent) ));
             return false;
         }
         return self::readable($parent);
@@ -329,6 +329,16 @@ class Filesys
         if (!$path) return false;
         if ($path[0] === DIRECTORY_SEPARATOR || preg_match('~\A[A-Z]:(?![^/\\\\])~i', $path) > 0) return true;
         return false;
+    }
+
+    /**
+     * Get owner of a file by name
+     */
+    static public function owner(string $file):?string
+    {
+        if (self::readable($file)) return null;
+        $userinfo = posix_getpwuid(fileowner($file));
+        return $userinfo['name'];
     }
 
 }

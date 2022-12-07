@@ -199,6 +199,10 @@ img.waiting {
     box-shadow: rgb(0 0 0 / 35%) 0px 5px 15px;
 }
 
+#downzone {
+    width: 16rem;
+    height: 16rem;
+}
 #dropzone output {
     position: absolute;
     top: 50%;

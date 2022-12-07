@@ -62,16 +62,16 @@ use \Oeuvres\Kit\{Http, Route};
         </div>
       </div>
       <div id="preview">
-      <h1>Teinte</h1>
+      <h1>Teinte (développent en cours)</h1>
         <p>Convertissez vos livres électroniques, <b>de</b>, et <b>vers</b>, plusieurs formats : TEI, DOCX, HTML, EPUB, MARKDOWN.</p>
 
         <p>À gauche, déposez un de vos fichiers ; au centre, prévisualisez le contentu ; à droite, téléchargez un export dans le format de votre choix.</p>
 
         <p>Cette installation est en développement, certains chemins de conversion ne sont pas encore fonctionnels.</p>
 
-        <p>Les feuilles de styles de cette installation ont été personnalisées pour l’<a href="https://obtic.sorbonne-universite.fr/">ObTiC</a>.</p>
+        <p>Le développement de cette interface a été financé par l’<a href="https://obtic.sorbonne-universite.fr/">ObTIC</a>.</p>
         
-        <p>Teinte est un logiciel libre développé par <a onmouseover="this.href='mailto'+'\x3A'+'frederic.glorieux'+'\x40'+'fictif.org'" href="#">Frédéric Glorieux</a> (cf <a href="http://github.com/oeuvres/teinte">github.com/oeuvres/teinte</a>). Vous pouvez librement l’utiliser. Vous pouvez aussi financer des développements supplémentaires pour mieux ajuster le logiciel à vos projets. Et les utilisateurs vous remercient pour tous (<a href="https://github.com/oeuvres/teinte/issues">bugs signalés</a>).</p> 
+        <p>Teinte est un logiciel libre développé par <a onmouseover="this.href='mailto'+'\x3A'+'frederic.glorieux'+'\x40'+'fictif.org'" href="#">Frédéric Glorieux</a> (cf <a href="http://github.com/oeuvres/teinte">github.com/oeuvres/teinte</a>). Vous pouvez librement l’utiliser. Vous pouvez aussi financer des développements supplémentaires pour mieux ajuster le logiciel à vos projets. Et les utilisateurs vous remercient pour tous <a href="https://github.com/oeuvres/teinte/issues">bugs signalés</a>.</p> 
 
     </div>
       <div id="download">

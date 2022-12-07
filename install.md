@@ -4,7 +4,7 @@ Teinte is a PHP webapp. Installation suppose an http server configured.
 
 ## Ubuntu server over SSH
 
-This tutorial has been tested through SSH on a quite fresh linux box from a research organization. Usually, most of the steps are not needed on a server already installed for other PHP apps, *they appears italicized*. It does not cover network configuration over the Internet, nor right policies among users. It supposes administration rights to install packages.
+This tutorial has been tested through SSH on a quite fresh linux box from a research organization. Usually, most of those steps are not needed on a server already installed for other PHP apps, *they appears italicized*. It does not cover network configuration over the Internet, nor right policies among users. It supposes administration rights to install packages.
 
 * checkout app where you have room and rights, this way allow to manage multiple versions of an app
 ```
@@ -57,7 +57,16 @@ This tutorial has been tested through SSH on a quite fresh linux box from a rese
 /data/teinte$ lynx localhost/teinte/check.php
         PHP is working
     […]
-# Q to quit
+```
+* *Ensure that .htaccess are handled and apache mod_rewrite is installed, check it for http:// but also for ssl https://*
+```
+/data/teinte$ lynx localhost/teinte/check.php
+    [error] Apache mod_rewrite is not enabled, and/or .htaccess files are not read
+/data/teinte$ sudo a2enmod rewrite
+/data/teinte$ sudo nano /etc/apache2/sites-enabled/000-default.conf
+    # find <Directory> AllowOverride All 
+/data/teinte$ sudo apachectl configtest
+/data/teinte$ sudo service apache2 restart
 ```
 * *Check required PHP extensions, and install them (do not forget to restart Apache after installation)*
 ```
@@ -82,14 +91,19 @@ This tutorial has been tested through SSH on a quite fresh linux box from a rese
 /data/teinte$ sudo apt install php-xml php-mbstring php-zip
 /data/teinte$ sudo service apache2 restart
 ```
-* you can modify some local parameters like provide your own templates, but default is already working
+* create the local parameter file teinte/pars.php, app will try to create one from a model (_pars.php) but could fail according to your rights policy
 ```
 /data/teinte$ lynx localhost/teinte/check.php
         PHP is working
 
    [warning] “/data/app/teinte/pars.php”, path not found
 
-   [warning] You have no parameters file, a default one has been created, find it in your webapp, feel free to modify
+    [warning] “/data/app/teinte/pars.php”, impossible to write, “/data/app/teinte” owned by “1001” exists but is not writable by www-data
 
+   [error] You have to create pars.php file by yourself, see the model file, _pars.php
+
+/data/teinte$ cp _pars.php pars.php
+/data/teinte$ lynx localhost/teinte/check.php
+        PHP is working
         Teinte should work, visit this link
 ```
