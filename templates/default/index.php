@@ -17,57 +17,83 @@ use \Oeuvres\Kit\{Http, Route};
   <script src="<?= Route::home_href() ?>theme/teinte.tree.js"></script>
   <link rel="stylesheet" href="<?= Route::home_href() ?>teinte_site.css" />
   <title>Teinte, la conversion des livres</title>
+  <!-- Messages used by teinte_site.js -->
 </head>
 
 <body>
   <div id="win">
     <header id="header">
-      <h1><a href="?refresh=<?= time() ?>">Teinte, la conversion des livres (TEI, DOCX, HTML, EPUB, TXT)</a></h1>
+      <a href="."><i>Teinte</i>, shades of TEI, the converter</a>
     </header>
     <div id="row">
       <div id="upload">
         <header>
-          <h2>Votre fichier</h2>
           <div id="icons">
-            <img width="32" alt="TEI"
-            title="TEI : texte XML (Text Encoding Initiative)" 
-            src="<?= Route::home_href() ?>doc/img/icon_tei.svg" />
+            <div class="format tei" title="TEI : XML document (Text Encoding Initiative)"></div>
 
-            <img width="32" alt="DOCX" 
-            title="DOCX : texte bureautique (LibreOffice, Microsoft.Word…)" 
-            src="<?= Route::home_href() ?>doc/img/icon_docx.svg" />
+            <div class="format docx" title="DOCX : office document (LibreOffice, Microsoft.Word…)"></div>
 
-            <img class="todo" width="32" alt="EPUB"
-            title="EPUB : livre électronique ouvert" 
-            src="<?= Route::home_href() ?>doc/img/icon_epub.svg" />
+            <div class="todo format epub" title="EPUB : open ebook (to be done)"></div>
 
-            <img class="todo" width="32" alt="HTML"
-            title="HTML : page internet" 
-            src="<?= Route::home_href() ?>doc/img/icon_html.svg" />
+            <div class="todo format html" title="HTML : internet page (to be done)"></div>
 
-            <img class="todo" width="32" alt="MD"
-            title="MarkDown : texte brut légèrement formaté" 
-            src="<?= Route::home_href() ?>doc/img/icon_markdown.svg" />
+            <div class="todo format markdown (to be done)" title="MarkDown : formatted text"></div>
+
           </div>
         </header>
-        <div id="dropzone">
+        <div id="dropzone" class="card">
+          <h3>Upload</h3>
           <img width="64" class="back" src="<?= Route::home_href() ?>upload.svg" />
+          <template id="uploadFile">
+            <div class="filename">{your file}</div>
+            <div class="format {format}"></div>
+          </template>
+          <template id="uploadDrag">Drag your file here</template>
+          <template id="uploadOver"><big>Drop for upload</big></template>
+
           <output></output>
           <div class="bottom">
-            <button>ou chercher sur votre disque…</button>
+            <button>or search for file…</button>
             <input type="file" hidden />
           </div>
         </div>
+
+
       </div>
       <div id="preview">
-        <img id="banner" src="<?= Route::home_href() ?>doc/img/teinte.png" />
+        <template id="waiting">
+          <p class="center">Processing {your file}… (may take some seconds, depending on format and size)</p>
+          <img width="80%" class="waiting" src="<?= Route::home_href() ?>waiting.svg" />
+        </template>
+        <output>
+          <img id="banner" src="<?= Route::home_href() ?>doc/img/teinte.png" />
+        </output>
       </div>
       <div id="download">
         <header>
-          <h2>Téléchargements</h2>
+          <div id="icons">
+            <div class="format tei" title="TEI : XML document (Text Encoding Initiative)"></div>
+
+            <div class="format docx" title="DOCX : office document (LibreOffice, Microsoft.Word…)"></div>
+
+            <div class="todo format epub" title="EPUB : open ebook (to be done)"></div>
+
+            <div class="format html" title="HTML : internet page"></div>
+
+            <div class="format markdown" title="MarkDown : formatted text"></div>
+
+          </div>
         </header>
         <img width="64" class="back" src="<?= Route::home_href() ?>download.svg" />
-        <div id="exports">
+        <div class="card inactive" id="downzone">
+          <h3>Download</h3>
+          <output id="exports"></output>
+          <template id="downloadFile">
+            <a class="download" href="download?format={0}">
+              <div class="format {0}"></div>
+              <div class="filename">{1}</div>
+            </a>
+          </template>
         </div>
       </div>
     </div>

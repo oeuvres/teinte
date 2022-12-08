@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /**
  * Part of Teinte https://github.com/oeuvres/teinte
@@ -392,7 +394,7 @@ class Http
     /**
      * Read file on request, or send nice headers fo nor modified
      */
-    public static function readfile(string $file):bool
+    public static function readfile(string $file): bool
     {
         if (!isset(self::$mime)) {
             self::$mime = include(__DIR__ . "/mime.php");
@@ -403,21 +405,27 @@ class Http
         }
         self::notModified($file);
         $ext = ltrim(pathinfo($file, PATHINFO_EXTENSION), '.');
+
+        header("Cache-control: public"); // for FireFox over https
+        header("Last-Modified: " . 
+            gmdate('D, d M Y H:i:s', filemtime($file)) . ' GMT');
+
+
         if (isset(self::$mime[$ext])) {
             $mime = self::$mime[$ext];
+            header('Content-Type: ' . $mime["type"]);
+            $type = $mime["type"];
+            // some infos for caching persistant resources
+            if (isset($mime['max-age'])) {
+                header('Cache-Control: max-age='. $mime['max-age']);
+                header('Expires: ' . gmdate('D, d M Y H:i:s', time() +  $mime['max-age']) . ' GMT');
+            }
         }
-        if (!$mime) $mime = mime_content_type($file);
-        // encoding ? default utf-8
-        if (
-            substr($mime, 0, 5) == 'text/' 
-            || $mime == 'application/javascript'
-        ) {
-            $mime .= "; charset=utf-8";
+        if (!$mime) {
+            header('Content-Type: ' . mime_content_type($file));
         }
-        header('Content-Type: ' . $mime);
         $length = filesize($file);
         header("Content-Length: $length");
-        header("Accept-Ranges: $length");        
         readfile($file);
         exit();
     }
@@ -462,11 +470,6 @@ class Http
     $etag = '"'.md5($modification).'"';
     header("ETag: $etag");
     */
-        // it seems there is something to send
-        header("Cache-control: public"); // for FireFox over https
-        header("Last-Modified: $modification");
-        // it's good to
-        if ($expires) header('Expires: ' . gmdate('D, d M Y H:i:s', time() + $expires) . ' GMT');
     }
 
     /**

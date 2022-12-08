@@ -45,7 +45,6 @@ function dropInit() {
         }
     }
     function dropFocus() {
-        console.log("Drop focus");
         dropZone.classList.remove("inactive");
         dropZone.classList.add("active");
         dropPreview.classList.remove("active");

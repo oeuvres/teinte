@@ -2,12 +2,12 @@ const home_href = '';
 let response;
 response = await fetch(
     home_href + 'php/Oeuvres/Teinte/Format/ext2format.json',
-    {cache: "no-cache"}
+    { cache: "no-cache" }
 );
 const ext2format = await response.json();
 response = await fetch(
     home_href + 'php/Oeuvres/Teinte/Format/formats.json',
-    {cache: "no-cache"}
+    { cache: "no-cache" }
 );
 const formats = await response.json();
 const conversions = {
@@ -18,8 +18,33 @@ const conversions = {
     "markdown": [],
 }
 
-
-
+/**
+ * A simple String.format() Python like with defaul value.
+ * "Hi {}, are you {} or {idiot}?".format('guy', 'happy') == "Hi guy, are you happy or idiot?";
+ * "{0}! {0}!  {Hein}?".format("Ho") == "Ho! Ho! Hein?"
+ */
+if (!String.prototype.format) {
+    String.prototype.format = function () {
+        var args = arguments;
+        const parts = this.split(/{[^}]*}/);
+        const length = parts.length;
+        let i = -1;
+        return this.replace(/{([^}]*)}/g, function (match, key) {
+            i++;
+            // numbered argument {2}
+            const n = parseInt(key, 10);
+            console.log(key+"->"+n+"->"+args[n]);
+            if (!isNaN(n) && args[n] !== undefined) return args[n];
+            // empty or defaut argument {} {key}, use natural order
+            if (args[i] !== undefined) return args[i];
+            // if key not empty, retur it
+            if (key) return key;
+            // {}, let placeholder
+            return match;
+        });
+    };
+}
+console.log("{0}! {0}! {0}! {Ha}!".format("Ho"));
 function dropInit() {
     const dropZone = document.querySelector("#dropzone");
     const dropOutput = dropZone.querySelector("output");
@@ -28,16 +53,13 @@ function dropInit() {
     const dropPreview = document.getElementById('preview');
     const dropDownload = document.getElementById('download');
     const dropExports = document.getElementById('exports');
+    const dropDownzone = document.getElementById('downzone');
 
-    const message = {
-        "default": "Déposer ici votre fichier",
-        "over": "<big>Lâcher pour téléverser</big>",
-    }
     // shared variable
     let file;
     let format;
     if (dropOutput) {
-        dropOutput.innerHTML = message['default'];
+        dropOutput.innerHTML = document.getElementById("uploadDrag").innerHTML;
     }
     if (dropBut) {
         dropBut.onclick = () => {
@@ -45,17 +67,16 @@ function dropInit() {
         }
     }
     function dropFocus() {
-        console.log("Drop focus");
         dropZone.classList.remove("inactive");
         dropZone.classList.add("active");
         dropPreview.classList.remove("active");
         dropPreview.classList.add("inactive");
-        dropDownload.classList.remove("active");
-        dropDownload.classList.add("inactive");
+        dropDownzone.classList.remove("active");
+        dropDownzone.classList.add("inactive");
     }
     dropZone.onmousedown = () => {
         dropFocus();
-        dropInput.click(); 
+        dropInput.click();
     }
     if (dropInput) {
         dropInput.addEventListener("change", function () {
@@ -69,13 +90,13 @@ function dropInit() {
     dropZone.addEventListener("dragover", (event) => {
         event.preventDefault(); //preventing from default behaviour
         dropFocus();
-        dropOutput.innerHTML = message['over'];
+        dropOutput.innerHTML = document.getElementById("uploadDrop").innerHTML;
     });
     //If user leave dragged File from DropArea
     dropZone.addEventListener("dragleave", () => {
         dropZone.classList.remove("inactive");
         dropZone.classList.remove("active");
-        dropOutput.innerHTML = message['default'];
+        dropOutput.innerHTML = document.getElementById("uploadDrag").innerHTML;
     });
     //If user drop File on DropArea
     dropZone.addEventListener("drop", (event) => {
@@ -96,14 +117,12 @@ function dropInit() {
             dropOutput.innerHTML = '<b>“' + format + '” format<br/>is not  supported</b><br/>' + file.name;
             return;
         }
-        dropOutput.innerHTML = '<div class="filename">' + file.name + '</div>' 
-        + '<div class="format ' + format + '"></div>';
+        dropOutput.innerHTML = document.getElementById('uploadFile').innerHTML.format(file.name, format);
         upload();
     }
     async function upload() {
         dropPreview.classList.remove("inactive");
-        dropPreview.innerHTML = '<p class="center">Fichier en cours de traitement… (jusqu’à plusieurs secondes selon le format et la taille du fichier)</p>'
-        + '<img width="80%" class="waiting" src="waiting.svg"/>';
+        dropPreview.innerHTML = document.getElementById('waiting').innerHTML.format(file.name);
         let timeStart = Date.now();
         let formData = new FormData();
         formData.append("file", file);
@@ -112,19 +131,19 @@ function dropInit() {
             body: formData
         }).then((response) => {
             let downs = conversions[format];
-            dropDownload.classList.add("active");
+            dropDownzone.classList.add("active");
+            dropDownzone.classList.remove("inactive");
             let html = "";
             const name = file.name.replace(/\.[^/.]+$/, "");
+            const htmlFrag = document.getElementById("downloadFile").innerHTML;
             for (let i = 0, length = downs.length; i < length; i++) {
                 const format2 = downs[i];
                 let ext = formats[format2].ext;
-                html += '\n<a class="download" href="download?format=' + format2 + '">' 
-                + '<div class="format ' + format2 + '"></div>'
-                + '<div class="filename">' + name + ext + '</div>'
-                + '</a>';
+                html += htmlFrag.format(format2, name+ext);
             }
             dropExports.innerHTML = html;
             dropPreview.classList.add("active");
+            dropPreview.classList.remove("inactive");
             return response.text();
         }).then((html) => {
             dropPreview.innerHTML = html;

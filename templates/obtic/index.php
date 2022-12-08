@@ -25,8 +25,8 @@ use \Oeuvres\Kit\{Http, Route};
   <div id="win">
     <header id="header">
       <form method="POST" action="<?= Route::home_href() ?>">
-        <a class="logo" href="."  rel="home">
-          <img src="<?= Route::home_href() ?>obtic_logo.svg" alt="ObTIC"/>
+        <a class="logo" href="." rel="home">
+          <img src="<?= Route::home_href() ?>obtic_logo.svg" alt="ObTIC" />
         </a>
       </form>
       <div class="moto"><a href="http://github.com/oeuvres/teinte">Teinte</a>, la conversion des livres (TEI, DOCX, HTML, EPUB, TXT)</div>
@@ -35,20 +35,15 @@ use \Oeuvres\Kit\{Http, Route};
       <div id="upload">
         <header>
           <div id="icons">
-            <div class="format tei"
-            title="TEI : texte XML (Text Encoding Initiative)"></div>
+            <div class="format tei" title="TEI : texte XML (Text Encoding Initiative)"></div>
 
-            <div class="format docx"
-            title="DOCX : texte bureautique (LibreOffice, Microsoft.Word…)"></div>
+            <div class="format docx" title="DOCX : texte bureautique (LibreOffice, Microsoft.Word…)"></div>
 
-            <div  class="todo format epub"
-            title="EPUB : livre électronique ouvert" ></div>
+            <div class="todo format epub" title="EPUB : livre électronique ouvert"></div>
 
-            <div  class="todo format html"
-            title="HTML : page internet"></div>
+            <div class="todo format html" title="HTML : page internet"></div>
 
-            <div class="todo format markdown"
-            title="MarkDown : texte brut légèrement formaté"></div>
+            <div class="todo format markdown" title="MarkDown : texte brut légèrement formaté"></div>
 
           </div>
         </header>
@@ -62,7 +57,7 @@ use \Oeuvres\Kit\{Http, Route};
         </div>
       </div>
       <div id="preview">
-      <h1>Teinte (développent en cours)</h1>
+        <h1>Teinte (développent en cours)</h1>
         <p>Convertissez vos livres électroniques, <b>de</b>, et <b>vers</b>, plusieurs formats : TEI, DOCX, HTML, EPUB, MARKDOWN.</p>
 
         <p>À gauche, déposez un de vos fichiers ; au centre, prévisualisez le contentu ; à droite, téléchargez un export dans le format de votre choix.</p>
@@ -70,27 +65,22 @@ use \Oeuvres\Kit\{Http, Route};
         <p>Cette installation est en développement, certains chemins de conversion ne sont pas encore fonctionnels.</p>
 
         <p>Le développement de cette interface a été financé par l’<a href="https://obtic.sorbonne-universite.fr/">ObTIC</a>.</p>
-        
-        <p>Teinte est un logiciel libre développé par <a onmouseover="this.href='mailto'+'\x3A'+'frederic.glorieux'+'\x40'+'fictif.org'" href="#">Frédéric Glorieux</a> (cf <a href="http://github.com/oeuvres/teinte">github.com/oeuvres/teinte</a>). Vous pouvez librement l’utiliser. Vous pouvez aussi financer des développements supplémentaires pour mieux ajuster le logiciel à vos projets. Et les utilisateurs vous remercient pour tous <a href="https://github.com/oeuvres/teinte/issues">bugs signalés</a>.</p> 
 
-    </div>
+        <p>Teinte est un logiciel libre développé par <a onmouseover="this.href='mailto'+'\x3A'+'frederic.glorieux'+'\x40'+'fictif.org'" href="#">Frédéric Glorieux</a> (cf <a href="http://github.com/oeuvres/teinte">github.com/oeuvres/teinte</a>). Vous pouvez librement l’utiliser. Vous pouvez aussi financer des développements supplémentaires pour mieux ajuster le logiciel à vos projets. Et les utilisateurs vous remercient pour tous <a href="https://github.com/oeuvres/teinte/issues">bugs signalés</a>.</p>
+
+      </div>
       <div id="download">
         <header>
           <div id="icons">
-            <div class="format tei"
-            title="TEI : texte XML (Text Encoding Initiative)"></div>
+            <div class="format tei" title="TEI : texte XML (Text Encoding Initiative)"></div>
 
-            <div class="format docx"
-            title="DOCX : texte bureautique (LibreOffice, Microsoft.Word…)"></div>
+            <div class="format docx" title="DOCX : texte bureautique (LibreOffice, Microsoft.Word…)"></div>
 
-            <div  class="todo format epub"
-            title="EPUB : livre électronique ouvert" ></div>
+            <div class="todo format epub" title="EPUB : livre électronique ouvert"></div>
 
-            <div  class="format html"
-            title="HTML : page internet"></div>
+            <div class="format html" title="HTML : page internet"></div>
 
-            <div class="format markdown"
-            title="MarkDown : texte brut légèrement formaté"></div>
+            <div class="format markdown" title="MarkDown : texte brut légèrement formaté"></div>
 
           </div>
         </header>

@@ -1,8 +1,29 @@
 :root {
-    --col1: #26458A;
+    --col1: #422;
     --bg1: #fff;
-    --col2: #f39508;
+    --col2: #a63;
+    --shadow: rgba(64, 32, 32, 0.3);
+    --font-family: "Montserrat", serif;
 }
+
+@font-face {
+    font-display: swap;
+    font-family: "Montserrat";
+    font-style: normal;
+    src: url("Montserrat-VariableFont_wght.woff2") format('woff2');
+    /* cf. spec font https://fonts.google.com/variablefonts */
+    font-weight: 100 900;
+}
+
+@font-face {
+    font-display: swap;
+    font-family: "Montserrat";
+    font-style: italic;
+    src: url("Montserrat-Italic-VariableFont_wght.woff2") format('woff2');
+    /* cf. spec font https://fonts.google.com/variablefonts */
+    font-weight: 100 900;
+}
+
 
 .format.docx {
     background-image: url('doc/img/icon_docx.svg');
@@ -40,7 +61,7 @@ html, body {
 }
 
 body {
-    font-family: Lato, Helvetica, sans-serif;
+    font-family: var(--font-family);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     color: var(--col1);
@@ -64,9 +85,13 @@ a:hover {
 }
 
 #header {
-    text-align: center;
-    background-color: var(--col1);
-    color: var(--bg1);
+    box-shadow: inset 0px -2px 10px var(--shadow);
+    font-size: 1.5rem;
+    padding: 0.5rem 1rem;
+}
+
+#header a {
+    color: var(--col1);
 }
 
 #header a.logo {
@@ -144,6 +169,9 @@ a.logo>img {
     overflow: auto;
 }
 
+#preview.active {
+}
+
 img.waiting {
     display: block;
     margin-left: auto;
@@ -172,8 +200,6 @@ img.waiting {
 .card {
     font-size: 14px;
     position: relative;
-    border: solid 4px var(--col1);
-    background-color: var(--bg1);
     padding: 15px;
     text-align: center;
 }
@@ -196,7 +222,7 @@ img.waiting {
     width: 16rem;
     height: 16rem;
     overflow-wrap: break-word;
-    box-shadow: rgb(0 0 0 / 35%) 0px 5px 15px;
+    box-shadow: 0px 5px 15px  var(--shadow);;
 }
 
 #downzone {
@@ -222,7 +248,7 @@ img.waiting {
 }
 
 #downzone.active {
-    box-shadow: rgb(0 0 0 / 35%) 0px 5px 15px;
+    box-shadow: 0px 5px 15px  var(--shadow);
 }
 
 
@@ -281,7 +307,7 @@ a.download {
     align-items: center;
 }
 a.download:hover {
-    box-shadow: rgb(0 0 0 / 35%) 0px 5px 15px;
+    box-shadow:0px 5px 15px  var(--shadow);
 }
 
 
