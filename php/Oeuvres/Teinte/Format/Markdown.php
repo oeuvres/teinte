@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Oeuvres\Teinte\Format;
 
-use Parsedown;
+use ParsedownExtra;
 use Oeuvres\Kit\{Filesys, Log, Parse};
 
 /**
@@ -20,14 +20,14 @@ use Oeuvres\Kit\{Filesys, Log, Parse};
 class Markdown extends File
 {
     static $init = false;
-    static private Parsedown $parsedown;
+    static private ParsedownExtra $parser;
     /**
      * Get an md parser
      */
     static public function init():void
     {
         if (self::$init) return;
-        self::$parsedown = new Parsedown();
+        self::$parser = new ParsedownExtra();
         self::$init = true;
     }
 
@@ -36,7 +36,7 @@ class Markdown extends File
      */
     public function html():string
     {
-        return self::$parsedown->text($this->contents());
+        return self::$parser->text($this->contents());
     }
 
 }

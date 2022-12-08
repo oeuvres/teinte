@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 include_once(dirname(__DIR__, 2) . '/php/autoload.php');
 
-use \Oeuvres\Kit\{Http, Route};
+use Psr\Log\LogLevel;
+use Oeuvres\Kit\{Log, LoggerWeb, Http, Route};
+use Oeuvres\Teinte\Format\Markdown;
 
+Log::setLogger(new LoggerWeb(LogLevel::DEBUG));
 ?>
 <!DOCTYPE html>
 <html>
@@ -66,7 +69,11 @@ use \Oeuvres\Kit\{Http, Route};
           <img width="80%" class="waiting" src="<?= Route::home_href() ?>waiting.svg" />
         </template>
         <output>
-          <img id="banner" src="<?= Route::home_href() ?>doc/img/teinte.png" />
+          <?php
+$source = new Markdown();
+$source->load(dirname(__DIR__, 2).'/README.md');
+echo $source->html();
+          ?>
         </output>
       </div>
       <div id="download">

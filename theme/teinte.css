@@ -415,10 +415,10 @@ h2 {
 h3 {
     clear: both;
     font-weight: bold;
-    margin-top: 1rem;
+    margin-top: 2rem;
     margin-bottom: 1rem;
-    padding-top: 1rem;
-    text-indent: 2rem;
+    padding-top: 0;
+    text-indent: 0;
 }
 
 h5,

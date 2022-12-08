@@ -34,7 +34,7 @@ class Log
      *
      * @return void
      */
-    static public function emergency(string $message, array $context = []): void
+    static public function emergency($message, array $context = []): void
     {
         self::log(LogLevel::EMERGENCY, $message, $context);
     }
@@ -50,7 +50,7 @@ class Log
      *
      * @return void
      */
-    static public function alert(string $message, array $context = []): void
+    static public function alert($message, array $context = []): void
     {
         self::log(LogLevel::ALERT, $message, $context);
     }
@@ -65,7 +65,7 @@ class Log
      *
      * @return void
      */
-    static public function critical(string $message, array $context = []): void
+    static public function critical($message, array $context = []): void
     {
         self::log(LogLevel::CRITICAL, $message, $context);
     }
@@ -79,7 +79,7 @@ class Log
      *
      * @return void
      */
-    static public function error(string $message, array $context = []): void
+    static public function error($message, array $context = []): void
     {
         self::log(LogLevel::ERROR, $message, $context);
     }
@@ -95,7 +95,7 @@ class Log
      *
      * @return void
      */
-    static public function warning(string $message, array $context = []): void
+    static public function warning($message, array $context = []): void
     {
         self::log(LogLevel::WARNING, $message, $context);
     }
@@ -108,7 +108,7 @@ class Log
      *
      * @return void
      */
-    static public function notice(string $message, array $context = []): void
+    static public function notice($message, array $context = []): void
     {
         self::log(LogLevel::NOTICE, $message, $context);
     }
@@ -123,7 +123,7 @@ class Log
      *
      * @return void
      */
-    static public function info(string $message, array $context = []): void
+    static public function info($message, array $context = []): void
     {
         self::log(LogLevel::INFO, $message, $context);
     }
@@ -136,7 +136,7 @@ class Log
      *
      * @return void
      */
-    static public function debug(string $message, array $context = []): void
+    static public function debug($message, array $context = []): void
     {
         self::log(LogLevel::DEBUG, $message, $context);
     }
@@ -150,7 +150,7 @@ class Log
      *
      * @return void
      */
-    static public function log(string $level, string $message, array $context = []): void
+    static public function log(string $level, $message, array $context = []): void
     {
         self::$loggers[self::MAIN]->log($level, $message, $context);
     }

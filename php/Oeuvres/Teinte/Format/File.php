@@ -38,7 +38,6 @@ class File
         if (self::$init) return;
         self::$ext2format = Parse::json(file_get_contents(__DIR__ . '/ext2format.json'));
         self::$formats = Parse::json(file_get_contents(__DIR__ . '/formats.json'));
-        Log::debug(__METHOD__);
         self::$init = true;
     }
 

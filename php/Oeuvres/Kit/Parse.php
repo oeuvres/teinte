@@ -52,8 +52,9 @@ class Parse
      */
     public static function pcre_tsv($tsv_file, $sep = "\t")
     {
-        if (true !== ($ret = Filesys::readable($tsv_file))) {
-            Log::error('Regex file impossible to read — ' . $ret);
+        if (!Filesys::readable($tsv_file)) {
+            // send an exception here ?
+            Log::error('Regex file impossible to read');
             return null;
         }
 

@@ -91,7 +91,9 @@ class Tei2docx extends AbstractTei2
     static function toUri($dom, $dst_file, ?array $pars=null)
     {
         Log::info("Tei2\033[92m" . static::NAME ." \033[0m $dst_file");
-        Filesys::writable($dst_file);
+        if (!Filesys::writable($dst_file)) {
+            throw new Exception("“{$dst_file}” not writable as a destination file");
+        }
         $name = pathinfo($dom->documentURI, PATHINFO_FILENAME);
         $template_docx = self::$template_docx; // should have been set
         copy($template_docx, $dst_file);
