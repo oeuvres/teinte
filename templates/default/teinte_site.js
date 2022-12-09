@@ -33,7 +33,6 @@ if (!String.prototype.format) {
             i++;
             // numbered argument {2}
             const n = parseInt(key, 10);
-            console.log(key+"->"+n+"->"+args[n]);
             if (!isNaN(n) && args[n] !== undefined) return args[n];
             // empty or defaut argument {} {key}, use natural order
             if (args[i] !== undefined) return args[i];
@@ -44,7 +43,7 @@ if (!String.prototype.format) {
         });
     };
 }
-console.log("{0}! {0}! {0}! {Ha}!".format("Ho"));
+
 function dropInit() {
     const dropZone = document.querySelector("#dropzone");
     const dropOutput = dropZone.querySelector("output");
