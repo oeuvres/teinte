@@ -2,12 +2,12 @@ const home_href = '';
 let response;
 response = await fetch(
     home_href + 'php/Oeuvres/Teinte/Format/ext2format.json',
-    {cache: "no-cache"}
+    { }
 );
 const ext2format = await response.json();
 response = await fetch(
     home_href + 'php/Oeuvres/Teinte/Format/formats.json',
-    {cache: "no-cache"}
+    { }
 );
 const formats = await response.json();
 const conversions = {

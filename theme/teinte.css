@@ -688,7 +688,7 @@ button,
 input,
 optgroup,
 textarea {
-    font-size: inherit;
+    font: inherit;
     margin: 0;
 }
 
