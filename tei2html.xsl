@@ -12,5 +12,5 @@ BSD-3-Clause https://opensource.org/licenses/BSD-3-Clause
 XSLT 1.0 is compatible browser, PHP, Python, Java…
 -->
 <xsl:transform version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" xmlns:tei="http://www.tei-c.org/ns/1.0" exclude-result-prefixes="tei">
-  <xsl:include href="xsl/tei_html.xsl"/>
+  <xsl:include href="../teinte_xsl/tei_html.xsl"/>
 </xsl:transform>
