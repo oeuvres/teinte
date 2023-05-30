@@ -108,7 +108,9 @@
       </element>
     </define>
     <define name="titleStmt.cont">
-      <ref name="title.group"/>
+      <oneOrMore>
+        <ref name="teiHeader.title"/>
+      </oneOrMore>
       <!-- pb déterminisme XSD avec titre traduit et compléments de titre optionnels -->
       <!-- Laisser l’éditeur libre de son ordre -->
       <zeroOrMore>
@@ -121,44 +123,50 @@
         </choice>
       </zeroOrMore>
     </define>
-    <define name="title.group">
-      <oneOrMore>
-        <element name="title">
-          <a:documentation>Titres. Le premier titre est considéré comme le titre principal. Les suivants sont considérés commes des compléments du titre. En cas de traduction, le titre original est à indiquer avec un attribut @xml:lang qui en indique la langue.</a:documentation>
-          <ul xmlns="http://www.w3.org/1999/xhtml">
-            <li>&lt;<a href="http://purl.org/dc/terms/title" target="dc">dc:title</a>&gt; titre propre et sous-titre (optionnel)</li>
-            <li><a href="http://documentation.abes.fr/sudoc/formats/unmb/zones/200.htm#$a" target="unim">Unimarc, zone 200, $a</a> : titre propre</li>
-            <li><a href="http://documentation.abes.fr/sudoc/formats/unmb/zones/200.htm#$e" target="unim">Unimarc, zone 200, $e</a> : complément du titre</li>
-            <li><a href="http://documentation.abes.fr/sudoc/formats/unmb/zones/454.htm" target="unim">Unimarc, zone 454, $t</a> : traduit de, titre</li>
-            <li><a href="http://documentation.abes.fr/sudoc/formats/unmb/zones/454.htm" target="unim">Unimarc, zone 454, $o</a> : traduit de, sous-titre ou complément de titre</li>
-          </ul>
-          <a:example>
-            <title ref="http://fr.wikipedia.org/wiki/Les_Fleurs_du_mal">Les fleurs du mal</title>
-          </a:example>
-          <optional>
-            <ref name="title.type"/>
-          </optional>
-          <optional>
-            <!-- surtout laisser cela comme ça, où jing s'embrouille -->
-            <ref name="lang-att"/>
-          </optional>
-          <optional>
-            <attribute name="ref">
-              <a:documentation>Identification du texte (et non de l’édition imprimée source, voir sourceDesc) vers un référentiel (ex: URI Wikipédia par ex.)</a:documentation>
-              <data type="anyURI"/>
-            </attribute>
-          </optional>
-          <zeroOrMore>
+    <define name="teiHeader.title">
+      <element name="title">
+        <a:documentation>Titres. Le premier titre est considéré comme le titre principal. Les suivants sont considérés commes des compléments du titre. En cas de traduction, le titre original est à indiquer avec un attribut @xml:lang qui en indique la langue.</a:documentation>
+        <ul xmlns="http://www.w3.org/1999/xhtml">
+          <li>&lt;<a href="http://purl.org/dc/terms/title" target="dc">dc:title</a>&gt; titre propre et sous-titre (optionnel)</li>
+          <li><a href="http://documentation.abes.fr/sudoc/formats/unmb/zones/200.htm#$a" target="unim">Unimarc, zone 200, $a</a> : titre propre</li>
+          <li><a href="http://documentation.abes.fr/sudoc/formats/unmb/zones/200.htm#$e" target="unim">Unimarc, zone 200, $e</a> : complément du titre</li>
+          <li><a href="http://documentation.abes.fr/sudoc/formats/unmb/zones/454.htm" target="unim">Unimarc, zone 454, $t</a> : traduit de, titre</li>
+          <li><a href="http://documentation.abes.fr/sudoc/formats/unmb/zones/454.htm" target="unim">Unimarc, zone 454, $o</a> : traduit de, sous-titre ou complément de titre</li>
+        </ul>
+        <a:example>
+          <title ref="http://fr.wikipedia.org/wiki/Les_Fleurs_du_mal">Les fleurs du mal</title>
+        </a:example>
+        <optional>
+          <ref name="title.type"/>
+        </optional>
+        <optional>
+          <attribute name="level">
             <choice>
-              <text/>
-              <ref name="teiHeader.emph"/>
-              <ref name="teiHeader.hi"/>
-              <ref name="teiHeader.num"/>
-              <ref name="journal"/>
+              <value>a</value>
+              <value>m</value>
             </choice>
-          </zeroOrMore>
-        </element>
-      </oneOrMore>
+          </attribute>
+        </optional>
+        <optional>
+          <!-- surtout laisser cela comme ça, où jing s'embrouille -->
+          <ref name="lang-att"/>
+        </optional>
+        <optional>
+          <attribute name="ref">
+            <a:documentation>Identification du texte (et non de l’édition imprimée source, voir sourceDesc) vers un référentiel (ex: URI Wikipédia par ex.)</a:documentation>
+            <data type="anyURI"/>
+          </attribute>
+        </optional>
+        <zeroOrMore>
+          <choice>
+            <text/>
+            <ref name="teiHeader.emph"/>
+            <ref name="teiHeader.hi"/>
+            <ref name="teiHeader.num"/>
+            <ref name="journal"/>
+          </choice>
+        </zeroOrMore>
+      </element>
     </define>
     <define name="journal">
       <element name="title">
@@ -307,43 +315,10 @@
         </oneOrMore>
         <zeroOrMore>
           <choice>
-            <element name="date">
-              <a:documentation>Date de publication du fichier TEI, forme normalisée : AAAA((-MM)?-JJ)?</a:documentation>
-              <ul xmlns="http://www.w3.org/1999/xhtml">
-                <li>&lt;<a href="http://purl.org/dc/terms/date" target="dc">dc:date</a>&gt; ou &lt;<a href="http://purl.org/dc/terms/issued" target="dc">dc:issued</a>&gt;, pour la date de publication électronique (uniquement)</li>
-              </ul>
-              <attribute name="when">
-                <ref name="date.type"/>
-              </attribute>
-            </element>
-            <element name="idno">
-              <a:documentation>URI de référence du texte électronique, obligatoire</a:documentation>
-              <ul xmlns="http://www.w3.org/1999/xhtml">
-                <li>&lt;<a href="http://purl.org/dc/terms/identifier" target="dc">dc:identifier</a>&gt;</li>
-              </ul>
-              <optional>
-                <attribute name="type">
-                  <choice>
-                    <value>tei</value>
-                    <value>html</value>
-                    <value>txt</value>
-                    <value>epub</value>
-                    <data type="Name"/>
-                  </choice>
-                </attribute>
-              </optional>
-              <text/>
-            </element>
+            <ref name="teiHeader.date"/>
+            <ref name="idno"/>
             <ref name="availability"/>
-            <element name="pubPlace">
-              <a:documentation>Lieu de publication</a:documentation>
-              <ul xmlns="http://www.w3.org/1999/xhtml">
-                <li>
-                  <a href="http://documentation.abes.fr/sudoc/formats/unmb/zones/210.htm#$a" target="unim">Unimarc, zone 210, $a</a>
-                </li>
-              </ul>
-              <text/>
-            </element>
+            <ref name="pubPlace"/>
             <element name="address">
               <a:documentation>Adresse postale de l'éditeur du texte</a:documentation>
               <oneOrMore>
@@ -358,6 +333,48 @@
             </element>
           </choice>
         </zeroOrMore>
+      </element>
+    </define>
+    <define name="teiHeader.date">
+      <element name="date">
+        <a:documentation>Date de publication, forme normalisée : AAAA((-MM)?-JJ)?</a:documentation>
+        <ul xmlns="http://www.w3.org/1999/xhtml">
+          <li>&lt;<a href="http://purl.org/dc/terms/date" target="dc">dc:date</a>&gt; ou &lt;<a href="http://purl.org/dc/terms/issued" target="dc">dc:issued</a>&gt;, pour la date de publication électronique (uniquement)</li>
+        </ul>
+        <attribute name="when">
+          <ref name="date.type"/>
+        </attribute>
+      </element>
+    </define>
+    <define name="pubPlace">
+      <element name="pubPlace">
+        <a:documentation>Lieu de publication</a:documentation>
+        <ul xmlns="http://www.w3.org/1999/xhtml">
+          <li>
+            <a href="http://documentation.abes.fr/sudoc/formats/unmb/zones/210.htm#$a" target="unim">Unimarc, zone 210, $a</a>
+          </li>
+        </ul>
+        <text/>
+      </element>
+    </define>
+    <define name="idno">
+      <element name="idno">
+        <a:documentation>URI de référence du texte électronique, obligatoire</a:documentation>
+        <ul xmlns="http://www.w3.org/1999/xhtml">
+          <li>&lt;<a href="http://purl.org/dc/terms/identifier" target="dc">dc:identifier</a>&gt;</li>
+        </ul>
+        <optional>
+          <attribute name="type">
+            <choice>
+              <value>tei</value>
+              <value>html</value>
+              <value>txt</value>
+              <value>epub</value>
+              <data type="Name"/>
+            </choice>
+          </attribute>
+        </optional>
+        <text/>
       </element>
     </define>
     <define name="availability">
@@ -646,7 +663,7 @@
           <ref name="series.idno"/>
         </optional>
         <optional>
-          <ref name="series.vol"/>
+          <ref name="biblScope"/>
         </optional>
       </element>
     </define>
@@ -687,16 +704,20 @@
         <text/>
       </element>
     </define>
-    <define name="series.vol">
+    <define name="biblScope">
       <element name="biblScope">
-        <a:documentation>Numéro de volume</a:documentation>
+        <a:documentation>Volume, page, numéro… (localisation dans une référence bibliographique)</a:documentation>
         <ul xmlns="http://www.w3.org/1999/xhtml">
           <li><a href="http://documentation.abes.fr/sudoc/formats/unmb/zones/410.htm#$v" target="unim">Unimarc, zone 410, $v</a> : appartient à la collection, numéro de volume</li>
         </ul>
-        <attribute name="type">
-          <value>vol</value>
+        <attribute name="unit">
+          <choice>
+            <value>issue</value>
+            <value>page</value>
+            <value>volume</value>
+          </choice>
         </attribute>
-        <data type="integer"/>
+        <text/>
       </element>
     </define>
     <define name="notesStmt">
@@ -787,10 +808,7 @@
             </respStmt>
           </editionStmt>
         </a:example>
-        <element name="edition">
-          <a:documentation>"Décrit les particularités de l’édition d’un texte." (Guidelines) ???</a:documentation>
-          <ref name="teiHeader.flow"/>
-        </element>
+        <ref name="edition"/>
         <zeroOrMore>
           <element name="principal">
             <a:documentation>Responsable de l'édition électronique</a:documentation>
@@ -806,6 +824,12 @@
         <zeroOrMore>
           <ref name="respStmt"/>
         </zeroOrMore>
+      </element>
+    </define>
+    <define name="edition">
+      <element name="edition">
+        <a:documentation>"Décrit les particularités de l’édition d’un texte.</a:documentation>
+        <ref name="teiHeader.flow"/>
       </element>
     </define>
     <define name="respStmt">
@@ -1084,10 +1108,11 @@
       <element name="sourceDesc">
         <a:documentation>Description de la (des) source(s) numérisée(s)</a:documentation>
         <oneOrMore>
-          <ref name="teiHeader.bibl"/>
-          <optional>
+          <choice>
+            <ref name="teiHeader.bibl"/>
             <ref name="biblFull"/>
-          </optional>
+            <ref name="biblStruct"/>
+          </choice>
         </oneOrMore>
       </element>
     </define>
@@ -1169,6 +1194,202 @@
         </optional>
       </element>
     </define>
+    <define name="biblStruct">
+      <!-- pb de déterminisme XSD : Multiple elements with name 'title', with different types, appear in the model group. -->
+      <element name="biblStruct">
+        <a:documentation>Notice bibliographique exportée par Zotero</a:documentation>
+        <a:example>
+<biblStruct type="book">
+  <monogr>
+    <title level="m">Les notions de mouvement et de vitesse chez l’enfant</title>
+    <idno type="callNumber">piaget1946NMV</idno>
+    <author>
+      <forename>Jean</forename>
+      <surname>Piaget</surname>
+    </author>
+    <respStmt>
+      <resp>contributor</resp>
+      <persName>
+        <forename>Madeleine</forename>
+        <surname>Blanchet</surname>
+      </persName>
+    </respStmt>
+    <respStmt>
+      <resp>contributor</resp>
+      <persName>
+        <forename>Esther</forename>
+        <surname>Bussmann</surname>
+      </persName>
+    </respStmt>
+    <respStmt>
+      <resp>contributor</resp>
+      <persName>
+        <forename>Claude</forename>
+        <surname>Ferrière</surname>
+      </persName>
+    </respStmt>
+    <respStmt>
+      <resp>contributor</resp>
+      <persName>
+        <forename>Mme Claude</forename>
+        <surname>Ferrière</surname>
+      </persName>
+    </respStmt>
+    <respStmt>
+      <resp>contributor</resp>
+      <persName>
+        <forename>Olga</forename>
+        <surname>Frank</surname>
+      </persName>
+    </respStmt>
+    <respStmt>
+      <resp>contributor</resp>
+      <persName>
+        <forename>J</forename>
+        <surname>Frei</surname>
+      </persName>
+    </respStmt>
+    <respStmt>
+      <resp>contributor</resp>
+      <persName>
+        <forename>Monique</forename>
+        <surname>Lagier</surname>
+      </persName>
+    </respStmt>
+    <respStmt>
+      <resp>contributor</resp>
+      <persName>
+        <forename>Madeleine</forename>
+        <surname>Martin</surname>
+      </persName>
+    </respStmt>
+    <respStmt>
+      <resp>contributor</resp>
+      <persName>
+        <forename>A</forename>
+        <surname>Mauris</surname>
+      </persName>
+    </respStmt>
+    <respStmt>
+      <resp>contributor</resp>
+      <persName>
+        <forename>Madeleine</forename>
+        <surname>Reymond</surname>
+      </persName>
+    </respStmt>
+    <respStmt>
+      <resp>contributor</resp>
+      <persName>
+        <forename>Barbara</forename>
+        <surname>von Albertini</surname>
+      </persName>
+    </respStmt>
+    <edition>[1&lt;sup&gt;ère&lt;/sup&gt; éd.]</edition>
+    <imprint>
+      <pubPlace>Paris</pubPlace>
+      <publisher>Presses universitaires de France</publisher>
+      <date>1946</date>
+    </imprint>
+  </monogr>
+  <series>
+    <title level="s">Bibliothèque de philosophie contemporaine. Psychologie et sociologie</title>
+  </series>
+</biblStruct>
+        </a:example>
+        <a:example>
+<biblStruct type="journalArticle">
+  <analytic>
+    <title level="a">Du rapport des sciences avec la philosophie</title>
+    <author>
+      <forename>Jean</forename>
+      <surname>Piaget</surname>
+    </author>
+  </analytic>
+  <monogr>
+    <title level="j">Synthèse</title>
+    <idno type="callNumber">piaget1947a05</idno>
+    <imprint>
+      <biblScope unit="volume">6</biblScope>
+      <biblScope unit="issue">3-4</biblScope>
+      <biblScope unit="page">130-150</biblScope>
+      <date>1947</date>
+    </imprint>
+  </monogr>
+</biblStruct>
+        </a:example>
+        <optional>
+          <attribute name="type"/>
+        </optional>
+        <optional>
+          <ref name="analytic"/>
+        </optional>
+        <ref name="monogr"/>
+      </element>
+    </define>
+    <define name="monogr">
+      <element name="monogr">
+        <ref name="teiHeader.title"/>
+        <zeroOrMore>
+          <choice>
+            <ref name="teiHeader.author"/>
+            <ref name="teiHeader.date"/>
+            <ref name="edition"/>
+            <ref name="idno"/>
+            <ref name="imprint"/>
+            <ref name="respStmt"/>
+          </choice>
+        </zeroOrMore>
+      </element>
+    </define>
+    <define name="analytic">
+      <element name="analytic">
+        <ref name="teiHeader.title"/>
+        <zeroOrMore>
+          <choice>
+            <ref name="teiHeader.author"/>
+            <ref name="teiHeader.date"/>
+            <ref name="edition"/>
+            <ref name="idno"/>
+            <ref name="imprint"/>
+            <ref name="respStmt"/>
+          </choice>
+        </zeroOrMore>
+      </element>
+    </define>
+    <define name="imprint">
+      <element name="imprint">
+        <oneOrMore>
+          <choice>
+            <!-- date may have no @when -->
+            <element name="date">
+              <text/>
+            </element>
+            <ref name="biblScope"/>
+            <ref name="publisher"/>
+            <ref name="pubPlace"/>
+          </choice>
+        </oneOrMore>
+      </element>
+    </define>
+<!-- 
+            <element name="titleStmt">
+          <ref name="titleStmt.cont"/>
+        </element>
+        <optional>
+          <ref name="editionStmt"/>
+        </optional>
+        <optional>
+          <ref name="biblFull.extent"/>
+        </optional>
+        <ref name="publicationStmt"/>
+        <optional>
+          <ref name="seriesStmt"/>
+        </optional>
+        <optional>
+          <ref name="notesStmt"/>
+        </optional>
+      </element>
+-->    
     <define name="ISBN">
       <element name="idno">
         <a:documentation>ISBN (10 ou 13)</a:documentation>
