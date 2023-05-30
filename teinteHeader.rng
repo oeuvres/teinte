@@ -593,6 +593,9 @@
           <element name="date">
             <text/>
           </element>
+          <element name="lb">
+            <empty/>
+          </element>
           <ref name="teiHeader.emph"/>
           <ref name="teiHeader.hi"/>
           <ref name="publisher"/>
