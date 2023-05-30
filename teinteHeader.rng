@@ -143,6 +143,7 @@
           <attribute name="level">
             <choice>
               <value>a</value>
+              <value>j</value>
               <value>m</value>
             </choice>
           </attribute>
