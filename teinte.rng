@@ -294,14 +294,14 @@
             <ref name="pb"/>
           </choice>
         </zeroOrMore>
+        <ref name="div.flow"/>
         <choice>
-          <oneOrMore>
+          <zeroOrMore>
             <ref name="div"/>
-          </oneOrMore>
-          <oneOrMore>
+          </zeroOrMore>
+          <zeroOrMore>
             <ref name="div1"/>
-          </oneOrMore>
-          <ref name="div.flow"/>
+          </zeroOrMore>
         </choice>
       </element>
     </define>
@@ -896,12 +896,7 @@
           <choice>
             <text/>
             <ref name="author"/>
-            <element name="biblScope">
-              <optional>
-                <attribute name="unit"/>
-              </optional>
-              <text/>
-            </element>
+            <ref name="biblScope"/>
             <ref name="date"/>
             <element name="dim">
               <optional>
@@ -917,7 +912,6 @@
             <ref name="hi"/>
             <ref name="lb"/>
             <ref name="num"/>
-            <!-- publisher avec les entités nommées ? pas nécessaire, dans la mesure où on ne souhaite pas les indexer pour l’instant -->
             <ref name="point"/>
             <element name="pubPlace">
               <text/>
