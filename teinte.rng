@@ -2892,6 +2892,16 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
           </attribute>
         </optional>
         <optional>
+          <attribute name="width">
+            <data type="decimal"/>
+          </attribute>
+          <attribute name="height">
+            <data type="decimal"/>
+          </attribute>
+          <!-- unit of width and height -->
+          <attribute name="subtype"/>          
+        </optional>
+        <optional>
           <ref name="desc"/>
         </optional>
       </element>
