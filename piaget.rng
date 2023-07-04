@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <grammar xmlns="http://relaxng.org/ns/structure/1.0" ns="http://www.tei-c.org/ns/1.0" xml:lang="fr">
-  <include href="http://oeuvres.github.io/teinte/teinte.rng">
+  <include href="teinte.rng">
+    <define name="rend.p">
+      <choice>
+        <value>observation</value>
+      </choice>
+    </define>
   </include>
 </grammar>
