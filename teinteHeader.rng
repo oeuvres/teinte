@@ -109,13 +109,13 @@
     </define>
     <define name="titleStmt.cont">
       <oneOrMore>
-        <ref name="teiHeader.title"/>
+        <ref name="title.teiHeader"/>
       </oneOrMore>
       <!-- pb déterminisme XSD avec titre traduit et compléments de titre optionnels -->
       <!-- Laisser l’éditeur libre de son ordre -->
       <zeroOrMore>
         <choice>
-          <ref name="teiHeader.author"/>
+          <ref name="author.teiHeader"/>
           <ref name="principal"/>
           <ref name="editor"/>
           <ref name="funder"/>
@@ -123,7 +123,7 @@
         </choice>
       </zeroOrMore>
     </define>
-    <define name="teiHeader.title">
+    <define name="title.teiHeader">
       <element name="title">
         <a:documentation>Titres. Le premier titre est considéré comme le titre principal. Les suivants sont considérés commes des compléments du titre. En cas de traduction, le titre original est à indiquer avec un attribut @xml:lang qui en indique la langue.</a:documentation>
         <ul xmlns="http://www.w3.org/1999/xhtml">
@@ -140,13 +140,7 @@
           <ref name="title.type"/>
         </optional>
         <optional>
-          <attribute name="level">
-            <choice>
-              <value>a</value>
-              <value>j</value>
-              <value>m</value>
-            </choice>
-          </attribute>
+          <ref name="level-att"/>
         </optional>
         <optional>
           <!-- surtout laisser cela comme ça, où jing s'embrouille -->
@@ -161,27 +155,25 @@
         <zeroOrMore>
           <choice>
             <text/>
-            <ref name="teiHeader.emph"/>
-            <ref name="teiHeader.hi"/>
-            <ref name="teiHeader.num"/>
-            <ref name="journal"/>
+            <ref name="emph.teiHeader"/>
+            <ref name="hi.teiHeader"/>
+            <ref name="num.teiHeader"/>
+            <ref name="title-cited"/>
           </choice>
         </zeroOrMore>
       </element>
     </define>
-    <define name="journal">
+    <define name="title-cited">
       <element name="title">
-        <attribute name="level">
-          <choice>
-            <value>j</value>
-          </choice>
-        </attribute>
+        <optional>
+          <ref name="level-att"/>
+        </optional>
         <zeroOrMore>
           <choice>
             <text/>
-            <ref name="teiHeader.emph"/>
-            <ref name="teiHeader.hi"/>
-            <ref name="teiHeader.num"/>
+            <ref name="emph.teiHeader"/>
+            <ref name="hi.teiHeader"/>
+            <ref name="num.teiHeader"/>
           </choice>
         </zeroOrMore>
       </element>
@@ -204,7 +196,7 @@
         </choice>
       </attribute>
     </define>
-    <define name="teiHeader.author">
+    <define name="author.teiHeader">
       <element name="author">
         <a:documentation>Auteur(s) du texte, forme normalisée.</a:documentation>
         <ul xmlns="http://www.w3.org/1999/xhtml">
@@ -278,6 +270,16 @@
         <ref name="pers.cont"/>
       </element>
     </define>
+    <define name="persName.teiHeader">
+      <element name="persName">
+        <a:documentation>A personal name</a:documentation>
+        <optional>
+          <ref name="key"/>
+        </optional>
+        <ref name="pers.cont"/>
+      </element>
+    </define>
+    
     <define name="pers.cont">
       <a:documentation>Contenu commun aux personnes, comme auteurs, contributeurs, éditeurs…</a:documentation>
       <optional>
@@ -316,7 +318,7 @@
         </oneOrMore>
         <zeroOrMore>
           <choice>
-            <ref name="teiHeader.date"/>
+            <ref name="date.teiHeader"/>
             <ref name="idno"/>
             <ref name="availability"/>
             <ref name="pubPlace"/>
@@ -336,7 +338,7 @@
         </zeroOrMore>
       </element>
     </define>
-    <define name="teiHeader.date">
+    <define name="date.teiHeader">
       <element name="date">
         <a:documentation>Date de publication, forme normalisée : AAAA((-MM)?-JJ)?</a:documentation>
         <ul xmlns="http://www.w3.org/1999/xhtml">
@@ -396,9 +398,9 @@
           </attribute>
           <choice>
             <oneOrMore>
-              <ref name="teiHeader.p"/>
+              <ref name="p.teiHeader"/>
             </oneOrMore>
-            <ref name="teiHeader.flow"/>
+            <ref name="flow.teiHeader"/>
           </choice>
         </element>
       </element>
@@ -451,7 +453,7 @@
                 <text/>
               </attribute>
             </optional>
-            <ref name="teiHeader.flow"/>
+            <ref name="flow.teiHeader"/>
           </element>
         </oneOrMore>
       </element>
@@ -525,38 +527,47 @@
         <a:documentation>Code normalisé de langue.</a:documentation>
       </attribute>
     </define>
-    <define name="teiHeader.p">
+    <define name="level-att">
+      <attribute name="level">
+        <choice>
+          <value>a</value>
+          <value>j</value>
+          <value>m</value>
+        </choice>
+      </attribute>
+    </define>
+    <define name="p.teiHeader">
       <element name="p">
         <a:documentation>Paragraphe de texte enrichi</a:documentation>
-        <ref name="teiHeader.flow"/>
+        <ref name="flow.teiHeader"/>
       </element>
     </define>
-    <define name="teiHeader.quote">
+    <define name="quote.teiHeader">
       <element name="quote">
         <a:documentation>Paragraphe de texte enrichi</a:documentation>
         <choice>
-          <ref name="teiHeader.flow"/>
+          <ref name="flow.teiHeader"/>
           <oneOrMore>
             <choice>
-              <ref name="teiHeader.p"/>
-              <ref name="teiHeader.bibl"/>
+              <ref name="p.teiHeader"/>
+              <ref name="bibl.teiHeader"/>
             </choice>
           </oneOrMore>
         </choice>
       </element>
     </define>
-    <define name="teiHeader.label">
+    <define name="label.teiHeader">
       <element name="label">
         <a:documentation>Paragraphe de texte enrichi</a:documentation>
-        <ref name="teiHeader.flow"/>
+        <ref name="flow.teiHeader"/>
       </element>
     </define>
-    <define name="teiHeader.emph">
+    <define name="emph.teiHeader">
       <element name="emph">
         <text/>
       </element>
     </define>
-    <define name="teiHeader.hi">
+    <define name="hi.teiHeader">
       <element name="hi">
         <attribute name="rend">
           <choice>
@@ -569,7 +580,7 @@
         <text/>
       </element>
     </define>
-    <define name="teiHeader.num">
+    <define name="num.teiHeader">
       <element name="num">
         <zeroOrMore>
           <choice>
@@ -584,33 +595,33 @@
         </zeroOrMore>
       </element>
     </define>
-    <define name="teiHeader.flow">
+    <define name="flow.teiHeader">
       <a:documentation>Texte riche contrôlé, par exemple dans un titre</a:documentation>
       <zeroOrMore>
         <choice>
           <text/>
-          <ref name="teiHeader.author"/>
+          <ref name="author.teiHeader"/>
           <element name="date">
             <text/>
           </element>
           <element name="lb">
             <empty/>
           </element>
-          <ref name="teiHeader.emph"/>
-          <ref name="teiHeader.hi"/>
+          <ref name="emph.teiHeader"/>
+          <ref name="hi.teiHeader"/>
           <ref name="publisher"/>
           <element name="ref">
             <attribute name="target"/>
             <text/>
           </element>
-          <ref name="teiHeader.num"/>
+          <ref name="num.teiHeader"/>
           <element name="title">
             <zeroOrMore>
               <choice>
                 <text/>
-                <ref name="teiHeader.emph"/>
-                <ref name="teiHeader.hi"/>
-                <ref name="teiHeader.num"/>
+                <ref name="emph.teiHeader"/>
+                <ref name="hi.teiHeader"/>
+                <ref name="num.teiHeader"/>
               </choice>
             </zeroOrMore>
             <ref name="pers.cont"/>
@@ -688,7 +699,7 @@
             </ul>
           </attribute>
         </optional>
-        <ref name="teiHeader.flow"/>
+        <ref name="flow.teiHeader"/>
       </element>
     </define>
     <define name="series.idno">
@@ -744,56 +755,63 @@
           </notesStmt>
         </a:example>
         <oneOrMore>
-          <element name="note">
-            <attribute name="type">
-              <choice>
-                <value>abstract</value>
-                <value>image</value>
-                <value>ref</value>
-                <data type="NCName"/>
-              </choice>
-            </attribute>
-            <optional>
-              <ref name="lang-att"/>
-            </optional>
-            <zeroOrMore>
-              <choice>
-                <ref name="teiHeader.p"/>
-                <element name="graphic">
-                  <attribute name="rend">
-                    <choice>
-                      <value>cover</value>
-                      <a:documentation>couverture</a:documentation>
-                      <text/>
-                    </choice>
-                  </attribute>
-                  <attribute name="url">
-                    <data type="anyURI"/>
-                  </attribute>
-                </element>
-                <element name="ref">
-                  <attribute name="type">
-                    <choice>
-                      <value>ppn</value>
-                      <a:documentation>id Sudoc</a:documentation>
-                      <value>worldcat</value>
-                      <a:documentation>id Worldcat</a:documentation>
-                      <!-- NB : la zone unimarc 34 renseigne le numéro de la notice dans le catalogue WorldCat -->
-                      <data type="NCName"/>
-                    </choice>
-                  </attribute>
-                  <optional>
-                    <attribute name="n"/>
-                  </optional>
-                  <attribute name="target">
-                    <data type="anyURI"/>
-                  </attribute>
-                  <text/>
-                </element>
-              </choice>
-            </zeroOrMore>
-          </element>
+          <ref name="note.teiHeader"/>
         </oneOrMore>
+      </element>
+    </define>
+    <define name="cover">
+      <!-- Where to put cover ? -->
+      <element name="graphic">
+        <attribute name="rend">
+          <choice>
+            <value>cover</value>
+            <a:documentation>couverture</a:documentation>
+            <text/>
+          </choice>
+        </attribute>
+        <attribute name="url">
+          <data type="anyURI"/>
+        </attribute>
+      </element>
+    </define>
+    <define name="note.teiHeader">
+      <element name="note">
+        <attribute name="type">
+          <choice>
+            <value>abstract</value>
+            <value>image</value>
+            <value>ref</value>
+            <data type="NCName"/>
+          </choice>
+        </attribute>
+        <optional>
+          <ref name="lang-att"/>
+        </optional>
+        <choice>
+          <ref name="flow.teiHeader"/>
+          <oneOrMore>
+            <choice>
+              <ref name="p.teiHeader"/>
+              <ref name="bibl.teiHeader"/>
+            </choice>
+          </oneOrMore>
+          <oneOrMore>
+            <ref name="persName.teiHeader"/>
+          </oneOrMore>
+          <oneOrMore>
+            <ref name="ptr.teiHeader"/>
+          </oneOrMore>
+        </choice>
+      </element>
+    </define>
+    <define name="ptr.teiHeader">
+      <element name="ref">
+        <optional>
+          <attribute name="type"/>
+        </optional>
+        <attribute name="target">
+          <data type="anyURI"/>
+        </attribute>
       </element>
     </define>
     <define name="editionStmt">
@@ -822,7 +840,7 @@
         <zeroOrMore>
           <element name="funder">
             <a:documentation>Financeur du projet</a:documentation>
-            <ref name="teiHeader.flow"/>
+            <ref name="flow.teiHeader"/>
           </element>
         </zeroOrMore>
         <zeroOrMore>
@@ -833,7 +851,7 @@
     <define name="edition">
       <element name="edition">
         <a:documentation>"Décrit les particularités de l’édition d’un texte.</a:documentation>
-        <ref name="teiHeader.flow"/>
+        <ref name="flow.teiHeader"/>
       </element>
     </define>
     <define name="respStmt">
@@ -853,7 +871,7 @@
           </element>
           <element name="resp">
             <a:documentation>Date et rôle dans l’établissement du texte</a:documentation>
-            <ref name="teiHeader.flow"/>
+            <ref name="flow.teiHeader"/>
           </element>
         </interleave>
       </element>
@@ -863,7 +881,6 @@
         <ref name="id-att"/>
       </optional>
       <optional>
-        <!-- identification vers un email ET NON un référentiel type idRef, comme pour normalized.author // TODO revoir cette logique avec Fréd. -->
         <!-- NB : Erreur TEI potentielle : @ref n’est pas autorisé dans <principal> qui appelle pourtant le pattern... -->
         <attribute name="ref"/>
       </optional>
@@ -907,7 +924,7 @@
               <a:documentation>Date de la modification, forme normalisée : AAAA((-MM)?-JJ)?</a:documentation>
               <ref name="date.type"/>
             </attribute>
-            <ref name="teiHeader.flow"/>
+            <ref name="flow.teiHeader"/>
           </element>
         </oneOrMore>
       </element>
@@ -1006,9 +1023,9 @@
       <element name="abstract">
         <oneOrMore>
           <choice>
-            <ref name="teiHeader.label"/>
-            <ref name="teiHeader.p"/>
-            <ref name="teiHeader.quote"/>
+            <ref name="label.teiHeader"/>
+            <ref name="p.teiHeader"/>
+            <ref name="quote.teiHeader"/>
           </choice>
         </oneOrMore>
       </element>
@@ -1019,7 +1036,7 @@
           <a:documentation>Documentation technique de l'encodage (relation d'un texte électronique avec sa ou ses sources)</a:documentation>
           <choice>
             <oneOrMore>
-              <ref name="teiHeader.p"/>
+              <ref name="p.teiHeader"/>
             </oneOrMore>
             <group>
               <optional>
@@ -1029,7 +1046,7 @@
                     <li>&lt;<a href="http://purl.org/dc/terms/description" target="dc">dc:description</a>&gt;</li>
                   </ul>
                   <oneOrMore>
-                    <ref name="teiHeader.p"/>
+                    <ref name="p.teiHeader"/>
                   </oneOrMore>
                 </element>
               </optional>
@@ -1037,7 +1054,7 @@
                 <element name="samplingDecl">
                   <a:documentation>Etendue numérisée de la source (pour préciser par ex. les pages de la source non reprises dans le fichier, et pourquoi)</a:documentation>
                   <oneOrMore>
-                    <ref name="teiHeader.p"/>
+                    <ref name="p.teiHeader"/>
                   </oneOrMore>
                 </element>
               </optional>
@@ -1045,7 +1062,7 @@
                 <element name="editorialDecl">
                   <a:documentation>Corrections apportées au document source.</a:documentation>
                   <oneOrMore>
-                    <ref name="teiHeader.p"/>
+                    <ref name="p.teiHeader"/>
                   </oneOrMore>
                 </element>
               </optional>
@@ -1113,14 +1130,14 @@
         <a:documentation>Description de la (des) source(s) numérisée(s)</a:documentation>
         <oneOrMore>
           <choice>
-            <ref name="teiHeader.bibl"/>
+            <ref name="bibl.teiHeader"/>
             <ref name="biblFull"/>
             <ref name="biblStruct"/>
           </choice>
         </oneOrMore>
       </element>
     </define>
-    <define name="teiHeader.bibl">
+    <define name="bibl.teiHeader">
       <element name="bibl">
         <a:documentation>Référence bibliographique peu structurée de l’œuvre numérisée. En texte mêlé ponctuée, avec typographie légère (italique). Référence utilisée par exemple pour générer les citations à la page</a:documentation>
         <ul xmlns="http://www.w3.org/1999/xhtml">
@@ -1137,9 +1154,9 @@
         </optional>
         <zeroOrMore>
           <choice>
-            <ref name="teiHeader.flow"/>
-            <ref name="teiHeader.author"/>
-            <ref name="journal"/>
+            <ref name="flow.teiHeader"/>
+            <ref name="author.teiHeader"/>
+            <ref name="title-cited"/>
             <element name="author">
               <text/>
             </element>
@@ -1158,7 +1175,7 @@
               </optional>
               <text/>
             </element>
-            <ref name="teiHeader.emph"/>
+            <ref name="emph.teiHeader"/>
             <element name="lb">
               <empty/>
             </element>
@@ -1169,7 +1186,7 @@
               <text/>
             </element>
             <element name="edition">
-              <ref name="teiHeader.flow"/>
+              <ref name="flow.teiHeader"/>
             </element>
           </choice>
         </zeroOrMore>
@@ -1325,18 +1342,24 @@
           <attribute name="type"/>
         </optional>
         <optional>
+          <attribute name="corresp"/>
+        </optional>
+        <optional>
           <ref name="analytic"/>
         </optional>
         <ref name="monogr"/>
+        <zeroOrMore>
+          <ref name="note.teiHeader"/>
+        </zeroOrMore>
       </element>
     </define>
     <define name="monogr">
       <element name="monogr">
-        <ref name="teiHeader.title"/>
         <zeroOrMore>
           <choice>
-            <ref name="teiHeader.author"/>
-            <ref name="teiHeader.date"/>
+            <ref name="title.teiHeader"/>
+            <ref name="author.teiHeader"/>
+            <ref name="date.teiHeader"/>
             <ref name="edition"/>
             <ref name="idno"/>
             <ref name="imprint"/>
@@ -1347,11 +1370,11 @@
     </define>
     <define name="analytic">
       <element name="analytic">
-        <ref name="teiHeader.title"/>
         <zeroOrMore>
           <choice>
-            <ref name="teiHeader.author"/>
-            <ref name="teiHeader.date"/>
+            <ref name="title.teiHeader"/>
+            <ref name="author.teiHeader"/>
+            <ref name="date.teiHeader"/>
             <ref name="edition"/>
             <ref name="idno"/>
             <ref name="imprint"/>
@@ -1364,10 +1387,7 @@
       <element name="imprint">
         <oneOrMore>
           <choice>
-            <!-- date may have no @when -->
-            <element name="date">
-              <text/>
-            </element>
+            <ref name="date.teiHeader"/>
             <ref name="biblScope"/>
             <ref name="publisher"/>
             <ref name="pubPlace"/>
