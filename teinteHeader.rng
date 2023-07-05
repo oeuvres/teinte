@@ -347,6 +347,9 @@
         <attribute name="when">
           <ref name="date.type"/>
         </attribute>
+        <optional>
+          <text/>
+        </optional>
       </element>
     </define>
     <define name="pubPlace">
@@ -862,13 +865,16 @@
           <!-- pb de la place de l’email, cf pattern resp.atts : utilisation un peu limite de @ref au regard des guidelines : http://www.tei-c.org/release/doc/tei-p5-doc/fr/html/ref-att.canonical.html -->
         </div>
         <interleave>
-          <element name="name">
-            <a:documentation>Nom de l’intervenant sur le fichier XML/TEI</a:documentation>
-            <div xmlns="http://www.w3.org/1999/xhtml">
-              <p>L’attribut <a:att>ref</a:att> renseigne le mail de la personne et l’identifie.<br/> Inscrire les initiales en valeur de @xml:id (comme cible de liens, par exemple dans la liste des modifications <a:el>change</a:el>).</p>
-            </div>
-            <ref name="resp.cont"/>
-          </element>
+          <choice>
+            <element name="name">
+              <a:documentation>Nom de l’intervenant sur le fichier XML/TEI</a:documentation>
+              <div xmlns="http://www.w3.org/1999/xhtml">
+                <p>L’attribut <a:att>ref</a:att> renseigne le mail de la personne et l’identifie.<br/> Inscrire les initiales en valeur de @xml:id (comme cible de liens, par exemple dans la liste des modifications <a:el>change</a:el>).</p>
+              </div>
+              <ref name="resp.cont"/>
+            </element>
+            <ref name="persName.teiHeader"/>
+          </choice>
           <element name="resp">
             <a:documentation>Date et rôle dans l’établissement du texte</a:documentation>
             <ref name="flow.teiHeader"/>
