@@ -949,18 +949,23 @@
         <choice>
           <oneOrMore>
             <element name="measure">
-              <attribute name="unit">
-                <a:documentation>Unité de mesure</a:documentation>
-                <choice>
-                  <value>page</value>
-                  <value>paragraph</value>
-                  <value>word</value>
-                  <value>character</value>
-                </choice>
-              </attribute>
-              <attribute name="quantity">
-                <data type="integer"/>
-              </attribute>
+              <optional>
+                <attribute name="unit">
+                  <a:documentation>Unité de mesure</a:documentation>
+                  <choice>
+                    <value>page</value>
+                    <value>paragraph</value>
+                    <value>word</value>
+                    <value>character</value>
+                  </choice>
+                </attribute>
+                <attribute name="quantity">
+                  <data type="integer"/>
+                </attribute>
+              </optional>
+              <optional>
+                <text/>
+              </optional>
             </element>
           </oneOrMore>
           <text/>
@@ -1375,6 +1380,7 @@
             <ref name="author.teiHeader"/>
             <ref name="date.teiHeader"/>
             <ref name="edition"/>
+            <ref name="extent"/>
             <ref name="idno"/>
             <ref name="imprint"/>
             <ref name="respStmt"/>
@@ -1390,6 +1396,7 @@
             <ref name="author.teiHeader"/>
             <ref name="date.teiHeader"/>
             <ref name="edition"/>
+            <ref name="extent"/>
             <ref name="idno"/>
             <ref name="imprint"/>
             <ref name="respStmt"/>
