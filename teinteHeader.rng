@@ -276,6 +276,9 @@
         <optional>
           <ref name="key"/>
         </optional>
+        <optional>
+          <attribute name="type"/>
+        </optional>
         <ref name="pers.cont"/>
       </element>
     </define>
@@ -572,14 +575,17 @@
     </define>
     <define name="hi.teiHeader">
       <element name="hi">
-        <attribute name="rend">
-          <choice>
-            <value>sub</value>
-            <value>sup</value>
-            <value>sc</value>
-            <value>i</value>
-          </choice>
-        </attribute>
+        <optional>
+          <attribute name="rend">
+            <choice>
+              <value>i</value>
+              <value>italic</value>
+              <value>sc</value>
+              <value>sub</value>
+              <value>sup</value>
+            </choice>
+          </attribute>
+        </optional>
         <text/>
       </element>
     </define>
@@ -799,10 +805,12 @@
             </choice>
           </oneOrMore>
           <oneOrMore>
-            <ref name="persName.teiHeader"/>
-          </oneOrMore>
-          <oneOrMore>
-            <ref name="ptr.teiHeader"/>
+            <choice>
+              <ref name="persName.teiHeader"/>
+              <ref name="ptr.teiHeader"/>
+              <ref name="term.teiHeader"/>
+              <ref name="title.teiHeader"/>
+            </choice>
           </oneOrMore>
         </choice>
       </element>
@@ -989,11 +997,11 @@
           </attribute>
         </optional>
         <oneOrMore>
-          <ref name="textClass.term"/>
+          <ref name="term.teiHeader"/>
         </oneOrMore>
       </element>
     </define>
-    <define name="textClass.term">
+    <define name="term.teiHeader">
       <element name="term">
         <a:documentation>Mot-clé d’indexation</a:documentation>
         <ul xmlns="http://www.w3.org/1999/xhtml">
