@@ -68,6 +68,9 @@
         <optional>
           <ref name="revisionDesc"/>
         </optional>
+        <zeroOrMore>
+          <ref name="xenoData"/>
+        </zeroOrMore>
       </element>
     </define>
     <define name="fileDesc">
@@ -1110,6 +1113,41 @@
         </element>
       </optional>
     </define>
+    <define name="xenoData">
+      <element name="xenoData">
+        <optional>
+          <attribute name="type"/>
+        </optional>
+        <choice>
+          <text/>
+          <ref name="any"/>
+        </choice>
+      </element>
+    </define>
+    <define name="any">
+      <element>
+        <anyName>
+          <except>
+            <name>sp</name>
+          </except>
+        </anyName>
+        <zeroOrMore>
+          <attribute>
+            <anyName>
+              <except>
+                <name>xml:id</name>
+                <name>who</name>
+              </except>
+            </anyName>
+          </attribute>
+        </zeroOrMore>
+        <mixed>
+          <zeroOrMore>
+            <ref name="any"/>
+          </zeroOrMore>
+        </mixed>
+      </element>
+    </define>
   </div>
   <div xml:id="bibliographic">
     <a:documentation>notice bibliographique (rétro-numérisation)</a:documentation>
@@ -1164,6 +1202,9 @@
         </ul>
         <optional>
           <attribute name="source"/>
+        </optional>
+        <optional>
+          <attribute name="type"/>
         </optional>
         <optional>
           <element name="abbr">
@@ -1390,6 +1431,9 @@
     </define>
     <define name="analytic">
       <element name="analytic">
+        <optional>
+          <ref name="lang-att"/>
+        </optional>
         <zeroOrMore>
           <choice>
             <ref name="title.teiHeader"/>
