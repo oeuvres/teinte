@@ -702,6 +702,7 @@
             <ref name="listPerson"/>
             <ref name="note"/>
             <ref name="num"/>
+            <ref name="pb"/>
             <ref name="ref"/>
             <ref name="indexable"/>
           </choice>
