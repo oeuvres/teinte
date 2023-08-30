@@ -1415,6 +1415,9 @@
     </define>
     <define name="monogr">
       <element name="monogr">
+        <optional>
+          <ref name="lang-att"/>
+        </optional>
         <zeroOrMore>
           <choice>
             <ref name="title.teiHeader"/>
