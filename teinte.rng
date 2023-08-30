@@ -1338,6 +1338,7 @@
         </optional>
         <oneOrMore>
           <choice>
+            <ref name="formula"/>
             <ref name="block"/>
             <ref name="head"/>
             <ref name="point"/>
@@ -1458,6 +1459,15 @@
     <define name="table">
       <element name="table">
         <a:documentation>Table, &lt;html5:table>. Avant essaiera de limiter l'usage des tables aux structures de contenu qui ne peuvent pas être ramenées à une liste &lt;list> (penser notamment aux listes de définitions qui correspondent à des tableaux à deux colonnes)</a:documentation>
+        <optional>
+          <attribute name="rows"/>
+        </optional>
+        <optional>
+          <attribute name="cols"/>
+        </optional>
+        <optional>
+          <ref name="att.corresp"/>
+        </optional>
         <ref name="rendering.figure"/>
         <zeroOrMore>
           <choice>
@@ -2262,6 +2272,10 @@
     <define name="formula">
       <element name="formula">
         <a:documentation>Formule mathématique</a:documentation>
+        <attribute name="notation"/>
+        <optional>
+          <ref name="att.corresp"/>
+        </optional>
         <optional>
           <ref name="att.rend"/>
         </optional>
