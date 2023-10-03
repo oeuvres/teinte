@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <grammar xmlns="http://relaxng.org/ns/structure/1.0" ns="http://www.tei-c.org/ns/1.0" xml:lang="fr">
   <include href="teinte.rng">
+    <define name="label.type">
+        <attribute name="type">
+          <choice>
+            <value>genus</value>
+            <value>species</value>
+            <value>variety</value>
+          </choice>
+        </attribute>
+    </define>
   </include>
 </grammar>

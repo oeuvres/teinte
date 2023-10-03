@@ -1077,26 +1077,29 @@
             <ref name="term"/>
           </choice>
         </zeroOrMore>
+        <ref name="label.type"/>
         <optional>
           <ref name="att.place"/>
         </optional>
-        <optional>
-          <attribute name="type">
-            <choice>
-              <value>dateline</value>
-              <a:documentation>Ligne de date qui n'est pas en fin de section (par exemple dans une citation)</a:documentation>
-              <value>head</value>
-              <a:documentation>Intertitre indépendant de la hiérarchie du document (pas un titre de partie ou de section)</a:documentation>
-              <value>salute</value>
-              <a:documentation>Salutation ou dédicace qui n'est pas en tête d'une section (par exemple dans une citation)</a:documentation>
-              <value>question</value>
-              <a:documentation>Question, par exemple dans un article de presse</a:documentation>
-              <value>speaker</value>
-              <a:documentation>Théâtre, intertitre avant une tirade contenant généralement au moins un nom de personnage &lt;name>, et parfois des didascalies &lt;stage></a:documentation>
-            </choice>
-          </attribute>
-        </optional>
       </element>
+    </define>
+    <define name="label.type">
+      <optional>
+        <attribute name="type">
+          <choice>
+            <value>dateline</value>
+            <a:documentation>Ligne de date qui n'est pas en fin de section (par exemple dans une citation)</a:documentation>
+            <value>head</value>
+            <a:documentation>Intertitre indépendant de la hiérarchie du document (pas un titre de partie ou de section)</a:documentation>
+            <value>salute</value>
+            <a:documentation>Salutation ou dédicace qui n'est pas en tête d'une section (par exemple dans une citation)</a:documentation>
+            <value>question</value>
+            <a:documentation>Question, par exemple dans un article de presse</a:documentation>
+            <value>speaker</value>
+            <a:documentation>Théâtre, intertitre avant une tirade contenant généralement au moins un nom de personnage &lt;name>, et parfois des didascalies &lt;stage></a:documentation>
+          </choice>
+        </attribute>
+      </optional>
     </define>
     <define name="part-att">
       <attribute name="part">
