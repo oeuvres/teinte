@@ -2169,16 +2169,18 @@
           <ref name="emph"/>
           <ref name="foreign"/>
           <element name="hi">
-            <attribute name="rend">
-              <choice>
-                <value>sub</value>
-                <value>sup</value>
-                <value>sc</value>
-                <value>i</value>
-                <value>it</value>
-                <value>n</value>
-              </choice>
-            </attribute>
+            <optional>
+              <attribute name="rend">
+                <choice>
+                  <value>sub</value>
+                  <value>sup</value>
+                  <value>sc</value>
+                  <value>i</value>
+                  <value>it</value>
+                  <value>n</value>
+                </choice>
+              </attribute>
+            </optional>
             <ref name="textual"/>
           </element>
           <ref name="num"/>
