@@ -1402,38 +1402,31 @@
         </optional>
         <ref name="xml-atts"/>
         <choice>
-          <oneOrMore>
-            <choice>
-              <text/>
-              <ref name="bibl"/>
-              <ref name="typo"/>
-              <ref name="function"/>
-              <ref name="indexable"/>
-              <ref name="quote-c"/>
-            </choice>
-            <optional>
-              <ref name="point"/>
-            </optional>
-          </oneOrMore>
-          <oneOrMore>
-            <choice>
-              <ref name="pb"/>
-              <ref name="block"/>
-            </choice>
-          </oneOrMore>
-          <oneOrMore>
-            <zeroOrMore>
+          <group>
+            <oneOrMore>
               <choice>
                 <text/>
                 <ref name="bibl"/>
-                <ref name="num"/>
-                <ref name="persName"/>
-                <ref name="title"/>
+                <ref name="typo"/>
+                <ref name="function"/>
+                <ref name="indexable"/>
+                <ref name="quote-c"/>
+                <ref name="point"/>
               </choice>
-            </zeroOrMore>
-            <ref name="list"/>
-          </oneOrMore>
+            </oneOrMore>
+          </group>
+          <group>
+            <oneOrMore>
+              <choice>
+                <ref name="pb"/>
+                <ref name="block"/>
+              </choice>
+            </oneOrMore>
+          </group>
         </choice>
+        <optional>
+          <ref name="list"/>
+        </optional>
       </element>
     </define>
     <define name="listBibl">
@@ -2917,13 +2910,15 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </optional>
         <optional>
           <attribute name="width">
-            <data type="decimal"/>
+            <data type="token">
+              <param name="pattern">[\-+]?\d+(\.\d+)?(%|cm|mm|in|pt|pc|px|em|ex|ch|rem|vw|vh|vmin|vmax)</param>
+            </data>
           </attribute>
           <attribute name="height">
-            <data type="decimal"/>
+            <data type="token">
+              <param name="pattern">[\-+]?\d+(\.\d+)?(%|cm|mm|in|pt|pc|px|em|ex|ch|rem|vw|vh|vmin|vmax)</param>
+            </data>
           </attribute>
-          <!-- unit of width and height -->
-          <attribute name="subtype"/>          
         </optional>
         <optional>
           <ref name="desc"/>
@@ -3259,43 +3254,48 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
       <attribute name="rend">
         <a:documentation>Type de liste, indiqué par un caractère, ou une valeur CSS standard</a:documentation>
         <div xmlns="http://www.w3.org/1999/xhtml"><a href="http://www.w3.org/TR/CSS21/generate.html#propdef-list-style-type">[CSS]</a>. Le nombre de valeurs est susceptible de s’étendre. En cas d’encodage de texte existant, si la numérotation est difficile à générer automatiquement, il peut être plus commode de la reporter en valeur d’attribut de l’item <a:att>n</a:att>.</div>
-        <choice>
-          <value>-</value>
-          <value>–</value>
-          <value>—</value>
-          <value>1</value>
-          <a:documentation>décimal : 1 2</a:documentation>
-          <value>a</value>
-          <a:documentation>alphabet latin minuscule : a, b, c…</a:documentation>
-          <value>A</value>
-          <a:documentation>alphabet latin majuscule : A, B, C…</a:documentation>
-          <value>bullet</value>
-          <value>circle</value>
-          <a:documentation>cercle</a:documentation>
-          <value>disc</value>
-          <a:documentation>disque</a:documentation>
-          <value>decimal</value>
-          <a:documentation>décimal : 1. 2.</a:documentation>
-          <value>decimal-leading-zero</value>
-          <a:documentation>décimal formlaté : 01, 02…</a:documentation>
-          <value>I</value>
-          <a:documentation>I. II. III.</a:documentation>
-          <value>none</value>
-          <a:documentation>pas de marqueur</a:documentation>
-          <value>lower-alpha</value>
-          <a:documentation>alphabétique minuscule : a, b, c…</a:documentation>
-          <value>lower-latin</value>
-          <a:documentation>alphabet latin minuscule : a, b, c…</a:documentation>
-          <value>row</value>
-          <value>square</value>
-          <a:documentation>carré</a:documentation>
-          <value>upper-alpha</value>
-          <a:documentation>alphabétique majuscule : A, B, C…</a:documentation>
-          <value>upper-latin</value>
-          <a:documentation>alphabet latin majuscule : A, B, C…</a:documentation>
-          <value>upper-roman</value>
-          <a:documentation>I II III</a:documentation>
-        </choice>
+        <list>
+          <oneOrMore>
+            <choice>
+              <value>-</value>
+              <value>–</value>
+              <value>—</value>
+              <value>1</value>
+              <a:documentation>décimal : 1 2</a:documentation>
+              <value>a</value>
+              <a:documentation>alphabet latin minuscule : a, b, c…</a:documentation>
+              <value>A</value>
+              <a:documentation>alphabet latin majuscule : A, B, C…</a:documentation>
+              <value>bullet</value>
+              <value>circle</value>
+              <a:documentation>cercle</a:documentation>
+              <value>disc</value>
+              <a:documentation>disque</a:documentation>
+              <value>decimal</value>
+              <a:documentation>décimal : 1. 2.</a:documentation>
+              <value>decimal-leading-zero</value>
+              <a:documentation>décimal formlaté : 01, 02…</a:documentation>
+              <value>I</value>
+              <a:documentation>I. II. III.</a:documentation>
+              <value>none</value>
+              <a:documentation>pas de marqueur</a:documentation>
+              <value>lower-alpha</value>
+              <a:documentation>alphabétique minuscule : a, b, c…</a:documentation>
+              <value>lower-latin</value>
+              <a:documentation>alphabet latin minuscule : a, b, c…</a:documentation>
+              <value>row</value>
+              <value>square</value>
+              <a:documentation>carré</a:documentation>
+              <value>upper-alpha</value>
+              <a:documentation>alphabétique majuscule : A, B, C…</a:documentation>
+              <value>upper-latin</value>
+              <a:documentation>alphabet latin majuscule : A, B, C…</a:documentation>
+              <value>upper-roman</value>
+              <a:documentation>I II III</a:documentation>
+              <data type="Name"/>
+            </choice>
+          </oneOrMore>
+        </list>
       </attribute>
     </define>
     <define name="rendering-atts">
