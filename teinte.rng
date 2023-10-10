@@ -3269,6 +3269,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
           <a:documentation>alphabet latin minuscule : a, b, c…</a:documentation>
           <value>A</value>
           <a:documentation>alphabet latin majuscule : A, B, C…</a:documentation>
+          <value>bullet</value>
           <value>circle</value>
           <a:documentation>cercle</a:documentation>
           <value>disc</value>
