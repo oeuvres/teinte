@@ -7,6 +7,7 @@
             <value>genus</value>
             <value>species</value>
             <value>variety</value>
+            <value>question</value>
           </choice>
         </attribute>
     </define>
