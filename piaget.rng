@@ -2,6 +2,7 @@
 <grammar xmlns="http://relaxng.org/ns/structure/1.0" ns="http://www.tei-c.org/ns/1.0" xml:lang="fr">
   <include href="teinte.rng">
     <define name="label.type">
+      <optional>
         <attribute name="type">
           <choice>
             <value>genus</value>
@@ -10,6 +11,7 @@
             <value>question</value>
           </choice>
         </attribute>
+      </optional>
     </define>
   </include>
 </grammar>
