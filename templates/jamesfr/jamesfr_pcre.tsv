@@ -1,4 +1,0 @@
-search	replace	?comment
-
-# <p>(\d+)<space type="tab">    </space>.*</p>	<cb n="\1"/>
-(Voyez( les articles| le)?) *<hi>(.*?)</hi>	\1 <ref>\3</ref>
