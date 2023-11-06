@@ -1162,18 +1162,7 @@
  Pour les paragraphes numérotés, le numéro de l’édition imprimée est à inscrire dans l’attribut <a:att>n</a:att>.
           -->
         </div>
-        <ref name="xml-atts"/>
-        <optional>
-          <ref name="att.n"/>
-        </optional>
-        <optional>
-          <ref name="part-att"/>
-        </optional>
-        <optional>
-          <attribute name="rend">
-            <ref name="rend.p"/>
-          </attribute>
-        </optional>
+        <ref name="p.atts"/>
         <choice>
           <oneOrMore>
             <ref name="s"/>
@@ -1181,6 +1170,20 @@
           <ref name="flow"/>
         </choice>
       </element>
+    </define>
+    <define name="p.atts">
+      <ref name="xml-atts"/>
+      <optional>
+        <ref name="att.n"/>
+      </optional>
+      <optional>
+        <ref name="part-att"/>
+      </optional>
+      <optional>
+        <attribute name="rend">
+          <ref name="rend.p"/>
+        </attribute>
+      </optional>
     </define>
     <define name="q-p">
       <element name="q">
@@ -1336,6 +1339,9 @@
         </optional>
         <ref name="xml-atts"/>
         <ref name="rendering.figure"/>
+        <optional>
+          <attribute name="place"/>
+        </optional>
         <optional>
           <ref name="att.type"/>
         </optional>

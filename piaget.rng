@@ -6,9 +6,28 @@
         <attribute name="type">
           <choice>
             <value>genus</value>
+            <value>head</value>
+            <value>question</value>
             <value>species</value>
             <value>variety</value>
-            <value>question</value>
+          </choice>
+        </attribute>
+      </optional>
+    </define>
+    <define name="p.atts">
+      <optional>
+        <attribute name="type">
+          <choice>
+            <value>observation</value>
+          </choice>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="rend">
+          <choice>
+            <value>center</value>
+            <value>indent</value>
+            <value>right</value>
           </choice>
         </attribute>
       </optional>
