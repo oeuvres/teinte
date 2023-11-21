@@ -775,6 +775,7 @@
         <ref name="entryFree"/>
         <ref name="epigraph"/>
         <ref name="figure"/>
+        <ref name="fw"/>
         <ref name="l"/>
         <ref name="label"/>
         <ref name="list"/>
