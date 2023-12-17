@@ -25,6 +25,8 @@
       <optional>
         <attribute name="rend">
           <choice>
+            <value>i center</value>
+            <value>i</value>
             <value>center</value>
             <value>indent</value>
             <value>right</value>
