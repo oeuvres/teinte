@@ -26,6 +26,7 @@
         <attribute name="rend">
           <choice>
             <value>i center</value>
+            <value>i hanging</value>
             <value>i indent</value>
             <value>i right</value>
             <value>i</value>
