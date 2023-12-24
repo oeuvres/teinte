@@ -767,6 +767,7 @@
       <choice>
         <ref name="ab"/>
         <ref name="bibl"/>
+        <ref name="byline"/>
         <ref name="castList"/>
         <ref name="cit"/>
         <ref name="desc"/>
@@ -794,10 +795,6 @@
         <ref name="pb"/>
         <ref name="cb"/>
         -->
-        <ref name="byline"/>
-        <ref name="dateline"/>
-        <ref name="salute"/>
-        <ref name="signed"/>
       </choice>
     </define>
     <define name="flow">
