@@ -565,6 +565,9 @@
     <define name="argument">
       <element name="argument">
         <a:documentation>Résumé d'une section, contient des blocs</a:documentation>
+        <optional>
+          <attribute name="type"/>
+        </optional>
         <ref name="xml-atts"/>
         <ref name="rendering.figure"/>
         <optional>
