@@ -3022,10 +3022,13 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
           <ref name="att.n"/>
         </optional>
         <optional>
+          <ref name="att.place"/>
+        </optional>
+        <optional>
           <ref name="att.resp"/>
         </optional>
         <optional>
-          <ref name="att.place"/>
+          <ref name="att.type.note"/>
         </optional>
         <ref name="rendering-atts"/>
         <choice>
@@ -3212,6 +3215,11 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
     <define name="att.type">
       <attribute name="type">
         <a:documentation>Type, qualifiant l’élément parent, indépendamment de son apparence. Dans la mesure du possible, une liste d’autorité contextuelle sera proposée au niveau de l’élément.</a:documentation>
+      </attribute>
+    </define>
+    <define name="att.type.note">
+      <attribute name="type">
+        <a:documentation>Type de notes.</a:documentation>
       </attribute>
     </define>
     <define name="att.source">
