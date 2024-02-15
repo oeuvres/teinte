@@ -528,17 +528,13 @@
         <choice>
           <!-- <ab> is not in TEI model.divTop -->
           <ref name="ab"/>
-          <ref name="argument"/>
           <ref name="docAuthor"/>
           <ref name="docDate"/>
-          <ref name="epigraph"/>
           <ref name="figure"/>
           <ref name="head"/>
           <ref name="index"/>
           <ref name="milestone"/>
           <ref name="opener"/>
-          <ref name="salute"/>
-          <ref name="signed"/>
           <ref name="point"/>
         </choice>
       </zeroOrMore>
@@ -597,14 +593,11 @@
     </define>
     <define name="closer">
       <element name="closer">
-        <zeroOrMore>
-          <choice>
-            <ref name="dateline"/>
-            <ref name="salute"/>
-            <ref name="signed"/>
-            <ref name="flow"/>
-          </choice>
-        </zeroOrMore>
+        <choice>
+          <ref name="dateline"/>
+          <ref name="salute"/>
+          <ref name="signed"/>
+        </choice>
       </element>
     </define>
     <define name="dateline">
@@ -714,17 +707,14 @@
     </define>
     <define name="opener">
       <element name="opener">
-        <zeroOrMore>
-          <choice>
-            <ref name="argument"/>
-            <ref name="byline"/>
-            <ref name="dateline"/>
-            <ref name="epigraph"/>
-            <ref name="salute"/>
-            <ref name="signed"/>
-            <ref name="flow"/>
-          </choice>
-        </zeroOrMore>
+        <choice>
+          <ref name="argument"/>
+          <ref name="byline"/>
+          <ref name="dateline"/>
+          <ref name="epigraph"/>
+          <ref name="salute"/>
+          <ref name="signed"/>
+        </choice>
       </element>
     </define>
     <define name="postscript">
