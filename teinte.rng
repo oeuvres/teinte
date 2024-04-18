@@ -2,7 +2,14 @@
 <!--
 <?xml-stylesheet type="text/xsl" href="../xrem/rng2html.xsl"?>
 -->
-<grammar datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes" ns="http://www.tei-c.org/ns/1.0" xml:lang="fr" xmlns="http://relaxng.org/ns/structure/1.0" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<grammar 
+  ns="http://www.tei-c.org/ns/1.0"
+  datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes"
+  xml:lang="fr"
+  xmlns="http://relaxng.org/ns/structure/1.0"
+  xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"
+  xmlns:h="http://www.w3.org/1999/xhtml"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <a:documentation>Teinte, TEI pour les livres</a:documentation>
   <div xmlns="http://www.w3.org/1999/xhtml">
     <ul class="auteurs">
@@ -727,6 +734,7 @@
             <ref name="block"/>
             <ref name="pb"/>
             <ref name="cb"/>
+            <ref name="space"/>
           </choice>
         </oneOrMore>
       </element>
@@ -2338,9 +2346,7 @@
       <element name="ref">
         <a:documentation>Lien simple, html5:&lt;a href="@target">texte&lt;/a>. Pour les liens internes, utiliser une URI ancre, #pb0101 (page 101).</a:documentation>
         <ref name="xml-atts"/>
-        <attribute name="target">
-          <text/>
-        </attribute>
+        <ref name="att.target"/>
         <ref name="rendering.char"/>
         <optional>
           <ref name="att.type"/>
@@ -3215,6 +3221,12 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
     <define name="att.source">
       <attribute name="source">
         <a:documentation>URI dont est tiré l’information</a:documentation>
+        <data type="anyURI"/>
+      </attribute>
+    </define>
+    <define name="att.target">
+      <attribute name="target">
+        <a:documentation>URI de destination d'un lien</a:documentation>
         <data type="anyURI"/>
       </attribute>
     </define>
