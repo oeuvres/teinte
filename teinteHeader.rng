@@ -664,6 +664,17 @@
         <ref name="pers.cont"/>
       </element>
     </define>
+    <define name="series">
+      <element name="series">
+        <oneOrMore>
+          <choice>
+            <ref name="series.title"/>
+            <ref name="series.idno"/>
+            <ref name="biblScope"/>
+          </choice>
+        </oneOrMore>
+      </element>
+    </define>
     <!-- NB : comme pour publicationStmt, factorisation fileDesc-sourceDesc pénible
       cf URL / ISSN, mapping dc:isPartOf, impossibilité de typer finerment idno -->
     <define name="seriesStmt">
@@ -1408,6 +1419,9 @@
           <ref name="analytic"/>
         </optional>
         <ref name="monogr"/>
+        <optional>
+          <ref name="series"/>
+        </optional>
         <zeroOrMore>
           <ref name="note.teiHeader"/>
         </zeroOrMore>
