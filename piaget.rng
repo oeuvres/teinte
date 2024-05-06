@@ -19,6 +19,7 @@
         <attribute name="type">
           <choice>
             <value>observation</value>
+            <value>proof</value>
           </choice>
         </attribute>
       </optional>
