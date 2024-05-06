@@ -2275,7 +2275,9 @@
     <define name="formula">
       <element name="formula">
         <a:documentation>Formule mathématique</a:documentation>
-        <attribute name="notation"/>
+        <optional>
+          <attribute name="notation"/>
+        </optional>
         <optional>
           <ref name="att.corresp"/>
         </optional>
