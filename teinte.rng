@@ -2292,6 +2292,7 @@
             <text/>
             <ref name="hi"/>
             <ref name="lb"/>
+            <ref name="note"/>
             <ref name="graphic"/>
           </choice>
         </zeroOrMore>
