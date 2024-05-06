@@ -722,6 +722,11 @@
             </ul>
           </attribute>
         </optional>
+        <optional>
+          <attribute name="level">
+            <value>s</value>
+          </attribute>
+        </optional>
         <ref name="flow.teiHeader"/>
       </element>
     </define>
