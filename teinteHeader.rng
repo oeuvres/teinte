@@ -1420,14 +1420,24 @@
         </optional>
         <zeroOrMore>
           <choice>
-            <ref name="title.teiHeader"/>
             <ref name="author.teiHeader"/>
             <ref name="date.teiHeader"/>
             <ref name="edition"/>
-            <ref name="extent"/>
             <ref name="idno"/>
-            <ref name="imprint"/>
             <ref name="respStmt"/>
+            <ref name="title.teiHeader"/>
+            <element name="ptr">
+              <attribute name="target"/>
+              <empty/>
+            </element>
+          </choice>
+        </zeroOrMore>
+        <ref name="imprint"/>
+        <zeroOrMore>
+          <choice>
+            <ref name="biblScope"/>
+            <ref name="imprint"/>
+            <ref name="extent"/>
           </choice>
         </zeroOrMore>
       </element>
