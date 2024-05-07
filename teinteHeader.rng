@@ -826,22 +826,12 @@
           <oneOrMore>
             <choice>
               <ref name="persName.teiHeader"/>
-              <ref name="ptr.teiHeader"/>
+              <ref name="ptr"/>
               <ref name="term.teiHeader"/>
               <ref name="title.teiHeader"/>
             </choice>
           </oneOrMore>
         </choice>
-      </element>
-    </define>
-    <define name="ptr.teiHeader">
-      <element name="ref">
-        <optional>
-          <attribute name="type"/>
-        </optional>
-        <attribute name="target">
-          <data type="anyURI"/>
-        </attribute>
       </element>
     </define>
     <define name="editionStmt">
@@ -1198,16 +1188,23 @@
         </biblFull>
       </sourceDesc>
     </a:example>
-    <define name="sourceDesc">
-      <element name="sourceDesc">
-        <a:documentation>Description de la (des) source(s) numérisée(s)</a:documentation>
-        <oneOrMore>
+    <define name="analytic">
+      <element name="analytic">
+        <optional>
+          <ref name="lang-att"/>
+        </optional>
+        <zeroOrMore>
           <choice>
-            <ref name="bibl.teiHeader"/>
-            <ref name="biblFull"/>
-            <ref name="biblStruct"/>
+            <ref name="title.teiHeader"/>
+            <ref name="author.teiHeader"/>
+            <ref name="date.teiHeader"/>
+            <ref name="edition"/>
+            <ref name="extent"/>
+            <ref name="idno"/>
+            <ref name="imprint"/>
+            <ref name="respStmt"/>
           </choice>
-        </oneOrMore>
+        </zeroOrMore>
       </element>
     </define>
     <define name="bibl.teiHeader">
@@ -1279,7 +1276,7 @@
           <ref name="editionStmt"/>
         </optional>
         <optional>
-          <ref name="biblFull.extent"/>
+          <ref name="extent.biblFull"/>
         </optional>
         <!-- obligatoire -->
         <ref name="publicationStmt"/>
@@ -1427,9 +1424,57 @@
         <optional>
           <ref name="series"/>
         </optional>
+        <optional>
+          <ref name="relatedItem"/>
+        </optional>
         <zeroOrMore>
           <ref name="note.teiHeader"/>
         </zeroOrMore>
+      </element>
+    </define>
+    <define name="extent.biblFull">
+      <element name="extent">
+        <a:documentation>Description matérielle</a:documentation>
+        <p class="note" xmlns="http://www.w3.org/1999/xhtml">Texte imprimé : la nouvelle édition de la norme Z44-050 d'avril 2005 généralise la mention de volume qui s'applique même pour un volume unique.<br/>ex. : 215 ##$a1 vol. (XII-32 p.)$d25 cm</p>
+        <ul xmlns="http://www.w3.org/1999/xhtml">
+          <li>
+            <a href="http://documentation.abes.fr/sudoc/formats/unmb/zones/215.htm" target="unim">Unimarc, zone 215, $x</a>
+          </li>
+        </ul>
+        <attribute name="ana">
+          <value>pp</value>
+        </attribute>
+        <attribute name="n">
+          <data type="integer"/>
+        </attribute>
+        <text/>
+      </element>
+    </define>
+    <define name="imprint">
+      <element name="imprint">
+        <oneOrMore>
+          <choice>
+            <ref name="date.teiHeader"/>
+            <ref name="biblScope"/>
+            <ref name="publisher"/>
+            <ref name="pubPlace"/>
+          </choice>
+        </oneOrMore>
+      </element>
+    </define>
+    <define name="ISBN">
+      <element name="idno">
+        <a:documentation>ISBN (10 ou 13)</a:documentation>
+        <ul xmlns="http://www.w3.org/1999/xhtml">
+          <li>ISBN-10 : <a href="http://documentation.abes.fr/sudoc/formats/unmb/zones/010.htm#$aISBN10" target="unim">Unimarc, zone 010, $a</a></li>
+          <li>ISBN-13 : <a href="http://documentation.abes.fr/sudoc/formats/unmb/zones/010.htm#$AISBN13" target="unim">Unimarc, zone 010, $A</a></li>
+        </ul>
+        <attribute name="type">
+          <choice>
+            <value>ISBN</value>
+            <text/>
+          </choice>
+        </attribute>
       </element>
     </define>
     <define name="monogr">
@@ -1445,10 +1490,7 @@
             <ref name="idno"/>
             <ref name="respStmt"/>
             <ref name="title.teiHeader"/>
-            <element name="ptr">
-              <attribute name="target"/>
-              <empty/>
-            </element>
+            <ref name="ptr"/>
           </choice>
         </zeroOrMore>
         <ref name="imprint"/>
@@ -1461,33 +1503,43 @@
         </zeroOrMore>
       </element>
     </define>
-    <define name="analytic">
-      <element name="analytic">
-        <optional>
-          <ref name="lang-att"/>
-        </optional>
-        <zeroOrMore>
-          <choice>
-            <ref name="title.teiHeader"/>
-            <ref name="author.teiHeader"/>
-            <ref name="date.teiHeader"/>
-            <ref name="edition"/>
-            <ref name="extent"/>
-            <ref name="idno"/>
-            <ref name="imprint"/>
-            <ref name="respStmt"/>
-          </choice>
-        </zeroOrMore>
+    <define name="ptr">
+      <element name="ptr">
+        <attribute name="target"/>
+        <empty/>
       </element>
     </define>
-    <define name="imprint">
-      <element name="imprint">
+    <define name="relatedItem">
+      <element name="relatedItem">
+        <optional>
+          <attribute name="type"/>
+        </optional>
         <oneOrMore>
           <choice>
-            <ref name="date.teiHeader"/>
-            <ref name="biblScope"/>
-            <ref name="publisher"/>
-            <ref name="pubPlace"/>
+            <ref name="bibl.teiHeader"/>
+            <ref name="biblStruct"/>
+            <ref name="ptr"/>
+            <element name="ref">
+              <optional>
+                <attribute name="type"/>
+              </optional>
+              <attribute name="target">
+                <data type="anyURI"/>
+              </attribute>
+              <text/>
+            </element>
+          </choice>
+        </oneOrMore>
+      </element>
+    </define>
+    <define name="sourceDesc">
+      <element name="sourceDesc">
+        <a:documentation>Description de la (des) source(s) numérisée(s)</a:documentation>
+        <oneOrMore>
+          <choice>
+            <ref name="bibl.teiHeader"/>
+            <ref name="biblFull"/>
+            <ref name="biblStruct"/>
           </choice>
         </oneOrMore>
       </element>
@@ -1511,21 +1563,6 @@
         </optional>
       </element>
 -->    
-    <define name="ISBN">
-      <element name="idno">
-        <a:documentation>ISBN (10 ou 13)</a:documentation>
-        <ul xmlns="http://www.w3.org/1999/xhtml">
-          <li>ISBN-10 : <a href="http://documentation.abes.fr/sudoc/formats/unmb/zones/010.htm#$aISBN10" target="unim">Unimarc, zone 010, $a</a></li>
-          <li>ISBN-13 : <a href="http://documentation.abes.fr/sudoc/formats/unmb/zones/010.htm#$AISBN13" target="unim">Unimarc, zone 010, $A</a></li>
-        </ul>
-        <attribute name="type">
-          <choice>
-            <value>ISBN</value>
-            <text/>
-          </choice>
-        </attribute>
-      </element>
-    </define>
     <!--
     <define name="biblFull.publicationStmt">
       <element name="publicationStmt">
@@ -1565,24 +1602,6 @@
       </element>
     </define>
     -->
-    <define name="biblFull.extent">
-      <element name="extent">
-        <a:documentation>Description matérielle</a:documentation>
-        <p class="note" xmlns="http://www.w3.org/1999/xhtml">Texte imprimé : la nouvelle édition de la norme Z44-050 d'avril 2005 généralise la mention de volume qui s'applique même pour un volume unique.<br/>ex. : 215 ##$a1 vol. (XII-32 p.)$d25 cm</p>
-        <ul xmlns="http://www.w3.org/1999/xhtml">
-          <li>
-            <a href="http://documentation.abes.fr/sudoc/formats/unmb/zones/215.htm" target="unim">Unimarc, zone 215, $x</a>
-          </li>
-        </ul>
-        <attribute name="ana">
-          <value>pp</value>
-        </attribute>
-        <attribute name="n">
-          <data type="integer"/>
-        </attribute>
-        <text/>
-      </element>
-    </define>
     <!-- REJET : pb de la factorisation fileDesc-sourceDesc -->
     <!--
       <define name="unimarc.200">
