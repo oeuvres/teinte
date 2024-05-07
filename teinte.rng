@@ -3337,6 +3337,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
                 <ref name="rend.border"/>
                 <ref name="rend.align"/>
                 <value>w25</value>
+                <value>w33</value>
                 <value>w50</value>
                 <value>w75</value>
               </choice>
