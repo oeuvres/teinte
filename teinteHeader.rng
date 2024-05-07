@@ -295,20 +295,29 @@
         </attribute>
       </optional>
       <a:documentation>Forme non normalisée pour affichage (exemple génération automatique de couvertures)</a:documentation>
-      <zeroOrMore>
-        <choice>
+      <choice>
+        <text/>
+        <oneOrMore>
+          <choice>
+            <text/>
+            <element name="forename">
+              <text/>
+            </element>
+            <element name="num">
+              <text/>
+            </element>
+            <element name="surname">
+              <text/>
+            </element>
+          </choice>
+        </oneOrMore>
+        <element name="orgName">
           <text/>
-          <element name="forename">
-            <text/>
-          </element>
-          <element name="num">
-            <text/>
-          </element>
-          <element name="surname">
-            <text/>
-          </element>
-        </choice>
-      </zeroOrMore>
+        </element>
+        <element name="name">
+          <text/>
+        </element>
+      </choice>
     </define>
     <define name="key">
       <attribute name="key">
