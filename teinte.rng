@@ -651,17 +651,22 @@
         </a:example>
         <ref name="xml-atts"/>
         <ref name="rendering.block"/>
-        <oneOrMore>
-          <choice>
-            <ref name="bibl"/>
-            <ref name="l"/>
-            <ref name="label"/>
-            <ref name="lg"/>
-            <ref name="lb"/>
-            <ref name="p"/>
-            <ref name="pb"/>
-          </choice>
-        </oneOrMore>
+        <choice>
+          <oneOrMore>
+            <ref name="cit"/>
+          </oneOrMore>
+          <oneOrMore>
+            <choice>
+              <ref name="bibl"/>
+              <ref name="l"/>
+              <ref name="label"/>
+              <ref name="lg"/>
+              <ref name="lb"/>
+              <ref name="p"/>
+              <ref name="pb"/>
+            </choice>
+          </oneOrMore>
+        </choice>
       </element>
     </define>
     <define name="head">
