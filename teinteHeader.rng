@@ -1207,6 +1207,7 @@
             <ref name="title.teiHeader"/>
             <ref name="author.teiHeader"/>
             <ref name="date.teiHeader"/>
+            <ref name="editor"/>
             <ref name="edition"/>
             <ref name="extent"/>
             <ref name="idno"/>
@@ -1494,6 +1495,7 @@
         <zeroOrMore>
           <choice>
             <ref name="author.teiHeader"/>
+            <ref name="editor"/>
             <ref name="date.teiHeader"/>
             <ref name="edition"/>
             <ref name="idno"/>
