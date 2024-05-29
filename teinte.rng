@@ -782,6 +782,7 @@
         <ref name="entryFree"/>
         <ref name="epigraph"/>
         <ref name="figure"/>
+        <ref name="formula"/>
         <ref name="fw"/>
         <ref name="l"/>
         <ref name="label"/>
@@ -1351,7 +1352,6 @@
         </optional>
         <oneOrMore>
           <choice>
-            <ref name="formula"/>
             <ref name="block"/>
             <ref name="head"/>
             <ref name="point"/>
@@ -2295,10 +2295,11 @@
         <zeroOrMore>
           <choice>
             <text/>
+            <ref name="graphic"/>
             <ref name="hi"/>
             <ref name="lb"/>
             <ref name="note"/>
-            <ref name="graphic"/>
+            <ref name="ref"/>
           </choice>
         </zeroOrMore>
         <text/>
