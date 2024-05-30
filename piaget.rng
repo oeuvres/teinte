@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<grammar xmlns="http://relaxng.org/ns/structure/1.0" ns="http://www.tei-c.org/ns/1.0" xml:lang="fr">
+<grammar  ns="http://www.tei-c.org/ns/1.0"
+  datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes"
+  xml:lang="fr"
+  xmlns="http://relaxng.org/ns/structure/1.0"
+  xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"
+  xmlns:h="http://www.w3.org/1999/xhtml"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+>
   <include href="teinte.rng">
     <define name="label.type">
       <optional>
@@ -13,6 +20,16 @@
           </choice>
         </attribute>
       </optional>
+    </define>
+    <define name="TEI.atts">
+      <ref name="xml.lang"/>
+      <ref name="xml.id"/>
+      <attribute name="type">
+        <choice>
+          <value>book</value>
+          <value>article</value>
+        </choice>
+      </attribute>
     </define>
     <define name="p.atts">
       <optional>
@@ -36,6 +53,14 @@
             <value>indent</value>
             <value>right</value>
           </choice>
+        </attribute>
+      </optional>
+    </define>
+    <define name="att.target">
+      <optional>
+        <attribute name="target">
+          <a:documentation>Provisoirement optionnel pour validation</a:documentation>
+          <data type="anyURI"/>
         </attribute>
       </optional>
     </define>

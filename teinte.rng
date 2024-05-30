@@ -90,25 +90,7 @@
             </TEI>
           </a:example>
         </div>
-        <ref name="xml.lang"/>
-        <optional>
-          <choice>
-            <ref name="att.n"/>
-            <ref name="xml.id"/>
-          </choice>
-        </optional>
-        <!-- attributs d'autres espaces de noms -->
-        <zeroOrMore>
-          <attribute>
-            <anyName>
-              <except>
-                <name>xml:lang</name>
-                <name>xml:id</name>
-                <name ns="">n</name>
-              </except>
-            </anyName>
-          </attribute>
-        </zeroOrMore>
+        <ref name="TEI.atts"/>
         <!--
         <optional>
           <element name="teiHeader">
@@ -133,6 +115,15 @@
           </optional>
         </element>
       </element>
+    </define>
+    <define name="TEI.atts">
+      <ref name="xml.lang"/>
+      <optional>
+        <ref name="att.n"/>
+      </optional>
+      <optional>
+        <ref name="xml.id"/>
+      </optional>      
     </define>
     <define name="group">
       <element name="group">
