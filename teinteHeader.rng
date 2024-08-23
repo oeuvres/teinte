@@ -677,9 +677,10 @@
       <element name="series">
         <oneOrMore>
           <choice>
-            <ref name="series.title"/>
-            <ref name="series.idno"/>
             <ref name="biblScope"/>
+            <ref name="editor"/>
+            <ref name="series.idno"/>
+            <ref name="series.title"/>
           </choice>
         </oneOrMore>
       </element>
