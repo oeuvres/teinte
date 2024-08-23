@@ -568,7 +568,9 @@
           <ref name="head"/>
         </optional>
         <zeroOrMore>
-          <ref name="block"/>
+          <choice>
+            <ref name="block"/>
+          </choice>
         </zeroOrMore>
       </element>
     </define>
@@ -611,6 +613,7 @@
               <ref name="emph"/>
               <ref name="indexable"/>
               <ref name="hi"/>
+              <ref name="note"/>
               <ref name="point"/>
             </choice>
           </zeroOrMore>
@@ -728,9 +731,7 @@
         <oneOrMore>
           <choice>
             <ref name="block"/>
-            <ref name="pb"/>
-            <ref name="cb"/>
-            <ref name="space"/>
+            <ref name="point"/>
           </choice>
         </oneOrMore>
       </element>
@@ -780,6 +781,7 @@
         <ref name="list"/>
         <ref name="listBibl"/>
         <ref name="lg"/>
+        <ref name="note-p"/>
         <ref name="p"/>
         <ref name="q-p"/>
         <ref name="quote-p"/>
@@ -800,16 +802,17 @@
       <oneOrMore>
         <choice>
           <text/>
-          <ref name="typo"/>
-          <ref name="point"/>
+          <ref name="address"/>
+          <ref name="bibl"/>
+          <ref name="figure"/>
           <ref name="function"/>
           <ref name="indexable"/>
-          <ref name="figure"/>
-          <ref name="quote-c"/>
           <ref name="label"/>
-          <ref name="bibl"/>
+          <ref name="note"/>
+          <ref name="point"/>
+          <ref name="quote-c"/>
           <ref name="stage"/>
-          <ref name="address"/>
+          <ref name="typo"/>
         </choice>
       </oneOrMore>
     </define>
@@ -863,7 +866,7 @@
     </define>
     <define name="address">
       <element name="address">
-        <a:documentation>Adresse postale de l'éditeur du texte</a:documentation>
+        <a:documentation>Adresse postale</a:documentation>
         <oneOrMore>
           <element name="addrLine">
             <ref name="textual"/>
@@ -908,6 +911,7 @@
             <ref name="foreign"/>
             <ref name="hi"/>
             <ref name="lb"/>
+            <ref name="note"/>
             <ref name="num"/>
             <ref name="point"/>
             <element name="pubPlace">
@@ -1147,6 +1151,36 @@
         </oneOrMore>
       </element>
     </define>
+    <define name="note-p">
+      <element name="note">
+        <a:documentation>Une note de niveau bloc, sans appel.</a:documentation>
+        <div xmlns="http://www.w3.org/1999/xhtml">
+          <p>Une note ne contient que du texte riche, ou que des blocs (le mélange texte avec blocs n'est pas autorisé).</p>
+        </div>
+        <ref name="xml-atts"/>
+        <optional>
+          <ref name="att.n"/>
+        </optional>
+        <optional>
+          <ref name="att.resp"/>
+        </optional>
+        <optional>
+          <ref name="att.type.note"/>
+        </optional>
+        <ref name="rendering-atts"/>
+        <choice>
+          <ref name="flow"/>
+          <oneOrMore>
+            <choice>
+              <ref name="p"/>
+              <ref name="point"/>
+              <ref name="q-p"/>
+              <ref name="quote-p"/>
+            </choice>
+          </oneOrMore>
+        </choice>
+      </element>
+    </define>
     <define name="p">
       <element name="p">
         <a:documentation>Paragraphe de texte, html5:p</a:documentation>
@@ -1211,10 +1245,11 @@
           <oneOrMore>
             <choice>
               <text/>
-              <ref name="typo"/>
               <ref name="function"/>
               <ref name="indexable"/>
+              <ref name="note"/>
               <ref name="point"/>
+              <ref name="typo"/>
             </choice>
           </oneOrMore>
           <!-- ou conteneur de blocs -->
@@ -1272,10 +1307,11 @@
             <choice>
               <!-- COS <ref name="bibl"/> -->
               <text/>
-              <ref name="typo"/>
               <ref name="function"/>
               <ref name="indexable"/>
+              <ref name="note"/>
               <ref name="point"/>
+              <ref name="typo"/>
             </choice>
           </oneOrMore>
           <oneOrMore>
@@ -1408,11 +1444,12 @@
               <choice>
                 <text/>
                 <ref name="bibl"/>
-                <ref name="typo"/>
                 <ref name="function"/>
                 <ref name="indexable"/>
-                <ref name="quote-c"/>
+                <ref name="note"/>
                 <ref name="point"/>
+                <ref name="quote-c"/>
+                <ref name="typo"/>
               </choice>
             </oneOrMore>
           </group>
@@ -1738,9 +1775,10 @@
         <zeroOrMore>
           <choice>
             <text/>
-            <ref name="typo"/>
-            <ref name="point"/>
             <ref name="indexable"/>
+            <ref name="note"/>
+            <ref name="point"/>
+            <ref name="typo"/>
           </choice>
         </zeroOrMore>
       </element>
@@ -2178,6 +2216,7 @@
             <ref name="textual"/>
           </element>
           <ref name="num"/>
+          <ref name="note"/>
           <ref name="point"/>
           <ref name="ref"/>
           <ref name="surname"/>
@@ -2371,6 +2410,7 @@
             </element>
             <ref name="author"/>
             <ref name="emph"/>
+            <ref name="note"/>
             <ref name="num"/>
             <ref name="point"/>
             <ref name="title"/>
@@ -2436,16 +2476,7 @@
             </choice>
           </attribute>
         </optional>
-        <zeroOrMore>
-          <choice>
-            <text/>
-            <ref name="point"/>
-            <ref name="surname"/>
-            <ref name="forename"/>
-            <ref name="num"/>
-            <ref name="hi"/>
-          </choice>
-        </zeroOrMore>
+        <ref name="persName.cont"/>
       </element>
     </define>
     <!-- on place où docAuthor ? -->
@@ -2459,16 +2490,7 @@
         </div>
         <ref name="rendering.block"/>
         <ref name="index-atts"/>
-        <zeroOrMore>
-          <choice>
-            <text/>
-            <ref name="forename"/>
-            <ref name="hi"/>
-            <ref name="num"/>
-            <ref name="point"/>
-            <ref name="surname"/>
-          </choice>
-        </zeroOrMore>
+        <ref name="persName.cont"/>
       </element>
     </define>
     <define name="name">
@@ -2485,6 +2507,19 @@
         <ref name="rendering.char"/>
         <ref name="textual"/>
       </element>
+    </define>
+    <define name="persName.cont">
+      <zeroOrMore>
+        <choice>
+          <text/>
+          <ref name="hi"/>
+          <ref name="forename"/>
+          <ref name="note"/>
+          <ref name="num"/>
+          <ref name="point"/>
+          <ref name="surname"/>
+        </choice>
+      </zeroOrMore>
     </define>
     <define name="persName">
       <element name="persName">
@@ -2517,16 +2552,7 @@
             </choice>
           </attribute>
         </optional>
-        <zeroOrMore>
-          <choice>
-            <text/>
-            <ref name="point"/>
-            <ref name="surname"/>
-            <ref name="forename"/>
-            <ref name="num"/>
-            <ref name="hi"/>
-          </choice>
-        </zeroOrMore>
+        <ref name="persName.cont"/>
       </element>
     </define>
     <define name="surname">
@@ -2536,6 +2562,7 @@
         <zeroOrMore>
           <choice>
             <text/>
+            <ref name="note"/>
             <ref name="point"/>
           </choice>
         </zeroOrMore>
@@ -2547,6 +2574,7 @@
         <zeroOrMore>
           <choice>
             <text/>
+            <ref name="note"/>
             <ref name="point"/>
           </choice>
         </zeroOrMore>
@@ -2565,9 +2593,10 @@
         <zeroOrMore>
           <choice>
             <text/>
-            <ref name="point"/>
-            <ref name="num"/>
             <ref name="hi"/>
+            <ref name="note"/>
+            <ref name="num"/>
+            <ref name="point"/>
           </choice>
         </zeroOrMore>
       </element>
@@ -2591,9 +2620,10 @@
         <zeroOrMore>
           <choice>
             <text/>
-            <ref name="point"/>
-            <ref name="num"/>
             <ref name="hi"/>
+            <ref name="note"/>
+            <ref name="num"/>
+            <ref name="point"/>
           </choice>
         </zeroOrMore>
       </element>
@@ -2607,8 +2637,9 @@
         <zeroOrMore>
           <choice>
             <text/>
-            <ref name="point"/>
             <ref name="hi"/>
+            <ref name="note"/>
+            <ref name="point"/>
           </choice>
         </zeroOrMore>
       </element>
@@ -2624,8 +2655,9 @@
         <zeroOrMore>
           <choice>
             <text/>
-            <ref name="point"/>
             <ref name="hi"/>
+            <ref name="note"/>
+            <ref name="point"/>
           </choice>
         </zeroOrMore>
       </element>
@@ -2639,8 +2671,9 @@
         <zeroOrMore>
           <choice>
             <text/>
-            <ref name="point"/>
             <ref name="hi"/>
+            <ref name="note"/>
+            <ref name="point"/>
           </choice>
         </zeroOrMore>
       </element>
@@ -2678,11 +2711,12 @@
         <zeroOrMore>
           <choice>
             <text/>
-            <ref name="point"/>
             <ref name="hi"/>
+            <ref name="note"/>
             <ref name="num"/>
-            <ref name="title"/>
+            <ref name="point"/>
             <ref name="surname"/>
+            <ref name="title"/>
             <!-- 
             <ref name="persName"/>
             <ref name="placeName"/>
@@ -2828,7 +2862,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <ref name="graphic"/>
         <ref name="index"/>
         <ref name="lb"/>
-        <ref name="note"/>
         <ref name="milestone"/>
         <ref name="pb"/>
         <ref name="space"/>
@@ -3044,18 +3077,31 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
               <ref name="indexable"/>
               <ref name="lb"/>
               <ref name="typo"/>
-              <ref name="note"/>
             </choice>
           </oneOrMore>
           <oneOrMore>
             <choice>
-              <ref name="block"/>
-              <ref name="gap"/>
+              <ref name="bibl"/>
+              <ref name="cit"/>
+              <ref name="desc"/>
+              <ref name="eg"/>
+              <ref name="figure"/>
+              <ref name="formula"/>
+              <ref name="l"/>
+              <ref name="label"/>
+              <ref name="list"/>
+              <ref name="listBibl"/>
+              <ref name="lg"/>
+              <ref name="p"/>
+              <ref name="q-p"/>
+              <ref name="quote-p"/>
+              <ref name="table"/>
             </choice>
           </oneOrMore>
         </choice>
       </element>
     </define>
+    
     <define name="pb">
       <element name="pb">
         <a:documentation>Saut de page “page break”</a:documentation>
