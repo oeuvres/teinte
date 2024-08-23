@@ -1379,6 +1379,7 @@
         </optional>
         <oneOrMore>
           <choice>
+            <ref name="desc"/>
             <ref name="head"/>
             <ref name="list"/>
             <ref name="p"/>
