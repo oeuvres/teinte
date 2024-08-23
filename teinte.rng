@@ -1379,9 +1379,11 @@
         </optional>
         <oneOrMore>
           <choice>
-            <ref name="block"/>
             <ref name="head"/>
+            <ref name="list"/>
+            <ref name="p"/>
             <ref name="point"/>
+            <ref name="table"/>
           </choice>
         </oneOrMore>
       </element>
