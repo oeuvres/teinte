@@ -3474,19 +3474,21 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <value>big</value>
         <a:documentation>taille de caractère relativement plus grande</a:documentation>
         <value>bold</value>
-        <a:documentation>gras, css{font-weight:bold}</a:documentation>
+        <a:documentation>gras, css : {font-weight: bold;}</a:documentation>
         <value>i</value>
         <a:documentation>italique “italic” &lt;html5:i></a:documentation>
         <value>italic</value>
-        <a:documentation>italique, css{font-style:italic}</a:documentation>
+        <a:documentation>italique, css : {font-style: italic;}</a:documentation>
         <value>ls</value>
         <a:documentation>espacé “letter-spacing”</a:documentation>
         <value>letter-spacing</value>
-        <a:documentation>espacé css{letter-spacing:2px}</a:documentation>
+        <a:documentation>espacé css : {letter-spacing: 2px;}</a:documentation>
         <value>n</value>
         <a:documentation>normal (annule toutes les mmises en formes héritées de niveau caractère)</a:documentation>
         <value>normal</value>
         <a:documentation>normal (annule toutes les mmises en formes héritées de niveau caractère)</a:documentation>
+        <value>overline</value>
+        <a:documentation>surligné css : {text-decoration: overline;}</a:documentation>
         <value>s</value>
         <a:documentation>Barré “strike” &lt;html5:s></a:documentation>
         <value>sc</value>
@@ -3496,7 +3498,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <value>smallcaps</value>
         <a:documentation>petites capitales</a:documentation>
         <value>small-caps</value>
-        <a:documentation>petites capitales css{font-variant:small-caps}</a:documentation>
+        <a:documentation>petites capitales css : {font-variant: small-caps;}</a:documentation>
         <value>strike</value>
         <a:documentation>Barré “strike” &lt;html5:s></a:documentation>
         <value>sup</value>
@@ -3508,11 +3510,17 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <value>uc</value>
         <a:documentation>capitales “uppercase”</a:documentation>
         <value>uppercase</value>
-        <a:documentation>capitales css{text-transform:uppercase}</a:documentation>
+        <a:documentation>capitales css : {text-transform: uppercase;}</a:documentation>
         <value>u</value>
         <a:documentation>souligné “underline” &lt;html5:u></a:documentation>
         <value>underline</value>
-        <a:documentation>souligné css{text-decoration:unbderline}</a:documentation>
+        <a:documentation>souligné, css : {text-decoration: underline;}</a:documentation>
+        <value>var</value>
+        <a:documentation>Variable &lt;html5:var></a:documentation>
+        <value>varoverline</value>
+        <a:documentation>Variable &lt;html5:var> {text-decoration: overline;}</a:documentation>
+        <value>varunderline</value>
+        <a:documentation>Variable &lt;html5:var> {text-decoration: underline;}</a:documentation>
       </choice>
     </define>
     <define name="rend.align">
