@@ -2207,12 +2207,13 @@
             <optional>
               <attribute name="rend">
                 <choice>
-                  <value>sub</value>
-                  <value>sup</value>
-                  <value>sc</value>
                   <value>i</value>
                   <value>it</value>
                   <value>n</value>
+                  <value>sc</value>
+                  <value>sub</value>
+                  <value>sup</value>
+                  <value>var</value>
                 </choice>
               </attribute>
             </optional>
