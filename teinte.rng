@@ -123,8 +123,14 @@
       </optional>
       <optional>
         <ref name="xml.id"/>
-      </optional>      
+      </optional>
+      <ref name="TEI.type"/>
     </define>
+    <define name="TEI.type">
+      <optional>
+        <attribute name="type"/>
+      </optional>
+    </define>      
     <define name="group">
       <element name="group">
         <optional>
@@ -526,6 +532,7 @@
         <choice>
           <!-- <ab> is not in TEI model.divTop -->
           <ref name="ab"/>
+          <ref name="argument"/>
           <ref name="docAuthor"/>
           <ref name="docDate"/>
           <ref name="figure"/>
