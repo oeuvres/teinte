@@ -239,18 +239,18 @@
         <optional>
           <attribute name="type">
             <choice>
-              <value>alt</value>
               <a:documentation>titre alternatif</a:documentation>
-              <value>desc</value>
+              <value>alt</value>
               <a:documentation>titre "paraphrase"</a:documentation>
-              <value>main</value>
+              <value>desc</value>
               <a:documentation>titre principal</a:documentation>
-              <value>short</value>
+              <value>main</value>
               <a:documentation>titre abrégé</a:documentation>
-              <value>sub</value>
+              <value>short</value>
               <a:documentation>sous-titre</a:documentation>
-              <data type="NCName"/>
+              <value>sub</value>
               <a:documentation>Autre valeur</a:documentation>
+              <data type="NCName"/>
             </choice>
           </attribute>
         </optional>
@@ -313,69 +313,69 @@
       <optional>
         <attribute name="type">
           <choice>
-            <value>abstract</value>
             <a:documentation>Résumé ou quatrième de couverture</a:documentation>
-            <value>ack</value>
+            <value>abstract</value>
             <a:documentation>Remerciements, paratexte, généralement en &lt;front></a:documentation>
-            <value>act</value>
+            <value>ack</value>
             <a:documentation>Théâtre, acte.</a:documentation>
-            <value>appendix</value>
+            <value>act</value>
             <a:documentation>Appendice, paratexte, généralement en &lt;back></a:documentation>
-            <value>argument</value>
+            <value>appendix</value>
             <a:documentation>Argument, paratexte, généralement en entête, parfois entre deux actes</a:documentation>
-            <value>article</value>
+            <value>argument</value>
             <a:documentation>Article, niveau de référence du découpage du texte. Peut être contenu dans une structuration supérieure (partie, livre…), ou contenir d'autres divisions (sections…). Ce terme ne doit pas être utilisé pour un niveau inférieur ou supérieur à la division de référence d'un texte.</a:documentation>
-            <value>book</value>
+            <value>article</value>
             <a:documentation>Division de haut niveau dans un gros texte</a:documentation>
-            <value>bibliography</value>
+            <value>book</value>
             <a:documentation>Bibliographie, paratexte, généralement en &lt;back></a:documentation>
-            <value>chapter</value>
+            <value>bibliography</value>
             <a:documentation>Chapitre, niveau de référence équivalent à “article”, souvent la seule dans un roman.</a:documentation>
-            <value>colophon</value>
+            <value>chapter</value>
             <a:documentation>Colophon, paratexte, généralement en &lt;back></a:documentation>
-            <value>contents</value>
+            <value>colophon</value>
             <a:documentation>Table des matières, paratexte en &lt;front> ou en &lt;back></a:documentation>
-            <value>dedication</value>
+            <value>contents</value>
             <a:documentation>Dédicace, paratexte généralement en &lt;front></a:documentation>
-            <value>epigraph</value>
+            <value>dedication</value>
             <a:documentation>Épigraphe, paratexte généralement en &lt;front></a:documentation>
-            <value>frontispiece</value>
+            <value>epigraph</value>
             <a:documentation>Frontispice, paratexte généralement en &lt;front></a:documentation>
-            <value>glossary</value>
+            <value>frontispiece</value>
             <a:documentation>Glossaire, paratexte, généralement en &lt;back></a:documentation>
-            <value>index</value>
+            <value>glossary</value>
             <a:documentation>Index, paratexte, généralement en &lt;back></a:documentation>
-            <value>interlude</value>
+            <value>index</value>
             <a:documentation>Dans une pièce de théâtre, intermède, par example dansé ou musical, le texte y a un statut différent des actes pleins.</a:documentation>
-            <value>introduction</value>
+            <value>interlude</value>
             <a:documentation>Introduction, paratexte, généralement en &lt;front></a:documentation>
-            <value>letter</value>
+            <value>introduction</value>
             <a:documentation>Lettre.</a:documentation>
-            <value>notes</value>
+            <value>letter</value>
             <a:documentation>Notes de fin de volume, paratexte, généralement en &lt;back></a:documentation>
-            <value>poem</value>
+            <value>notes</value>
             <a:documentation>Un poème</a:documentation>
-            <value>postface</value>
+            <value>poem</value>
             <a:documentation>Postface, paratexte, généralement en &lt;back></a:documentation>
-            <value>preface</value>
+            <value>postface</value>
             <a:documentation>Préface, paratexte, généralement en &lt;front></a:documentation>
-            <value>privilege</value>
+            <value>preface</value>
             <a:documentation>Privilège d’imprimer, paratexte</a:documentation>
-            <value>prologue</value>
+            <value>privilege</value>
             <a:documentation>Prologue, par exemple dans une pièce de théâtre, préférer une division typée à l’élément prologue de la TEI qui n’est autorisé que dans l’avant-texte <a:el>front</a:el>.</a:documentation>
-            <value>scene</value>
+            <value>prologue</value>
             <a:documentation>Théâtre, scène.</a:documentation>
-            <value>section</value>
+            <value>scene</value>
             <a:documentation>Section non sémantisée</a:documentation>
-            <value>set</value>
+            <value>section</value>
             <a:documentation>Théâtre, pages liminaires.</a:documentation>
-            <value>toc</value>
+            <value>set</value>
             <a:documentation>Table des matières, synonyme de “contents”, paratexte en &lt;front> ou en &lt;back></a:documentation>
-            <value>tome</value>
+            <value>toc</value>
             <a:documentation>Tome, dans certaines grosses tables des matières</a:documentation>
+            <value>tome</value>
             <!--
-            <data type="Name"/>
             <a:documentation>Mot clé libre lorsqu’aucune des valeurs définies semble adaptée</a:documentation>
+            <data type="Name"/>
             -->
           </choice>
         </attribute>
@@ -684,19 +684,19 @@
         <optional>
           <attribute name="type">
             <choice>
-              <value>alt</value>
               <a:documentation>Titre alternatif</a:documentation>
-              <value>desc</value>
+              <value>alt</value>
               <a:documentation>Description fonctionnant comme un titre</a:documentation>
-              <value>kicker</value>
+              <value>desc</value>
               <a:documentation>Surtitre</a:documentation>
-              <value>main</value>
+              <value>kicker</value>
               <a:documentation>Titre principal</a:documentation>
-              <value>short</value>
+              <value>main</value>
               <a:documentation>Titre abrégé</a:documentation>
-              <value>subtitle</value>
+              <value>short</value>
               <a:documentation>Sous-titre</a:documentation>
-              <data type="token"/>
+              <value>subtitle</value>
+              <data type="Name"/>
             </choice>
           </attribute>
         </optional>
@@ -832,18 +832,18 @@
         <a:example href="teibook.xml#ab"/>
         <attribute name="type">
           <choice>
-            <value>dots</value>
             <a:documentation>Ligne de points</a:documentation>
-            <value>hr</value>
+            <value>dots</value>
             <a:documentation>Filet (horizontal rule)</a:documentation>
-            <value>rule</value>
+            <value>hr</value>
             <a:documentation>Filet</a:documentation>
-            <value>line</value>
+            <value>rule</value>
             <a:documentation>Ligne vide (pour séparer des alinéas)</a:documentation>
-            <value>dinkus</value>
+            <value>line</value>
             <a:documentation>*, * * *, ⁂ et autres astérismes</a:documentation>
-            <value>ornament</value>
+            <value>dinkus</value>
             <a:documentation>Ornements, avec parfois le sens d'un séparateur entre deux sections, couillards et autres culs de lampe</a:documentation>
+            <value>ornament</value>
           </choice>
         </attribute>
         <optional>
@@ -883,7 +883,7 @@
     </define>
     <define name="bibl">
       <element name="bibl">
-        <a:documentation>Référence bibliographique. Peut apparaître comme un bloc, comme un item de liste &lt;listBibl>, ou comme un élément “inline” contenu dans un bloc.</a:documentation>
+        <a:documentation>Référence bibliographique. Peut apparaître comme un bloc, comme un item de liste <a:el>listBibl</a:el>, ou comme un élément “inline” contenu dans un bloc.</a:documentation>
         <optional>
           <ref name="att.n"/>
         </optional>
@@ -893,7 +893,12 @@
         </optional>
         <optional>
           <attribute name="type">
-            <value>embed</value>
+            <choice>
+              <a:documentation>source bibliographique de l’élément contextuel</a:documentation>
+              <value>source</value>
+              <a:documentation>valeur libre</a:documentation>
+              <data type="Name"/>
+            </choice>
           </attribute>
         </optional>
         <optional>
@@ -1094,16 +1099,16 @@
       <optional>
         <attribute name="type">
           <choice>
-            <value>dateline</value>
             <a:documentation>Ligne de date qui n'est pas en fin de section (par exemple dans une citation)</a:documentation>
-            <value>head</value>
+            <value>dateline</value>
             <a:documentation>Intertitre indépendant de la hiérarchie du document (pas un titre de partie ou de section)</a:documentation>
-            <value>salute</value>
+            <value>head</value>
             <a:documentation>Salutation ou dédicace qui n'est pas en tête d'une section (par exemple dans une citation)</a:documentation>
-            <value>question</value>
+            <value>salute</value>
             <a:documentation>Question, par exemple dans un article de presse</a:documentation>
-            <value>speaker</value>
+            <value>question</value>
             <a:documentation>Théâtre, intertitre avant une tirade contenant généralement au moins un nom de personnage &lt;name>, et parfois des didascalies &lt;stage></a:documentation>
+            <value>speaker</value>
           </choice>
         </attribute>
       </optional>
@@ -1117,12 +1122,12 @@
               <value>N</value>
               <a:documentation>“No” (non), vers entier</a:documentation>
               -->
-          <value>I</value>
           <a:documentation>“Initial”, début de vers</a:documentation>
-          <value>M</value>
+          <value>I</value>
           <a:documentation>“Medial”, milieu de vers</a:documentation>
-          <value>F</value>
+          <value>M</value>
           <a:documentation>“Final”, fin de vers</a:documentation>
+          <value>F</value>
         </choice>
       </attribute>
     </define>
@@ -1292,10 +1297,10 @@
             <list>
               <oneOrMore>
                 <choice>
-                  <value>border</value>
                   <a:documentation>Pour encadrés hors flux</a:documentation>
-                  <value>sc</value>
+                  <value>border</value>
                   <a:documentation>Petites capitales (small caps)</a:documentation>
+                  <value>sc</value>
                 </choice>
               </oneOrMore>
             </list>
@@ -1411,15 +1416,16 @@
         <optional>
           <attribute name="type">
             <choice>
-              <value>dialogue</value>
               <a:documentation>Dialogue, dans un roman, pour grouper les tours de parole</a:documentation>
-              <value>gloss</value>
+              <value>dialogue</value>
               <a:documentation>Glossaire, avec une alternance &lt;label> &lt;item></a:documentation>
-              <value>index</value>
+              <value>gloss</value>
               <a:documentation>Index, pour reprise de l’imprimé</a:documentation>
-              <value>toc</value>
+              <value>index</value>
               <a:documentation>“Table of Contents”, table des matières, pour reprise de l’imprimé</a:documentation>
-              <data type="token"/>
+              <value>toc</value>
+              <a:documentation>Autre valeur</a:documentation>
+              <data type="Name"/>
             </choice>
           </attribute>
         </optional>
@@ -1545,10 +1551,10 @@
               <optional>
                 <attribute name="role">
                   <choice>
-                    <value>data</value>
                     <a:documentation>(défaut) &lt;html5:tbody></a:documentation>
-                    <value>label</value>
+                    <value>data</value>
                     <a:documentation>&lt;html5:thead> ou &lt;html5:tfoot></a:documentation>
+                    <value>label</value>
                   </choice>
                 </attribute>
               </optional>
@@ -1561,11 +1567,12 @@
                   <optional>
                     <attribute name="role">
                       <choice>
-                        <value>data</value>
                         <a:documentation>(défaut) &lt;html5:td&gt;</a:documentation>
-                        <value>label</value>
+                        <value>data</value>
                         <a:documentation>&lt;html5:th&gt;</a:documentation>
-                        <text/>
+                        <value>label</value>
+                        <a:documentation>Valeur libre</a:documentation>
+                        <data type="Name"/>
                       </choice>
                     </attribute>
                   </optional>
@@ -1710,10 +1717,10 @@
     </define>
     <define name="hi.rend.more">
       <choice>
-        <value>strong</value>
         <a:documentation>Renforcé (souvent en gras) &lt;html5:strong></a:documentation>
-        <value>mark</value>
+        <value>strong</value>
         <a:documentation>Surligné &lt;html5:mark></a:documentation>
+        <value>mark</value>
       </choice>
     </define>
     <define name="g">
@@ -1752,14 +1759,14 @@
           <attribute name="quantity"/>
           <attribute name="unit">
             <choice>
-              <value>lines</value>
-              <a:documentation>lignes de texte</a:documentation>
-              <value>chars</value>
               <a:documentation>caractères</a:documentation>
-              <value>mm</value>
-              <a:documentation>millimètres</a:documentation>
-              <value>cm</value>
+              <value>chars</value>
               <a:documentation>centimètres</a:documentation>
+              <value>cm</value>
+              <a:documentation>lignes de texte</a:documentation>
+              <value>lines</value>
+              <a:documentation>millimètres</a:documentation>
+              <value>mm</value>
             </choice>
           </attribute>
         </optional>
@@ -1772,11 +1779,10 @@
           <!-- <ref name="type-att"/> -->
           <attribute name="type">
             <choice>
-              <value>exquote</value>
               <a:documentation>Baliser dans une citation les incises et commentaires qui viennent l’interrompre.</a:documentation>
-              <!-- http://listserv.brown.edu/archives/cgi-bin/wa?A2=TEI-L;bc182630.1306 -->
-              <value>tab</value>
-              <text/>
+              <value>exquote</value>
+              <a:documentation>Valeur libre</a:documentation>
+              <data type="Name"/>
             </choice>
           </attribute>
         </optional>
@@ -2151,14 +2157,14 @@
             <optional>
               <attribute name="sex">
                 <choice>
-                  <value>1</value>
-                  <a:documentation>Homme</a:documentation>
-                  <value>2</value>
-                  <a:documentation>Femme</a:documentation>
-                  <value>O</value>
                   <a:documentation>Inconnu</a:documentation>
-                  <value>9</value>
+                  <value>O</value>
+                  <a:documentation>Homme</a:documentation>
+                  <value>1</value>
+                  <a:documentation>Femme</a:documentation>
+                  <value>2</value>
                   <a:documentation>Non applicable</a:documentation>
+                  <value>9</value>
                 </choice>
               </attribute>
             </optional>
@@ -2553,13 +2559,14 @@
         <optional>
           <attribute name="type">
             <choice>
-              <value>author</value>
               <a:documentation>Référence à un auteur</a:documentation>
-              <value>character</value>
+              <value>author</value>
               <a:documentation>Référence à un personnage d’œuvre littéraire</a:documentation>
-              <value>actor</value>
+              <value>character</value>
               <a:documentation>Référence à un acteur (dans une pièce de théâtre)</a:documentation>
-              <text/>
+              <value>actor</value>
+              <a:documentation>Valeur libre</a:documentation>
+              <data type="Name"/>
             </choice>
           </attribute>
         </optional>
@@ -2624,8 +2631,8 @@
         <ref name="rendering.char"/>
         <attribute name="type">
           <choice>
-            <value>event</value>
             <a:documentation>Événement</a:documentation>
+            <value>event</value>
           </choice>
         </attribute>
         <zeroOrMore>
@@ -2695,16 +2702,16 @@
         <optional>
           <attribute name="level">
             <choice>
-              <value>a</value>
               <a:documentation>(analytic) titre analytique, partie d'un ensemble plus grand, par exemple un article, un poème…</a:documentation>
-              <value>m</value>
-              <a:documentation>(monographic) titre de monographie, comme un livre, un recueil ou autre item publié séparément</a:documentation>
-              <value>j</value>
+              <value>a</value>
               <a:documentation>(journal) titre de revue ou de périodique</a:documentation>
-              <value>s</value>
+              <value>j</value>
+              <a:documentation>(monographic) titre de monographie, comme un livre, un recueil ou autre item publié séparément</a:documentation>
+              <value>m</value>
               <a:documentation>(serial) titre de collection ou autre publication en série</a:documentation>
-              <value>u</value>
+              <value>s</value>
               <a:documentation>(unpublished) titre de matériau non publié, par exemple des thèses, des dissertations, si elles n'ont pas été publiées par un éditeur commercial</a:documentation>
+              <value>u</value>
             </choice>
           </attribute>
         </optional>
@@ -2903,17 +2910,18 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
           <p>Lors d’une numérisation, on peut choisir d’adopter provisoirement un code qui décrit l’apparence physique du numéro (mise en valeur typographique), et laisser l’interprétation à un éditeur électronique postérieur.</p>
         </div>
         <choice>
-          <value>margin</value>
           <a:documentation>Numéro dans la marge</a:documentation>
-          <value>marginBig</value>
+          <value>margin</value>
           <a:documentation>Numéro dans la marge, plus grand (relativement à un autre)</a:documentation>
-          <value>marginBold</value>
+          <value>marginBig</value>
           <a:documentation>Numéro dans la marge, en gras (relativement à un autre qui serait maigre)</a:documentation>
-          <value>[]</value>
+          <value>marginBold</value>
           <a:documentation>Numéro entre crochets</a:documentation>
-          <value>()</value>
+          <value>[]</value>
           <a:documentation>Numéro entre parenthèses</a:documentation>
-          <data type="token"/>
+          <value>()</value>
+          <value>Valeur libre</value>
+          <data type="Name"/>
         </choice>
       </attribute>
     </define>
@@ -2923,18 +2931,18 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <optional>
           <attribute name="type">
             <choice>
-              <value>header</value>
               <a:documentation>titre courant en haut de la page</a:documentation>
-              <value>footer</value>
+              <value>header</value>
               <a:documentation>un titre courant en bas de la page</a:documentation>
-              <value>pageNum</value>
+              <value>footer</value>
               <a:documentation>(numéro de page) numéro de page ou symbole de foliotation</a:documentation>
-              <value>lineNum</value>
+              <value>pageNum</value>
               <a:documentation>(numéro de ligne) numéro d'une ligne en prose ou en vers</a:documentation>
-              <value>sig</value>
+              <value>lineNum</value>
               <a:documentation>(signature) signature ou marque de cahier</a:documentation>
-              <value>catch</value>
+              <value>sig</value>
               <a:documentation>(réclame) une réclame</a:documentation>
+              <value>catch</value>
             </choice>
           </attribute>
         </optional>
@@ -3003,9 +3011,10 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <optional>
           <attribute name="rend">
             <choice>
-              <value>hyphen</value>
               <a:documentation>Césure</a:documentation>
-              <text/>
+              <value>hyphen</value>
+              <a:documentation>Valeur libre</a:documentation>
+              <data type="Name"/>
             </choice>
           </attribute>
         </optional>
@@ -3029,11 +3038,12 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <optional>
           <attribute name="unit">
             <choice>
+              <a:documentation>Trait de séparation</a:documentation>
               <value>hr</value>
               <a:documentation>Trait de séparation</a:documentation>
               <value>rule</value>
-              <a:documentation>Trait de séparation</a:documentation>
-              <text/>
+              <a:documentation>Valeur libre</a:documentation>
+              <data type="Name"/>
             </choice>
           </attribute>
         </optional>
@@ -3193,34 +3203,34 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
     <define name="att.place">
       <attribute name="place">
         <choice>
-          <!-- TEI, mais peu fréquents -->
-          <value>above</value>
           <a:documentation>au-dessus de la ligne</a:documentation>
-          <value>below</value>
+          <value>above</value>
           <a:documentation>au-dessous de la ligne</a:documentation>
-          <value>book</value>
+          <value>below</value>
           <a:documentation>fin de livre (non TEI)</a:documentation>
-          <value>bottom</value>
+          <value>book</value>
           <a:documentation>dans la marge inférieure</a:documentation>
-          <value>bubble</value>
+          <value>bottom</value>
           <a:documentation>fenêtre au survol</a:documentation>
-          <value>div</value>
+          <value>bubble</value>
           <a:documentation>fin de section (non TEI)</a:documentation>
-          <value>end</value>
+          <value>div</value>
           <a:documentation>à la fin, par exemple d'un chapitre ou d'un volume</a:documentation>
-          <value>inline</value>
+          <value>end</value>
           <a:documentation>dans le corps du texte</a:documentation>
-          <value>inspace</value>
+          <value>inline</value>
           <a:documentation>dans un espace prédéfini, par exemple à gauche d'un scripteur précédent</a:documentation>
-          <value>margin</value>
+          <value>inspace</value>
           <a:documentation>dans la marge (gauche, droite ou les deux en même temps)</a:documentation>
-          <value>oppposite</value>
+          <value>margin</value>
           <a:documentation>sur la page opposée, c'est-à-dire en regard</a:documentation>
-          <value>overleaf</value>
+          <value>oppposite</value>
           <a:documentation>de l'autre côté de la feuille</a:documentation>
-          <value>top</value>
+          <value>overleaf</value>
           <a:documentation>dans la marge supérieure</a:documentation>
-          <data type="token"/>
+          <value>top</value>
+          <a:documentation>Valeur libre</a:documentation>
+          <data type="Name"/>
         </choice>
       </attribute>
     </define>
@@ -3254,15 +3264,16 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
     <define name="att.resp">
       <attribute name="resp">
         <choice>
-          <value>author</value>
           <a:documentation>note de l’auteur</a:documentation>
-          <value>editor</value>
+          <value>author</value>
           <a:documentation>note de l’éditeur</a:documentation>
-          <value>translator</value>
+          <value>editor</value>
           <a:documentation>note du traducteur</a:documentation>
-          <value>©</value>
+          <value>translator</value>
           <a:documentation>note protégée par le droit d’auteur au moment de l’écriture du fichier</a:documentation>
-          <text/>
+          <value>©</value>
+          <a:documentation>valeur libre</a:documentation>
+          <data type="Name"/>
         </choice>
       </attribute>
     </define>
@@ -3332,41 +3343,45 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         <list>
           <oneOrMore>
             <choice>
+              <a:documentation>tiret</a:documentation>
               <value>-</value>
+              <a:documentation>tiret</a:documentation>
               <value>–</value>
+              <a:documentation>tiret</a:documentation>
               <value>—</value>
-              <value>1</value>
               <a:documentation>décimal : 1 2</a:documentation>
+              <value>1</value>
+              <a:documentation>alphabet latin minuscule : a, b, c…</a:documentation>
               <value>a</value>
-              <a:documentation>alphabet latin minuscule : a, b, c…</a:documentation>
+              <a:documentation>alphabet latin majuscule : A, B, C…</a:documentation>
               <value>A</value>
-              <a:documentation>alphabet latin majuscule : A, B, C…</a:documentation>
-              <value>bullet</value>
-              <value>circle</value>
               <a:documentation>cercle</a:documentation>
-              <value>disc</value>
-              <a:documentation>disque</a:documentation>
-              <value>decimal</value>
+              <value>bullet</value>
+              <a:documentation>cercle</a:documentation>
+              <value>circle</value>
               <a:documentation>décimal : 1. 2.</a:documentation>
+              <value>decimal</value>
+              <a:documentation>décimal formaté : 01, 02…</a:documentation>
               <value>decimal-leading-zero</value>
-              <a:documentation>décimal formlaté : 01, 02…</a:documentation>
-              <value>I</value>
+              <a:documentation>disque</a:documentation>
               <a:documentation>I. II. III.</a:documentation>
-              <value>none</value>
+              <value>disc</value>
+              <value>I</value>
               <a:documentation>pas de marqueur</a:documentation>
-              <value>lower-alpha</value>
+              <value>none</value>
               <a:documentation>alphabétique minuscule : a, b, c…</a:documentation>
-              <value>lower-latin</value>
+              <value>lower-alpha</value>
               <a:documentation>alphabet latin minuscule : a, b, c…</a:documentation>
-              <value>row</value>
-              <value>square</value>
+              <value>lower-latin</value>
               <a:documentation>carré</a:documentation>
-              <value>upper-alpha</value>
+              <value>square</value>
               <a:documentation>alphabétique majuscule : A, B, C…</a:documentation>
-              <value>upper-latin</value>
+              <value>upper-alpha</value>
               <a:documentation>alphabet latin majuscule : A, B, C…</a:documentation>
-              <value>upper-roman</value>
+              <value>upper-latin</value>
               <a:documentation>I II III</a:documentation>
+              <value>upper-roman</value>
+              <a:documentation>autre (classe CSS)</a:documentation>
               <data type="Name"/>
             </choice>
           </oneOrMore>
@@ -3410,20 +3425,19 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
             <ref name="rend.font"/>
             <ref name="rend.align"/>
             <ref name="rend.lmarg"/>
-            <value>argument</value>
             <a:documentation>Valeur sémantique d’un élément argument, mais qui autorise à placer un élément &lt;stage&gt; avant (édition de théâtre)</a:documentation>
-            <value>indent</value>
+            <value>argument</value>
             <a:documentation>Indentation de première ligne (lorsque pas d’indentation par défaut)</a:documentation>
-            <value>lg</value>
+            <value>indent</value>
             <a:documentation>Utile provisoirement, mais lg/l est préférable.</a:documentation>
-            <value>noindent</value>
+            <value>lg</value>
             <a:documentation>Pas d’indentation de première ligne (lorsque indentation par défaut)</a:documentation>
+            <value>noindent</value>
+            <a:documentation>Bloc préformaté, conserver les espaces et sauts de ligne, police à chasse fixe. Pour des exemples de codes, préférer @lt;eg>. @rend='pre' peut servir à rendre des formules mathématiques.</a:documentation>
+            <value>pre</value>
             <!-- Essayer de bloquer ? Et laisser rendition pour personnaliser
               <data type="token"/>
               -->
-            <!--  -->
-            <value>pre</value>
-            <a:documentation>Bloc préformaté, conserver les espaces et sauts de ligne, police à chasse fixe. Pour des exemples de codes, préférer @lt;eg>. @rend='pre' peut servir à rendre des formules mathématiques.</a:documentation>
           </choice>
         </oneOrMore>
       </list>
@@ -3463,115 +3477,115 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
     <define name="rend.lmarg">
       <a:documentation>Retrait gauche de bloc</a:documentation>
       <choice>
-        <value>lmarg1</value>
         <a:documentation>Retrait gauche de 1 graduation (cm ou in)</a:documentation>
-        <value>lmarg2</value>
+        <value>lmarg1</value>
         <a:documentation>Retrait gauche de 2 graduation (cm ou in)</a:documentation>
-        <value>lmarg3</value>
+        <value>lmarg2</value>
         <a:documentation>Retrait gauche de 3 graduation (cm ou in)</a:documentation>
-        <value>lmarg25</value>
+        <value>lmarg3</value>
         <a:documentation>Retrait gauche de 25%</a:documentation>
-        <value>lmarg50</value>
+        <value>lmarg25</value>
         <a:documentation>Retrait gauche de 50%</a:documentation>
+        <value>lmarg50</value>
       </choice>
     </define>
     <define name="rend.font">
       <a:documentation>Styles de caractères, pour un segment de texte ou un bloc, valeurs reprises de html5 ou CSS</a:documentation>
       <choice>
-        <value>b</value>
         <a:documentation>gras “bold” &lt;html5:b></a:documentation>
-        <value>bi</value>
+        <value>b</value>
         <a:documentation>gras “bold” et italique (rare et déconseillé, souvent le signe qu’une balise sémantique est nécessaire, comme un titre)</a:documentation>
-        <value>big</value>
+        <value>bi</value>
         <a:documentation>taille de caractère relativement plus grande</a:documentation>
-        <value>bold</value>
+        <value>big</value>
         <a:documentation>gras, css : {font-weight: bold;}</a:documentation>
-        <value>i</value>
+        <value>bold</value>
         <a:documentation>italique “italic” &lt;html5:i></a:documentation>
-        <value>italic</value>
+        <value>i</value>
         <a:documentation>italique, css : {font-style: italic;}</a:documentation>
-        <value>ls</value>
+        <value>italic</value>
         <a:documentation>espacé “letter-spacing”</a:documentation>
-        <value>letter-spacing</value>
+        <value>ls</value>
         <a:documentation>espacé css : {letter-spacing: 2px;}</a:documentation>
+        <value>letter-spacing</value>
+        <a:documentation>normal (annule toutes les mmises en formes héritées de niveau caractère)</a:documentation>
         <value>n</value>
         <a:documentation>normal (annule toutes les mmises en formes héritées de niveau caractère)</a:documentation>
         <value>normal</value>
-        <a:documentation>normal (annule toutes les mmises en formes héritées de niveau caractère)</a:documentation>
-        <value>overline</value>
         <a:documentation>surligné css : {text-decoration: overline;}</a:documentation>
+        <value>overline</value>
+        <a:documentation>Barré “strike” &lt;html5:s></a:documentation>
         <value>s</value>
-        <a:documentation>Barré “strike” &lt;html5:s></a:documentation>
-        <value>sc</value>
         <a:documentation>petites capitales “small-caps”</a:documentation>
-        <value>small</value>
+        <value>sc</value>
         <a:documentation>taille de caractère relativement plus petite</a:documentation>
-        <value>smallcaps</value>
+        <value>small</value>
         <a:documentation>petites capitales</a:documentation>
-        <value>small-caps</value>
+        <value>smallcaps</value>
         <a:documentation>petites capitales css : {font-variant: small-caps;}</a:documentation>
-        <value>strike</value>
+        <value>small-caps</value>
         <a:documentation>Barré “strike” &lt;html5:s></a:documentation>
-        <value>sup</value>
-        <a:documentation>Exposant &lt;html5:sup></a:documentation>
-        <value>sub</value>
-        <a:documentation>Indice &lt;html5:sub></a:documentation>
         <value>strike</value>
+        <a:documentation>Exposant &lt;html5:sup></a:documentation>
+        <value>sup</value>
+        <a:documentation>Indice &lt;html5:sub></a:documentation>
+        <value>sub</value>
         <a:documentation>Barré &lt;html5:strike></a:documentation>
-        <value>uc</value>
+        <value>strike</value>
         <a:documentation>capitales “uppercase”</a:documentation>
-        <value>uppercase</value>
+        <value>uc</value>
         <a:documentation>capitales css : {text-transform: uppercase;}</a:documentation>
-        <value>u</value>
+        <value>uppercase</value>
         <a:documentation>souligné “underline” &lt;html5:u></a:documentation>
-        <value>underline</value>
+        <value>u</value>
         <a:documentation>souligné, css : {text-decoration: underline;}</a:documentation>
-        <value>var</value>
+        <value>underline</value>
         <a:documentation>Variable &lt;html5:var></a:documentation>
-        <value>varoverline</value>
+        <value>var</value>
         <a:documentation>Variable &lt;html5:var> {text-decoration: overline;}</a:documentation>
-        <value>varunderline</value>
+        <value>varoverline</value>
         <a:documentation>Variable &lt;html5:var> {text-decoration: underline;}</a:documentation>
+        <value>varunderline</value>
       </choice>
     </define>
     <define name="rend.align">
       <a:documentation>Valeurs normalisées d'alignement de blocs, CSS text-align</a:documentation>
       <choice>
-        <value>center</value>
         <a:documentation>centré</a:documentation>
+        <value>center</value>
         <!-- souvent, cas général, va servir à repérer des scores de traitement de texte
         <value>indent</value>
         <a:documentation>indentation positive de la première ligne</a:documentation>
         -->
-        <value>hanging</value>
         <a:documentation>indentation négative de la première ligne</a:documentation>
-        <value>justify</value>
+        <value>hanging</value>
         <a:documentation>justifié</a:documentation>
-        <value>left</value>
+        <value>justify</value>
         <a:documentation>aligné à gauche</a:documentation>
-        <value>margin</value>
+        <value>left</value>
         <a:documentation>bloc décroché à gauche</a:documentation>
-        <value>noindent</value>
+        <value>margin</value>
         <a:documentation>pas d’indentation de première ligne</a:documentation>
-        <value>right</value>
+        <value>noindent</value>
         <a:documentation>aligné à droite</a:documentation>
+        <value>right</value>
       </choice>
     </define>
     <define name="rend.border">
       <a:documentation>Valeurs normalisées pour indiquer l'encadrement d'une boîte (combinable), empruntées à CSS</a:documentation>
       <choice>
-        <value>border</value>
         <a:documentation>encadré</a:documentation>
-        <value>border-bottom</value>
+        <value>border</value>
         <a:documentation>trait en bas</a:documentation>
-        <value>border-left</value>
+        <value>border-bottom</value>
         <a:documentation>trait à gauche</a:documentation>
-        <value>border-right</value>
+        <value>border-left</value>
         <a:documentation>trait à droite</a:documentation>
-        <value>border-top</value>
+        <value>border-right</value>
         <a:documentation>trait en haut</a:documentation>
-        <value>noborder</value>
+        <value>border-top</value>
         <a:documentation>pas de bord</a:documentation>
+        <value>noborder</value>
       </choice>
     </define>
     <define name="rend-role">
@@ -3592,24 +3606,24 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
     </define>
     <define name="val.age">
       <choice>
-        <value>cadet</value>
         <a:documentation>Enfant</a:documentation>
-        <value>junior</value>
+        <value>cadet</value>
         <a:documentation>Jeune (mariable)</a:documentation>
-        <value>senior</value>
+        <value>junior</value>
         <a:documentation>Par défaut, sans âge</a:documentation>
-        <value>veteran</value>
+        <value>senior</value>
         <a:documentation>Vieux</a:documentation>
+        <value>veteran</value>
       </choice>
     </define>
     <define name="val.status">
       <choice>
-        <value>inferior</value>
         <a:documentation>Statut inférieur aux principaux protagonistes (valet, nourrice…)</a:documentation>
-        <value>exterior</value>
+        <value>inferior</value>
         <a:documentation>Statut extérieur aux principaux protagonistes (notaire, médecin…)</a:documentation>
-        <value>superior</value>
+        <value>exterior</value>
         <a:documentation>Statut supérieur aux principaux protagonistes (roi, dieu…)</a:documentation>
+        <value>superior</value>
       </choice>
     </define>
   </div>
