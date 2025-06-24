@@ -30,6 +30,9 @@
           <value>article</value>
         </choice>
       </attribute>
+      <optional>
+        <ref name="att.cert"/>
+      </optional>
     </define>
     <define name="p.atts">
       <optional>

@@ -122,6 +122,9 @@
         <ref name="att.n"/>
       </optional>
       <optional>
+        <ref name="att.cert"/>
+      </optional>
+      <optional>
         <ref name="xml.id"/>
       </optional>
       <ref name="TEI.type"/>

@@ -406,21 +406,29 @@
             <value>restricted</value>
           </attribute>
         </optional>
-        <element name="licence">
-          <a:documentation>URI de référence vers la licence</a:documentation>
-          <ul xmlns="http://www.w3.org/1999/xhtml">
-            <li>&lt;<a href="http://purl.org/dc/terms/rights" target="dc">dc:rights</a>&gt; (Prévoir ligne courte pour la licence)</li>
-          </ul>
-          <attribute name="target">
-            <data type="anyURI"/>
-          </attribute>
+        <oneOrMore>
           <choice>
-            <oneOrMore>
-              <ref name="p.teiHeader"/>
-            </oneOrMore>
-            <ref name="flow.teiHeader"/>
+            <ref name="licence"/>
+            <ref name="p.teiHeader"/>
           </choice>
-        </element>
+        </oneOrMore>
+      </element>
+    </define>
+    <define name="licence">
+      <element name="licence">
+        <a:documentation>URI de référence vers la licence</a:documentation>
+        <ul xmlns="http://www.w3.org/1999/xhtml">
+          <li>&lt;<a href="http://purl.org/dc/terms/rights" target="dc">dc:rights</a>&gt; (Prévoir ligne courte pour la licence)</li>
+        </ul>
+        <attribute name="target">
+          <data type="anyURI"/>
+        </attribute>
+        <choice>
+          <oneOrMore>
+            <ref name="p.teiHeader"/>
+          </oneOrMore>
+          <ref name="flow.teiHeader"/>
+        </choice>
       </element>
     </define>
     <define name="profileDesc">
@@ -1205,7 +1213,6 @@
         </optional>
         <zeroOrMore>
           <choice>
-            <ref name="title.teiHeader"/>
             <ref name="author.teiHeader"/>
             <ref name="date.teiHeader"/>
             <ref name="editor"/>
@@ -1213,7 +1220,9 @@
             <ref name="extent"/>
             <ref name="idno"/>
             <ref name="imprint"/>
+            <ref name="ptr"/>
             <ref name="respStmt"/>
+            <ref name="title.teiHeader"/>
           </choice>
         </zeroOrMore>
       </element>
