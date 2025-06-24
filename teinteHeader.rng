@@ -1214,6 +1214,7 @@
         <zeroOrMore>
           <choice>
             <ref name="author.teiHeader"/>
+            <ref name="availability"/>
             <ref name="date.teiHeader"/>
             <ref name="editor"/>
             <ref name="edition"/>
@@ -1508,6 +1509,7 @@
         <zeroOrMore>
           <choice>
             <ref name="author.teiHeader"/>
+            <ref name="availability"/>
             <ref name="editor"/>
             <ref name="date.teiHeader"/>
             <ref name="edition"/>
