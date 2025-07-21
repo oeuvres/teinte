@@ -1187,6 +1187,8 @@
           <ref name="flow"/>
           <oneOrMore>
             <choice>
+              <ref name="bibl"/>
+              <ref name="biblStruct"/>
               <ref name="p"/>
               <ref name="point"/>
               <ref name="q-p"/>
@@ -3086,7 +3088,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
         </optional>
         <ref name="rendering-atts"/>
         <choice>
-          <!-- Attention au déterminisme xsd pour <figure>, ne pas autoriser saut de page (ex: note de fin, ou note sur plus d'une page) -->
           <oneOrMore>
             <choice>
               <text/>
@@ -3094,7 +3095,6 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
               <ref name="quote-c"/>
               XSD cos -->
               <ref name="anchor"/>
-              <ref name="bibl"/>
               <ref name="quote-c"/>
               <ref name="function"/>
               <ref name="gap"/>
@@ -3106,6 +3106,7 @@ Zero width non joiner: x‌x‌x‌x‌x‌x‌x‌x‌x‌x
           <oneOrMore>
             <choice>
               <ref name="bibl"/>
+              <ref name="biblStruct"/>
               <ref name="cit"/>
               <ref name="desc"/>
               <ref name="eg"/>
