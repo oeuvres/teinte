@@ -959,11 +959,19 @@
     <define name="desc">
       <element name="desc">
         <a:documentation>Description , notamment dans les figures, &lt;html5:figcaption></a:documentation>
-        <!-- identifiant et n° dans le conteneur, lang pour description multiple -->
         <optional>
           <ref name="xml.lang"/>
         </optional>
-        <ref name="flow"/>
+        <choice>
+          <ref name="flow"/>
+          <oneOrMore>
+            <choice>
+              <ref name="label"/>
+              <ref name="list"/>
+              <ref name="table"/>
+            </choice>
+          </oneOrMore>
+        </choice>
       </element>
     </define>
     <define name="entryFree">
