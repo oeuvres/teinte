@@ -891,6 +891,9 @@
           <ref name="att.n"/>
         </optional>
         <optional>
+          <ref name="att.rend"/>
+        </optional>
+        <optional>
           <a:documentation>Lier une référence bibliographique à une citation par exemple.</a:documentation>
           <ref name="att.corresp"/>
         </optional>
