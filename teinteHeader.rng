@@ -1067,6 +1067,9 @@
     </define>
     <define name="abstract">
       <element name="abstract">
+        <optional>
+          <attribute name="resp"/>
+        </optional>
         <oneOrMore>
           <choice>
             <ref name="label.teiHeader"/>
